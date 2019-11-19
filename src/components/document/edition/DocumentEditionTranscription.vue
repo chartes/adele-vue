@@ -14,7 +14,7 @@
 import { mapState } from 'vuex';
 
 export default {
-    name: "DocumentTranscription",
+    name: "DocumentEditionTranscription",
     components: {
         
     },

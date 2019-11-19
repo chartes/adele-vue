@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="{ name: 'document', params: { docId: doc.id }}">
+  <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">
     <div class="document-card card">
       <div class="card-image">
         <figure

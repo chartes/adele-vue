@@ -1,10 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="!!readonlyData"
-      class="content"
-      v-html="readonlyData.content"
-    />
+    Commentaires
   </div>
 </template>
 
@@ -14,12 +10,12 @@
 import { mapState } from 'vuex';
 
 export default {
-    name: "DocumentTranscription",
+    name: "DocumentEditionCommentaries",
     components: {
         
     },
     props: {
-        readonlyData: {type: Object, default: null}
+        document: {type: Object, default: null}
     },
     computed: {
         ...mapState('document', ['loading']),

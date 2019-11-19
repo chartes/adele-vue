@@ -3,6 +3,7 @@ import VueRouter, {Location, Route, RouteConfig} from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
+import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
 
 /*
 import LoginPage from "@/pages/LoginPage.vue"
@@ -29,13 +30,19 @@ export default new VueRouter({
       name: 'search'
     },
     {
-      path: '/documents/:docId',
+      path: '/documents/view/:docId',
       redirect:  '/documents/:docId/notice'
     },
     {
-      path: '/documents/:docId/:section',
+      path: '/documents/view/:docId/:section',
       component: DocumentPage,
-      name: 'document',
+      name: 'document-view',
+      props: true
+    },
+    {
+      path: '/documents/edit/:docId/:section',
+      component: DocumentEditionPage,
+      name: 'document-edition',
       props: true
     },
      /*
