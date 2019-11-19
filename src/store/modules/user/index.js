@@ -57,16 +57,16 @@ const checkRole = (user, role) => {
 const getters = {
 
   authHeader: state => { return { auth: { username: state.authToken, password: undefined }}},
-  currentUserIsAdmin: state => {
+  currentUserIsAdmin: state =>{
     return checkRole(state.currentUser, 'admin')
   },
-  currentUserIsAuthor: state => {
+  currentUserIsAuthor: state =>{
     return state.currentUser.id === state.author.id;
   },
-  currentUserIsTeacher: state => {
+  currentUserIsTeacher: state =>{
     return checkRole(state.currentUser, 'teacher')
   },
-  currentUserIsStudent: state => {
+  currentUserIsStudent: state =>{
     return checkRole(state.currentUser, 'student')
   },
 
