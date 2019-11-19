@@ -1,0 +1,91 @@
+
+
+/* Uncomment to import the entire Bulma framework */
+@import '~bulma/bulma';
+
+/* Import selected Bulma Sass
+/* Remove these if you import the entire Bulma framework above */
+
+@import "~bulma/sass/utilities/_all.sass";
+@import "~bulma/sass/base/_all.sass";
+@import "~bulma/sass/grid/_all.sass";
+@import "~bulma/sass/elements/button.sass";
+@import "~bulma/sass/elements/container.sass";
+@import "~bulma/sass/elements/title.sass";
+@import "~bulma/sass/layout/section.sass";
+@import "~bulma/sass/components/card.sass";
+
+
+
+@import 'settings/colors';
+@import 'settings/vars';
+
+
+// Tools – globally used mixins and functions.
+// It’s important not to output any CSS in the first 2 layers.
+
+@import 'tools/unit';
+@import 'tools/color';
+
+
+// Generic – reset and/or normalize styles, box-sizing definition, etc.
+// This is the first layer which generates actual CSS.
+
+//
+
+
+// Elements – styling for bare HTML elements (like H1, A, etc.).
+// These come with default styling from the browser so we can redefine them here.
+
+@import 'elements/html';
+@import 'elements/body';
+@import 'elements/a';
+@import 'elements/img';
+
+
+@import "components/document.card";
+// Objects – class-based selectors which define undecorated design patterns,
+// for example media object known from OOCSS
+
+//@import "objects/document-subsection";
+//@import "objects/quill.lettres";
+@import "objects/quill.core";
+@import "objects/quill.icons";
+//@import "objects/editor";
+//@import "objects/error-page";
+// Components – specific UI components.
+// This is where majority of our work takes place
+// and our UI components are often composed of Objects and Components
+/*
+//
+@import "components/main-layout";
+@import "components/field.text";
+@import "components/field.title";
+@import "components/field.multi-select";
+@import "components/field.select-autocomplete";
+@import "components/icons";
+@import "components/loading";
+@import "components/note";
+@import "components/document.document-tag-bar";
+@import "components/document.argument";
+@import "components/document.attributes";
+@import "components/document.date-attributes";
+@import "components/document.collections";
+@import "components/document.correspondents";
+@import "components/document.notes-list";
+@import "components/document.placenames";
+@import "components/document.transcription";
+@import "components/document.witness-list";
+@import "components/document.date-list";
+@import "components/document.person-form";
+@import "components/document.person-list-form";
+@import "components/document.iiif-viewer";
+@import "components/collection.collection-list";
+@import "components/lock";
+
+// Utilities / trumps – utilities and helper classes
+// with ability to override anything which goes before in the triangle, eg. hide helper class
+
+@import "utilities/modifiers";
+
+*/
