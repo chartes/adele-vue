@@ -1,6 +1,9 @@
 <template>
   <div>
-    Transcription et traduction
+    <div
+      class="content"
+      v-html="readonlyData.content"
+    />
   </div>
 </template>
 
@@ -15,9 +18,10 @@ export default {
         
     },
     props: {
+        readonlyData: {type: String, default: null}
     },
     computed: {
-        ...mapState('document', ['document', 'loading'])
+        ...mapState('document', ['loading']),
     },
     created() {
       

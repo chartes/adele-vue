@@ -1,8 +1,6 @@
 <template>
   <div class="section">
     <div class="container">
-      loading: {{ loading }}
-    
       <div class="columns">
         <div class="column is-two-fifths">
           column 1
@@ -32,13 +30,23 @@
               </li>
             </ul>
           </div>
-          <div class="section">
-            <div class="container">
-              <document-notice v-if="$attrs.section === 'notice'" />
-              <document-transcription v-if="$attrs.section === 'transcription'" />
-              <document-commentaries v-if="$attrs.section === 'commentaries'" />
-              <document-speech-parts v-if="$attrs.section === 'speech-parts'" />
-            </div>
+          <div class="container">
+            <document-notice
+              v-if="$attrs.section === 'notice'"
+              :document="document"
+            />
+            <document-transcription
+              v-if="$attrs.section === 'transcription'"
+              :readonly-data="transcriptionView"
+            />
+            <document-commentaries
+              v-if="$attrs.section === 'commentaries'"
+              :document="document"
+            />
+            <document-speech-parts
+              v-if="$attrs.section === 'speech-parts'"
+              :document="document"
+            />
           </div>
         </div>
       </div>
@@ -66,14 +74,21 @@ export default {
     props: {
     },
     computed: {
-            ...mapState('document', ['document', 'loading'])
+        ...mapState('document', ['document', 'loading', 'transcriptionView'])
     },
     created() {
       this.fetchOne()
+      this.fetchTranscriptionView()
     },
     methods: {
       fetchOne() {
         this.$store.dispatch('document/fetch', {
+          id: this.$attrs.docId
+        }).then(r => {
+        });
+      },
+      fetchTranscriptionView() {
+        this.$store.dispatch('document/fetchTranscriptionView', {
           id: this.$attrs.docId
         }).then(r => {
         });

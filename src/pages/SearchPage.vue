@@ -1,8 +1,13 @@
 <template>
   <div>
     <div class="container">
-      loading: {{ loading }}
-
+      <progress
+        v-show="loading" 
+        class="progress is-small is-primary"
+        max="100"
+      >
+        15%
+      </progress>
       <div class="columns">
         <div class="column">
           First column

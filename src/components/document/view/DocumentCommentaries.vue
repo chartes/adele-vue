@@ -15,9 +15,10 @@ export default {
         
     },
     props: {
+        document: {type: Object, default: null}
     },
     computed: {
-        ...mapState('document', ['document', 'loading'])
+        ...mapState('document', ['loading']),
     },
     created() {
       
