@@ -1,26 +1,29 @@
 <template>
-  <div class="section">
-    <div class="container">
-      Landing page
-    </div>
+  <div>
+    Parties du discours
   </div>
 </template>
+
 
 <script>
 
 import { mapState } from 'vuex';
 
 export default {
-    name: "LandingPage",
+    name: "DocumentSpeechParts",
     components: {
+        
+    },
+    props: {
     },
     computed: {
+        ...mapState('document', ['document', 'loading'])
     },
     created() {
-     
+      
     },
     methods: {
-     
+      
     }
 }
 </script>

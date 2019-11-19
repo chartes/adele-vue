@@ -1,0 +1,87 @@
+<template>
+  <div class="section">
+    <div class="container">
+      loading: {{ loading }}
+    
+      <div class="columns">
+        <div class="column is-two-fifths">
+          column 1
+        </div>
+        <div class="column">
+          <div class="tabs">
+            <ul>
+              <li :class="$attrs.section === 'notice' ? `is-active`: ''">
+                <router-link :to="{name: 'document', params: {docId: $attrs.docId, section:'notice'}}">
+                  notice
+                </router-link>
+              </li>
+              <li :class="$attrs.section === 'transcription' ? `is-active`: ''">
+                <router-link :to="{name: 'document', params: {docId: $attrs.docId, section:'transcription'}}">
+                  transcription
+                </router-link>
+              </li>
+              <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
+                <router-link :to="{name: 'document', params: {docId: $attrs.docId, section:'commentaries'}}">
+                  Commentaires
+                </router-link>
+              </li>
+              <li :class="$attrs.section === 'speech-parts' ? `is-active`: ''">
+                <router-link :to="{name: 'document', params: {docId: $attrs.docId, section:'speech-parts'}}">
+                  Parties du discours
+                </router-link>
+              </li>
+            </ul>
+          </div>
+          <div class="section">
+            <div class="container">
+              <document-notice v-if="$attrs.section === 'notice'" />
+              <document-transcription v-if="$attrs.section === 'transcription'" />
+              <document-commentaries v-if="$attrs.section === 'commentaries'" />
+              <document-speech-parts v-if="$attrs.section === 'speech-parts'" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+
+import { mapState } from 'vuex';
+import DocumentNotice from '../components/document/view/DocumentNotice.vue'
+import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
+import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
+import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
+
+
+export default {
+    name: "DocumentPage",
+    components: {
+        DocumentNotice,
+        DocumentTranscription,
+        DocumentCommentaries,
+        DocumentSpeechParts
+    },
+    props: {
+    },
+    computed: {
+            ...mapState('document', ['document', 'loading'])
+    },
+    created() {
+      this.fetchOne()
+    },
+    methods: {
+      fetchOne() {
+        this.$store.dispatch('document/fetch', {
+          id: this.$attrs.docId
+        }).then(r => {
+        });
+      }
+    }
+}
+</script>
+
+<style>
+
+</style>

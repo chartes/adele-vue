@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import VueRouter, {Location, Route, RouteConfig} from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
+import SearchPage from "@/pages/SearchPage.vue"
+import DocumentPage from "@/pages/DocumentPage.vue"
+
 /*
 import LoginPage from "@/pages/LoginPage.vue"
 import RegisterPage from "@/pages/RegisterPage.vue"
@@ -19,6 +22,21 @@ export default new VueRouter({
       path: '/',
       component: LandingPage,
       name: 'landing'
+    },
+    {
+      path: '/documents',
+      component: SearchPage,
+      name: 'search'
+    },
+    {
+      path: '/documents/:docId',
+      redirect:  '/documents/:docId/notice'
+    },
+    {
+      path: '/documents/:docId/:section',
+      component: DocumentPage,
+      name: 'document',
+      props: true
     },
      /*
     {

@@ -30,8 +30,12 @@ const mutations = {
 const actions = {
 
   fetch ({ commit }, {id}) {
+    commit('LOADING_STATUS', true);
     return http.get(`documents/${id}`).then( (response) => {
       commit('UPDATE_DOCUMENT', response.data)
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
     })
   },
   fetchAll ({ commit }, {pageId, pageSize, filters}) {
@@ -39,6 +43,8 @@ const actions = {
     return http.get(`documents?${filters}&page[size]=${pageSize}&page[number]=${pageId}`)
       .then( (response) => {
       commit('UPDATE_ALL', response.data.data);
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
       commit('LOADING_STATUS', false);
     })
   },
