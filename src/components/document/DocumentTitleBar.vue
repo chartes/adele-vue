@@ -1,31 +1,41 @@
 <template>
-  <div class="m-b-xl">
-    <span>
-      <router-link
-        v-if="$route.name.indexOf('edition') === -1"
-        :to="{name: 'document-edition', params:{docId: document.id}}"
-      >
-        <div class="button">
-          Modifier
+  <div class="m-b-lg">
+    <div class="tile is-ancestor is-vertical">
+      <div class="tags tile has-text-uppercase">
+        <span class="tag  is-size-4">
+          Document {{ document.id }}
+        </span>
+        <div v-if="loggedIn">
+          <router-link
+            v-if="$route.name.indexOf('edition') === -1"
+            :to="{name: 'document-edition', params:{docId: document.id, section:'notice'}}"
+          >
+            <div class="tag button is-primary is-size-4">
+              Modifier
+            </div>
+          </router-link> 
+          <router-link
+            v-else
+            :to="{name: 'document-view', params:{docId: document.id, section:'notice'}}"
+          >
+            <div class="tag button is-primary is-size-4">
+              Consulter
+            </div>
+          </router-link>
         </div>
-      </router-link> 
-      <router-link
-        v-else
-        :to="{name: 'document-view', params:{docId: document.id}}"
-      >
-        <div class="button">
-          Consulter
+      </div>
+    
+      <div class="tile is-parent">
+        <div class="tile is-child is-7">
+          <div class="heading title">
+            {{ document.title }}
+          </div>
+          <div class="subtitle">
+            {{ document.subtitle }}
+          </div>
         </div>
-      </router-link>
-    </span>
-    <span class="m-l-lg">
-      <div class="heading title">
-        {{ document.title }}
       </div>
-      <div class="subtitle">
-        {{ document.subtitle }}
-      </div>
-    </span>
+    </div>
   </div>
 </template>
 

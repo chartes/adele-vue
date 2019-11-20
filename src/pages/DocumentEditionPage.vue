@@ -132,8 +132,15 @@ export default {
     },
     computed: {
         ...mapState('document', ['document', 'loading']),
+        ...mapState('workflow', ['selectedUserId']),
         ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading']),
-        ...mapState('translation', ['translationWithNotes', 'transcriptionLoading'])
+        ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
+    },
+    watch:{
+      selectedUserId() {
+        this.fetchTranscriptionContent()
+        this.fetchTranslationContent()
+      }
     },
     async created() {
       await this.fetchOne()
@@ -150,13 +157,13 @@ export default {
       fetchTranscriptionContent() {
         return this.$store.dispatch('transcription/fetchTranscriptionFromUser', {
           docId: this.document.id,
-          userId: 4
+          userId: this.selectedUserId
         })
       },
       fetchTranslationContent() {
         return this.$store.dispatch('translation/fetchTranslationFromUser', {
           docId: this.document.id,
-          userId: 4
+          userId: this.selectedUserId
         })
       }
     }

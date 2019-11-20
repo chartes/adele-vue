@@ -18,6 +18,7 @@ import noteTypes from './modules/noteTypes'
 import speechparts from './modules/speechparts'
 import speechpartTypes from './modules/speechpartTypes'
 import notes from './modules/notes'
+import workflow from './modules/workflow'
 
 Vue.use(Vuex);
 
@@ -39,6 +40,7 @@ export default new Vuex.Store({
       traditions,
       transcription,
       translation,
-      user
+      user,
+      workflow
     }
 });

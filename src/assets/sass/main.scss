@@ -7,7 +7,6 @@
 
 /* Import selected Bulma Sass
 /* Remove these if you import the entire Bulma framework above */
-
 @import "~bulma/sass/utilities/_all.sass";
 @import "~bulma/sass/base/_all.sass";
 @import "~bulma/sass/grid/_all.sass";
@@ -16,7 +15,7 @@
 @import "~bulma/sass/elements/title.sass";
 @import "~bulma/sass/layout/section.sass";
 @import "~bulma/sass/components/card.sass";
-
+@import "~bulma/sass/form/_all.sass";
 
 
 @import 'settings/colors';
