@@ -1,29 +1,26 @@
 <template>
   <div class="section">
-    <div class="container">
+    <div class="container is-fluid">
+      <document-title-bar
+        v-if="!!document"
+        :document="document"
+      />
+
       <div class="columns">
         <div class="column is-two-fifths">
-          column 1
-          <router-link
-            v-if="loggedIn"
-            :to="{name: 'document-edition', params:{docId: $attrs.docId}}"
-          >
-            <div class="button">
-              Modifier le dossier
-            </div>
-          </router-link>
+          <i-i-i-f-viewer />
         </div>
         <div class="column">
           <div class="tabs">
             <ul>
               <li :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''">
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'notice'}}">
-                  notice
+                  Notice
                 </router-link>
               </li>
               <li :class="$attrs.section === 'transcription' ? `is-active`: ''">
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'transcription'}}">
-                  transcription
+                  Transcription et traduction
                 </router-link>
               </li>
               <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
@@ -38,7 +35,10 @@
               </li>
             </ul>
           </div>
-          <div class="container">
+          <div
+            v-if="!!document"
+            class="container"
+          >
             <document-notice
               v-if="$attrs.section === 'notice'"
               :document="document"
@@ -69,15 +69,19 @@ import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
+import IIIFViewer from '../components/IIIFViewer.vue'
 
+import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 
 export default {
     name: "DocumentPage",
     components: {
-        DocumentNotice,
-        DocumentTranscription,
-        DocumentCommentaries,
-        DocumentSpeechParts
+      DocumentTitleBar,
+      DocumentNotice,
+      DocumentTranscription,
+      DocumentCommentaries,
+      DocumentSpeechParts,
+      IIIFViewer
     },
     props: {
     },
@@ -91,12 +95,12 @@ export default {
     },
     methods: {
       fetchOne() {
-        this.$store.dispatch('document/fetch', {
+        return this.$store.dispatch('document/fetch', {
           id: this.$attrs.docId
         })
       },
       fetchTranscriptionView() {
-        this.$store.dispatch('document/fetchTranscriptionView', {
+        return this.$store.dispatch('document/fetchTranscriptionView', {
           id: this.$attrs.docId
         })
       }

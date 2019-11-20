@@ -1,0 +1,135 @@
+.quill-editor {
+  font-size: 1em;
+  margin: 0 auto;
+  width: 100%;
+  border: 1px solid #eee;
+  max-height: 80vh;
+  overflow: scroll;
+  background: white;
+}
+.editor-controls {
+  display: flex;
+  flex-wrap: wrap;
+  hr {
+    margin: .5em 0;
+  }
+
+  button {
+    font-weight: bold;
+    margin: .125em 0;
+    &:active, &:focus {
+      outline: none;
+    }
+  }
+}
+.editor-controls-group {
+  margin-right: 2em;
+  margin-bottom: .5em;
+  &:last-child {
+    margin-right: 0;
+  }
+  label {
+    display: block;
+    font-size: 60%;
+    font-variant: small-caps;
+  }
+  .button {
+
+    padding-bottom: calc(.5em - 1px);
+    padding-top: calc(.5em - 1px);
+  }
+  .icon {
+    height: 100%;
+    padding: 0;
+  }
+
+}
+.editor-container {
+  position: relative;
+}
+#editor-container {
+  .ql-editor {
+    min-height: 100%;
+    height: inherit;
+    overflow-y: inherit;
+
+    & > * {
+      margin-top: 1.5em;
+
+      &:last-child {
+        margin-bottom: 50px;
+      }
+    }
+  }
+}
+
+/* Contenu de la zone editable */
+
+.ql-editor {
+
+  line-height: 1.8;
+
+  &:focus {
+    outline: none;
+  }
+  p {
+    margin: 0.75em 0;
+  }
+
+}
+.single-line .ql-editor {
+  line-height: 1.3;
+  padding: 6px 15px;
+}
+.ql-clipboard { display: none; }
+
+
+.in-editor-actions, .note-actions {
+  z-index: 1000;
+  position: absolute;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: .5em;
+  box-shadow: rgba(0,0,0,.3) 2px 3px 5px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg) translateX(-50%);
+    background: #fff;
+    z-index: -1;
+  }
+
+}
+.note-actions, .new-note-actions {
+  .button { width: 100%; }
+}
+
+
+.notes-list-item, .list-item {
+
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+  color: #4a4a4a;
+  display: block;
+  padding: .75rem;
+  border: 1px solid transparent;
+
+  .content { font-size: 60% }
+  &.selected, &:hover, &:focus {
+    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px $info;
+    border-color: $info;
+  }
+  &:not(:last-child) {
+    margin-bottom: .75rem;
+  }
+}
+.list-subsection-title {
+  margin: 2em 0 1em 0;
+  font-weight: bold;
+}

@@ -3,6 +3,8 @@
 /* Uncomment to import the entire Bulma framework */
 @import '~bulma/bulma';
 
+@import '~bulma-steps';
+
 /* Import selected Bulma Sass
 /* Remove these if you import the entire Bulma framework above */
 
@@ -45,6 +47,7 @@
 
 @import "components/document.card";
 @import "components/navbar";
+@import "components/iiifviewer";
 
 // Objects – class-based selectors which define undecorated design patterns,
 // for example media object known from OOCSS
@@ -53,7 +56,7 @@
 //@import "objects/quill.lettres";
 @import "objects/quill.core";
 @import "objects/quill.icons";
-//@import "objects/editor";
+@import "objects/editor";
 //@import "objects/error-page";
 // Components – specific UI components.
 // This is where majority of our work takes place
@@ -91,3 +94,5 @@
 @import "utilities/modifiers";
 
 */
+
+@import "utilities/spacing";

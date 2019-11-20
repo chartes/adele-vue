@@ -1,5 +1,7 @@
 import axios from 'axios';
 import Quill from '../../../modules/quill/AdeleQuill';
+import {http} from '../../../modules/http-common';
+
 import TEItoQuill, {
   insertNotes, computeNotesPointers, TEIToQuill,
   insertSegments, stripSegments, quillToTEI, convertLinebreakTEIToQuill, insertNotesAndSegments,
@@ -14,19 +16,19 @@ let notesShadowQuill;
 
 const state = {
   translationLoading: true,
-  translation: false,
-  translationContent: false,
-  translationWithNotes: false,
+  translation: null,
+  translationContent: null,
+  translationWithNotes: null,
   translationSaved: true,
-  translationError: false,
+  translationError: null,
   translationAlignments: [],
-  referenceTranslation: false
+  referenceTranslation: null
 };
 
 const mutations = {
 
   INIT(state, payload) {
-    if (!state.shadowQuill) {
+    //if (!state.shadowQuill) {
       translationShadowQuillElement.innerHTML = payload.content;
       translationShadowQuill = new Quill(translationShadowQuillElement);
       state.translationContent = translationShadowQuillElement.children[0].innerHTML;
@@ -36,15 +38,15 @@ const mutations = {
       notesShadowQuill = new Quill(notesShadowQuillElement);
       state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
 
-    }
+    //}
   },
   RESET (state) {
     console.log("STORE MUTATION translation/RESET")
-    state.translation = false;
+    state.translation = null;
     state.translationAlignments = [];
-    state.translationContent = false;
-    state.translationWithNotes = false;
-    state.translationWithSpeechparts = false;
+    state.translationContent = null;
+    state.translationWithNotes = null;
+    state.translationWithSpeechparts = null;
 
     if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
     if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";
@@ -130,6 +132,31 @@ const actions = {
       commit('UPDATE', data);
     });
 
+  },
+  fetchTranslationFromUser ({commit, state, rootState}, {docId, userId}) {
+    commit('RESET')
+    return http.get(`documents/${docId}/translations/from-user/${userId}`).then( response => {
+      commit('LOADING_STATUS', true);
+
+      let translation = response.data.data;
+      const alignments = rootState.transcription.transcriptionAlignments;
+
+      let quillContent = TEIToQuill(translation.content);
+      let content = insertSegments(quillContent, alignments, 'translation');
+      const withNotes = content
+        // TODO Remettre
+        //insertNotesAndSegments(quillContent, translation.notes, alignments, 'translation');
+
+      const data = {
+        translation: translation,
+        content: convertLinebreakTEIToQuill(content),
+        withNotes: convertLinebreakTEIToQuill(withNotes),
+      }
+
+      commit('INIT', data);
+      commit('UPDATE', data);
+      commit('LOADING_STATUS', false);
+    })
   },
   fetchReference ({commit}, {doc_id}) {
 

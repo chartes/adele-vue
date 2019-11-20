@@ -14,7 +14,7 @@ import { mapState, mapGetters } from 'vuex';
 import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
 
 export default {
-    name: "DocumentEditionTranscription",
+    name: "DocumentEditionFacsimile",
     components: {
         TranscriptionEditor
     },

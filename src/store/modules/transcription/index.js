@@ -31,15 +31,15 @@ let facsimileShadowQuill;
 const state = {
 
   transcriptionLoading: true,
-  transcription: false,
-  transcriptionContent: false,
-  transcriptionWithNotes: false,
-  transcriptionWithSpeechparts: false,
-  transcriptionWithFacsimile: false,
+  transcription: null,
+  transcriptionContent: null,
+  transcriptionWithNotes: null,
+  transcriptionWithSpeechparts: null,
+  transcriptionWithFacsimile: null,
   transcriptionSaved: true,
-  transcriptionError: false,
+  transcriptionError: null,
   transcriptionAlignments: [],
-  referenceTranscription: false,
+  referenceTranscription: null,
   savingStatus: 'uptodate'
 
 };
@@ -53,12 +53,12 @@ const mutations = {
       transcriptionShadowQuillElement.innerHTML = payload.content || "";
       transcriptionShadowQuill = new Quill(transcriptionShadowQuillElement);
       state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
-      console.log("INIT with content", state.transcriptionContent);
+      //console.log("INIT with content", state.transcriptionContent);
 
       notesShadowQuillElement.innerHTML = payload.withNotes || "";
       notesShadowQuill = new Quill(notesShadowQuillElement);
       state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
-      console.log("INIT with notes", state.transcriptionWithNotes);
+      //console.log("INIT with notes", state.transcriptionWithNotes);
 
       speechpartsShadowQuillElement.innerHTML = payload.withSpeechparts || "";
       speechpartsShadowQuill = new Quill(speechpartsShadowQuillElement);
@@ -73,12 +73,12 @@ const mutations = {
   RESET(state) {
 
     console.log("STORE MUTATION transcription/RESET");
-    state.transcription = false;
+    state.transcription = null;
     state.transcriptionAlignments = [];
-    state.transcriptionContent = false;
-    state.transcriptionWithNotes = false;
-    state.transcriptionWithSpeechparts = false;
-    state.transcriptionWithFacsimile = false;
+    state.transcriptionContent = null;
+    state.transcriptionWithNotes = null;
+    state.transcriptionWithSpeechparts = null;
+    state.transcriptionWithFacsimile = null;
 
     
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
@@ -177,8 +177,9 @@ const actions = {
 
   },
   fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
+    commit('RESET')
     return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
-      commit('LOADING_STATUS', false);
+      commit('LOADING_STATUS', true);
 
       let transcription = response.data.data;
 
@@ -197,6 +198,8 @@ const actions = {
 
       commit('INIT', data);
       commit('UPDATE', data);
+      commit('LOADING_STATUS', false);
+
     })
   },
   fetchAlignments ({commit}, {doc_id, user_id}) {

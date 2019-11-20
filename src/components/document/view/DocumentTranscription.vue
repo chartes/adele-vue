@@ -28,7 +28,7 @@ export default {
       
     },
     methods: {
-      
+ 
     }
 }
 </script>

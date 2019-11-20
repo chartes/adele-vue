@@ -45,9 +45,11 @@ const actions = {
 
   fetch ({ commit }, {id}) {
     commit('LOADING_STATUS', true);
+    console.log("fetching doc")
     return http.get(`documents/${id}`).then( (response) => {
       commit('UPDATE_DOCUMENT', response.data.data)
       commit('RESET_TRANSCRIPTION_VIEW')
+      console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
@@ -55,12 +57,13 @@ const actions = {
   },
   fetchTranscriptionView ({ commit }, {id}) {
     commit('LOADING_STATUS', true);
+    console.log("fetching  tr")
     return http.get(`documents/${id}/view/transcription`).then( (response) => {
-      console.log(response.data.data)
       commit('UPDATE_TRANSCRIPTION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
+      console.log("tr ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
