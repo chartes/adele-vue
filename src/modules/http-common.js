@@ -16,13 +16,7 @@ export const http = axios.create({
 });
 
 function http_with_csrf_token() {
-  return http; /*axios.create({
-    baseURL: _baseApiURL,
-    headers: {
-     'X-CSRF-Token': getCookie('csrf_access_token'),
-    }
-  });
-  */
+  return http; 
 }
 
 

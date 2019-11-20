@@ -35,14 +35,17 @@
               </li>
             </ul>
           </div>
-          <div class="container">
+          <div
+            v-if="!!document"
+            class="container"
+          >
             <document-edition-notice
               v-if="$attrs.section === 'notice'"
               :document="document"
             />
             <document-edition-transcription
               v-if="$attrs.section === 'transcription'"
-              :readonly-data="transcriptionView"
+              :document="document"
             />
             <document-edition-commentaries
               v-if="$attrs.section === 'commentaries'"
@@ -93,22 +96,14 @@ export default {
     computed: {
         ...mapState('document', ['document', 'loading', 'transcriptionView'])
     },
-    created() {
-      this.fetchOne()
-      this.fetchTranscriptionView()
+    async created() {
+      await this.fetchOne()
     },
     methods: {
       fetchOne() {
         this.$store.dispatch('document/fetch', {
           id: this.$attrs.docId
-        }).then(r => {
-        });
-      },
-      fetchTranscriptionView() {
-        this.$store.dispatch('document/fetchTranscriptionView', {
-          id: this.$attrs.docId
-        }).then(r => {
-        });
+        })
       }
     }
 }

@@ -4,7 +4,10 @@
       <div class="columns">
         <div class="column is-two-fifths">
           column 1
-          <router-link :to="{name: 'document-edition', params:{docId: $attrs.docId}}">
+          <router-link
+            v-if="loggedIn"
+            :to="{name: 'document-edition', params:{docId: $attrs.docId}}"
+          >
             <div class="button">
               Modifier le dossier
             </div>
@@ -61,7 +64,7 @@
 
 <script>
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
@@ -79,24 +82,23 @@ export default {
     props: {
     },
     computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView'])
+        ...mapState('document', ['document', 'loading', 'transcriptionView']),
+        ...mapGetters('user', ['loggedIn'])
     },
-    created() {
-      this.fetchOne()
-      this.fetchTranscriptionView()
+    async created() {
+      await this.fetchOne()
+      await this.fetchTranscriptionView()
     },
     methods: {
       fetchOne() {
         this.$store.dispatch('document/fetch', {
           id: this.$attrs.docId
-        }).then(r => {
-        });
+        })
       },
       fetchTranscriptionView() {
         this.$store.dispatch('document/fetchTranscriptionView', {
           id: this.$attrs.docId
-        }).then(r => {
-        });
+        })
       }
     }
 }

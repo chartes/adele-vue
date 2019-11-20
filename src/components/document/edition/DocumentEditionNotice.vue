@@ -82,6 +82,7 @@ export default {
     },
     computed: {
         ...mapState('document', ['loading']),
+        //...mapState('user', ['currentUser']),
     },
     created() {
        

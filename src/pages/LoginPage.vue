@@ -15,7 +15,7 @@
       </label>
       <input
         v-model="email"
-        type="email"
+        
         name="email"
         value
       >

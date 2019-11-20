@@ -4,6 +4,7 @@ import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
 import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
+import LoginPage from "@/pages/LoginPage.vue"
 
 /*
 import LoginPage from "@/pages/LoginPage.vue"
@@ -22,7 +23,7 @@ export default new VueRouter({
     {
       path: '/',
       component: LandingPage,
-      name: 'landing'
+      name: 'home'
     },
     {
       path: '/documents',
@@ -45,6 +46,11 @@ export default new VueRouter({
       name: 'document-edition',
       props: true
     },
+    {
+      path: '/login',
+      component: LoginPage,
+      name: 'login'
+    }
      /*
     {
       path: '/register',

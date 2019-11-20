@@ -1,5 +1,6 @@
 <template>
   <div>
+    <nav-bar />
     <slot />
   </div>
 </template>
@@ -7,17 +8,19 @@
 <script>
 
 import {mapState} from 'vuex'
- 
+import NavBar from '@/components/NavBar.vue'
 
 export default {
     name: "LayoutDefault",
+    components: {
+      NavBar
+    },
     data() {
       return {
-        current_user: null
       }
     },
     computed: {
-      //...mapState("user", ["current_user"])
+      ...mapState("user", ["currentUser"])
     },
 
     created() {

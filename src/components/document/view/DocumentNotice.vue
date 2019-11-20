@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="document">
     <h1 class="title">
       {{ document.title }}
     </h1>

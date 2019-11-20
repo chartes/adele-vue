@@ -21,15 +21,21 @@ const mutations = {
       notes
     };
   },
+  RESET_TRANSCRIPTION_VIEW(state) {
+    state.transcriptionView = null;
+  },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
   },
+
+  /*
   PARTIAL_UPDATE_DOCUMENT(state, payload) {
     state.document =  {
       ...state.document,
       ...payload
     };
   },
+  */
   LOADING_STATUS (state, payload) {
     state.loading = payload;
   },
@@ -41,6 +47,7 @@ const actions = {
     commit('LOADING_STATUS', true);
     return http.get(`documents/${id}`).then( (response) => {
       commit('UPDATE_DOCUMENT', response.data.data)
+      commit('RESET_TRANSCRIPTION_VIEW')
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
