@@ -58,14 +58,30 @@
               v-if="$attrs.section === 'notice'"
               :document="document"
             />
-            <document-edition-transcription
-              v-if="$attrs.section === 'transcription'"
-              :transcription-with-notes="transcriptionWithNotes"
-            />
-            <document-edition-translation
-              v-if="$attrs.section === 'translation'"
-              :translation-with-notes="translationWithNotes"
-            />
+            <div v-if="$attrs.section === 'transcription'">
+              <message
+                v-if="transcriptionError"
+                message-class="is-danger"
+              >
+                {{ transcriptionError }}
+              </message>
+              <document-edition-transcription
+                v-else
+                :transcription-with-notes="transcriptionWithNotes"
+              />
+            </div>
+            <div v-if="$attrs.section === 'translation'">
+              <message
+                v-if="translationError"
+                message-class="is-danger"
+              >
+                {{ translationError }}
+              </message>
+              <document-edition-translation
+                v-else
+                :translation-with-notes="translationWithNotes"
+              />
+            </div>
             <document-edition-facsimile
               v-if="$attrs.section === 'facsimile'"
               :transcription-with-notes="transcriptionWithNotes"
@@ -104,6 +120,7 @@ import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts
 import IIIFViewer from '../components/IIIFViewer.vue'
 import WorkflowSteps from '../components/WorkflowSteps.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
+import Message from '../components/Message.vue'
 
 export default {
     name: "DocumentEditionPage",
@@ -119,7 +136,8 @@ export default {
         DocumentEditionSpeechParts,
 
         IIIFViewer,
-        WorkflowSteps
+        WorkflowSteps,
+        Message
 
         /*
         DocumentNotice,
@@ -130,6 +148,12 @@ export default {
     },
     props: {
     },
+    data() {
+      return {
+        transcriptionError: null,
+        translationError: null
+      }
+    },
     computed: {
         ...mapState('document', ['document', 'loading']),
         ...mapState('workflow', ['selectedUserId']),
@@ -138,14 +162,12 @@ export default {
     },
     watch:{
       selectedUserId() {
-        this.fetchTranscriptionContent()
-        this.fetchTranslationContent()
+        this.fetchContentFromUser()
       }
     },
     async created() {
       await this.fetchOne()
-      this.fetchTranscriptionContent()
-      this.fetchTranslationContent()
+      this.fetchContentFromUser()
       //eventually watch for a 'section' change to refetch data from server
     },
     methods: {
@@ -165,6 +187,21 @@ export default {
           docId: this.document.id,
           userId: this.selectedUserId
         })
+      },
+      async fetchContentFromUser(){
+        try {
+          this.transcriptionError = null
+          await this.fetchTranscriptionContent()
+        } catch (error) {
+          this.transcriptionError = error
+        }
+
+        try {
+          this.translationError = null
+          await this.fetchTranslationContent()
+        } catch (error) {
+          this.translationError = error
+        }
       }
     }
 }
