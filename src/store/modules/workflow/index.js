@@ -19,7 +19,11 @@ const actions = {
 };
 
 const getters = {
-  
+  userFromIdWithinCurrentDocumentWhitelist: ({state, rootState}) => {
+    return rootState.document.document.whitelist.users.filter(u => {
+        u.id === state.selectedUserId
+    })[0]
+  }
 };
 
 const workflowModule = {

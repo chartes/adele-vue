@@ -156,6 +156,9 @@ const actions = {
       commit('INIT', data);
       commit('UPDATE', data);
       commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
     })
   },
   fetchReference ({commit}, {doc_id}) {

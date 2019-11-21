@@ -59,7 +59,7 @@
             </router-link>
             <span
               v-else
-              class="button is-primary"
+              class="button is-light"
               @click="logout"
             >
               Se déconnecter

@@ -200,6 +200,9 @@ const actions = {
       commit('UPDATE', data);
       commit('LOADING_STATUS', false);
 
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
     })
   },
   fetchAlignments ({commit}, {doc_id, user_id}) {

@@ -13,7 +13,7 @@
         </span> 
         <!-- Select workflow user -->
         <div
-          v-if="currentUser.roles.indexOf('teacher') >- 1"
+          v-if="currentUserIsTeacher"
           class="select is-small"
         >
           <select v-model="workflowUserId">
@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 export default {
     name: 'WorkflowSteps',
     components: {
@@ -180,6 +180,8 @@ export default {
     computed: {
         ...mapState('user', ['currentUser']),
         ...mapState('workflow', ['selectedUserId']),
+        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+
         workflowUserId: {
             set(id) {
                 this.$store.dispatch("workflow/changeSelectedUser", {userId: id})
@@ -198,13 +200,12 @@ export default {
         },
         documentOwner() {
             const owner = this.document.whitelist.users.filter(u => u.id === this.document.user_id)[0]
-            console.log(this.document.whitelist.users)
-            console.log(this.document.user_id)
             return {
                 username: `${owner.first_name} ${owner.last_name}`,
                 id: owner.id
             }
         },
+        /* TODO: stocker ces informations côté store dans des getters */
         isTranscriptionValidated() {
             return this.document.validation_step >= 1
         },

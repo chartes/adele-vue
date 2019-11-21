@@ -61,10 +61,17 @@
             />
             <!-- Transcription -->
             <div v-if="$attrs.section === 'transcription'">
-              <document-transcription
-                v-if="isTranscriptionReadonly"
-                :readonly-data="transcriptionView"
-              />
+              <div v-if="isTranscriptionReadonly && transcriptionError === null">
+                <message
+                  v-if="document.validation_step >= 1"
+                  message-class="is-info is-small"
+                >
+                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
+</message>
+                <document-transcription
+                  :readonly-data="transcriptionView"
+                />
+              </div>
               <message
                 v-else-if="transcriptionError"
                 message-class="is-danger"
@@ -113,7 +120,8 @@
 
 <script>
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex'
+
 import DocumentEditionNotice from '../components/document/edition/DocumentEditionNotice.vue'
 import DocumentEditionTranscription from '../components/document/edition/DocumentEditionTranscription.vue'
 import DocumentEditionTranslation from '../components/document/edition/DocumentEditionTranslation.vue'
@@ -173,6 +181,8 @@ export default {
         ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
         ...mapState('user', ['currentUser']),
 
+        ...mapGetters('user', ['currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
+
         isTranscriptionReadonly() {
           // should be avoidable with guard routing 
           if (this.currentUser === null) {
@@ -180,27 +190,16 @@ export default {
           }
 
           // admin
-          if (this.currentUser.roles.indexOf('admin') > -1) {
+          if (this.currentUserIsAdmin) {
             return false
-          }
-
-          //student
-          if (this.currentUser.roles.indexOf('teacher') === -1) {
-            if (this.document.is_closed) {
-              return true
-            }
-            else {
-              return this.document.validation_step >= 1
-            }
-          }
-
-          // other teacher 
-          if (this.document.user_id !== this.currentUser.id) {
-            return true
           } 
+          // teacher
+          if (this.currentUserIsTeacher) {
+             return this.currentUser.id !== this.selectedUserId
+          }
+          
+          return this.document.validation_step >= 1
 
-
-          return false
         }
     },
     watch:{
@@ -220,14 +219,18 @@ export default {
         })
       },
       fetchTranscriptionContent() {
-        if (!this.isTranscriptionReadonly) {
+        if (this.isTranscriptionReadonly) {
+          let params = {
+            id: this.document.id
+          }
+          if (!this.currentUserIsStudent) {
+            params.userId = this.selectedUserId 
+          }
+          return this.$store.dispatch('document/fetchTranscriptionView', params)
+        } else {
           return this.$store.dispatch('transcription/fetchTranscriptionFromUser', {
             docId: this.document.id,
             userId: this.selectedUserId
-          })
-        } else {
-          return this.$store.dispatch('document/fetchTranscriptionView', {
-            id: this.document.id
           })
         }
       },

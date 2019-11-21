@@ -49,26 +49,21 @@ export default {
         document: {type: Object, default: null}
     },
     computed: {
-        ...mapGetters('user', ['loggedIn']),
+        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapState('user', ['currentUser']),
 
         isInEditionMode() {
           return this.$route.name.indexOf('edition') > -1
         },
         documentCanBeModified() {
-          // already in edition mode
-          if (this.isInEditionMode) {
-            return false
-          }
-
           // admin
-          if (this.currentUser.roles.indexOf('admin') > -1) {
+          if (this.currentUserIsAdmin) {
             return true
           }
           // student
-          if (this.currentUser.roles.indexOf('teacher') === -1) {
+          if (this.currentUserIsStudent) {
             return !this.document.is_closed
-            // TODO: take the validation step in count too
+            // TODO: take the validation step in count too (like: if it reached the max step then it is like closed ?)
           } 
           // else, deny to different teachers
           if (this.currentUser.id !== this.document.user_id) {

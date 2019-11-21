@@ -53,12 +53,13 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
+      throw error
     })
   },
-  fetchTranscriptionView ({ commit }, {id}) {
+  fetchTranscriptionView ({ commit }, {id, userId}) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tr")
-    return http.get(`documents/${id}/view/transcription`).then( (response) => {
+    return http.get(`documents/${id}/view/transcription${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSCRIPTION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
@@ -67,6 +68,7 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
+      throw error
     })
   },
   fetchAll ({ commit }, {pageId, pageSize, filters}) {
@@ -77,6 +79,7 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
+      throw error
     })
   },
   /*

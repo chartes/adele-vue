@@ -52,6 +52,20 @@ const actions = {
 const getters = {
   loggedIn(state) {
     return !!state.currentUser
+  },
+  currentUserIsAdmin(state) {
+    return state.currentUser.roles.indexOf('admin') > -1
+  },
+  currentUserIsTeacher(state) {
+    return state.currentUser.roles.indexOf('teacher') > -1
+  },
+  currentUserIsStudent(state) {
+    return state.currentUser.roles.indexOf('student') > -1 && state.currentUser.roles.indexOf('teacher') == -1
+  },
+  userFromWhitelist: (state) => (whitelist, userId) => {
+    return whitelist.users.filter(u => {
+        return u.id === userId
+    })[0]
   }
 };
 
