@@ -1,36 +1,78 @@
 <template>
-
-    <modal-form
-            :title="title"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            :valid="textLength > 1"
-            :submittin="null"
-    >
-        <div class="NoteForm">
-            <form @submit.prevent="">
-                <field-select :label="'Type'" :options="noteTypes" :onChange="onSelectChange"/>
-                <div class="field">
-                    <p class="control">
-                        <label class="label">Contenu</label>
-                    <div class="editor-area">
-                        <div class="editor-controls" ref="controls">
-                            <editor-button :selected="buttons.bold" :active="editorHasFocus" :callback="simpleFormat" :format="'bold'"/>
-                            <editor-button :selected="buttons.italic" :active="editorHasFocus" :callback="simpleFormat" :format="'italic'"/>
-                            <editor-button :selected="buttons.superscript" :active="editorHasFocus" :callback="simpleFormat" :format="'superscript'"/>
-                            <editor-button :selected="buttons.smallcaps" :active="editorHasFocus" :callback="simpleFormat" :format="'smallcaps'"/>
-                            <editor-button :selected="buttons.underline" :active="editorHasFocus" :callback="simpleFormat" :format="'underline'"/>
-                            <editor-button :selected="buttons.del" :active="editorHasFocus" :callback="simpleFormat" :format="'del'"/>
-                        </div>
-                        <div class="quill-editor" ref="editor" spellcheck="false"/>
-                    </div>
-                    </p>
-                </div>
-                <loading-indicator :active="loading" :full-page="true"/>
-            </form>
+  <modal-form
+    :title="title"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :valid="textLength > 1"
+    :submittin="null"
+  >
+    <div class="NoteForm">
+      <form @submit.prevent="">
+        <field-select
+          :label="'Type'"
+          :options="noteTypes"
+          :on-change="onSelectChange"
+        />
+        <div class="field">
+          <p class="control">
+            <label class="label">Contenu</label>
+          </p>
+          <div class="editor-area">
+            <div
+              ref="controls"
+              class="editor-controls"
+            >
+              <editor-button
+                :selected="buttons.bold"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'bold'"
+              />
+              <editor-button
+                :selected="buttons.italic"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'italic'"
+              />
+              <editor-button
+                :selected="buttons.superscript"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'superscript'"
+              />
+              <editor-button
+                :selected="buttons.smallcaps"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'smallcaps'"
+              />
+              <editor-button
+                :selected="buttons.underline"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'underline'"
+              />
+              <editor-button
+                :selected="buttons.del"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'del'"
+              />
+            </div>
+            <div
+              ref="editor"
+              class="quill-editor"
+              spellcheck="false"
+            />
+          </div>
         </div>
-    </modal-form>
-
+        <loading-indicator
+          :active="loading"
+          :full-page="true"
+        />
+      </form>
+    </div>
+  </modal-form>
 </template>
 
 <script>
@@ -44,14 +86,14 @@
   import LoadingIndicator from '../ui/LoadingIndicator';
 
   export default {
-    name: "note-form",
-    mixins: [EditorMixins],
+    name: "NoteForm",
     components: {
       LoadingIndicator,
       EditorButton,
       FieldSelect,
       ModalForm
     },
+    mixins: [EditorMixins],
     props: ['title', 'noteId', 'note', 'cancel', 'submit'],
     data() {
       return {
@@ -70,7 +112,7 @@
       }
     },
     mounted () {
-      this.$refs.editor.innerHTML = !!this.$props.note ? this.$props.note.content : '';
+      this.$refs.editor.innerHTML = this.$props.note ? this.$props.note.content : '';
       this.editor = getNewQuill(this.$refs.editor);
       this.editor.on('selection-change', this.onSelection);
       this.editor.on('selection-change', this.onFocus);

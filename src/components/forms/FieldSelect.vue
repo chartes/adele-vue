@@ -1,26 +1,32 @@
 <template>
-    <div class="field">
-        <p class="control">
-            <label class="label">{{ label }}</label>
-            <span class="select" :class="isLoading">
-                <select v-model="val" @change="onChange(val)">
-                    <option
-                            v-if="hasOptions"
-                            v-for="opt, index in options"
-                            :key="opt.id"
-                            :value="opt.id"
-                            :selected="optionSelected(opt.id, index)"
-                            v-html="opt.label"
-                    ></option>
-                </select>
-            </span>
-        </p>
-    </div>
+  <div class="field">
+    <p class="control">
+      <label class="label">{{ label }}</label>
+      <span
+        class="select"
+        :class="isLoading"
+      >
+        <select
+          v-model="val"
+          @change="onChange(val)"
+        >
+          <option
+            v-for="opt, index in options"
+            v-if="hasOptions"
+            :key="opt.id"
+            :value="opt.id"
+            :selected="optionSelected(opt.id, index)"
+            v-html="opt.label"
+          />
+        </select>
+      </span>
+    </p>
+  </div>
 </template>
 
 <script>
   export default {
-    name: "field-select",
+    name: "FieldSelect",
     props: {
       options: {
         type: Array
@@ -38,20 +44,7 @@
     },
     data() {
       return {
-        val: this.$props.selected || this.$props.options[0].id
-      }
-    },
-    mounted(){
-      this.onChange(this.val);
-    },
-    methods: {
-      optionSelected (optId) {
-        return optId === this.selected;
-      }
-    },
-    watch: {
-      selected () {
-        this.val = this.$props.selected
+        val: this.$props.selected || this.$props.options[0].id
       }
     },
     computed: {
@@ -61,6 +54,19 @@
       isLoading () {
         return !(this.options && this.options.length > 0) ? 'is-loading': false;
       },
+    },
+    watch: {
+      selected () {
+        this.val = this.$props.selected
+      }
+    },
+    mounted(){
+      this.onChange(this.val);
+    },
+    methods: {
+      optionSelected (optId) {
+        return optId === this.selected;
+      }
     }
   }
 </script>

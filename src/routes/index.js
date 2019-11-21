@@ -16,7 +16,7 @@ Vue.use(VueRouter)
 
 const rootUrl = `${process.env.VUE_APP_APP_ROOT_URL}`
 
-export default new VueRouter({
+const router = new VueRouter({
   base: rootUrl,
   mode: 'history',
   routes: [
@@ -51,24 +51,8 @@ export default new VueRouter({
       component: LoginPage,
       name: 'login'
     }
-     /*
-    {
-      path: '/register',
-      component: RegisterPage,
-      name: 'register'
-    },
-    {
-      path: '/login',
-      component: LoginPage,
-      name: 'login'
-    },
-   
-    {
-      path: '/documents/:docId',
-      component: DocumentPage,
-      name: 'document',
-      props: true
-    },
-    */
   ]
 })
+
+
+export default router;

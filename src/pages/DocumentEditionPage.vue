@@ -30,7 +30,7 @@
               </li>
               <li :class="$attrs.section === 'translation' ? `is-active`: ''">
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
-                  Traduction
+                  Traduction et alignement
                 </router-link>
               </li>
               <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
@@ -67,7 +67,7 @@
                   message-class="is-info is-small"
                 >
                   Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
-</message>
+                </message>
                 <document-transcription
                   :readonly-data="transcriptionView"
                 />
@@ -168,6 +168,19 @@ export default {
     },
     props: {
     },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        if (!vm.loggedIn) {
+          if (to.name === 'document-edition') {
+            next({name: 'document-view'})
+          } else {
+            next({name: 'login'})
+          }
+        } else {
+          next()
+        }
+      })
+    },
     data() {
       return {
         transcriptionError: null,
@@ -181,7 +194,7 @@ export default {
         ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
         ...mapState('user', ['currentUser']),
 
-        ...mapGetters('user', ['currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
+        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
 
         isTranscriptionReadonly() {
           // should be avoidable with guard routing 
@@ -220,10 +233,13 @@ export default {
       },
       fetchTranscriptionContent() {
         if (this.isTranscriptionReadonly) {
+          // when in readonly mode
+          // students see the reference content
           let params = {
             id: this.document.id
           }
-          if (!this.currentUserIsStudent) {
+          // teacher and admins can see other ppl readonly views
+          if (this.currentUserIsTeacher) {
             params.userId = this.selectedUserId 
           }
           return this.$store.dispatch('document/fetchTranscriptionView', params)
