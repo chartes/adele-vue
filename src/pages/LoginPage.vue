@@ -1,10 +1,10 @@
 <template>
   <div>
     <div
-      v-if="current_user"
+      v-if="currentUser"
       class="welcome"
     >
-      Bienvenue {{ current_user.username }}
+      Bienvenue {{ currentUser.username }}
     </div>
     <form
       v-else
@@ -56,11 +56,11 @@ export default {
         }
     },
     computed: {
-      ...mapState("user", ["current_user"])
+      ...mapState("user", ["currentUser"])
     },
     methods: {
         login () {
-          this.$store
+          return this.$store
             .dispatch('user/login', {
               email: this.email,
               password: this.password

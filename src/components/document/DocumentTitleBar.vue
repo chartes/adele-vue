@@ -5,9 +5,9 @@
         <span class="tag  is-size-4">
           Document {{ document.id }}
         </span>
-        <div v-if="loggedIn">
+        <div v-if="loggedIn && documentCanBeModified">
           <router-link
-            v-if="$route.name.indexOf('edition') === -1"
+            v-if="!isInEditionMode"
             :to="{name: 'document-edition', params:{docId: document.id, section:'notice'}}"
           >
             <div class="tag button is-primary is-size-4">
@@ -49,7 +49,34 @@ export default {
         document: {type: Object, default: null}
     },
     computed: {
-        ...mapGetters('user', ['loggedIn'])
+        ...mapGetters('user', ['loggedIn']),
+        ...mapState('user', ['currentUser']),
+
+        isInEditionMode() {
+          return this.$route.name.indexOf('edition') > -1
+        },
+        documentCanBeModified() {
+          // already in edition mode
+          if (this.isInEditionMode) {
+            return false
+          }
+
+          // admin
+          if (this.currentUser.roles.indexOf('admin') > -1) {
+            return true
+          }
+          // student
+          if (this.currentUser.roles.indexOf('teacher') === -1) {
+            return !this.document.is_closed
+            // TODO: take the validation step in count too
+          } 
+          // else, deny to different teachers
+          if (this.currentUser.id !== this.document.user_id) {
+            return false
+          } 
+
+          return true
+        }
     }
 }
 </script>

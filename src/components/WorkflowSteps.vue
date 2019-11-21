@@ -11,7 +11,11 @@
         <span class="m-r-sm  is-size-5">
           Édité par
         </span> 
-        <div class="select is-small">
+        <!-- Select workflow user -->
+        <div
+          v-if="currentUser.roles.indexOf('teacher') >- 1"
+          class="select is-small"
+        >
           <select v-model="workflowUserId">
             <option
               v-for="user in whitelistUsers"
@@ -22,6 +26,18 @@
             </option>
           </select>
         </div>
+        <span
+          v-else-if="document.is_closed"
+          class="m-r-sm is-size-5"
+        >
+          {{ documentOwner.username }}
+        </span> 
+        <span
+          v-else
+          class="m-r-sm is-size-5"
+        >
+          {{ currentUser.username }}
+        </span> 
       </div>
       <div class="tile steps">
         <div
@@ -179,6 +195,15 @@ export default {
                     id: u.id
                 }
             })
+        },
+        documentOwner() {
+            const owner = this.document.whitelist.users.filter(u => u.id === this.document.user_id)[0]
+            console.log(this.document.whitelist.users)
+            console.log(this.document.user_id)
+            return {
+                username: `${owner.first_name} ${owner.last_name}`,
+                id: owner.id
+            }
         },
         isTranscriptionValidated() {
             return this.document.validation_step >= 1

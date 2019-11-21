@@ -54,13 +54,19 @@
             v-if="!!document"
             class="container"
           >
+            <!-- Notice -->
             <document-edition-notice
               v-if="$attrs.section === 'notice'"
               :document="document"
             />
+            <!-- Transcription -->
             <div v-if="$attrs.section === 'transcription'">
+              <document-transcription
+                v-if="isTranscriptionReadonly"
+                :readonly-data="transcriptionView"
+              />
               <message
-                v-if="transcriptionError"
+                v-else-if="transcriptionError"
                 message-class="is-danger"
               >
                 {{ transcriptionError }}
@@ -70,6 +76,7 @@
                 :transcription-with-notes="transcriptionWithNotes"
               />
             </div>
+            <!-- Translation -->
             <div v-if="$attrs.section === 'translation'">
               <message
                 v-if="translationError"
@@ -82,14 +89,17 @@
                 :translation-with-notes="translationWithNotes"
               />
             </div>
+            <!-- Facsimilé -->
             <document-edition-facsimile
               v-if="$attrs.section === 'facsimile'"
               :transcription-with-notes="transcriptionWithNotes"
             />
+            <!-- Commentaires -->
             <document-edition-commentaries
               v-if="$attrs.section === 'commentaries'"
               :document="document"
             />
+            <!-- Parties du discours -->
             <document-edition-speech-parts
               v-if="$attrs.section === 'speech-parts'"
               :document="document"
@@ -135,6 +145,8 @@ export default {
         DocumentEditionCommentaries,
         DocumentEditionSpeechParts,
 
+        DocumentTranscription,
+
         IIIFViewer,
         WorkflowSteps,
         Message
@@ -155,10 +167,30 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document', 'loading']),
+        ...mapState('document', ['document', 'loading', 'transcriptionView']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading']),
         ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
+        ...mapState('user', ['currentUser']),
+
+        isTranscriptionReadonly() {
+          // should be avoidable with guard routing 
+          if (this.currentUser === null) {
+            return true
+          }
+
+          if (this.currentUser.roles.indexOf('admin') > -1) {
+            return false
+          } else if (this.document.validation_step > 1 && this.currentUser.roles.indexOf('teacher') > -1 && this.document.user_id === this.currentUser.id) {
+            return false
+          } 
+
+          if (this.document.is_closed) {
+            return true
+          }
+
+          return false
+        }
     },
     watch:{
       selectedUserId() {
@@ -177,10 +209,16 @@ export default {
         })
       },
       fetchTranscriptionContent() {
-        return this.$store.dispatch('transcription/fetchTranscriptionFromUser', {
-          docId: this.document.id,
-          userId: this.selectedUserId
-        })
+        if (!this.isTranscriptionReadonly) {
+          return this.$store.dispatch('transcription/fetchTranscriptionFromUser', {
+            docId: this.document.id,
+            userId: this.selectedUserId
+          })
+        } else {
+          return this.$store.dispatch('document/fetchTranscriptionView', {
+            id: this.document.id
+          })
+        }
       },
       fetchTranslationContent() {
         return this.$store.dispatch('translation/fetchTranslationFromUser', {

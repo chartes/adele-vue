@@ -43,6 +43,12 @@
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
+            <span
+              v-if="loggedIn"
+              class="button is-light is-uppercase is-info m-r-sm"
+            >
+              {{ currentUser.username }}
+            </span>
             <router-link
               v-if="!loggedIn"
               :to="{name: 'login'}"
@@ -53,7 +59,7 @@
             </router-link>
             <span
               v-else
-              class="button is-light"
+              class="button is-primary"
               @click="logout"
             >
               Se déconnecter
