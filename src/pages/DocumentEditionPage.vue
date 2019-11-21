@@ -179,15 +179,26 @@ export default {
             return true
           }
 
+          // admin
           if (this.currentUser.roles.indexOf('admin') > -1) {
             return false
-          } else if (this.document.validation_step > 1 && this.currentUser.roles.indexOf('teacher') > -1 && this.document.user_id === this.currentUser.id) {
-            return false
+          }
+
+          //student
+          if (this.currentUser.roles.indexOf('teacher') === -1) {
+            if (this.document.is_closed) {
+              return true
+            }
+            else {
+              return this.document.validation_step >= 1
+            }
+          }
+
+          // other teacher 
+          if (this.document.user_id !== this.currentUser.id) {
+            return true
           } 
 
-          if (this.document.is_closed) {
-            return true
-          }
 
           return false
         }
