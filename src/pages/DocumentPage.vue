@@ -43,10 +43,14 @@
               v-if="$attrs.section === 'notice'"
               :document="document"
             />
-            <document-transcription
-              v-if="$attrs.section === 'transcription'"
-              :readonly-data="transcriptionView"
-            />
+            <div v-if="$attrs.section === 'transcription'">
+              <document-transcription
+                :readonly-data="transcriptionView"
+              />
+              <document-translation
+                :readonly-data="translationView"
+              />
+            </div>
             <document-commentaries
               v-if="$attrs.section === 'commentaries'"
               :document="document"
@@ -67,6 +71,9 @@
 import { mapState, mapGetters } from 'vuex';
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
+import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
+import DocumentTranslationAlignment from '../components/document/view/DocumentTranslationAlignment.vue'
+
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
 import IIIFViewer from '../components/IIIFViewer.vue'
@@ -79,6 +86,8 @@ export default {
       DocumentTitleBar,
       DocumentNotice,
       DocumentTranscription,
+      DocumentTranslation,
+      //DocumentTranslationAlignment,
       DocumentCommentaries,
       DocumentSpeechParts,
       IIIFViewer
@@ -86,12 +95,13 @@ export default {
     props: {
     },
     computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView']),
+        ...mapState('document', ['document', 'loading', 'transcriptionView', 'translationView']),
         ...mapGetters('user', ['loggedIn'])
     },
     async created() {
       await this.fetchOne()
-      await this.fetchTranscriptionView()
+      this.fetchTranscriptionView()
+      this.fetchTranslationView()
     },
     methods: {
       fetchOne() {
@@ -101,6 +111,11 @@ export default {
       },
       fetchTranscriptionView() {
         return this.$store.dispatch('document/fetchTranscriptionView', {
+          id: this.$attrs.docId
+        })
+      },
+      fetchTranslationView() {
+        return this.$store.dispatch('document/fetchTranslationView', {
           id: this.$attrs.docId
         })
       }

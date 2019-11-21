@@ -114,18 +114,18 @@ const mutations = {
   },
   ADD_OPERATION (state, payload) {
 
-    console.log(`%c ADD_OPERATION`, 'color:red', payload);
+    //console.log(`%c ADD_OPERATION`, 'color:red', payload);
 
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
 
-    console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-    console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
+    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
+    //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
-    console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
+    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
   
     notesShadowQuill.updateContents(deltaFilteredForNotes);
     speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
@@ -137,7 +137,7 @@ const mutations = {
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
   
   
-    console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
+    //console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
 
   },
   SAVED (state) {

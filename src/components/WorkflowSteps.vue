@@ -181,6 +181,14 @@ export default {
         ...mapState('user', ['currentUser']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        
+        ...mapGetters('workflow', [
+          'isTranscriptionValidated',
+          'isTranslationValidated',
+          'isCommentariesValidated',
+          'isFacsimileValidated',
+          'isSpeechPartsValidated'
+          ]),
 
         workflowUserId: {
             set(id) {
@@ -205,22 +213,6 @@ export default {
                 id: owner.id
             }
         },
-        /* TODO: stocker ces informations côté store dans des getters */
-        isTranscriptionValidated() {
-            return this.document.validation_step >= 1
-        },
-        isTranslationValidated() {
-            return this.document.validation_step >= 2
-        },
-        isCommentariesValidated() {
-            return this.document.validation_step >= 3
-        },
-        isFacsimileValidated() {
-            return this.document.validation_step >= 4
-        },
-        isSpeechPartsValidated() {
-            return this.document.validation_step >= 5
-        }
     },
     watch: {
 

@@ -6,6 +6,7 @@ const state = {
   documents: [],
   
   transcriptionView: undefined,
+  translationView: undefined,
 
   loading: false,
 };
@@ -21,8 +22,17 @@ const mutations = {
       notes
     };
   },
+  UPDATE_TRANSLATION_VIEW (state, {content, notes}) {
+    state.translationView = {
+      content,
+      notes
+    };
+  },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
+  },
+  RESET_TRANSLATION_VIEW(state) {
+    state.translationView = null;
   },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
@@ -49,6 +59,7 @@ const actions = {
     return http.get(`documents/${id}`).then( (response) => {
       commit('UPDATE_DOCUMENT', response.data.data)
       commit('RESET_TRANSCRIPTION_VIEW')
+      commit('RESET_TRANSLATION_VIEW')
       console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -65,6 +76,21 @@ const actions = {
         notes: response.data.data["notes"]
       })
       console.log("tr ok")
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
+    })
+  },
+  fetchTranslationView ({ commit }, {id, userId}) {
+    commit('LOADING_STATUS', true);
+    console.log("fetching  tl")
+    return http.get(`documents/${id}/view/translation${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      commit('UPDATE_TRANSLATION_VIEW',  {
+        content: response.data.data["content"],
+        notes: response.data.data["notes"]
+      })
+      console.log("tl ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
