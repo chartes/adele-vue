@@ -5,11 +5,10 @@ import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
 import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
 import LoginPage from "@/pages/LoginPage.vue"
+import ErrorPage from "@/pages/ErrorPage.vue"
 
 /*
-import LoginPage from "@/pages/LoginPage.vue"
 import RegisterPage from "@/pages/RegisterPage.vue"
-import DocumentPage from "@/pages/DocumentPage.vue"
 */
 
 Vue.use(VueRouter)
@@ -50,6 +49,12 @@ const router = new VueRouter({
       path: '/login',
       component: LoginPage,
       name: 'login'
+    },
+    {
+      path: '/error',
+      component: ErrorPage,
+      name: 'error',
+      props: true
     }
   ]
 })

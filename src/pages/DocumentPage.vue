@@ -6,11 +6,49 @@
         :document="document"
       />
 
+      <!-- Visibility widget-->
+      <div class="m-b-sm">
+        <p class="is-size-6">
+          <span class="tag">
+            <visibility-toggle
+              class="m-r-md"
+              :action="toggleImageVisibility"
+              :visible="imageVisibility"
+            >
+              image
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="transcriptionView"
+              :action="toggleTranscriptionVisibility"
+              :visible="transcriptionVisibility"
+            >
+              transcription
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="translationView"
+              class="m-l-md"
+              :action="toggleTranslationVisibility"
+              :visible="translationVisibility"
+            >
+              traduction
+            </visibility-toggle>
+          </span>
+        </p>
+      </div>
+
       <div class="columns">
-        <div class="column is-two-fifths">
+        <div
+          v-show="imageVisibility"
+          class="column m-t-sm"
+          :class="`${imageVisibility ? 'is-two-fifths': ''}`"
+        >
           <i-i-i-f-viewer />
         </div>
-        <div class="column">
+        
+        <div
+          v-show="transcriptionVisibility || translationVisibility"
+          class="column"
+        >
           <div class="tabs">
             <ul>
               <li :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''">
@@ -18,9 +56,13 @@
                   Notice
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'transcription' ? `is-active`: ''">
+              <li
+                v-if="transcriptionView"
+                :class="$attrs.section === 'transcription' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'transcription'}}">
-                  Transcription et traduction
+                  <span v-if="translationView"> Transcription et traduction</span>
+                  <span v-else> Transcription </span>
                 </router-link>
               </li>
               <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
@@ -37,18 +79,27 @@
           </div>
           <div
             v-if="!!document"
-            class="container"
+            class=""
           >
             <document-notice
               v-if="$attrs.section === 'notice'"
               :document="document"
             />
-            <div v-if="$attrs.section === 'transcription'">
+            <div
+              v-if="$attrs.section === 'transcription'"
+              class="content"
+            >
               <document-transcription
+                v-if="transcriptionVisibility && !translationVisibility"
                 :readonly-data="transcriptionView"
               />
               <document-translation
+                v-if="!transcriptionVisibility && translationVisibility"
                 :readonly-data="translationView"
+              />
+              <document-transcription-alignment
+                v-if="transcriptionVisibility && translationVisibility"
+                :readonly-data="transcriptionAlignmentView"
               />
             </div>
             <document-commentaries
@@ -61,6 +112,11 @@
             />
           </div>
         </div>
+
+        <div 
+          v-show="!imageVisibility"
+          class="column is-one-quarter"
+        />
       </div>
     </div>
   </div>
@@ -72,12 +128,12 @@ import { mapState, mapGetters } from 'vuex';
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
-import DocumentTranslationAlignment from '../components/document/view/DocumentTranslationAlignment.vue'
+import DocumentTranscriptionAlignment from '../components/document/view/DocumentTranscriptionAlignment.vue'
 
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
 import IIIFViewer from '../components/IIIFViewer.vue'
-
+import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 
 export default {
@@ -87,21 +143,47 @@ export default {
       DocumentNotice,
       DocumentTranscription,
       DocumentTranslation,
-      //DocumentTranslationAlignment,
+      DocumentTranscriptionAlignment,
       DocumentCommentaries,
       DocumentSpeechParts,
-      IIIFViewer
+      IIIFViewer,
+      VisibilityToggle
+      
     },
     props: {
     },
+    data() {
+      return {
+        imageVisibility: true,
+        transcriptionVisibility: true,
+        translationVisibility: true,
+      }
+    },
     computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView', 'translationView']),
+        ...mapState('document', ['document', 'loading',
+                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapGetters('user', ['loggedIn'])
     },
     async created() {
-      await this.fetchOne()
-      this.fetchTranscriptionView()
-      this.fetchTranslationView()
+      try {
+        await this.fetchOne()
+      }
+      catch (error) {
+        this.$router.push({name: 'error', params: {error: error}})
+      }
+       try {
+      await Promise.all([
+        this.fetchTranscriptionView(),
+        this.fetchTranslationView(),
+        this.fetchTranscriptionAlignmentView()
+      ]) }
+      catch (error) {
+        console.error(error)
+      }
+
+      this.transcriptionVisibility = this.transcriptionView !== null
+      this.translationVisibility = this.translationView !== null
+      // init notes popup
     },
     methods: {
       fetchOne() {
@@ -118,7 +200,31 @@ export default {
         return this.$store.dispatch('document/fetchTranslationView', {
           id: this.$attrs.docId
         })
-      }
+      },
+      fetchTranscriptionAlignmentView() {
+        return this.$store.dispatch('document/fetchTranscriptionAlignmentView', {
+          id: this.$attrs.docId
+        })
+      },
+
+      toggleImageVisibility() {
+        // forbid hidding everything
+        if (this.transcriptionVisibility || this.translationVisibility) {
+          this.imageVisibility = !this.imageVisibility
+        }
+      },
+      toggleTranscriptionVisibility() {
+        // forbid hidding everything
+        if (this.translationVisibility || this.imageVisibility) {
+          this.transcriptionVisibility = !this.transcriptionVisibility
+        }
+      },
+      toggleTranslationVisibility() {
+        // forbid hidding everything
+        if (this.transcriptionVisibility || this.imageVisibility) {
+          this.translationVisibility = !this.translationVisibility
+        }
+      },
     }
 }
 </script>

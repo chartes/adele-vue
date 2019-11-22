@@ -7,6 +7,7 @@ const state = {
   
   transcriptionView: undefined,
   translationView: undefined,
+  transcriptionAlignmentView: undefined,
 
   loading: false,
 };
@@ -28,11 +29,20 @@ const mutations = {
       notes
     };
   },
+  UPDATE_TRANSCRIPTION_ALIGNMENT_VIEW (state, {content, notes}) {
+    state.transcriptionAlignmentView = {
+      content,
+      notes
+    };
+  },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
   },
   RESET_TRANSLATION_VIEW(state) {
     state.translationView = null;
+  },
+  RESET_TRANSCRIPTION_ALIGNMENT_VIEW(state) {
+    state.transcriptionAlignmentView = null;
   },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
@@ -91,6 +101,21 @@ const actions = {
         notes: response.data.data["notes"]
       })
       console.log("tl ok")
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
+    })
+  },
+  fetchTranscriptionAlignmentView ({ commit }, {id}) {
+    commit('LOADING_STATUS', true);
+    console.log("fetching tr alignments")
+    return http.get(`documents/${id}/view/transcription-alignment`).then( (response) => {
+      commit('UPDATE_TRANSCRIPTION_ALIGNMENT_VIEW',  {
+        content: response.data.data["alignments"],
+        notes: response.data.data["notes"]
+      })
+      console.log("tr alignments ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);

@@ -221,7 +221,12 @@ export default {
       }
     },
     async created() {
-      await this.fetchOne()
+      try {
+        await this.fetchOne()
+      }
+      catch (error) {
+        this.$router.push({name: 'error', params: {error: error}})
+      }
       this.fetchContentFromUser()
       //eventually watch for a 'section' change to refetch data from server
     },
