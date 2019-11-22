@@ -61,9 +61,10 @@
             />
             <!-- Transcription -->
             <div v-if="$attrs.section === 'transcription'">
-              <div v-if="isTranscriptionReadonly && transcriptionError === null">
+              <!-- transcription read only-->
+              <div v-if="isTranscriptionReadOnly && transcriptionError === null">
                 <message
-                  v-if="document.validation_step >= 1"
+                  v-if="isTranscriptionValidated"
                   message-class="is-info is-small"
                 >
                   Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
@@ -78,23 +79,41 @@
               >
                 {{ transcriptionError }}
               </message>
-              <document-edition-transcription
-                v-else
-                :transcription-with-notes="transcriptionWithNotes"
-              />
+              <!-- transcription edition -->
+              <div v-else>
+                <transcription-action-bar v-if="currentUserIsTeacher" />
+                <document-edition-transcription
+                  :transcription-with-notes="transcriptionWithNotes"
+                />
+              </div>
             </div>
             <!-- Translation -->
             <div v-if="$attrs.section === 'translation'">
+              <!-- translation read only-->
+              <div v-if="isTranslationReadOnly && translationError === null">
+                <message
+                  v-if="isTranslationValidated"
+                  message-class="is-info is-small"
+                >
+                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
+                </message>
+                <document-translation
+                  :readonly-data="translationView"
+                />
+              </div>
               <message
-                v-if="translationError"
+                v-else-if="translationError"
                 message-class="is-danger"
               >
                 {{ translationError }}
               </message>
-              <document-edition-translation
-                v-else
-                :translation-with-notes="translationWithNotes"
-              />
+              <!-- translation edition -->
+              <div v-else>
+                <translation-action-bar v-if="currentUserIsTeacher" />
+                <document-edition-translation
+                  :translation-with-notes="translationWithNotes"
+                />
+              </div>
             </div>
             <!-- Facsimilé -->
             <document-edition-facsimile
@@ -132,19 +151,27 @@ import DocumentEditionSpeechParts from '../components/document/edition/DocumentE
 
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
+import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
 
 import IIIFViewer from '../components/IIIFViewer.vue'
 import WorkflowSteps from '../components/WorkflowSteps.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
+import TranscriptionActionBar from '../components/document/edition/TranscriptionActionBar.vue'
+import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
+
 import Message from '../components/Message.vue'
+
+import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '../store/modules/workflow'
 
 export default {
     name: "DocumentEditionPage",
     components: {
 
         DocumentTitleBar,
+        TranscriptionActionBar,
+        TranslationActionBar,
         
         DocumentEditionNotice,
         DocumentEditionTranscription,
@@ -154,6 +181,7 @@ export default {
         DocumentEditionSpeechParts,
 
         DocumentTranscription,
+        DocumentTranslation,
 
         IIIFViewer,
         WorkflowSteps,
@@ -188,31 +216,20 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView']),
+        ...mapState('document', ['document', 'loading', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading']),
         ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
         ...mapState('user', ['currentUser']),
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
+        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated']),
 
-        isTranscriptionReadonly() {
-          // should be avoidable with guard routing 
-          if (this.currentUser === null) {
-            return true
-          }
-
-          // admin
-          if (this.currentUserIsAdmin) {
-            return false
-          } 
-          // teacher
-          if (this.currentUserIsTeacher) {
-             return this.currentUser.id !== this.selectedUserId
-          }
-          
-          return this.document.validation_step >= 1
-
+        isTranscriptionReadOnly() {
+          return this.isStepReadOnly(TRANSCRIPTION_STEP)
+        },
+        isTranslationReadOnly() {
+          return this.isStepReadOnly(TRANSLATION_STEP)
         }
     },
     watch:{
@@ -237,7 +254,7 @@ export default {
         })
       },
       fetchTranscriptionContent() {
-        if (this.isTranscriptionReadonly) {
+        if (this.isTranscriptionReadOnly) {
           // when in readonly mode
           // students see the reference content
           let params = {
@@ -256,10 +273,23 @@ export default {
         }
       },
       fetchTranslationContent() {
-        return this.$store.dispatch('translation/fetchTranslationFromUser', {
-          docId: this.document.id,
-          userId: this.selectedUserId
-        })
+        if (this.isTranslationReadOnly) {
+          // when in readonly mode
+          // students see the reference content
+          let params = {
+            id: this.document.id
+          }
+          // teacher and admins can see other ppl readonly views
+          if (this.currentUserIsTeacher) {
+            params.userId = this.selectedUserId 
+          }
+          return this.$store.dispatch('document/fetchTranslationView', params)
+        } else {
+          return this.$store.dispatch('translation/fetchTranslationFromUser', {
+            docId: this.document.id,
+            userId: this.selectedUserId
+          })
+        }
       },
       async fetchContentFromUser(){
         try {
@@ -275,7 +305,26 @@ export default {
         } catch (error) {
           this.translationError = error
         }
-      }
+      },
+
+        isStepReadOnly(step) {
+          // should be avoidable with guard routing 
+          if (this.currentUser === null) {
+            return true
+          }
+
+          // admin
+          if (this.currentUserIsAdmin) {
+            return false
+          } 
+          // teacher
+          if (this.currentUserIsTeacher) {
+             return this.currentUser.id !== this.selectedUserId
+          }
+          
+          return this.document.validation_step >= step
+
+        },
     }
 }
 </script>

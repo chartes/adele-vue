@@ -1,4 +1,5 @@
 import {http} from '../../../modules/http-common';
+import { VALIDATION_STEPS_LABELS } from '../workflow';
 
 const state = {
 
@@ -48,14 +49,13 @@ const mutations = {
     state.documents = payload;
   },
 
-  /*
   PARTIAL_UPDATE_DOCUMENT(state, payload) {
     state.document =  {
       ...state.document,
       ...payload
     };
   },
-  */
+  
   LOADING_STATUS (state, payload) {
     state.loading = payload;
   },
@@ -133,6 +133,18 @@ const actions = {
       throw error
     })
   },
+  setValidationStep ({commit }, {docId, step}) {
+    commit('LOADING_STATUS', true);
+    http.get(`documents/${docId}/validate-${VALIDATION_STEPS_LABELS[step]}`).then( (response) => {
+      commit('PARTIAL_UPDATE_DOCUMENT',  {
+        validation_step: step
+      })
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
+    })
+  }
   /*
   save ({ commit, rootGetters }, data) {
 

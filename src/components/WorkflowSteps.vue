@@ -39,7 +39,7 @@
           {{ currentUser.username }}
         </span> 
       </div>
-      <div class="tile steps">
+      <div class="tile steps m-t-md">
         <div
           v-if="isTranscriptionValidated"
           class="step-item is-completed"

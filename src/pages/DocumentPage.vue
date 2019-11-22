@@ -46,7 +46,7 @@
         </div>
         
         <div
-          v-show="transcriptionVisibility || translationVisibility"
+         
           class="column"
         >
           <div class="tabs">
