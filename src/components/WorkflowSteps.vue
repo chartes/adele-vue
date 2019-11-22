@@ -42,7 +42,7 @@
       <div class="tile steps m-t-md">
         <div
           v-if="isTranscriptionValidated"
-          class="step-item is-completed"
+          class="step-item is-completed is-success"
         >
           <div class="step-marker">
             <span class="icon">
@@ -50,7 +50,12 @@
             </span>
           </div>
           <div class="step-details">
-            Transcription 
+            <router-link 
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'transcription'}}"
+            >
+              Transcription 
+            </router-link>
           </div>
         </div>
         <div
@@ -59,14 +64,19 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            Transcription 
+            <router-link 
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'transcription'}}"
+            >
+              Transcription 
+            </router-link>
           </div>
         </div>
 
   
         <div
           v-if="isTranslationValidated"
-          class="step-item is-completed"
+          class="step-item is-completed is-success"
         >
           <div class="step-marker">
             <span class="icon">
@@ -74,7 +84,12 @@
             </span>
           </div>
           <div class="step-details">
-            Traduction 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'translation'}}"
+            >
+              Traduction 
+            </router-link>
           </div>
         </div>
         <div
@@ -83,14 +98,19 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            Traduction 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'translation'}}"
+            >
+              Traduction 
+            </router-link>
           </div>
         </div>
 
 
         <div
           v-if="isCommentariesValidated"
-          class="step-item is-completed"
+          class="step-item is-completed is-success"
         >
           <div class="step-marker">
             <span class="icon">
@@ -98,7 +118,12 @@
             </span>
           </div>
           <div class="step-details">
-            Commentaires 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'commentaries'}}"
+            >
+              Commentaires 
+            </router-link>
           </div>
         </div>
         <div
@@ -107,14 +132,18 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            Commentaires 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'commentaries'}}"
+            >
+              Commentaires 
+            </router-link>
           </div>
         </div>
 
-
         <div
-          v-if="isFacsimileValidated"
-          class="step-item is-completed"
+          v-if="currentUserIsTeacher && isFacsimileValidated"
+          class="step-item is-completed is-success"
         >
           <div class="step-marker">
             <span class="icon">
@@ -122,23 +151,32 @@
             </span>
           </div>
           <div class="step-details">
-            Facsimilé 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'facsimile'}}"
+            >
+              Facsimilé 
+            </router-link>
           </div>
         </div>
         <div
-          v-else
+          v-else-if="currentUserIsTeacher"
           class="step-item"
         >
           <div class="step-marker" />
           <div class="step-details">
-            Facsimilé 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'facsimile'}}"
+            >
+              Facsimilé 
+            </router-link>
           </div>
         </div>
-
 
         <div
           v-if="isSpeechPartsValidated"
-          class="step-item is-completed"
+          class="step-item is-completed is-success"
         >
           <div class="step-marker">
             <span class="icon">
@@ -146,7 +184,12 @@
             </span>
           </div>
           <div class="step-details">
-            Parties du discours 
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'speech-parts'}}"
+            >
+              Parties du discours 
+            </router-link>
           </div>
         </div>
         <div
@@ -155,7 +198,12 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            Parties du discours
+            <router-link
+              class="button is-white"
+              :to="{name: 'document-edition', params: {docId: document.id, section:'speech-parts'}}"
+            >
+              Parties du discours
+            </router-link>
           </div>
         </div>
       </div>
@@ -180,6 +228,7 @@ export default {
     computed: {
         ...mapState('user', ['currentUser']),
         ...mapState('workflow', ['selectedUserId']),
+        ...mapState('document', ['document']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         
         ...mapGetters('workflow', [

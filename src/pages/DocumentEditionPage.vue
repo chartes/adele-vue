@@ -30,7 +30,8 @@
               </li>
               <li :class="$attrs.section === 'translation' ? `is-active`: ''">
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
-                  Traduction et alignement
+                  <span v-if="currentUserIsTeacher">Traduction et alignement</span>
+                  <span v-else>Traduction</span>
                 </router-link>
               </li>
               <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
@@ -38,7 +39,11 @@
                   Commentaires
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'facsimile' ? `is-active`: ''">
+              <!-- students don't get to deal with facsimile alignment -->
+              <li
+                v-if="currentUserIsTeacher"
+                :class="$attrs.section === 'facsimile' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'facsimile'}}">
                   Facsimilé
                 </router-link>
@@ -67,7 +72,7 @@
                   v-if="isTranscriptionValidated"
                   message-class="is-info is-small"
                 >
-                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
+                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}.
                 </message>
                 <document-transcription
                   :readonly-data="transcriptionView"
@@ -95,7 +100,7 @@
                   v-if="isTranslationValidated"
                   message-class="is-info is-small"
                 >
-                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}
+                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}.
                 </message>
                 <document-translation
                   :readonly-data="translationView"
@@ -116,10 +121,13 @@
               </div>
             </div>
             <!-- Facsimilé -->
-            <document-edition-facsimile
-              v-if="$attrs.section === 'facsimile'"
-              :transcription-with-notes="transcriptionWithNotes"
-            />
+            <div v-if="currentUserIsTeacher">
+              <document-edition-facsimile
+                v-if="$attrs.section === 'facsimile'"
+                :transcription-with-notes="transcriptionWithNotes"
+              />
+            </div>
+
             <!-- Commentaires -->
             <document-edition-commentaries
               v-if="$attrs.section === 'commentaries'"

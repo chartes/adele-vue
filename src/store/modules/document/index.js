@@ -167,9 +167,6 @@ const actions = {
         });
     })
   },
-  setValidationStage ({ commit }, {validationStage, validationStageLabel}) {
-    commit('PARTIAL_UPDATE_DOCUMENT', {validation_step: validationStage, validation_step_label: validationStageLabel})
-  },
   */
 };
 
@@ -178,7 +175,7 @@ const getters = {
   document: state => state.document,
   manifestURL: state => {
     const manifest_url = `documents/${state.document.id}/manifest`;
-    return state.document && state.document.images &&  state.document.images.length > 0 ? manifest_url : null
+    return state.document && state.document.images && state.document.images.length > 0 ? manifest_url : null
   }
 
 };
