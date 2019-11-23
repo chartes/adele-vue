@@ -1,15 +1,12 @@
 <template>
   <div class="section">
-    <div class="container is-fluid">
-      <document-title-bar
-        v-if="!!document"
-        :document="document"
-      />
+    <div
+      v-if="document"
+      class="container is-fluid"
+    >
+      <document-title-bar />
       
-      <workflow-steps
-        v-if="!!document"
-        :document="document"
-      />
+      <workflow-steps />
 
       <div class="columns">
         <div class="column is-two-fifths">
@@ -28,13 +25,19 @@
                   Transcription
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'translation' ? `is-active`: ''">
+              <li
+                v-if="isTranscriptionValidated || currentUserIsTeacher"
+                :class="$attrs.section === 'translation' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
                   <span v-if="currentUserIsTeacher">Traduction et alignement</span>
                   <span v-else>Traduction</span>
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
+              <li
+                v-if="isTranscriptionValidated"
+                :class="$attrs.section === 'commentaries' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'commentaries'}}">
                   Commentaires
                 </router-link>
@@ -48,7 +51,10 @@
                   Facsimilé
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'speech-parts' ? `is-active`: ''">
+              <li
+                v-if="isTranscriptionValidated || currentUserIsTeacher"
+                :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">
                   Parties du discours
                 </router-link>
@@ -70,20 +76,32 @@
               <div v-if="isTranscriptionReadOnly && transcriptionError === null">
                 <message
                   v-if="isTranscriptionValidated"
-                  message-class="is-info is-small"
+                  message-class=" is-small"
                 >
-                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}.
+                  Ce contenu a été édité par 
+                  <span v-if="currentUserIsTeacher">{{ selectedUser.first_name }} {{ selectedUser.last_name }}.</span>
+                  <span v-else>{{ documentOwner.first_name }} {{ documentOwner.last_name }}</span>
                 </message>
                 <document-transcription
                   :readonly-data="transcriptionView"
                 />
               </div>
-              <message
-                v-else-if="transcriptionError"
-                message-class="is-danger"
-              >
-                {{ transcriptionError }}
-              </message>
+              <div v-else-if="transcriptionError">
+                <message
+                  v-if="transcriptionError.response.status === 404"
+                  message-class="is-info is-small"
+                >
+                  <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                  <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                  pas encore soumis de transcription pour ce document.
+                </message>
+                <message
+                  v-else
+                  message-class="is-danger"
+                >
+                  {{ transcriptionError }}
+                </message>
+              </div>
               <!-- transcription edition -->
               <div v-else>
                 <transcription-action-bar v-if="currentUserIsTeacher" />
@@ -98,20 +116,32 @@
               <div v-if="isTranslationReadOnly && translationError === null">
                 <message
                   v-if="isTranslationValidated"
-                  message-class="is-info is-small"
+                  message-class="is-small"
                 >
-                  Ce contenu a été édité par {{ userFromWhitelist(document.whitelist, currentUserIsTeacher ? selectedUserId : document.user_id).username }}.
+                  Ce contenu a été édité par 
+                  <span v-if="currentUserIsTeacher">{{ selectedUser.first_name }} {{ selectedUser.last_name }}.</span>
+                  <span v-else>{{ documentOwner.first_name }} {{ documentOwner.last_name }}</span>
                 </message>
                 <document-translation
                   :readonly-data="translationView"
                 />
               </div>
-              <message
-                v-else-if="translationError"
-                message-class="is-danger"
-              >
-                {{ translationError }}
-              </message>
+              <div v-else-if="translationError">
+                <message
+                  v-if="translationError.response.status === 404"
+                  message-class="is-info is-small"
+                >
+                  <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                  <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                  pas encore soumis de traduction pour ce document.
+                </message>
+                <message
+                  v-else
+                  message-class="is-danger"
+                >
+                  {{ translationError }}
+                </message>
+              </div>
               <!-- translation edition -->
               <div v-else>
                 <translation-action-bar v-if="currentUserIsTeacher" />
@@ -232,12 +262,17 @@ export default {
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated']),
+        ...mapGetters('document', ['documentOwner']),
 
         isTranscriptionReadOnly() {
           return this.isStepReadOnly(TRANSCRIPTION_STEP)
         },
         isTranslationReadOnly() {
           return this.isStepReadOnly(TRANSLATION_STEP)
+        },
+        selectedUser() {
+          const u = this.userFromWhitelist(this.document.whitelist, this.selectedUserId)
+          return u ? u : this.currentUser
         }
     },
     watch:{
@@ -253,7 +288,6 @@ export default {
         this.$router.push({name: 'error', params: {error: error}})
       }
       this.fetchContentFromUser()
-      //eventually watch for a 'section' change to refetch data from server
     },
     methods: {
       fetchOne() {

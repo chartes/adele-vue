@@ -30,13 +30,14 @@
           v-else-if="document.is_closed"
           class="m-r-sm is-size-5"
         >
-          {{ documentOwner.username }}
+          {{ documentOwner.first_name }}  {{ documentOwner.las_name }}
         </span> 
         <span
           v-else
           class="m-r-sm is-size-5"
         >
-          {{ currentUser.username }}
+          {{ currentUser.firstname }} {{ currentUser.lastname }}
+
         </span> 
       </div>
       <div class="tile steps m-t-md">
@@ -50,12 +51,7 @@
             </span>
           </div>
           <div class="step-details">
-            <router-link 
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'transcription'}}"
-            >
-              Transcription 
-            </router-link>
+            Transcription 
           </div>
         </div>
         <div
@@ -64,12 +60,7 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            <router-link 
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'transcription'}}"
-            >
-              Transcription 
-            </router-link>
+            Transcription 
           </div>
         </div>
 
@@ -84,12 +75,7 @@
             </span>
           </div>
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'translation'}}"
-            >
-              Traduction 
-            </router-link>
+            Traduction 
           </div>
         </div>
         <div
@@ -98,12 +84,7 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'translation'}}"
-            >
-              Traduction 
-            </router-link>
+            Traduction 
           </div>
         </div>
 
@@ -118,12 +99,7 @@
             </span>
           </div>
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'commentaries'}}"
-            >
-              Commentaires 
-            </router-link>
+            Commentaires 
           </div>
         </div>
         <div
@@ -132,12 +108,7 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'commentaries'}}"
-            >
-              Commentaires 
-            </router-link>
+            Commentaires 
           </div>
         </div>
 
@@ -151,12 +122,7 @@
             </span>
           </div>
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'facsimile'}}"
-            >
-              Facsimilé 
-            </router-link>
+            Facsimilé 
           </div>
         </div>
         <div
@@ -165,12 +131,7 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'facsimile'}}"
-            >
-              Facsimilé 
-            </router-link>
+            Facsimilé 
           </div>
         </div>
 
@@ -184,12 +145,7 @@
             </span>
           </div>
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'speech-parts'}}"
-            >
-              Parties du discours 
-            </router-link>
+            Parties du discours 
           </div>
         </div>
         <div
@@ -198,12 +154,7 @@
         >
           <div class="step-marker" />
           <div class="step-details">
-            <router-link
-              class="button is-white"
-              :to="{name: 'document-edition', params: {docId: document.id, section:'speech-parts'}}"
-            >
-              Parties du discours
-            </router-link>
+            Parties du discours
           </div>
         </div>
       </div>
@@ -219,7 +170,6 @@ export default {
         
     },
     props: {
-        document: {type: Object, default: null}
     },
     data() {
         return {
@@ -230,6 +180,7 @@ export default {
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('document', ['document']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        ...mapGetters('document', ['documentOwner']),
         
         ...mapGetters('workflow', [
           'isTranscriptionValidated',
@@ -255,13 +206,9 @@ export default {
                 }
             })
         },
-        documentOwner() {
-            const owner = this.document.whitelist.users.filter(u => u.id === this.document.user_id)[0]
-            return {
-                username: `${owner.first_name} ${owner.last_name}`,
-                id: owner.id
-            }
-        },
+        transcriptionValidatedOrTeacher() {
+          return this.isTranscriptionValidated || this.currentUserIsTeacher
+        }
     },
     watch: {
 

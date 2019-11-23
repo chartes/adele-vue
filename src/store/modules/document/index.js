@@ -172,12 +172,14 @@ const actions = {
 
 const getters = {
 
-  document: state => state.document,
+  //document: state => state.document,
   manifestURL: state => {
     const manifest_url = `documents/${state.document.id}/manifest`;
     return state.document && state.document.images && state.document.images.length > 0 ? manifest_url : null
+  },
+  documentOwner: state => {
+    return state.document.whitelist.users.find(u => u.id === state.document.user_id)
   }
-
 };
 
 const documentModule = {

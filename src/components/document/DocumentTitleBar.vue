@@ -46,11 +46,11 @@ import { mapState, mapGetters } from 'vuex';
 export default {
     name: "DocumentTitleBar",
     props: {
-        document: {type: Object, default: null}
     },
     computed: {
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapState('user', ['currentUser']),
+        ...mapState('document', ['document']),
 
         isInEditionMode() {
           return this.$route.name.indexOf('edition') > -1

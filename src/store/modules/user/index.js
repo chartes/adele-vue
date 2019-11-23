@@ -54,18 +54,18 @@ const getters = {
     return !!state.currentUser
   },
   currentUserIsAdmin(state) {
-    return state.currentUser.roles.indexOf('admin') > -1
+    return state.currentUser.roles.includes('admin')
   },
   currentUserIsTeacher(state) {
-    return state.currentUser.roles.indexOf('teacher') > -1
+    return state.currentUser.roles.includes('teacher')
   },
   currentUserIsStudent(state) {
-    return state.currentUser.roles.indexOf('student') > -1 && state.currentUser.roles.indexOf('teacher') == -1
+    return state.currentUser.roles.includes('student') && !state.currentUser.roles.includes('teacher')
   },
   userFromWhitelist: (state) => (whitelist, userId) => {
-    return whitelist.users.filter(u => {
+    return whitelist.users.find(u => {
         return u.id === userId
-    })[0]
+    })
   }
 };
 

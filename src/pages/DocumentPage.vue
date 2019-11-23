@@ -1,8 +1,10 @@
 <template>
   <div class="section">
-    <div class="container is-fluid">
+    <div
+      v-if="document"
+      class="container is-fluid"
+    >
       <document-title-bar
-        v-if="!!document"
         :document="document"
       />
 
@@ -51,7 +53,7 @@
         >
           <div class="tabs">
             <ul>
-              <li :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''">
+              <li :class="$attrs.section === 'notice' || $attrs.section === undefined || !transcriptionView ? `is-active`: ''">
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'notice'}}">
                   Notice
                 </router-link>
@@ -65,12 +67,18 @@
                   <span v-else> Transcription </span>
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'commentaries' ? `is-active`: ''">
+              <li
+                v-if="isTranscriptionValidated"
+                :class="$attrs.section === 'commentaries' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'commentaries'}}">
                   Commentaires
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'speech-parts' ? `is-active`: ''">
+              <li
+                v-if="isTranscriptionValidated"
+                :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
+              >
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'speech-parts'}}">
                   Parties du discours
                 </router-link>
@@ -82,11 +90,11 @@
             class=""
           >
             <document-notice
-              v-if="$attrs.section === 'notice'"
+              v-if="$attrs.section === 'notice' || !transcriptionView"
               :document="document"
             />
             <div
-              v-if="$attrs.section === 'transcription'"
+              v-if="$attrs.section === 'transcription' && transcriptionView"
               class="content"
             >
               <document-transcription
@@ -103,11 +111,11 @@
               />
             </div>
             <document-commentaries
-              v-if="$attrs.section === 'commentaries'"
+              v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
               :document="document"
             />
             <document-speech-parts
-              v-if="$attrs.section === 'speech-parts'"
+              v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
               :document="document"
             />
           </div>
@@ -162,7 +170,8 @@ export default {
     computed: {
         ...mapState('document', ['document', 'loading',
                                  'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
-        ...mapGetters('user', ['loggedIn'])
+        ...mapGetters('user', ['loggedIn']),
+        ...mapGetters('workflow', ['isTranscriptionValidated'])
     },
     async created() {
       try {
@@ -171,16 +180,23 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
-       try {
-      await Promise.all([
-        this.fetchTranscriptionView(),
-        this.fetchTranslationView(),
-        this.fetchTranscriptionAlignmentView()
-      ]) }
-      catch (error) {
+      try {
+        await this.fetchTranscriptionView()
+      } catch(error) {
+        console.error(error)
+      }
+      try {
+        await this.fetchTranslationView()
+      } catch(error) {
+        console.error(error)
+      }
+      try {
+        await this.fetchTranscriptionAlignmentView()
+      } catch(error) {
         console.error(error)
       }
 
+      console.log(this.transcriptionView)
       this.transcriptionVisibility = this.transcriptionView !== null
       this.translationVisibility = this.translationView !== null
       // init notes popup
