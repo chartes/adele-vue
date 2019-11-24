@@ -3,27 +3,17 @@
     <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
     <p class="control">
       <button
-        v-if="isTranscriptionValidated"
-        class="button is-success is-small"
-        @click="unvalidateTranscription"
+        class="button is-small"
+        :class="`${isTranscriptionValidated ? 'is-success' : 'is-light'}`"
+        @click="toggleTranscriptionValidation"
       >
-        <span> Validé </span>
-        <span class="icon">
+        <span> {{ isTranscriptionValidated ? 'Validé' : 'Valider' }} </span>
+        <span
+          v-show="isTranscriptionValidated"
+          class="icon"
+        >
           <i class="fa fa-check" />
         </span>
-      </button>
-      <button
-        v-else
-        class="button is-light is-small"
-        @click="validateTranscription"
-      >
-        <span> Valider </span>
-      </button>
-    </p>
-   
-    <p class="control m-l-md">
-      <button class="button is-light is-small">
-        Cloner
       </button>
     </p>
   </div>
@@ -51,6 +41,13 @@ export default {
       unvalidateTranscription() {
         // TODO: give warnings about side effects
         return this.$store.dispatch('document/setValidationStep', {docId: this.document.id, step: NONE_STEP}) 
+      },
+      toggleTranscriptionValidation() {
+        if (this.isTranscriptionValidated) {
+          return this.unvalidateTranscription()
+        } else {
+          return this.validateTranscription()
+        }
       }
     }
 }

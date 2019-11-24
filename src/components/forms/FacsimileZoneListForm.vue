@@ -1,39 +1,40 @@
 <template>
-    <modal-form
-            :title="'Choisissez une zone'"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            :valid="!!selected"
-    >
-        <div class="ZoneForm">
-            <a class="zones-list-item list-item"
-               v-for="fragment in transcriptionFragments"
-               :key="fragment.zone_id"
+  <modal-form
+    :title="'Choisissez une zone'"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :valid="!!selected"
+  >
+    <div class="ZoneForm">
+      <a
+v-for="fragment in transcriptionFragments"
+               class="zones-list-item list-item"
+         :key="fragment.zone_id"
+         :class="{ selected: fragment.zone_id == selected }"
                @click="selectItem(fragment.zone_id)"
-               :class="{ selected: fragment.zone_id == selected }"
-            >
-                <div class="content">
-                    <img :src="fragment.fragment_url"/>
-                </div>
-            </a>
+      >
+        <div class="content">
+          <img :src="fragment.fragment_url" >
         </div>
-        <loading-indicator :active="loading"/>
-    </modal-form>
+      </a>
+    </div>
+    <loading-indicator :active="loading" />
+  </modal-form>
 </template>
 
 <script>
 
   import { mapGetters } from 'vuex'
   import ModalForm from './ModalForm';
-  import LoadingIndicator from '../ui/LoadingIndicator';
+  //import LoadingIndicator from '../ui/LoadingIndicator';
 
   export default {
-    name: "facsimile-zone-list-form",
-    props: ['title', 'zoneId', 'cancel', 'submit'],
+    name: "FacsimileZoneListForm",
     components: {
-      LoadingIndicator,
+      //LoadingIndicator,
       ModalForm
     },
+    props: ['title', 'zoneId', 'cancel', 'submit'],
     data() {
       return {
         selected: null,

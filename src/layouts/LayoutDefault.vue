@@ -20,7 +20,7 @@ export default {
       }
     },
     computed: {
-      ...mapState("user", ["currentUser"])
+      //...mapState("user", ["currentUser"])
     },
 
     created() {

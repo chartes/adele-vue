@@ -1,65 +1,72 @@
 <template>
-
-  <div id="document-edition">
-
-    <loading-indicator :active="transcriptionLoading || translationLoading" :full-page="true"/>
+<div id="document-edition">
+<loading-indicator :active="transcriptionLoading || translationLoading"
+:full-page="true" />
 
     <div class="columns">
       <div class="column">
-        <h1 class="title is-size-5"  style="display: inline-block; margin-bottom: 0.5em;" >Document {{ document.id }}</h1>
-        <a class="button is-link is-small"
-           v-if="allowedToSwapAuthor"
+        <h1 class="title is-size-5"
+style="display: inline-block; margin-bottom: 0.5em;">
+Document {{ document.id }}
+</h1>
+        <a
+v-if="allowedToSwapAuthor"
+           class="button is-link is-small"
            style="margin-left: 20px"
            @click="swapUser = true"
         >
-          <i class="fas fa-user-circle" style="margin-right: 8px"></i>Travaux de {{ author.username }}
+          <i class="fas fa-user-circle"
+style="margin-right: 8px"/>Travaux de {{ author.username }}
         </a>
       </div>
     </div>
 
-    <tabs :on-tab-change="onTabChange" class="is-flex-column">
-  
-      <tab v-if="!currentUserIsStudent" name="Notice">
+    <tabs :on-tab-change="onTabChange"
+class="is-flex-column">
+<tab v-if="!currentUserIsStudent"
+name="Notice">
         <h1>Notice</h1>
-        <notice-edition/>
+        <notice-edition />
       </tab>
       
-      <tab name="Transcription" :selected="true">
-        <transcription-edition/>
+      <tab name="Transcription"
+:selected="true">
+        <transcription-edition />
       </tab>
   
       <tab name="Traduction">
-        <translation-edition/>
+        <translation-edition />
       </tab>
 
-      <tab name="Facsimilé" >
-        <facsimile-editor v-if="hasTranscription"></facsimile-editor>
-        <minimal-message v-else-if="!hasImage" :body="'Aucun manifeste pour le moment. Un manifeste est nécessaire pour éditer le facsimilé.'"/>
-        <minimal-message v-else :body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer le facsimilé.'"/>
+      <tab name="Facsimilé">
+        <facsimile-editor v-if="hasTranscription"/>
+        <minimal-message v-else-if="!hasImage"
+:body="'Aucun manifeste pour le moment. Un manifeste est nécessaire pour éditer le facsimilé.'" />
+        <minimal-message v-else
+:body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer le facsimilé.'" />
       </tab>
       
       <tab name="Commentaires">
-        <commentaries-edition v-if="hasTranscription"/>
-        <minimal-message v-else
-                         :body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer les commentaires.'"/>
+        <commentaries-edition v-if="hasTranscription" />
+        <minimal-message
+v-else
+                         :body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer les commentaires.'" 
+/>
       </tab>
   
       <tab name="Parties du discours">
-        <speechparts-edition  v-if="hasTranscription"/>
-        <minimal-message v-else :body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer les parties du discours.'"/>
+        <speechparts-edition v-if="hasTranscription" />
+        <minimal-message v-else
+:body="'Aucune transcription pour le moment. Une transcription est nécessaire pour éditer les parties du discours.'" />
       </tab>
+</tabs>
+
+    <author-swap-list-form v-if="swapUser"
+:selected-author="author" :cancel="cancelSwap" :submit="swapAuthor" />
 
 
-
-    </tabs>
-
-    <author-swap-list-form v-if="swapUser" :selected-author="author" :cancel="cancelSwap" :submit="swapAuthor"/>
-
-
-    <save-bar :action="save"/>
-
-  </div>
-
+    <save-bar :action="save" />
+</div>
 </template>
 
 <script>
@@ -73,21 +80,21 @@
   import SpeechpartsEdition from "./SpeechpartsEdition";
   import NoticeEdition from "./NoticeEdition";
   import {mapState, mapGetters} from 'vuex';
-  import LoadingIndicator from "../ui/LoadingIndicator";
+  //import LoadingIndicator from "../ui/LoadingIndicator";
   import AuthorSwapListForm from "../forms/AuthorSwapListForm";
   import MinimalMessage from "../ui/MinimalMessage";
   import SaveBar from "../ui/SaveBar";
   import CommentariesEdition from "./CommentariesEdition";
 
   export default {
-    name: "document-edition",
+    name: "DocumentEdition",
 
     components: {
       CommentariesEdition,
       SaveBar,
       MinimalMessage,
       AuthorSwapListForm,
-      LoadingIndicator,
+      //LoadingIndicator,
       NoticeEdition,
       SpeechpartsEdition,
       AlignmentEdition,

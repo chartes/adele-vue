@@ -3,27 +3,17 @@
     <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
     <p class="control">
       <button
-        v-if="isTranslationValidated"
-        class="button is-success is-small"
-        @click="unvalidateTranslation"
+        class="button is-small"
+        :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
+        @click="toggleTranslationValidation"
       >
-        <span> Validé </span>
-        <span class="icon">
+        <span> {{ isTranslationValidated ? 'Validé' : 'Valider' }} </span>
+        <span
+          v-show="isTranslationValidated"
+          class="icon"
+        >
           <i class="fa fa-check" />
         </span>
-      </button>
-      <button
-        v-else
-        class="button is-light is-small"
-        @click="validateTranslation"
-      >
-        <span> Valider </span>
-      </button>
-    </p>
-   
-    <p class="control m-l-md">
-      <button class="button is-light is-small">
-        Cloner
       </button>
     </p>
   </div>
@@ -41,7 +31,7 @@ export default {
     computed: {
         ...mapState('document', ['document']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
-        ...mapGetters('workflow', ['isTranslationValidated', 'isTranscriptionValidated'])
+        ...mapGetters('workflow', ['isTranslationValidated'])
     },
     methods: {
       validateTranslation() {
@@ -51,6 +41,13 @@ export default {
       unvalidateTranslation() {
         // TODO: give warnings about side effects
         return this.$store.dispatch('document/setValidationStep', {docId: this.document.id, step: TRANSCRIPTION_STEP}) 
+      },
+      toggleTranslationValidation() {
+        if (this.isTranslationValidated) {
+          return this.unvalidateTranslation()
+        } else {
+          return this.validateTranslation()
+        }
       }
     }
 }

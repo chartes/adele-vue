@@ -20,14 +20,14 @@
               image
             </visibility-toggle>
             <visibility-toggle
-              v-if="transcriptionView"
+              v-if="transcriptionView && $attrs.section === 'transcription'"
               :action="toggleTranscriptionVisibility"
               :visible="transcriptionVisibility"
             >
               transcription
             </visibility-toggle>
             <visibility-toggle
-              v-if="translationView"
+              v-if="translationView && $attrs.section === 'transcription'"
               class="m-l-md"
               :action="toggleTranslationVisibility"
               :visible="translationVisibility"
@@ -46,7 +46,6 @@
         >
           <i-i-i-f-viewer />
         </div>
-        
         <div
          
           class="column"

@@ -83,12 +83,12 @@
   import ModalForm from './ModalForm';
   import FieldSelect from './FieldSelect';
   import EditorButton from '../editors/EditorButton.vue';
-  import LoadingIndicator from '../ui/LoadingIndicator';
+  //import LoadingIndicator from '../ui/LoadingIndicator';
 
   export default {
     name: "NoteForm",
     components: {
-      LoadingIndicator,
+      //LoadingIndicator,
       EditorButton,
       FieldSelect,
       ModalForm

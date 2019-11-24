@@ -5,9 +5,8 @@
       class="container is-fluid"
     >
       <document-title-bar />
-      
       <workflow-steps />
-
+      
       <div class="columns">
         <div class="column is-two-fifths">
           <i-i-i-f-viewer />
@@ -35,7 +34,6 @@
                 </router-link>
               </li>
               <li
-                v-if="isTranscriptionValidated"
                 :class="$attrs.section === 'commentaries' ? `is-active`: ''"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'commentaries'}}">
@@ -52,7 +50,7 @@
                 </router-link>
               </li>
               <li
-                v-if="isTranscriptionValidated || currentUserIsTeacher"
+                v-if="currentUserIsTeacher"
                 :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">

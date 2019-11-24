@@ -42,119 +42,96 @@
       </div>
       <div class="tile steps m-t-md">
         <div
-          v-if="isTranscriptionValidated"
-          class="step-item is-completed is-success"
+          class="step-item"
+          :class="`${isTranscriptionValidated ? 'is-completed is-success': ''}`"
         >
           <div class="step-marker">
-            <span class="icon">
-              <i class="fa fa-check" />
-            </span>
+            <transition name="fade">
+              <span
+                v-if="isTranscriptionValidated"
+                class="icon"
+              >
+                <i class="fa fa-check" />
+              </span>
+            </transition>
           </div>
           <div class="step-details">
             Transcription 
           </div>
         </div>
         <div
-          v-else
           class="step-item"
-        >
-          <div class="step-marker" />
-          <div class="step-details">
-            Transcription 
-          </div>
-        </div>
-
-  
-        <div
-          v-if="isTranslationValidated"
-          class="step-item is-completed is-success"
+          :class="`${isTranslationValidated ? 'is-completed is-success': ''}`"
         >
           <div class="step-marker">
-            <span class="icon">
-              <i class="fa fa-check" />
-            </span>
+            <transition name="fade">
+              <span
+                v-if="isTranslationValidated"
+                class="icon"
+              >
+                <i class="fa fa-check" />
+              </span>
+            </transition>
           </div>
           <div class="step-details">
             Traduction 
           </div>
         </div>
+        
         <div
-          v-else
           class="step-item"
-        >
-          <div class="step-marker" />
-          <div class="step-details">
-            Traduction 
-          </div>
-        </div>
-
-
-        <div
-          v-if="isCommentariesValidated"
-          class="step-item is-completed is-success"
+          :class="`${isCommentariesValidated ? 'is-completed is-success': ''}`"
         >
           <div class="step-marker">
-            <span class="icon">
-              <i class="fa fa-check" />
-            </span>
+            <transition name="fade">
+              <span
+                v-if="isCommentariesValidated"
+                class="icon"
+              >
+                <i class="fa fa-check" />
+              </span>
+            </transition>
           </div>
-          <div class="step-details">
-            Commentaires 
-          </div>
-        </div>
-        <div
-          v-else
-          class="step-item"
-        >
-          <div class="step-marker" />
           <div class="step-details">
             Commentaires 
           </div>
         </div>
 
         <div
-          v-if="currentUserIsTeacher && isFacsimileValidated"
-          class="step-item is-completed is-success"
-        >
-          <div class="step-marker">
-            <span class="icon">
-              <i class="fa fa-check" />
-            </span>
-          </div>
-          <div class="step-details">
-            Facsimilé 
-          </div>
-        </div>
-        <div
-          v-else-if="currentUserIsTeacher"
           class="step-item"
+          :class="`${currentUserIsTeacher && isFacsimileValidated ? 'is-completed is-success': ''}`"
         >
-          <div class="step-marker" />
+          <div class="step-marker">
+            <transition name="fade">
+              <span
+                v-if="currentUserIsTeacher && isFacsimileValidated"
+                class="icon"
+              >
+                <i class="fa fa-check" />
+              </span>
+            </transition>
+          </div>
           <div class="step-details">
             Facsimilé 
           </div>
         </div>
-
+       
         <div
-          v-if="isSpeechPartsValidated"
-          class="step-item is-completed is-success"
+          class="step-item"
+          :class="`${isSpeechPartsValidated ? 'is-completed is-success': ''}`"
         >
           <div class="step-marker">
-            <span class="icon">
-              <i class="fa fa-check" />
-            </span>
+            <transition name="fade">
+              <span
+                v-if="isSpeechPartsValidated"
+                class="icon"
+              >
+                <i class="fa fa-check" />
+              </span>
+            </transition>
           </div>
           <div class="step-details">
             Parties du discours 
-          </div>
-        </div>
-        <div
-          v-else
-          class="step-item"
-        >
-          <div class="step-marker" />
-          <div class="step-details">
-            Parties du discours
           </div>
         </div>
       </div>
@@ -221,3 +198,7 @@ export default {
     }
 }
 </script>
+
+<style lang="scss" scoped>
+
+</style>
