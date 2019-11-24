@@ -7,7 +7,7 @@
         :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
         @click="toggleTranslationValidation"
       >
-        <span> {{ isTranslationValidated ? 'Validé' : 'Valider' }} </span>
+        <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
         <span
           v-show="isTranslationValidated"
           class="icon"

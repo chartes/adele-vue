@@ -14,17 +14,23 @@
         <!-- Select workflow user -->
         <div
           v-if="currentUserIsTeacher"
-          class="select is-small"
+          class="control has-icons-left"
         >
-          <select v-model="workflowUserId">
-            <option
-              v-for="user in whitelistUsers"
-              :key="user.id"
-              :value="user.id"
-            >
-              {{ user.username }}
-            </option>
-          </select>
+          <div class="select is-small">
+            <select v-model="workflowUserId">
+              <option
+                v-for="user in whitelistUsers"
+                :key="user.id"
+                :value="user.id"
+                :class="`${user.id === currentUser.id ? 'has-text-weight-bold' : ''}`"
+              >
+                {{ user.username }}
+              </option>
+            </select>
+            <span class="icon is-small is-left">
+              <i class="fas fa-user" />
+            </span>
+          </div>
         </div>
         <span
           v-else-if="document.is_closed"
@@ -55,7 +61,10 @@
               </span>
             </transition>
           </div>
-          <div class="step-details">
+          <div
+            class="step-details"
+            :class="`${isTranscriptionValidated ? 'has-text-success' : ''}`"
+          >
             Transcription 
           </div>
         </div>
@@ -73,7 +82,10 @@
               </span>
             </transition>
           </div>
-          <div class="step-details">
+          <div
+            class="step-details"
+            :class="`${isTranslationValidated ? 'has-text-success' : ''}`"
+          >
             Traduction 
           </div>
         </div>
@@ -92,26 +104,33 @@
               </span>
             </transition>
           </div>
-          <div class="step-details">
+          <div
+            class="step-details"
+            :class="`${isCommentariesValidated ? 'has-text-success' : ''}`"
+          >
             Commentaires 
           </div>
         </div>
 
         <div
+          v-if="currentUserIsTeacher"
           class="step-item"
-          :class="`${currentUserIsTeacher && isFacsimileValidated ? 'is-completed is-success': ''}`"
+          :class="`${isFacsimileValidated ? 'is-completed is-success': ''}`"
         >
           <div class="step-marker">
             <transition name="fade">
               <span
-                v-if="currentUserIsTeacher && isFacsimileValidated"
+                v-if="isFacsimileValidated"
                 class="icon"
               >
                 <i class="fa fa-check" />
               </span>
             </transition>
           </div>
-          <div class="step-details">
+          <div
+            class="step-details"
+            :class="`${isSpeechPartsValidated ? 'has-text-success' : ''}`"
+          >
             Facsimilé 
           </div>
         </div>
@@ -130,7 +149,10 @@
               </span>
             </transition>
           </div>
-          <div class="step-details">
+          <div
+            class="step-details"
+            :class="`${isSpeechPartsValidated ? 'has-text-success' : ''}`"
+          >
             Parties du discours 
           </div>
         </div>
