@@ -42,12 +42,12 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility ? 'is-two-fifths': ''}`"
+          :class="`${imageVisibility && (transcriptionVisibility || translationVisibility) ? 'is-two-fifths' : ''}`"
         >
           <i-i-i-f-viewer />
         </div>
         <div
-         
+          v-show="transcriptionVisibility || translationVisibility"
           class="column"
         >
           <div class="tabs">
@@ -59,7 +59,8 @@
               </li>
               <li
                 v-if="transcriptionView"
-                :class="$attrs.section === 'transcription' ? `is-active`: ''"
+                :class="$attrs.section === 'transcription' || $attrs.section === 'translation'
+                  ? 'is-active': '' "
               >
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'transcription'}}">
                   <span v-if="translationView"> Transcription et traduction</span>
@@ -93,7 +94,7 @@
               :document="document"
             />
             <div
-              v-if="$attrs.section === 'transcription' && transcriptionView"
+              v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
               class="content"
             >
               <document-transcription
@@ -195,7 +196,6 @@ export default {
         console.error(error)
       }
 
-      console.log(this.transcriptionView)
       this.transcriptionVisibility = this.transcriptionView !== null
       this.translationVisibility = this.translationView !== null
       // init notes popup

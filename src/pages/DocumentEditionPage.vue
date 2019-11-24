@@ -7,8 +7,44 @@
       <document-title-bar />
       <workflow-steps />
       
+      <!-- Visibility widget-->
+      <div class="m-b-sm">
+        <p class="is-size-6">
+          <span class="tag">
+            <visibility-toggle
+              class="m-r-md"
+              :action="toggleImageVisibility"
+              :visible="imageVisibility"
+            >
+              image
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="transcriptionView && $attrs.section === 'translation' && (currentUser.id === selectedUserId && currentUserIsTeacher)"
+              :action="toggleTranscriptionVisibility"
+              :visible="transcriptionVisibility"
+            >
+              transcription
+            </visibility-toggle>
+            <!--
+            <visibility-toggle
+              v-if="translationView && $attrs.section === 'transcription'"
+              class="m-l-md"
+              :action="toggleTranslationVisibility"
+              :visible="translationVisibility"
+            >
+              traduction
+            </visibility-toggle>
+            -->
+          </span>
+        </p>
+      </div>
+
       <div class="columns">
-        <div class="column is-two-fifths">
+        <div
+          v-show="imageVisibility"
+          class="column m-t-sm"
+          :class="`${imageVisibility ? 'is-two-fifths': ''}`"
+        >
           <i-i-i-f-viewer />
         </div>
         <div class="column">
@@ -113,15 +149,20 @@
               <!-- translation read only-->
               <div v-if="isTranslationReadOnly && translationError === null">
                 <message
-                  v-if="isTranslationValidated"
+                  v-if="isTranslationValidated || currentUser.id !== selectedUserId"
                   message-class="is-small"
                 >
                   Ce contenu a été édité par 
                   <span v-if="currentUserIsTeacher">{{ selectedUser.first_name }} {{ selectedUser.last_name }}.</span>
                   <span v-else>{{ documentOwner.first_name }} {{ documentOwner.last_name }}</span>
                 </message>
-                <document-translation
+                <document-translation 
+                  v-if="!transcriptionVisibility || currentUser.id !== selectedUserId"
                   :readonly-data="translationView"
+                />
+                <document-transcription-alignment
+                  v-if="isTranslationValidated && transcriptionView && translationView && transcriptionVisibility && currentUser.id === selectedUserId"
+                  :readonly-data="transcriptionAlignmentView"
                 />
               </div>
               <div v-else-if="translationError">
@@ -168,6 +209,10 @@
             />
           </div>
         </div>
+        <div 
+          v-show="!imageVisibility"
+          class="column is-one-quarter"
+        />
       </div>
     </div>
   </div>
@@ -188,6 +233,7 @@ import DocumentEditionSpeechParts from '../components/document/edition/DocumentE
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
+import DocumentTranscriptionAlignment from '../components/document/view/DocumentTranscriptionAlignment.vue'
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
 
@@ -198,6 +244,7 @@ import TranscriptionActionBar from '../components/document/edition/Transcription
 import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
 
 import Message from '../components/Message.vue'
+import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
 
 import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '../store/modules/workflow'
 
@@ -218,10 +265,12 @@ export default {
 
         DocumentTranscription,
         DocumentTranslation,
+        DocumentTranscriptionAlignment,
 
         IIIFViewer,
         WorkflowSteps,
-        Message
+        Message,
+        VisibilityToggle
 
         /*
         DocumentNotice,
@@ -248,7 +297,12 @@ export default {
     data() {
       return {
         transcriptionError: null,
-        translationError: null
+        translationError: null,
+        transcriptionAlignmentError: null,
+
+        imageVisibility: true,
+        transcriptionVisibility: true,
+        translationVisibility: true,
       }
     },
     computed: {
@@ -331,6 +385,13 @@ export default {
           })
         }
       },
+      fetchTranscriptionAlignmentView() {
+        // only teachers can align
+        // when the translation is validated, they can see the readonly alignment
+        return this.$store.dispatch('document/fetchTranscriptionAlignmentView', {
+          id: this.$attrs.docId
+        })
+      },
       async fetchContentFromUser(){
         try {
           this.transcriptionError = null
@@ -345,9 +406,38 @@ export default {
         } catch (error) {
           this.translationError = error
         }
+
+        try {
+          this.transcriptionAlignmentError = null
+          await this.fetchTranscriptionAlignmentView()
+        } catch(error) {
+          this.transcriptionAlignmentError = error
+        }
+
+        this.transcriptionVisibility = this.transcriptionView !== null
+        this.translationVisibility = this.translationView !== null
       },
 
-        isStepReadOnly(step) {
+      toggleImageVisibility() {
+        // forbid hidding everything
+        if (this.transcriptionVisibility || this.translationVisibility) {
+          this.imageVisibility = !this.imageVisibility
+        }
+      },
+      toggleTranscriptionVisibility() {
+        // forbid hidding everything
+        if (this.translationVisibility || this.imageVisibility) {
+          this.transcriptionVisibility = !this.transcriptionVisibility
+        }
+      },
+      toggleTranslationVisibility() {
+        // forbid hidding everything
+        if (this.transcriptionVisibility || this.imageVisibility) {
+          this.translationVisibility = !this.translationVisibility
+        }
+      },
+
+      isStepReadOnly(step) {
           // should be avoidable with guard routing 
           if (this.currentUser === null) {
             return true
