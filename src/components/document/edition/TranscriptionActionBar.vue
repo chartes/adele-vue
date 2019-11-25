@@ -1,21 +1,23 @@
 <template>
-  <div class="field is-grouped">
-    <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
-    <p class="control">
-      <button
-        class="button is-small"
-        :class="`${isTranscriptionValidated ? 'is-success' : 'is-light'}`"
-        @click="toggleTranscriptionValidation"
-      >
-        <span> {{ isTranscriptionValidated ? 'Transcription validée' : 'Valider la transcription' }} </span>
-        <span
-          v-show="isTranscriptionValidated"
-          class="icon"
+  <div class="m-b-md">
+    <div class="field is-grouped">
+      <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
+      <p class="control">
+        <button
+          class="button is-small"
+          :class="`${isTranscriptionValidated ? 'is-success' : 'is-light'}`"
+          @click="toggleTranscriptionValidation"
         >
-          <i class="fa fa-check" />
-        </span>
-      </button>
-    </p>
+          <span> {{ isTranscriptionValidated ? 'Transcription validée' : 'Valider la transcription' }} </span>
+          <span
+            v-show="isTranscriptionValidated"
+            class="icon"
+          >
+            <i class="fa fa-check" />
+          </span>
+        </button>
+      </p>
+    </div>
   </div>
 </template>
 

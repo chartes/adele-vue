@@ -1,19 +1,27 @@
 <template>
-    <button
-            class="button is-small"
-            :class="{'selected': selected}"
-            :disabled="!active" @click="callback(format)"
-            v-html="iconSvg"
-
-    />
+  <button
+    class="button is-small"
+    :class="{'selected': selected}"
+    :disabled="!active"
+    @click="callback(format)"
+  >
+    <i class="fa fa-bold" />
+    <!--
+    <img
+      :src="iconSvg"
+      style="width:32px; height: 32px;"
+    >
+    -->
+  </button>
 </template>
 
 <script>
-
-    import icons from '../../modules/quill/icons'
+  import icons from '../../modules/quill/icons'
 
   export default {
-    name: "editor-button",
+    name: "EditorButton",
+    components: {
+    },
     props: ['selected', 'active', 'callback', 'format'],
     computed: {
       iconClass () {

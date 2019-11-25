@@ -1,21 +1,37 @@
 <template>
-  <div class="field is-grouped">
-    <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
-    <p class="control">
-      <button
-        class="button is-small"
-        :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
-        @click="toggleTranslationValidation"
-      >
-        <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
-        <span
-          v-show="isTranslationValidated"
-          class="icon"
+  <div class="m-b-md">
+    <div class="field is-grouped">
+      <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
+      <p class="control">
+        <button
+          class="button is-small"
+          :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
+          @click="toggleTranslationValidation"
         >
-          <i class="fa fa-check" />
-        </span>
-      </button>
-    </p>
+          <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
+          <span
+            v-show="isTranslationValidated"
+            class="icon"
+          >
+            <i class="fa fa-check" />
+          </span>
+        </button>
+      </p>
+      <!-- ALIGNMENT MODE --> 
+      <!-- SI PAS ENCORE D'Alignement, afficher un message spécifique 'Aligner la traduction avec la transcription ? [Commencer]' -->
+      <p
+        v-if="isTranslationValidated"
+        class="control"
+      >
+        <button
+          class="button is-small is-info is-light"
+          :disabled="!isTranslationValidated"
+          @click="toggleTranscriptionAlignmentMode"
+        >
+          <span> {{ isTranscriptionAlignmentMode ? 'Quitter le mode Alignement' : 'Aligner la traduction avec la transcription' }} </span>
+        </button>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -28,10 +44,15 @@ export default {
     components: {
 
     },
+    data() {
+      return {
+        isTranscriptionAlignmentMode: false,
+      }
+    },
     computed: {
-        ...mapState('document', ['document']),
+        ...mapState('document', ['document', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
-        ...mapGetters('workflow', ['isTranslationValidated'])
+        ...mapGetters('workflow', ['isTranslationValidated']),
     },
     methods: {
       validateTranslation() {
@@ -48,6 +69,9 @@ export default {
         } else {
           return this.validateTranslation()
         }
+      },
+      toggleTranscriptionAlignmentMode() {
+        this.isTranscriptionAlignmentMode = !this.isTranscriptionAlignmentMode
       }
     }
 }

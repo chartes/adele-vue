@@ -20,19 +20,40 @@
               image
             </visibility-toggle>
             <visibility-toggle
-              v-if="transcriptionView && $attrs.section === 'transcription'"
+              v-if="$attrs.section === 'notice'"
+              :action="toggleNoticeVisibility"
+              :visible="noticeVisibility"
+            >
+              notice
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
               :action="toggleTranscriptionVisibility"
               :visible="transcriptionVisibility"
             >
               transcription
             </visibility-toggle>
             <visibility-toggle
-              v-if="translationView && $attrs.section === 'transcription'"
+              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
               class="m-l-md"
               :action="toggleTranslationVisibility"
               :visible="translationVisibility"
             >
               traduction
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'commentaries'"
+              :action="toggleCommentariesVisibility"
+              :visible="commentariesVisibility"
+            >
+              commentaires
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'speech-parts'"
+              :action="toggleSpeechPartsVisibility"
+              :visible="speechpartsVisibility"
+            >
+              parties du discours
             </visibility-toggle>
           </span>
         </p>
@@ -42,12 +63,12 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility && (transcriptionVisibility || translationVisibility) ? 'is-two-fifths' : ''}`"
+          :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
         >
           <i-i-i-f-viewer />
         </div>
         <div
-          v-show="transcriptionVisibility || translationVisibility"
+          v-if="showContent"
           class="column"
         >
           <div class="tabs">
@@ -106,7 +127,7 @@
                 :readonly-data="translationView"
               />
               <document-transcription-alignment
-                v-if="transcriptionVisibility && translationVisibility"
+                v-if="transcriptionAlignmentView && transcriptionVisibility && translationVisibility"
                 :readonly-data="transcriptionAlignmentView"
               />
             </div>
@@ -122,7 +143,7 @@
         </div>
 
         <div 
-          v-show="!imageVisibility"
+          v-show="false && !imageVisibility && showContent"
           class="column is-one-quarter"
         />
       </div>
@@ -163,15 +184,22 @@ export default {
     data() {
       return {
         imageVisibility: true,
+        noticeVisibility: true,
         transcriptionVisibility: true,
         translationVisibility: true,
+        commentariesVisibility: true,
+        speechpartsVisibility: true,
       }
     },
     computed: {
         ...mapState('document', ['document', 'loading',
                                  'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapGetters('user', ['loggedIn']),
-        ...mapGetters('workflow', ['isTranscriptionValidated'])
+        ...mapGetters('workflow', ['isTranscriptionValidated']),
+
+        showContent() {
+          return (this.transcriptionVisibility || this.translationVisibility) && this.noticeVisibility && this.commentariesVisibility && this.speechpartsVisibility
+        }
     },
     async created() {
       try {
@@ -196,8 +224,8 @@ export default {
         console.error(error)
       }
 
-      this.transcriptionVisibility = this.transcriptionView !== null
-      this.translationVisibility = this.translationView !== null
+      //this.transcriptionVisibility = this.transcriptionView !== null
+      //this.translationVisibility = this.translationView !== null
       // init notes popup
     },
     methods: {
@@ -224,20 +252,38 @@ export default {
 
       toggleImageVisibility() {
         // forbid hidding everything
-        if (this.transcriptionVisibility || this.translationVisibility) {
+        if (this.showContent) {
           this.imageVisibility = !this.imageVisibility
+        }
+      },
+      toggleNoticeVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.noticeVisibility = !this.noticeVisibility
         }
       },
       toggleTranscriptionVisibility() {
         // forbid hidding everything
-        if (this.translationVisibility || this.imageVisibility) {
+        if (this.imageVisibility || this.translationVisibility) {
           this.transcriptionVisibility = !this.transcriptionVisibility
         }
       },
       toggleTranslationVisibility() {
         // forbid hidding everything
-        if (this.transcriptionVisibility || this.imageVisibility) {
+        if (this.imageVisibility || this.transcriptionVisibility) {
           this.translationVisibility = !this.translationVisibility
+        }
+      },
+      toggleCommentariesVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.commentariesVisibility = !this.commentariesVisibility
+        }
+      },
+      toggleSpeechPartsVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.speechpartsVisibility = !this.speechpartsVisibility
         }
       },
     }

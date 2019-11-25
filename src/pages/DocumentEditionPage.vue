@@ -19,22 +19,41 @@
               image
             </visibility-toggle>
             <visibility-toggle
-              v-if="transcriptionView && $attrs.section === 'translation' && (currentUser.id === selectedUserId && currentUserIsTeacher)"
+              v-if="$attrs.section === 'notice'"
+              :action="toggleNoticeVisibility"
+              :visible="noticeVisibility"
+            >
+              notice
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'translation' || $attrs.section === 'transcription'"
               :action="toggleTranscriptionVisibility"
               :visible="transcriptionVisibility"
             >
               transcription
             </visibility-toggle>
-            <!--
             <visibility-toggle
-              v-if="translationView && $attrs.section === 'transcription'"
+              v-if="$attrs.section === 'translation'"
               class="m-l-md"
               :action="toggleTranslationVisibility"
               :visible="translationVisibility"
             >
               traduction
             </visibility-toggle>
-            -->
+            <visibility-toggle
+              v-if="$attrs.section === 'commentaries'"
+              :action="toggleCommentariesVisibility"
+              :visible="commentariesVisibility"
+            >
+              commentaires
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'speech-parts'"
+              :action="toggleSpeechPartsVisibility"
+              :visible="speechpartsVisibility"
+            >
+              parties du discours
+            </visibility-toggle>
           </span>
         </p>
       </div>
@@ -43,11 +62,14 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility ? 'is-two-fifths': ''}`"
+          :class="`${imageVisibility && showContent ? 'is-two-fifths': ''}`"
         >
           <i-i-i-f-viewer />
         </div>
-        <div class="column">
+        <div
+          v-if="showContent"
+          class="column"
+        >
           <div class="tabs">
             <ul>
               <li :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''">
@@ -86,7 +108,6 @@
                 </router-link>
               </li>
               <li
-                v-if="currentUserIsTeacher"
                 :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">
@@ -109,7 +130,7 @@
               <!-- transcription read only-->
               <div v-if="isTranscriptionReadOnly && transcriptionError === null">
                 <message
-                  v-if="isTranscriptionValidated"
+                  v-if="isTranscriptionValidated || currentUser.id !== selectedUserId"
                   message-class=" is-small"
                 >
                   Ce contenu a été édité par 
@@ -296,13 +317,19 @@ export default {
     },
     data() {
       return {
+        
+        init: false,
+
         transcriptionError: null,
         translationError: null,
         transcriptionAlignmentError: null,
 
         imageVisibility: true,
+        noticeVisibility: true,
         transcriptionVisibility: true,
         translationVisibility: true,
+        commentariesVisibility: true,
+        speechpartsVisibility: true,
       }
     },
     computed: {
@@ -316,6 +343,9 @@ export default {
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated']),
         ...mapGetters('document', ['documentOwner']),
 
+        showContent() {
+          return (this.transcriptionVisibility || this.translationVisibility) && this.noticeVisibility && this.commentariesVisibility && this.speechpartsVisibility
+        },
         isTranscriptionReadOnly() {
           return this.isStepReadOnly(TRANSCRIPTION_STEP)
         },
@@ -329,7 +359,9 @@ export default {
     },
     watch:{
       selectedUserId() {
-        this.fetchContentFromUser()
+        if (this.init) {
+          this.fetchContentFromUser()
+        }
       }
     },
     async created() {
@@ -339,7 +371,8 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
-      this.fetchContentFromUser()
+      this.fetchContentFromUser() // already fetched by the watcher of selectedUserId
+      this.init = true
     },
     methods: {
       fetchOne() {
@@ -396,6 +429,7 @@ export default {
         try {
           this.transcriptionError = null
           await this.fetchTranscriptionContent()
+          this.transcriptionVisibility = this.transcriptionView !== null
         } catch (error) {
           this.transcriptionError = error
         }
@@ -403,6 +437,7 @@ export default {
         try {
           this.translationError = null
           await this.fetchTranslationContent()
+          this.translationVisibility = this.translationView !== null
         } catch (error) {
           this.translationError = error
         }
@@ -414,27 +449,6 @@ export default {
           this.transcriptionAlignmentError = error
         }
 
-        this.transcriptionVisibility = this.transcriptionView !== null
-        this.translationVisibility = this.translationView !== null
-      },
-
-      toggleImageVisibility() {
-        // forbid hidding everything
-        if (this.transcriptionVisibility || this.translationVisibility) {
-          this.imageVisibility = !this.imageVisibility
-        }
-      },
-      toggleTranscriptionVisibility() {
-        // forbid hidding everything
-        if (this.translationVisibility || this.imageVisibility) {
-          this.transcriptionVisibility = !this.transcriptionVisibility
-        }
-      },
-      toggleTranslationVisibility() {
-        // forbid hidding everything
-        if (this.transcriptionVisibility || this.imageVisibility) {
-          this.translationVisibility = !this.translationVisibility
-        }
       },
 
       isStepReadOnly(step) {
@@ -454,7 +468,45 @@ export default {
           
           return this.document.validation_step >= step
 
-        },
+      },
+
+
+      toggleImageVisibility() {
+        // forbid hidding everything
+        if (this.showContent) {
+          this.imageVisibility = !this.imageVisibility
+        }
+      },
+      toggleNoticeVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.noticeVisibility = !this.noticeVisibility
+        }
+      },
+      toggleTranscriptionVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility || this.translationVisibility) {
+          this.transcriptionVisibility = !this.transcriptionVisibility
+        }
+      },
+      toggleTranslationVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility || this.transcriptionVisibility) {
+          this.translationVisibility = !this.translationVisibility
+        }
+      },
+      toggleCommentariesVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.commentariesVisibility = !this.commentariesVisibility
+        }
+      },
+      toggleSpeechPartsVisibility() {
+        // forbid hidding everything
+        if (this.imageVisibility) {
+          this.speechpartsVisibility = !this.speechpartsVisibility
+        }
+      },
     }
 }
 </script>

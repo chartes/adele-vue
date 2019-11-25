@@ -1,5 +1,5 @@
 <template>
-  <div class="m-b-xl">
+  <div class="m-b-xl m-t-md">
     <div class="tile is-ancestor  is-vertical">
       <div class="tile is-parent is-uppercase">
         <span class="has-text-info is-size-5">
