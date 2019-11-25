@@ -1,18 +1,29 @@
 import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
-//import vuetify from '@/plugins/vuetify' // path to vuetify export
 import router from './routes/index';
 
 import './assets/sass/main.scss'
 
 Vue.config.productionTip = false;
 
+import { Icon }  from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+
+
+// this part resolve an issue where the markers would not appear
+delete Icon.Default.prototype._getIconUrl;
+
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+  iconUrl: require('leaflet/dist/images/marker-icon.png'),
+  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
+
 new Vue({
   el: '#app',
   store,
   router,
-  //vuetify,
   created () {
     const userString = localStorage.getItem('user') // grab user data from local storage
 

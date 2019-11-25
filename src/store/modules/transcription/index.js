@@ -1,5 +1,6 @@
-import axios from 'axios';
 import Quill from '../../../modules/quill/AdeleQuill';
+import {http} from '../../../modules/http-common';
+
 import {
   TEIToQuill,
   quillToTEI,
@@ -30,15 +31,15 @@ let facsimileShadowQuill;
 const state = {
 
   transcriptionLoading: true,
-  transcription: false,
-  transcriptionContent: false,
-  transcriptionWithNotes: false,
-  transcriptionWithSpeechparts: false,
-  transcriptionWithFacsimile: false,
+  transcription: null,
+  transcriptionContent: null,
+  transcriptionWithNotes: null,
+  transcriptionWithSpeechparts: null,
+  transcriptionWithFacsimile: null,
   transcriptionSaved: true,
-  transcriptionError: false,
+  transcriptionError: null,
   transcriptionAlignments: [],
-  referenceTranscription: false,
+  referenceTranscription: null,
   savingStatus: 'uptodate'
 
 };
@@ -52,12 +53,12 @@ const mutations = {
       transcriptionShadowQuillElement.innerHTML = payload.content || "";
       transcriptionShadowQuill = new Quill(transcriptionShadowQuillElement);
       state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
-      console.log("INIT with content", state.transcriptionContent);
+      //console.log("INIT with content", state.transcriptionContent);
 
       notesShadowQuillElement.innerHTML = payload.withNotes || "";
       notesShadowQuill = new Quill(notesShadowQuillElement);
       state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
-      console.log("INIT with notes", state.transcriptionWithNotes);
+      //console.log("INIT with notes", state.transcriptionWithNotes);
 
       speechpartsShadowQuillElement.innerHTML = payload.withSpeechparts || "";
       speechpartsShadowQuill = new Quill(speechpartsShadowQuillElement);
@@ -72,12 +73,12 @@ const mutations = {
   RESET(state) {
 
     console.log("STORE MUTATION transcription/RESET");
-    state.transcription = false;
+    state.transcription = null;
     state.transcriptionAlignments = [];
-    state.transcriptionContent = false;
-    state.transcriptionWithNotes = false;
-    state.transcriptionWithSpeechparts = false;
-    state.transcriptionWithFacsimile = false;
+    state.transcriptionContent = null;
+    state.transcriptionWithNotes = null;
+    state.transcriptionWithSpeechparts = null;
+    state.transcriptionWithFacsimile = null;
 
     
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
@@ -113,18 +114,18 @@ const mutations = {
   },
   ADD_OPERATION (state, payload) {
 
-    console.log(`%c ADD_OPERATION`, 'color:red', payload);
+    //console.log(`%c ADD_OPERATION`, 'color:red', payload);
 
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
 
-    console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-    console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
+    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
+    //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
-    console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
+    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
   
     notesShadowQuill.updateContents(deltaFilteredForNotes);
     speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
@@ -136,7 +137,7 @@ const mutations = {
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
   
   
-    console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
+    //console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
 
   },
   SAVED (state) {
@@ -175,21 +176,12 @@ const actions = {
       })
 
   },
-  fetchTranscriptionFromUser ({commit, state, rootState}, {doc_id, user_id}) {
+  fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
+    commit('RESET')
+    return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
+      commit('LOADING_STATUS', true);
 
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/from-user/${user_id}`).then( response => {
-
-      commit('LOADING_STATUS', false);
-
-      if (response.data.errors && response.data.errors.status === 404) {
-        console.warn("NO transcription found");
-        //return this.dispatch('transcription/fetchReference', {doc_id});
-      }
-      let transcription = {content : " ", notes: []};
-
-      if (response.data.data && response.data.data.length !== 0) {
-        transcription = response.data.data[0];
-      }
+      let transcription = response.data.data;
 
       let quillContent = TEIToQuill(transcription.content);
       let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
@@ -206,10 +198,15 @@ const actions = {
 
       commit('INIT', data);
       commit('UPDATE', data);
+      commit('LOADING_STATUS', false);
+
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
     })
   },
   fetchAlignments ({commit}, {doc_id, user_id}) {
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
+    return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
       //console.log("STORE ACTION transcription/fetchAlignments", response)
       if (response.data.errors) {
         commit('ALIGNMENTS', []);
@@ -223,7 +220,7 @@ const actions = {
 
     //console.log('STORE ACTION transcription/fetchReference', doc_id);
 
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/reference`).then( response => {
+    return http.get(`documents/${doc_id}/transcriptions/reference`).then( response => {
 
       commit('LOADING_STATUS', false);
 
@@ -250,7 +247,7 @@ const actions = {
   validate({dispatch, commit, rootState, rootGetters}) {
     const auth = rootGetters['user/authHeader'];
     const docId = rootState.document.document.id;
-    return axios.get(`/adele/api/1.0/documents/${docId}/validate-transcription`, auth).then(response => {
+    return http.get(`documents/${docId}/validate-transcription`, auth).then(response => {
       console.log("validate response", response.data, auth);
       this.dispatch('document/setValidationStage', {
         validationStage: response.data.data.validation_step,
@@ -261,7 +258,7 @@ const actions = {
   unvalidate({dispatch, commit, rootState, rootGetters}) {
     const auth = rootGetters['user/authHeader'];
     const docId = rootState.document.document.id;
-    return axios.get(`/adele/api/1.0/documents/${docId}/unvalidate-transcription`, auth).then(response => {
+    return http.get(`documents/${docId}/unvalidate-transcription`, auth).then(response => {
       console.log("unvalidate response", response.data.data.validation_step_label);
       this.dispatch('document/setValidationStage', {
         validationStage: response.data.data.validation_step,
@@ -276,7 +273,7 @@ const actions = {
         "username": rootState.user.currentUser.username
       }]};
     return new Promise( ( resolve, reject ) => {
-      axios.post(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions`, data, auth)
+      http.post(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
         .then( response => {
           if (response.data.errors) {
             reject(response.data.errors);
@@ -336,10 +333,10 @@ const actions = {
         "content" : sanitized,
         "username": rootState.user.author.username
       }]};
-    const method  = (state.transcription && state.transcription.doc_id) ? axios.put : axios.post;
+    const method  = (state.transcription && state.transcription.doc_id) ? http.put : http.post;
     
     return new Promise( ( resolve, reject ) => {
-      method(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions`, data, auth)
+      method(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
         .then( response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -360,7 +357,7 @@ const actions = {
     const doc_id = rootState.document.document.id;
     const user_id = rootState.user.author.id;
     return new Promise((resolve, reject) => {
-      axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/clone/from-user/${user_id}`, auth)
+      http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`, auth)
         .then(response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -399,7 +396,7 @@ const actions = {
       const auth = rootGetters['user/authHeader'];
 
       return new Promise((resolve, reject) => {
-          axios.put(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions/notes`, {data: notes}, auth)
+          http.put(`documents/${rootState.document.document.id}/transcriptions/notes`, {data: notes}, auth)
               .then(response => {
                   if (response.data.errors) {
                       console.error("error", response.data.errors);
@@ -437,7 +434,7 @@ const actions = {
     //console.log("saveSpeechparts", speechparts)
 
     return new Promise( ( resolve, reject ) => {
-      return axios.post(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions/alignments/discours`, { data: data }, auth)
+      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/discours`, { data: data }, auth)
         .then( response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -473,7 +470,7 @@ const actions = {
     };
 
     return new Promise( ( resolve, reject ) => {
-      return axios.post(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions/alignments/images`, { data: data }, auth)
+      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/images`, { data: data }, auth)
         .then( response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -507,7 +504,7 @@ const actions = {
         ptr_list : pointers,
       }};
     return new Promise( ( resolve, reject ) => {
-      axios.post(`/adele/api/1.0/documents/${rootState.document.document.id}/transcriptions/alignments`, data, auth)
+      http.post(`documents/${rootState.document.document.id}/transcriptions/alignments`, data, auth)
         .then( response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);

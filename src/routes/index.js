@@ -3,25 +3,26 @@ import VueRouter, {Location, Route, RouteConfig} from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
+import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
+import LoginPage from "@/pages/LoginPage.vue"
+import ErrorPage from "@/pages/ErrorPage.vue"
 
 /*
-import LoginPage from "@/pages/LoginPage.vue"
 import RegisterPage from "@/pages/RegisterPage.vue"
-import DocumentPage from "@/pages/DocumentPage.vue"
 */
 
 Vue.use(VueRouter)
 
 const rootUrl = `${process.env.VUE_APP_APP_ROOT_URL}`
 
-export default new VueRouter({
+const router = new VueRouter({
   base: rootUrl,
   mode: 'history',
   routes: [
     {
       path: '/',
       component: LandingPage,
-      name: 'landing'
+      name: 'home'
     },
     {
       path: '/documents',
@@ -29,33 +30,34 @@ export default new VueRouter({
       name: 'search'
     },
     {
-      path: '/documents/:docId',
+      path: '/documents/view/:docId',
       redirect:  '/documents/:docId/notice'
     },
     {
-      path: '/documents/:docId/:section',
+      path: '/documents/view/:docId/:section',
       component: DocumentPage,
-      name: 'document',
+      name: 'document-view',
       props: true
     },
-     /*
     {
-      path: '/register',
-      component: RegisterPage,
-      name: 'register'
+      path: '/documents/edit/:docId/:section',
+      component: DocumentEditionPage,
+      name: 'document-edition',
+      props: true
     },
     {
       path: '/login',
       component: LoginPage,
       name: 'login'
     },
-   
     {
-      path: '/documents/:docId',
-      component: DocumentPage,
-      name: 'document',
+      path: '/error',
+      component: ErrorPage,
+      name: 'error',
       props: true
-    },
-    */
+    }
   ]
 })
+
+
+export default router;

@@ -203,7 +203,7 @@ const insertNotes = (text, notes) => {
 
   //console.group(`%c insertNotes`, 'color:orange')²
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  console.log("%c notePointers =>", 'color:orange', notePointers)
+  //console.log("%c notePointers =>", 'color:orange', notePointers)
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
@@ -211,7 +211,7 @@ const insertNotes = (text, notes) => {
 
   notePointers.forEach(note => {
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
   //console.groupEnd()
   return shadowQuillElement.children[0].innerHTML;
@@ -264,7 +264,7 @@ const insertSegments = (text, segments, translationOrTranscription) => {
 
   let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
   segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
+  //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
   let indexCorrection = 0;
   segmentsIndices.forEach(segmentIndex => {
     shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
@@ -277,7 +277,7 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
 
   //console.group(`%c insertNotesAndSegments ${translationOrTranscription}`, 'color:orange')
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  console.log("%c notePointers =>", 'color:orange', notePointers)
+  //console.log("%c notePointers =>", 'color:orange', notePointers)
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
@@ -285,13 +285,13 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
 
   notePointers.forEach(note => {
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
 
-  console.log("%c insert segments =>", 'color:orange', segments)
+  //console.log("%c insert segments =>", 'color:orange', segments)
   let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
   segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
+  //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
   let indexCorrection = 0;
   segmentsIndices.forEach(segmentIndex => {
     shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
@@ -370,7 +370,7 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
   }
 
   //console.group(`%c computeQuillPointersFromTEIPointers ${text}`, 'color:green')
-  console.log(text)
+  //console.log(text)
 
   // deals with space between beginning of the text and first note
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
@@ -386,7 +386,7 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
     const deltaStart = startText.length - startTextSanitized.length;
     delta -= deltaStart;
     let startIndex = pointer.ptr_start + delta;
-    console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
+    //console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
 
     const linkedText =  text.substring(pointer.ptr_start, pointer.ptr_end);
     const linkedTextSanitized = linkedText.replace(sanitizePattern, '')
@@ -394,10 +394,10 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
     delta -= deltaLinked;
     let endIndex = pointer.ptr_end + delta;
 
-    console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
+    //console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
 
     let quillPointer = { ...pointer, ptr_start: startIndex, ptr_end: endIndex}
-    console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
+    //console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
     //console.groupEnd()
     count++;
     return quillPointer
@@ -413,7 +413,7 @@ const computeQuillIndicesFromTEIIndices = (text, teiIndices) => {
   }
 
   //console.group(`%c computeQuillIndicesFromTEIIndices ${text}`, 'color:pink')
-  console.log(text)
+  //console.log(text)
 
   // deals with space between beginning of the text and first note
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
@@ -429,9 +429,9 @@ const computeQuillIndicesFromTEIIndices = (text, teiIndices) => {
     const deltaStart = startText.length - startTextSanitized.length;
     delta -= deltaStart;
     let startIndex = index + delta;
-    console.log(`%c before (${start} => ${index}): '${startTextSanitized}' =>${startIndex} delta=${delta}`, 'color:pink')
+    //console.log(`%c before (${start} => ${index}): '${startTextSanitized}' =>${startIndex} delta=${delta}`, 'color:pink')
 
-    console.log("%c =>", 'color:pink', startIndex)
+    //console.log("%c =>", 'color:pink', startIndex)
     //console.groupEnd()
     count++;
     return startIndex
@@ -501,30 +501,32 @@ const computeNotesPointers  = (htmlWithNotes) => {
 
 
   //console.group("%c ###########################################", 'color:DarkOrchid')
-  console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
-  console.log("%c ######", 'color:DarkOrchid')
+  //console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
+  //console.log("%c ######", 'color:DarkOrchid')
 
   while((resStart = regexpStart.exec(htmlWithNotes)) !== null) {
-    console.log(`# ${htmlWithNotes}`, 'color:DarkOrchid')
-    console.log(`# resStart`, 'color:DarkOrchid', resStart)
+    //console.log(`# ${htmlWithNotes}`, 'color:DarkOrchid')
+    //console.log(`# resStart`, 'color:DarkOrchid', resStart)
     htmlWithNotes = htmlWithNotes.replace(regexpStart, '');
     resEnd = regexpEnd.exec(htmlWithNotes);
-    console.log(`# resEnd`, 'color:DarkOrchid', resEnd)
+    //console.log(`# resEnd`, 'color:DarkOrchid', resEnd)
     htmlWithNotes = htmlWithNotes.replace(regexpEnd, '');
     notes.push({
       "note_id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     });
+    /*
     console.log('%c =>', 'color:DarkOrchid', {
       "note_id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     })
+    */
   }
-  console.warn('%c computeNotesPointers', 'color:DarkOrchid', notes.length, notes)
+  //console.warn('%c computeNotesPointers', 'color:DarkOrchid', notes.length, notes)
 
-  console.log("%c ###########################################", 'color:DarkOrchid')
+  //console.log("%c ###########################################", 'color:DarkOrchid')
   //console.groupEnd()
   return notes;
 }
@@ -535,7 +537,7 @@ Replace strings like </ex></note><ex> by </note>
 and like </ex><note id="xxx"><ex> by <note id="xxx">
  */
 const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
-  console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
+  //console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
   regexpClosingToClean.forEach(re => {
     htmlWithNotes = htmlWithNotes.replace(re, '</note>')
   })
@@ -543,7 +545,7 @@ const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
     htmlWithNotes = htmlWithNotes.replace(re, '<note id="$1">')
   })
 
-  console.log(`%c   => ${htmlWithNotes}`, 'color:DarkSlateGray' )
+  //console.log(`%c   => ${htmlWithNotes}`, 'color:DarkSlateGray' )
   return htmlWithNotes;
 }
 const computeAlignmentPointers  = (htmlWithSegments) => {

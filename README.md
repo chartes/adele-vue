@@ -1,7 +1,4 @@
-
 # adele-vue
-=======
-# lettres-vue
 
 ## Project setup
 ```

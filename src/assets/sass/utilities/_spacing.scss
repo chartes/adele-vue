@@ -1,0 +1,45 @@
+$spacingSizeUnit: rem;
+$marginKey: 'm';
+$paddingKey: 'p';
+$separator: '-';
+$spacingSizes: (
+    ('none', 0),
+    ('xxs', 0.125),
+    ('xs', 0.25),
+    ('sm', 0.5),
+    ('md', 1),
+    ('lg', 2),
+    ('xl', 4),
+    ('xxl', 8),
+);
+$positions: (
+    ('t', 'top'),
+    ('r', 'right'),
+    ('b', 'bottom'),
+    ('l', 'left')
+);
+
+@function spacingSizeValue($key, $value) {
+    @return if($key == 'none', 0, $value + $spacingSizeUnit);
+}
+
+@each $spacingSize in $spacingSizes {
+    $spacingSizeKey: nth($spacingSize, 1);
+    $spacingSizeValue: nth($spacingSize, 2);
+    .#{$marginKey}#{$separator}#{$spacingSizeKey} {
+        margin: spacingSizeValue($spacingSizeKey, $spacingSizeValue);
+    }
+    .#{$paddingKey}#{$separator}#{$spacingSizeKey} {
+        padding: spacingSizeValue($spacingSizeKey, $spacingSizeValue);
+    }
+    @each $position in $positions {
+        $posKey: nth($position, 1);
+        $posValue: nth($position, 2);
+        .#{$marginKey}#{$separator}#{$posKey}#{$separator}#{$spacingSizeKey} {
+            margin-#{$posValue}: spacingSizeValue($spacingSizeKey, $spacingSizeValue);
+        }
+        .#{$paddingKey}#{$separator}#{$posKey}#{$separator}#{$spacingSizeKey} {
+            padding-#{$posValue}: spacingSizeValue($spacingSizeKey, $spacingSizeValue);
+        }
+    }
+}

@@ -1,19 +1,23 @@
 <template>
-  <div class="box is-info">
-    <slot />
-  </div>
+  <article
+    class="message"
+    :class="messageClass"
+  >
+    <div class="message-body">
+      <slot />
+    </div>
+  </article>
 </template>
 
 <script>
     export default {
-        name: "Message"
+        name: "Message",
+        props: {
+          messageClass: {type: String, default: 'is-info'}
+        }
     }
 </script>
 
 <style scoped>
-  .box {
-    background: #eee;
-    padding: 1em;
-    border: 1px solid #ccc;
-  }
+
 </style>

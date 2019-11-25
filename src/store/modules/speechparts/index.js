@@ -51,6 +51,7 @@ const actions = {
 
   update ({ commit, getters, rootState }, speechpart) {
     return commit('UPDATE_ONE', speechpart);
+    /*
     const config = { auth: { username: rootState.user.authToken, password: undefined }};
     const theSpeechpart = {
       data: [{
@@ -66,6 +67,7 @@ const actions = {
         commit('UPDATE_ONE', speechpart);
         return speechpart;
       })
+      */
   },
   delete ({ commit, getters, rootState }, speechpart) {
     const config = { auth: { username: rootState.user.authToken, password: undefined }};

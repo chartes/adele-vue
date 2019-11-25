@@ -1,6 +1,7 @@
 <template>
   <div>
     <div
+      v-if="!!readonlyData"
       class="content"
       v-html="readonlyData.content"
     />
@@ -18,7 +19,7 @@ export default {
         
     },
     props: {
-        readonlyData: {type: String, default: null}
+        readonlyData: {type: Object, default: null}
     },
     computed: {
         ...mapState('document', ['loading']),
@@ -27,7 +28,7 @@ export default {
       
     },
     methods: {
-      
+ 
     }
 }
 </script>
