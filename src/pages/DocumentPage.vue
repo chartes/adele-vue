@@ -198,7 +198,20 @@ export default {
         ...mapGetters('workflow', ['isTranscriptionValidated']),
 
         showContent() {
-          return (this.transcriptionVisibility || this.translationVisibility) && this.noticeVisibility && this.commentariesVisibility && this.speechpartsVisibility
+          switch(this.$attrs.section){
+            case 'transcription':
+              return this.transcriptionVisibility || this.translationVisibility
+            case 'translation':
+              return this.translationVisibility || this.transcriptionVisibility
+            case 'notice':
+              return this.noticeVisibility
+            case 'commentaries':
+              return this.commentariesVisibility
+            case 'speech-parts':
+              return this.speechpartsVisibility
+            default:
+              return true
+          }
         }
     },
     async created() {

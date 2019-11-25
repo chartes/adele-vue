@@ -344,7 +344,21 @@ export default {
         ...mapGetters('document', ['documentOwner']),
 
         showContent() {
-          return (this.transcriptionVisibility || this.translationVisibility) && this.noticeVisibility && this.commentariesVisibility && this.speechpartsVisibility
+          switch(this.$attrs.section){
+            case 'transcription':
+              return this.transcriptionVisibility
+            case 'translation':
+              return this.translationVisibility || this.transcriptionVisibility
+            case 'notice':
+              return this.noticeVisibility
+            case 'commentaries':
+              return this.commentariesVisibility
+            case 'speech-parts':
+              return this.speechpartsVisibility
+            default:
+              return true
+          }
+          
         },
         isTranscriptionReadOnly() {
           return this.isStepReadOnly(TRANSCRIPTION_STEP)
@@ -429,7 +443,7 @@ export default {
         try {
           this.transcriptionError = null
           await this.fetchTranscriptionContent()
-          this.transcriptionVisibility = this.transcriptionView !== null
+          this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
         } catch (error) {
           this.transcriptionError = error
         }
@@ -437,7 +451,7 @@ export default {
         try {
           this.translationError = null
           await this.fetchTranslationContent()
-          this.translationVisibility = this.translationView !== null
+          this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
         } catch (error) {
           this.translationError = error
         }
