@@ -2,7 +2,10 @@
   <div class="m-b-md">
     <div class="field is-grouped">
       <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
-      <p class="control">
+      <p
+        v-if="currentUserIsTeacher"
+        class="control"
+      >
         <button
           class="button is-small"
           :class="`${isTranscriptionValidated ? 'is-success' : 'is-light'}`"

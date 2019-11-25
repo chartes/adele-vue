@@ -2,7 +2,10 @@
   <div class="m-b-md">
     <div class="field is-grouped">
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
-      <p class="control">
+      <p
+        v-if="currentUserIsTeacher"
+        class="control"
+      >
         <button
           class="button is-small"
           :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
@@ -20,7 +23,7 @@
       <!-- ALIGNMENT MODE --> 
       <!-- SI PAS ENCORE D'Alignement, afficher un message spécifique 'Aligner la traduction avec la transcription ? [Commencer]' -->
       <p
-        v-if="isTranslationValidated"
+        v-if="isTranslationValidated && currentUserIsTeacher"
         class="control"
       >
         <button

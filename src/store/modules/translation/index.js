@@ -161,6 +161,19 @@ const actions = {
       throw error
     })
   },
+
+   
+  addNewTranslation ({dispatch}, {docId, userId}) {
+    const emptyTranslation = {
+      data: {
+        notes: [],
+        content: ""
+      }
+    }
+    return http.post(`documents/${docId}/translations/from-user/${userId}`, emptyTranslation)
+  },
+
+
   fetchReference ({commit}, {doc_id}) {
 
     console.log('STORE ACTION translation/fetchReference', doc_id);

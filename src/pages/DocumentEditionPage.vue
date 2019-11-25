@@ -131,11 +131,12 @@
               <div v-if="isTranscriptionReadOnly && transcriptionError === null">
                 <message
                   v-if="isTranscriptionValidated || currentUser.id !== selectedUserId"
-                  message-class=" is-small"
+                  message-class=""
                 >
-                  Ce contenu a été édité par 
-                  <span v-if="currentUserIsTeacher">{{ selectedUser.first_name }} {{ selectedUser.last_name }}.</span>
-                  <span v-else>{{ documentOwner.first_name }} {{ documentOwner.last_name }}</span>
+                  <span v-if="currentUser.id == documentOwner.id">
+                    Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
+                  </span>
+                  <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                 </message>
                 <document-transcription
                   :readonly-data="transcriptionView"
@@ -144,11 +145,20 @@
               <div v-else-if="transcriptionError">
                 <message
                   v-if="transcriptionError.response.status === 404"
-                  message-class="is-info is-small"
+                  message-class="is-info "
                 >
-                  <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                  <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
-                  pas encore soumis de transcription pour ce document.
+                  <p class="m-b-sm">
+                    <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                    <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                    pas encore commencé à transcrire ce document.
+                  </p>
+                  <div
+                    v-if="currentUser.id === selectedUser.id"
+                    class="button  is-info"
+                    @click="addNewTranscription"
+                  >
+                    Commencer à transcrire
+                  </div>
                 </message>
                 <message
                   v-else
@@ -159,7 +169,7 @@
               </div>
               <!-- transcription edition -->
               <div v-else>
-                <transcription-action-bar v-if="currentUserIsTeacher" />
+                <transcription-action-bar />
                 <document-edition-transcription
                   :transcription-with-notes="transcriptionWithNotes"
                 />
@@ -171,11 +181,12 @@
               <div v-if="isTranslationReadOnly && translationError === null">
                 <message
                   v-if="isTranslationValidated || currentUser.id !== selectedUserId"
-                  message-class="is-small"
+                  message-class=""
                 >
-                  Ce contenu a été édité par 
-                  <span v-if="currentUserIsTeacher">{{ selectedUser.first_name }} {{ selectedUser.last_name }}.</span>
-                  <span v-else>{{ documentOwner.first_name }} {{ documentOwner.last_name }}</span>
+                  <span v-if="currentUser.id == documentOwner.id">
+                    Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
+                  </span>
+                  <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                 </message>
                 <document-translation 
                   v-if="!transcriptionVisibility || currentUser.id !== selectedUserId"
@@ -189,11 +200,20 @@
               <div v-else-if="translationError">
                 <message
                   v-if="translationError.response.status === 404"
-                  message-class="is-info is-small"
+                  message-class="is-info"
                 >
-                  <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                  <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
-                  pas encore soumis de traduction pour ce document.
+                  <p class="m-b-sm">
+                    <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                    <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                    pas encore commencé à traduire ce document.
+                  </p>
+                  <div 
+                    v-if="currentUser.id === selectedUser.id"
+                    class="button  is-info"
+                    @click="addNewTranslation"
+                  >
+                    Commencer à traduire
+                  </div>
                 </message>
                 <message
                   v-else
@@ -204,7 +224,7 @@
               </div>
               <!-- translation edition -->
               <div v-else>
-                <translation-action-bar v-if="currentUserIsTeacher" />
+                <translation-action-bar />
                 <document-edition-translation
                   :translation-with-notes="translationWithNotes"
                 />
@@ -484,6 +504,37 @@ export default {
 
       },
 
+      async addNewTranscription() {
+        try {
+          await this.$store.dispatch('transcription/addNewTranscription', {
+            docId: this.document.id,
+            userId: this.currentUser.id
+          })
+
+          this.transcriptionError = null
+          await this.fetchTranscriptionContent()
+          this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
+   
+        } catch(error) {
+          this.transcriptionError = error
+        }
+      },
+
+      async addNewTranslation() {
+        try {
+          await this.$store.dispatch('translation/addNewTranslation', {
+            docId: this.document.id,
+            userId: this.currentUser.id
+          })
+
+          this.translationError = null
+          await this.fetchTranslationContent()
+          this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
+   
+        } catch(error) {
+          this.translationError = error
+        }
+      },
 
       toggleImageVisibility() {
         // forbid hidding everything

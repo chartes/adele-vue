@@ -33,17 +33,10 @@
           </div>
         </div>
         <span
-          v-else-if="document.is_closed"
-          class="m-r-sm is-size-5"
-        >
-          {{ documentOwner.first_name }}  {{ documentOwner.las_name }}
-        </span> 
-        <span
           v-else
           class="m-r-sm is-size-5"
         >
-          {{ currentUser.firstname }} {{ currentUser.lastname }}
-
+          {{ documentOwner.first_name }}  {{ documentOwner.last_name }}
         </span> 
       </div>
       <div class="tile steps m-t-md">

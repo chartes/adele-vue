@@ -27,14 +27,14 @@
               notice
             </visibility-toggle>
             <visibility-toggle
-              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
+              v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
               :action="toggleTranscriptionVisibility"
               :visible="transcriptionVisibility"
             >
               transcription
             </visibility-toggle>
             <visibility-toggle
-              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
+              v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
               class="m-l-md"
               :action="toggleTranslationVisibility"
               :visible="translationVisibility"
@@ -237,8 +237,8 @@ export default {
         console.error(error)
       }
 
-      //this.transcriptionVisibility = this.transcriptionView !== null
-      //this.translationVisibility = this.translationView !== null
+      this.transcriptionVisibility = this.transcriptionView !== null
+      this.translationVisibility = this.translationView !== null
       // init notes popup
     },
     methods: {

@@ -216,6 +216,17 @@ const actions = {
       commit('ALIGNMENTS', alignments);
     })
   },
+  
+  addNewTranscription ({dispatch}, {docId, userId}) {
+    const emptyTranscription = {
+      data: {
+        notes: [],
+        content: ""
+      }
+    }
+    return http.post(`documents/${docId}/transcriptions/from-user/${userId}`, emptyTranscription)
+  },
+
   fetchReference ({commit}, {doc_id}) {
 
     //console.log('STORE ACTION transcription/fetchReference', doc_id);
