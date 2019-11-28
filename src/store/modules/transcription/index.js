@@ -41,7 +41,6 @@ const state = {
   transcriptionAlignments: [],
   referenceTranscription: null,
   savingStatus: 'uptodate'
-
 };
 
 const mutations = {
@@ -95,6 +94,10 @@ const mutations = {
   },
   LOADING_STATUS (state, payload) {
     state.transcriptionLoading = payload;
+  },
+  SAVED_STATUS (state, payload) {
+    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
+    state.isTranscriptionSaved = payload;
   },
   SAVING_STATUS (state, payload) {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
@@ -257,12 +260,33 @@ const actions = {
     commit('SET_ERROR', payload)
   },
   /* useful */
-  async deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
-    try {
-      commit('SET_ERROR', null)
-      http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
-    } catch(error) {
+  deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
+    return http.delete(`documents/${docId}/transcriptions/from-user/${userId}`).then(response => {
+        commit('SET_ERROR', null)
+    }).catch(error => {
       commit('SET_ERROR', error)
+    })
+  },
+  /* useful */
+  async saveTranscription({dispatch, commit, rootState}) {
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('LOADING_STATUS', true)
+    try {
+      //put content
+      const tei = quillToTEI(state.transcriptionContent);
+      const sanitizedContent = stripSegments(tei);
+      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        data: {content: sanitizedContent}
+      })
+      //post notes (truncate and replace notes from this user and this transcription)
+      commit('SAVING_STATUS', 'uptodate')
+      commit('SET_ERROR', false)
+      commit('LOADING_STATUS', false)
+    } catch(error) {
+      // rollback to previous content and notes
+      commit('SET_ERROR', error)
+      commit('SAVING_STATUS', 'error')
+      commit('LOADING_STATUS', false)
     }
   },
 
@@ -293,47 +317,6 @@ const actions = {
 
       commit('REFERENCE', transcription)
     })
-  },
-  validate({dispatch, commit, rootState, rootGetters}) {
-    const auth = rootGetters['user/authHeader'];
-    const docId = rootState.document.document.id;
-    return http.get(`documents/${docId}/validate-transcription`, auth).then(response => {
-      console.log("validate response", response.data, auth);
-      this.dispatch('document/setValidationStage', {
-        validationStage: response.data.data.validation_step,
-        validationStageLabel: response.data.data.validation_step_label
-      });
-    });
-  },
-  unvalidate({dispatch, commit, rootState, rootGetters}) {
-    const auth = rootGetters['user/authHeader'];
-    const docId = rootState.document.document.id;
-    return http.get(`documents/${docId}/unvalidate-transcription`, auth).then(response => {
-      console.log("unvalidate response", response.data.data.validation_step_label);
-      this.dispatch('document/setValidationStage', {
-        validationStage: response.data.data.validation_step,
-        validationStageLabel: response.data.data.validation_step_label
-      });
-    });
-  },
-  create ({ commit, rootState, rootGetters }) {
-    const auth = rootGetters['user/authHeader'];
-    const data = { data: [{
-        "content" : '<p></p>',
-        "username": rootState.user.currentUser.username
-      }]};
-    return new Promise( ( resolve, reject ) => {
-      http.post(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          reject( error )
-        });
-    } );
   },
   save ({dispatch, commit, rootState, rootGetters}) {
     //console.log('STORE ACTION transcription/save');
@@ -586,7 +569,9 @@ const actions = {
 };
 
 const getters = {
-
+  isTranscriptionSaved(state) {
+    return state.savingStatus === 'uptodate'
+  }
 };
 
 const transcriptionModule = {

@@ -8,13 +8,14 @@
       >
         <validate-translation-button :doc-id="document.id" />
       </p>
+      <!-- TRANSCRIPTION ALIGNMENT MODE --> 
       <p
         v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
         class="control"
       >
         <transcription-alignment-button :doc-id="document.id" />
       </p>
-      <!-- DELETE / TRANSLATION --> 
+      <!-- DELETE TRANSLATION --> 
       <p
         v-if="currentUserIsTeacher"
         class="control"

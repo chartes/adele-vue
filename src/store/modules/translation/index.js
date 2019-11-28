@@ -201,7 +201,13 @@ const actions = {
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
-
+  deleteTranslationFromUser({dispatch, commit}, {docId, userId}) {
+    return http.delete(`documents/${docId}/translations/from-user/${userId}`).then(response => {
+      commit('SET_ERROR', null)
+    }).catch(error => {
+      commit('SET_ERROR', error)
+    })
+  },
   fetchReference ({commit}, {doc_id}) {
 
     console.log('STORE ACTION translation/fetchReference', doc_id);
