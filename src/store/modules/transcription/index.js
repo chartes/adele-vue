@@ -260,12 +260,14 @@ const actions = {
     commit('SET_ERROR', payload)
   },
   /* useful */
-  deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
-    return http.delete(`documents/${docId}/transcriptions/from-user/${userId}`).then(response => {
-        commit('SET_ERROR', null)
-    }).catch(error => {
+  async deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
+    try {
+      commit('SET_ERROR', null)
+      await http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
+      await dispatch('fetchTranscriptionContent')
+    } catch(error) {
       commit('SET_ERROR', error)
-    })
+    }
   },
   /* useful */
   async saveTranscription({dispatch, commit, state, rootState, rootGetters}) {
@@ -283,12 +285,12 @@ const actions = {
         data: {content: sanitizedContent}
       })
 
-      // compute notes pointers
+      // prepare notes
       let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
       const notes = computeNotesPointers(sanitizedWithNotes)
       notes.forEach(note => {
-        let found = rootGetters['notes/notes'].find((element) => {
+        const found = rootGetters['notes/notes'].find((element) => {
           return element.id === note.id
         })
         note.content = found.content

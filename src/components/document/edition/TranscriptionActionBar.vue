@@ -17,7 +17,7 @@
       </p>
       <!-- DELETE TRANSCRIPTION --> 
       <p
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher || !isTranscriptionReadOnly"
         class="control"
       >
         <delete-transcription-button
