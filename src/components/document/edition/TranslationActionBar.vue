@@ -3,36 +3,26 @@
     <div class="field is-grouped">
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
       <p
+        v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
+        class="control"
+      >
+        <validate-translation-button :doc-id="document.id" />
+      </p>
+      <p
+        v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
+        class="control"
+      >
+        <transcription-alignment-button :doc-id="document.id" />
+      </p>
+      <!-- DELETE / TRANSLATION --> 
+      <p
         v-if="currentUserIsTeacher"
         class="control"
       >
-        <button
-          class="button is-small"
-          :class="`${isTranslationValidated ? 'is-success ' : 'is-light'}`"
-          @click="toggleTranslationValidation"
-        >
-          <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
-          <span
-            v-show="isTranslationValidated"
-            class="icon"
-          >
-            <i class="fa fa-check" />
-          </span>
-        </button>
-      </p>
-      <!-- ALIGNMENT MODE --> 
-      <!-- SI PAS ENCORE D'Alignement, afficher un message spécifique 'Aligner la traduction avec la transcription ? [Commencer]' -->
-      <p
-        v-if="isTranslationValidated && currentUserIsTeacher"
-        class="control"
-      >
-        <button
-          class="button is-small is-info is-light"
-          :disabled="!isTranslationValidated"
-          @click="toggleTranscriptionAlignmentMode"
-        >
-          <span> {{ isTranscriptionAlignmentMode ? 'Quitter le mode Alignement' : 'Aligner la traduction avec la transcription' }} </span>
-        </button>
+        <delete-translation-button
+          :doc-id="document.id"
+          :user-id="selectedUserId"
+        />
       </p>
     </div>
   </div>
@@ -40,42 +30,27 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '../../../store/modules/workflow'
+import { TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
+
+import DeleteTranslationButton from './actions/DeleteTranslationButton.vue'
+import ValidateTranslationButton from './actions/ValidateTranslationButton.vue'
+import TranscriptionAlignmentButton from './actions/TranscriptionAlignmentButton.vue'
 
 export default {
     name: 'TranslationActionBar',
     components: {
-
-    },
-    data() {
-      return {
-        isTranscriptionAlignmentMode: false,
-      }
+      ValidateTranslationButton,
+      DeleteTranslationButton,
+      TranscriptionAlignmentButton
     },
     computed: {
-        ...mapState('document', ['document', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
-        ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
-        ...mapGetters('workflow', ['isTranslationValidated']),
+        ...mapState('document', ['document']),
+        ...mapState('workflow', ['selectedUserId']),
+        ...mapState('user', ['currentUser']),
+        ...mapGetters('user', ['currentUserIsTeacher']),
     },
     methods: {
-      validateTranslation() {
-        // TODO: give warnings about side effects
-        return this.$store.dispatch('document/setValidationStep', {docId: this.document.id, step: TRANSLATION_STEP}) 
-      },
-      unvalidateTranslation() {
-        // TODO: give warnings about side effects
-        return this.$store.dispatch('document/setValidationStep', {docId: this.document.id, step: TRANSCRIPTION_STEP}) 
-      },
-      toggleTranslationValidation() {
-        if (this.isTranslationValidated) {
-          return this.unvalidateTranslation()
-        } else {
-          return this.validateTranslation()
-        }
-      },
-      toggleTranscriptionAlignmentMode() {
-        this.isTranscriptionAlignmentMode = !this.isTranscriptionAlignmentMode
-      }
+      
     }
 }
 </script>

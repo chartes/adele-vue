@@ -1,9 +1,9 @@
 <template>
   <a
     class="button is-text is-small has-text-danger"
-    @click="deleteTranscription"
+    @click="deleteTranslation"
   >
-    <span>Supprimer la transcription</span>
+    <span>Supprimer la traduction</span>
   </a>
 </template>
 
@@ -12,7 +12,7 @@
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default {
-    name: 'DeleteTranscriptionButton',
+    name: 'DeleteTranslationButton',
     components: {
 
     },
@@ -23,10 +23,10 @@ export default {
     computed: {
     },
     methods: {
-      ...mapActions('transcription', ['deleteTranscriptionFromUser']),
-      async deleteTranscription() {
-        console.log("delete transcription")
-        await this.deleteTranscriptionFromUser({
+      ...mapActions('translation', ['deleteTranslationFromUser']),
+      async deleteTranslation() {
+        console.log("delete translation")
+        await this.deleteTranslationFromUser({
           docId: this.docId,
           userId: this.userId
         })
