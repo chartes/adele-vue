@@ -77,7 +77,7 @@ const actions = {
       throw error
     })
   },
-  fetchTranscriptionView ({ commit }, {id, userId}) {
+  fetchTranscriptionView ({ dispatch, commit }, {id, userId}) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tr")
     return http.get(`documents/${id}/view/transcription${userId ? '/from-user/' + userId: ''}`).then( (response) => {
@@ -86,13 +86,15 @@ const actions = {
         notes: response.data.data["notes"]
       })
       console.log("tr ok")
+      dispatch('transcription/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      dispatch('transcription/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
-  fetchTranslationView ({ commit }, {id, userId}) {
+  fetchTranslationView ({ dispatch, commit }, {id, userId}) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tl")
     return http.get(`documents/${id}/view/translation${userId ? '/from-user/' + userId: ''}`).then( (response) => {
@@ -101,10 +103,12 @@ const actions = {
         notes: response.data.data["notes"]
       })
       console.log("tl ok")
+      dispatch('translation/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      dispatch('translation/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
   fetchTranscriptionAlignmentView ({ commit }, {id}) {

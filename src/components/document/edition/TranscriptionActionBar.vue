@@ -3,7 +3,7 @@
     <div class="field is-grouped">
       <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
       <p
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
         class="control"
       >
         <button
@@ -20,6 +20,16 @@
           </span>
         </button>
       </p>
+      <!-- DELETE / TRANSCRIPTION --> 
+      <p
+        v-if="currentUserIsTeacher"
+        class="control"
+      >
+        <delete-transcription-button
+          :doc-id="document.id"
+          :user-id="selectedUserId"
+        />
+      </p>
     </div>
   </div>
 </template>
@@ -28,15 +38,19 @@
 import { mapState, mapGetters } from 'vuex'
 import { TRANSCRIPTION_STEP, NONE_STEP} from '../../../store/modules/workflow'
 
+import DeleteTranscriptionButton from './actions/DeleteTranscriptionButton.vue'
+
 export default {
     name: 'TranscriptionActionBar',
     components: {
-
+      DeleteTranscriptionButton
     },
     computed: {
         ...mapState('document', ['document']),
+        ...mapState('workflow', ['selectedUserId']),
+        ...mapState('user', ['currentUser']),
         ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
-        ...mapGetters('workflow', ['isTranscriptionValidated'])
+        ...mapGetters('workflow', ['isTranscriptionValidated', ])
     },
     methods: {
       validateTranscription() {
@@ -53,7 +67,7 @@ export default {
         } else {
           return this.validateTranscription()
         }
-      }
+      },
     }
 }
 </script>

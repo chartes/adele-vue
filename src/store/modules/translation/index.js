@@ -17,10 +17,10 @@ let notesShadowQuill;
 const state = {
   translationLoading: true,
   translation: null,
+  translationError: null,
   translationContent: null,
   translationWithNotes: null,
   translationSaved: true,
-  translationError: null,
   translationAlignments: [],
   referenceTranslation: null
 };
@@ -50,6 +50,9 @@ const mutations = {
 
     if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
     if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";
+  },
+  SET_ERROR(state, payload) {
+    state.translationError = payload
   },
   REFERENCE(state, payload) {
     state.referenceTranslation = payload
@@ -133,6 +136,7 @@ const actions = {
     });
 
   },
+  /* useful */
   fetchTranslationFromUser ({commit, state, rootState}, {docId, userId}) {
     commit('RESET')
     return http.get(`documents/${docId}/translations/from-user/${userId}`).then( response => {
@@ -155,24 +159,33 @@ const actions = {
 
       commit('INIT', data);
       commit('UPDATE', data);
+      commit('SET_ERROR', null)
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('SET_ERROR', error)
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
 
-   
-  addNewTranslation ({dispatch}, {docId, userId}) {
+  /* useful */
+  addNewTranslation ({commit, dispatch}, {docId, userId}) {
     const emptyTranslation = {
       data: {
         notes: [],
         content: ""
       }
     }
-    return http.post(`documents/${docId}/translations/from-user/${userId}`, emptyTranslation)
+    return http.post(`documents/${docId}/translations/from-user/${userId}`, emptyTranslation).then(response => {
+      commit('SET_ERROR', null)
+    }).catch(error => {
+      commit('SET_ERROR', error)
+    })
   },
-
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
+  },
 
   fetchReference ({commit}, {doc_id}) {
 

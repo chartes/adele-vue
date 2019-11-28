@@ -87,6 +87,9 @@ const mutations = {
     if (facsimileShadowQuillElement && facsimileShadowQuillElement.children[0]) facsimileShadowQuillElement.children[0].innerHTML = "";
     
   },
+  SET_ERROR(state, payload) {
+    state.transcriptionError = payload
+  },
   REFERENCE(state, payload) {
     state.referenceTranscription = payload;
   },
@@ -176,6 +179,8 @@ const actions = {
       })
 
   },
+
+  /* useful */
   fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
     commit('RESET')
     return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
@@ -198,13 +203,15 @@ const actions = {
 
       commit('INIT', data);
       commit('UPDATE', data);
+      commit('SET_ERROR', null)
       commit('LOADING_STATUS', false);
-
     }).catch((error) => {
+      commit('SET_ERROR', error)
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
+  /* useful */
   fetchAlignments ({commit}, {doc_id, user_id}) {
     return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
       //console.log("STORE ACTION transcription/fetchAlignments", response)
@@ -216,15 +223,23 @@ const actions = {
       commit('ALIGNMENTS', alignments);
     })
   },
-  
-  addNewTranscription ({dispatch}, {docId, userId}) {
+  /* useful */
+  addNewTranscription ({commit, dispatch}, {docId, userId}) {
     const emptyTranscription = {
       data: {
         notes: [],
         content: ""
       }
     }
-    return http.post(`documents/${docId}/transcriptions/from-user/${userId}`, emptyTranscription)
+    return http.post(`documents/${docId}/transcriptions/from-user/${userId}`, emptyTranscription).then(response => {
+      commit('SET_ERROR', null)
+    }).catch(error => {
+      commit('SET_ERROR', error)
+    })
+  },
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
   },
 
   fetchReference ({commit}, {doc_id}) {

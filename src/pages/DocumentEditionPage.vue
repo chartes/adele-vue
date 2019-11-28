@@ -127,22 +127,8 @@
             />
             <!-- Transcription -->
             <div v-if="$attrs.section === 'transcription'">
-              <!-- transcription read only-->
-              <div v-if="isTranscriptionReadOnly && transcriptionError === null">
-                <message
-                  v-if="isTranscriptionValidated || currentUser.id !== selectedUserId"
-                  message-class=""
-                >
-                  <span v-if="currentUser.id == documentOwner.id">
-                    Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
-                  </span>
-                  <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
-                </message>
-                <document-transcription
-                  :readonly-data="transcriptionView"
-                />
-              </div>
-              <div v-else-if="transcriptionError">
+              <!-- transcription error -->
+              <div v-if="transcriptionError">
                 <message
                   v-if="transcriptionError.response.status === 404"
                   message-class="is-info "
@@ -154,7 +140,7 @@
                   </p>
                   <div
                     v-if="currentUser.id === selectedUser.id"
-                    class="button  is-info"
+                    class="button is-info"
                     @click="addNewTranscription"
                   >
                     Commencer à transcrire
@@ -167,6 +153,22 @@
                   {{ transcriptionError }}
                 </message>
               </div>
+              <!-- transcription readonly -->
+              <div v-else-if="isTranscriptionReadOnly">
+                <transcription-action-bar />
+                <message
+                  v-if="isTranscriptionValidated || currentUser.id !== selectedUserId"
+                  message-class=""
+                >
+                  <span v-if="currentUser.id == documentOwner.id">
+                    <p class="m-b-sm">Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.</p>
+                  </span>
+                  <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                </message>
+                <document-transcription
+                  :readonly-data="transcriptionView"
+                />
+              </div>
               <!-- transcription edition -->
               <div v-else>
                 <transcription-action-bar />
@@ -177,8 +179,34 @@
             </div>
             <!-- Translation -->
             <div v-if="$attrs.section === 'translation'">
-              <!-- translation read only-->
-              <div v-if="isTranslationReadOnly && translationError === null">
+              <!-- translation error -->
+              <div v-if="translationError">
+                <message
+                  v-if="translationError.response.status === 404"
+                  message-class="is-info"
+                >
+                  <p class="m-b-sm">
+                    <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                    <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                    pas encore commencé à traduire ce document.
+                  </p>
+                  <div 
+                    v-if="currentUser.id === selectedUser.id"
+                    class="button is-info"
+                    @click="addNewTranslation"
+                  >
+                    Commencer à traduire
+                  </div>
+                </message>
+                <message
+                  v-else
+                  message-class="is-danger"
+                >
+                  {{ translationError }}
+                </message>
+              </div>
+              <!-- translation readonly -->
+              <div v-else-if="isTranslationReadOnly">
                 <message
                   v-if="isTranslationValidated || currentUser.id !== selectedUserId"
                   message-class=""
@@ -196,31 +224,6 @@
                   v-if="isTranslationValidated && transcriptionView && translationView && transcriptionVisibility && currentUser.id === selectedUserId"
                   :readonly-data="transcriptionAlignmentView"
                 />
-              </div>
-              <div v-else-if="translationError">
-                <message
-                  v-if="translationError.response.status === 404"
-                  message-class="is-info"
-                >
-                  <p class="m-b-sm">
-                    <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                    <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
-                    pas encore commencé à traduire ce document.
-                  </p>
-                  <div 
-                    v-if="currentUser.id === selectedUser.id"
-                    class="button  is-info"
-                    @click="addNewTranslation"
-                  >
-                    Commencer à traduire
-                  </div>
-                </message>
-                <message
-                  v-else
-                  message-class="is-danger"
-                >
-                  {{ translationError }}
-                </message>
               </div>
               <!-- translation edition -->
               <div v-else>
@@ -296,7 +299,7 @@ export default {
         DocumentTitleBar,
         TranscriptionActionBar,
         TranslationActionBar,
-        
+
         DocumentEditionNotice,
         DocumentEditionTranscription,
         DocumentEditionTranslation,
@@ -340,8 +343,6 @@ export default {
         
         init: false,
 
-        transcriptionError: null,
-        translationError: null,
         transcriptionAlignmentError: null,
 
         imageVisibility: true,
@@ -355,8 +356,8 @@ export default {
     computed: {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapState('workflow', ['selectedUserId']),
-        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading']),
-        ...mapState('translation', ['translationWithNotes', 'transcriptionLoading']),
+        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading', 'transcriptionError']),
+        ...mapState('translation', ['translationWithNotes', 'transcriptionLoading', 'translationError']),
         ...mapState('user', ['currentUser']),
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
@@ -460,21 +461,11 @@ export default {
         })
       },
       async fetchContentFromUser(){
-        try {
-          this.transcriptionError = null
-          await this.fetchTranscriptionContent()
-          this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
-        } catch (error) {
-          this.transcriptionError = error
-        }
+        await this.fetchTranscriptionContent()
+        //this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
 
-        try {
-          this.translationError = null
-          await this.fetchTranslationContent()
-          this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
-        } catch (error) {
-          this.translationError = error
-        }
+        await this.fetchTranslationContent()
+        //this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
 
         try {
           this.transcriptionAlignmentError = null
@@ -482,7 +473,6 @@ export default {
         } catch(error) {
           this.transcriptionAlignmentError = error
         }
-
       },
 
       isStepReadOnly(step) {
@@ -505,35 +495,27 @@ export default {
       },
 
       async addNewTranscription() {
-        try {
-          await this.$store.dispatch('transcription/addNewTranscription', {
+        await this.$store.dispatch('transcription/addNewTranscription', {
             docId: this.document.id,
             userId: this.currentUser.id
-          })
+        })
 
-          this.transcriptionError = null
-          await this.fetchTranscriptionContent()
-          this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
-   
-        } catch(error) {
-          this.transcriptionError = error
+        if (!this.transcriptionError) {
+            await this.fetchTranscriptionContent()
+            //this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
         }
       },
 
       async addNewTranslation() {
-        try {
           await this.$store.dispatch('translation/addNewTranslation', {
             docId: this.document.id,
             userId: this.currentUser.id
           })
 
-          this.translationError = null
-          await this.fetchTranslationContent()
-          this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
-   
-        } catch(error) {
-          this.translationError = error
-        }
+          if (!this.translationError){
+            await this.fetchTranslationContent()
+            //this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
+          }
       },
 
       toggleImageVisibility() {

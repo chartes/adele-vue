@@ -8,7 +8,7 @@
       >
         <button
           class="button is-small"
-          :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
+          :class="`${isTranslationValidated ? 'is-success ' : 'is-light'}`"
           @click="toggleTranslationValidation"
         >
           <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
