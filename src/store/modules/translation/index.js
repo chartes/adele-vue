@@ -167,16 +167,31 @@ const actions = {
       //throw error
     })
   },
-
   /* useful */
-  addNewTranslation ({commit, dispatch}, {docId, userId}) {
+  fetchTranslationContent({dispatch, rootState, rootGetters}) {
+    if (rootGetters['workflow/isTranslationReadOnly']) {
+      // when in readonly mode
+      // students see the reference content
+      // teacher and admins can see other ppl readonly views
+      return dispatch('document/fetchTranslationView', 
+        rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
+        {root: true})
+    } else {
+      return dispatch('fetchTranslationFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
+      })
+    }
+  },
+  /* useful */
+  addNewTranslation ({commit, dispatch, rootState}) {
     const emptyTranslation = {
       data: {
         notes: [],
         content: ""
       }
     }
-    return http.post(`documents/${docId}/translations/from-user/${userId}`, emptyTranslation).then(response => {
+    return http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, emptyTranslation).then(response => {
       commit('SET_ERROR', null)
     }).catch(error => {
       commit('SET_ERROR', error)

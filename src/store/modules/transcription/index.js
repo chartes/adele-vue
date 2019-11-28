@@ -211,6 +211,21 @@ const actions = {
       //throw error
     })
   },
+  fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
+    if (rootGetters['workflow/isTranscriptionReadOnly']) {
+      // when in readonly mode
+      // students see the reference content
+      // teacher and admins can see other ppl readonly views
+      return dispatch('document/fetchTranscriptionView', 
+       rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
+       {root: true})
+    } else {
+      return dispatch('fetchTranscriptionFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
+      })
+    }
+  },
   /* useful */
   fetchAlignments ({commit}, {doc_id, user_id}) {
     return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
@@ -224,14 +239,14 @@ const actions = {
     })
   },
   /* useful */
-  addNewTranscription ({commit, dispatch}, {docId, userId}) {
+  addNewTranscription ({commit, dispatch, rootState}) {
     const emptyTranscription = {
       data: {
         notes: [],
         content: ""
       }
     }
-    return http.post(`documents/${docId}/transcriptions/from-user/${userId}`, emptyTranscription).then(response => {
+    return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, emptyTranscription).then(response => {
       commit('SET_ERROR', null)
     }).catch(error => {
       commit('SET_ERROR', error)
@@ -240,6 +255,15 @@ const actions = {
   /* useful */
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
+  },
+  /* useful */
+  async deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
+    try {
+      commit('SET_ERROR', null)
+      http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
+    } catch(error) {
+      commit('SET_ERROR', error)
+    }
   },
 
   fetchReference ({commit}, {doc_id}) {

@@ -153,7 +153,8 @@
 
 <script>
 
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex'
+
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
@@ -216,7 +217,7 @@ export default {
     },
     async created() {
       try {
-        await this.fetchOne()
+        await this.fetchOne({id: this.$attrs.docId})
       }
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
@@ -241,27 +242,18 @@ export default {
       // init notes popup
     },
     methods: {
-      fetchOne() {
-        return this.$store.dispatch('document/fetch', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranscriptionView() {
-        return this.$store.dispatch('document/fetchTranscriptionView', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranslationView() {
-        return this.$store.dispatch('document/fetchTranslationView', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranscriptionAlignmentView() {
-        return this.$store.dispatch('document/fetchTranscriptionAlignmentView', {
-          id: this.$attrs.docId
-        })
-      },
-
+      ...mapActions('transcription', {
+        'fetchTranscriptionContent': 'fetchTranscriptionContent',
+        }),
+      ...mapActions('translation', {
+        'fetchTranslationContent': 'fetchTranslationContent'
+        }),
+      ...mapActions('document', {
+        'fetchOne': 'fetch',
+        'fetchTranscriptionView': 'fetchTranscriptionView',
+        'fetchTranslationView': 'fetchTranslationView',
+        'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
+        }),
       toggleImageVisibility() {
         // forbid hidding everything
         if (this.showContent) {

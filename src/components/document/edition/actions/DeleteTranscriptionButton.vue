@@ -26,7 +26,7 @@ export default {
       async deleteTranscription() {
         console.log("delete transcription")
         try {
-          this.$store.dispatch('transcription/deleteTranscriptionFromUser', {
+          await this.$store.dispatch('transcription/deleteTranscriptionFromUser', {
               docId: this.docId,
               userId: this.userId
           })

@@ -264,7 +264,7 @@
 
 <script>
 
-import { mapState, mapGetters } from 'vuex'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 import DocumentEditionNotice from '../components/document/edition/DocumentEditionNotice.vue'
 import DocumentEditionTranscription from '../components/document/edition/DocumentEditionTranscription.vue'
@@ -361,7 +361,7 @@ export default {
         ...mapState('user', ['currentUser']),
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
-        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated']),
+        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated', 'isTranscriptionReadOnly', 'isTranslationReadOnly']),
         ...mapGetters('document', ['documentOwner']),
 
         showContent() {
@@ -381,12 +381,6 @@ export default {
           }
           
         },
-        isTranscriptionReadOnly() {
-          return this.isStepReadOnly(TRANSCRIPTION_STEP)
-        },
-        isTranslationReadOnly() {
-          return this.isStepReadOnly(TRANSLATION_STEP)
-        },
         selectedUser() {
           const u = this.userFromWhitelist(this.document.whitelist, this.selectedUserId)
           return u ? u : this.currentUser
@@ -401,7 +395,7 @@ export default {
     },
     async created() {
       try {
-        await this.fetchOne()
+        await this.fetchOne({id: this.$attrs.docId})
       }
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
@@ -410,63 +404,21 @@ export default {
       this.init = true
     },
     methods: {
-      fetchOne() {
-        return this.$store.dispatch('document/fetch', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranscriptionContent() {
-        if (this.isTranscriptionReadOnly) {
-          // when in readonly mode
-          // students see the reference content
-          let params = {
-            id: this.document.id
-          }
-          // teacher and admins can see other ppl readonly views
-          if (this.currentUserIsTeacher) {
-            params.userId = this.selectedUserId 
-          }
-          return this.$store.dispatch('document/fetchTranscriptionView', params)
-        } else {
-          return this.$store.dispatch('transcription/fetchTranscriptionFromUser', {
-            docId: this.document.id,
-            userId: this.selectedUserId
-          })
-        }
-      },
-      fetchTranslationContent() {
-        if (this.isTranslationReadOnly) {
-          // when in readonly mode
-          // students see the reference content
-          let params = {
-            id: this.document.id
-          }
-          // teacher and admins can see other ppl readonly views
-          if (this.currentUserIsTeacher) {
-            params.userId = this.selectedUserId 
-          }
-          return this.$store.dispatch('document/fetchTranslationView', params)
-        } else {
-          return this.$store.dispatch('translation/fetchTranslationFromUser', {
-            docId: this.document.id,
-            userId: this.selectedUserId
-          })
-        }
-      },
-      fetchTranscriptionAlignmentView() {
-        // only teachers can align
-        // when the translation is validated, they can see the readonly alignment
-        return this.$store.dispatch('document/fetchTranscriptionAlignmentView', {
-          id: this.$attrs.docId
-        })
-      },
+      ...mapActions('transcription', {
+        'fetchTranscriptionContent': 'fetchTranscriptionContent',
+        'createTranscription': 'addNewTranscription'
+        }),
+      ...mapActions('translation', {
+        'fetchTranslationContent': 'fetchTranslationContent',
+        'createTranslation': 'addNewTranslation'
+        }),
+      ...mapActions('document', {
+        'fetchOne': 'fetch',
+        'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView'
+        }),
       async fetchContentFromUser(){
         await this.fetchTranscriptionContent()
-        //this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
-
         await this.fetchTranslationContent()
-        //this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
-
         try {
           this.transcriptionAlignmentError = null
           await this.fetchTranscriptionAlignmentView()
@@ -474,48 +426,18 @@ export default {
           this.transcriptionAlignmentError = error
         }
       },
-
-      isStepReadOnly(step) {
-          // should be avoidable with guard routing 
-          if (this.currentUser === null) {
-            return true
-          }
-
-          // admin
-          if (this.currentUserIsAdmin) {
-            return false
-          } 
-          // teacher
-          if (this.currentUserIsTeacher) {
-             return this.currentUser.id !== this.selectedUserId
-          }
-          
-          return this.document.validation_step >= step
-
-      },
-
       async addNewTranscription() {
-        await this.$store.dispatch('transcription/addNewTranscription', {
-            docId: this.document.id,
-            userId: this.currentUser.id
-        })
-
+        await this.createTranscription()
         if (!this.transcriptionError) {
-            await this.fetchTranscriptionContent()
-            //this.transcriptionVisibility = this.transcriptionView !== null || this.transcriptionWithNotes !== null
+          await this.fetchTranscriptionContent()
         }
       },
 
       async addNewTranslation() {
-          await this.$store.dispatch('translation/addNewTranslation', {
-            docId: this.document.id,
-            userId: this.currentUser.id
-          })
-
-          if (!this.translationError){
-            await this.fetchTranslationContent()
-            //this.translationVisibility = this.translationView !== null || this.translationWithNotes !== null
-          }
+        await this.createTranslation()
+        if (!this.translationError){
+          await this.fetchTranslationContent()
+        }
       },
 
       toggleImageVisibility() {

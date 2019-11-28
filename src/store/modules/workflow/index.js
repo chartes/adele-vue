@@ -43,6 +43,29 @@ const getters = {
   },
   isSpeechPartsValidated(state, getters, rootState, rootGetters) {
       return rootState.document.document.validation_step >= SPEECH_PARTS_STEP
+  },
+  isStepReadOnly: (state, getters, rootState, rootGetters) => (step) => {
+    // should be avoidable with guard routing 
+    if (rootState.user.currentUser === null) {
+      return true
+    }
+
+    // admin
+    if (rootGetters['user/currentUserIsAdmin']) {
+      return false
+    } 
+    // teacher
+    if (rootGetters['user/currentUserIsTeacher']) {
+       return rootState.user.currentUser.id !== state.selectedUserId
+    }
+    
+    return rootState.document.document.validation_step >= step
+  },
+  isTranscriptionReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly(TRANSCRIPTION_STEP)
+  },
+  isTranslationReadOnly: (state, getters) => {
+    return getters.isStepReadOnly(TRANSLATION_STEP)
   }
 }
 
