@@ -221,24 +221,23 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
-      try {
-        await this.fetchTranscriptionView()
-      } catch(error) {
-        console.error(error)
-      }
-      try {
-        await this.fetchTranslationView()
-      } catch(error) {
-        console.error(error)
-      }
-      try {
-        await this.fetchTranscriptionAlignmentView()
-      } catch(error) {
-        console.error(error)
-      }
+
+      await this.fetchTranscriptionView()
+      await this.fetchTranslationView()
 
       this.transcriptionVisibility = this.transcriptionView !== null
       this.translationVisibility = this.translationView !== null
+
+      if (!this.transcriptionVisibility && !this.translationVisibility) {
+        this.$router.replace('document-view', {section: 'notice', docId: 20})
+      }
+
+      try {
+        await this.fetchTranscriptionAlignmentView()
+      } catch(error) {
+        console.log("No tr/tl alignemnt", error)
+      }
+
       // init notes popup
     },
     methods: {
