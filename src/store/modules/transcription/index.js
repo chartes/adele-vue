@@ -268,22 +268,42 @@ const actions = {
     })
   },
   /* useful */
-  async saveTranscription({dispatch, commit, rootState}) {
+  async saveTranscription({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
     commit('LOADING_STATUS', true)
+    
+    // old notes
+    //const oldNotes = state.transcription.notes
+
     try {
       //put content
-      const tei = quillToTEI(state.transcriptionContent);
-      const sanitizedContent = stripSegments(tei);
+      const tei = quillToTEI(state.transcriptionContent)
+      const sanitizedContent = stripSegments(tei)
       await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
         data: {content: sanitizedContent}
       })
+
+      // compute notes pointers
+      let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
+      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+      const notes = computeNotesPointers(sanitizedWithNotes)
+      notes.forEach(note => {
+        let found = rootGetters['notes/notes'].find((element) => {
+          return element.id === note.id
+        })
+        note.content = found.content
+        note.type_id = found.note_type.id
+      })
       //post notes (truncate and replace notes from this user and this transcription)
+      await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        data: {notes: notes}
+      })
+
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
       commit('LOADING_STATUS', false)
     } catch(error) {
-      // rollback to previous content and notes
+      // TODO: rollback to previous content and notes
       commit('SET_ERROR', error)
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)

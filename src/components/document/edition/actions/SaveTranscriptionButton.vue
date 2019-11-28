@@ -46,7 +46,6 @@ export default {
     },
     methods: {
       saveTranscription() {
-        // TODO: give warnings about side effects
         return this.$store.dispatch('transcription/saveTranscription') 
       },
     }

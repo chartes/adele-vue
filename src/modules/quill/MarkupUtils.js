@@ -512,7 +512,7 @@ const computeNotesPointers  = (htmlWithNotes) => {
     //console.log(`# resEnd`, 'color:DarkOrchid', resEnd)
     htmlWithNotes = htmlWithNotes.replace(regexpEnd, '');
     notes.push({
-      "note_id" : parseInt(resStart[1]),
+      "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     });
