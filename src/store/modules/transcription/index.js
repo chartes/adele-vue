@@ -95,10 +95,6 @@ const mutations = {
   LOADING_STATUS (state, payload) {
     state.transcriptionLoading = payload;
   },
-  SAVED_STATUS (state, payload) {
-    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
-    state.isTranscriptionSaved = payload;
-  },
   SAVING_STATUS (state, payload) {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
