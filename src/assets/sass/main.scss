@@ -4,6 +4,7 @@
 @import '~bulma/bulma';
 
 @import '~bulma-steps';
+@import '~bulma-tooltip';
 
 /* Import selected Bulma Sass
 /* Remove these if you import the entire Bulma framework above */
@@ -57,6 +58,8 @@
 @import "objects/quill.core";
 @import "objects/quill.icons";
 @import "objects/editor";
+
+@import "components/note";
 //@import "objects/error-page";
 // Components – specific UI components.
 // This is where majority of our work takes place

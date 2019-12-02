@@ -22,7 +22,9 @@ const state = {
   translationWithNotes: null,
   translationSaved: true,
   translationAlignments: [],
-  referenceTranslation: null
+  referenceTranslation: null,
+
+  savingStatus: 'uptodate'
 };
 
 const mutations = {
@@ -71,6 +73,10 @@ const mutations = {
   CHANGED (state) {
     // translation changed and needs to be saved
     state.translationSaved = false;
+  },
+  SAVING_STATUS (state, payload) {
+    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
+    state.savingStatus = payload;
   },
   ADD_OPERATION (state, payload) {
 
@@ -208,6 +214,54 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
+
+  /* useful */
+  async saveTranslation({dispatch, commit, state, rootState, rootGetters}) {
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('LOADING_STATUS', true)
+
+    try {
+      // prepare notes
+      let sanitizedWithNotes = stripSegments(state.translationWithNotes)
+      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+      const notes = computeNotesPointers(sanitizedWithNotes)
+      notes.forEach(note => {
+        const found = rootGetters['notes/notes'].find((element) => {
+          return element.id === note.id
+        })
+        note.content = found.content
+        note.type_id = found.note_type.id
+      })
+
+      // put content && update notes
+      const tei = quillToTEI(state.translationContent)
+      const sanitizedContent = stripSegments(tei)
+      await http.put(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, {
+        data: {
+          content: sanitizedContent,
+          notes: notes.filter(n => n.id !== null)
+        }
+      })
+            
+      // and post new notes 
+      const new_notes = notes.filter(n => n.id === null)
+      if (new_notes.length > 0){
+        await http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, {
+          data: {notes: new_notes}
+        })
+      }
+
+      commit('SAVING_STATUS', 'uptodate')
+      commit('SET_ERROR', false)
+      commit('LOADING_STATUS', false)
+    } catch(error) {
+      // TODO: rollback to previous content and notes
+      commit('SET_ERROR', error)
+      commit('SAVING_STATUS', 'error')
+      commit('LOADING_STATUS', false)
+    }
+  },
+
   fetchReference ({commit}, {doc_id}) {
 
     console.log('STORE ACTION translation/fetchReference', doc_id);
@@ -306,8 +360,9 @@ const actions = {
   },
   changed ({ commit, dispatch }, deltas) {
     commit('ADD_OPERATION', deltas);
-    commit('SAVED', false);
-    dispatch('transcription/translationChanged', null, {root:true})
+    commit('CHANGED', false);
+    commit('SAVING_STATUS', 'tobesaved')
+    //dispatch('transcription/translationChanged', null, {root:true})
   },
   reset ({ commit }) {
     commit('RESET')
@@ -335,6 +390,9 @@ const actions = {
 };
 
 const getters = {
+  isTranslationSaved(state) {
+    return state.savingStatus === 'uptodate'
+  }
 };
 
 const translationModule = {

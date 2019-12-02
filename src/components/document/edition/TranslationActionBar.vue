@@ -1,6 +1,13 @@
 <template>
   <div class="m-b-md">
     <div class="field is-grouped">
+      <!-- SAVE TRANSLATION --> 
+      <p 
+        v-if="!isTranslationReadOnly"
+        class="control"
+      >
+        <save-translation-button />
+      </p>
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
       <p
         v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
@@ -36,19 +43,23 @@ import { TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
 import DeleteTranslationButton from './actions/DeleteTranslationButton.vue'
 import ValidateTranslationButton from './actions/ValidateTranslationButton.vue'
 import TranscriptionAlignmentButton from './actions/TranscriptionAlignmentButton.vue'
+import SaveTranslationButton from './actions/SaveTranslationButton.vue'
 
 export default {
     name: 'TranslationActionBar',
     components: {
       ValidateTranslationButton,
       DeleteTranslationButton,
-      TranscriptionAlignmentButton
+      TranscriptionAlignmentButton,
+      SaveTranslationButton
     },
     computed: {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('user', ['currentUser']),
         ...mapGetters('user', ['currentUserIsTeacher']),
+        ...mapGetters('workflow', ['isTranslationValidated', 'isTranslationReadOnly' ])
+
     },
     methods: {
       

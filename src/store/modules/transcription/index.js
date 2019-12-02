@@ -269,18 +269,8 @@ const actions = {
   async saveTranscription({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
     commit('LOADING_STATUS', true)
-    
-    // old notes
-    //const oldNotes = state.transcription.notes
 
     try {
-      //put content
-      const tei = quillToTEI(state.transcriptionContent)
-      const sanitizedContent = stripSegments(tei)
-      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
-        data: {content: sanitizedContent}
-      })
-
       // prepare notes
       let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
@@ -292,10 +282,24 @@ const actions = {
         note.content = found.content
         note.type_id = found.note_type.id
       })
-      //post notes (truncate and replace notes from this user and this transcription)
-      await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
-        data: {notes: notes}
+
+      // put content && update notes
+      const tei = quillToTEI(state.transcriptionContent)
+      const sanitizedContent = stripSegments(tei)
+      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        data: {
+          content: sanitizedContent,
+          notes: notes.filter(n => n.id !== null)
+        }
       })
+            
+      // and post new notes 
+      const new_notes = notes.filter(n => n.id === null)
+      if (new_notes.length > 0){
+        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+          data: {notes: new_notes}
+        })
+      }
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
