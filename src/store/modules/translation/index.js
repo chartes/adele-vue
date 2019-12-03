@@ -66,9 +66,19 @@ const mutations = {
     state.translationAlignments = payload;
   },
   UPDATE (state, payload) {
-    state.translation = payload.translation;
-    state.translationWithNotes = payload.withNotes;
-    state.translationSaved = true;
+    if (payload.translation) {
+      state.translation = payload.translation;
+    }
+    if (payload.withNotes) {
+      state.translationWithNotes =  payload.withNotes
+    }
+    if (payload.withSpeechparts) {
+      state.translationWithSpeechparts = payload.withSpeechparts;
+    }
+    if (payload.withFacsimile) {
+      state.translationWithFacsimile = payload.withFacsimile;
+    }
+    //state.translationSaved = true;
   },
   CHANGED (state) {
     // translation changed and needs to be saved
@@ -81,7 +91,6 @@ const mutations = {
   ADD_OPERATION (state, payload) {
 
     console.log("STORE MUTATION translation/ADD_OPERATION")
-
     const deltaFilteredForContent = filterDeltaOperations(translationShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
 
@@ -153,9 +162,7 @@ const actions = {
 
       let quillContent = TEIToQuill(translation.content);
       let content = insertSegments(quillContent, alignments, 'translation');
-      const withNotes = content
-        // TODO Remettre
-        //insertNotesAndSegments(quillContent, translation.notes, alignments, 'translation');
+      const withNotes = insertNotesAndSegments(quillContent, translation.notes, alignments, 'translation');
 
       const data = {
         translation: translation,
@@ -183,6 +190,7 @@ const actions = {
         rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
         {root: true})
     } else {
+      console.log("fetch translation from user")
       return dispatch('fetchTranslationFromUser', {
         docId: rootState.document.document.id,
         userId: rootState.workflow.selectedUserId
@@ -225,12 +233,14 @@ const actions = {
       let sanitizedWithNotes = stripSegments(state.translationWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
       const notes = computeNotesPointers(sanitizedWithNotes)
+      //console.log("preparing notes", state.translationWithNotes, computeNotesPointers(sanitizedWithNotes), notes)
+
       notes.forEach(note => {
-        const found = rootGetters['notes/notes'].find((element) => {
-          return element.id === note.id
-        })
+        const found = rootGetters['notes/getNoteById'](note.id)
         note.content = found.content
-        note.type_id = found.note_type.id
+        if (found.note_type) {
+          note.type_id = found.note_type.id
+        }
       })
 
       // put content && update notes
@@ -239,17 +249,23 @@ const actions = {
       await http.put(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, {
         data: {
           content: sanitizedContent,
-          notes: notes.filter(n => n.id !== null)
+          notes: notes.filter(n => n.id !== null && n.id >= 0)
         }
       })
             
       // and post new notes 
-      const new_notes = notes.filter(n => n.id === null)
+      const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+         delete n.id
+         return n
+        })
       if (new_notes.length > 0){
         await http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, {
           data: {notes: new_notes}
         })
       }
+
+      // update the store content
+      await dispatch('fetchTranslationContent')
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
@@ -260,6 +276,22 @@ const actions = {
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
+  },
+
+  insertNote({commit, state}, newNote) {
+    /* build a new shadow content with notes */
+    const quillContent = TEIToQuill(state.translation.content);
+    const textWithNotes = insertNotes(quillContent, [newNote])
+    const data = {
+      translation: {
+        ...state.translation,
+        notes: state.translation.notes.concat(newNote)
+      },
+      withNotes: convertLinebreakTEIToQuill(textWithNotes),
+    }
+    /* save the shadow content with notes */
+    commit('UPDATE', data)
+    return newNote
   },
 
   fetchReference ({commit}, {doc_id}) {

@@ -8,6 +8,7 @@ import {
   convertLinebreakQuillToTEI,
   insertSegments,
   insertNotesAndSegments,
+  insertNotes,
   insertSpeechparts,
   insertFacsimileZones,
   stripSegments,
@@ -104,10 +105,19 @@ const mutations = {
   },
   UPDATE (state, payload) {
     //console.log("STORE MUTATION transcription/UPDATE")
-    state.transcription = payload.transcription;
-    state.transcriptionWithNotes = payload.withNotes;
-    state.transcriptionWithSpeechparts = payload.withSpeechparts;
-    state.transcriptionWithFacsimile = payload.withFacsimile;
+    if (payload.transcription) {
+      state.transcription = payload.transcription;
+    }
+    if (payload.withNotes) {
+      state.transcriptionWithNotes = payload.withNotes;
+    }
+    if (payload.withSpeechparts) {
+      state.transcriptionWithSpeechparts = payload.withSpeechparts;
+    }
+    if (payload.withFacsimile) {
+      state.transcriptionWithFacsimile = payload.withFacsimile;
+    }
+    //state.transcriptionSaved = true;
   },
   CHANGED (state) {
     // transcription changed and needs to be saved
@@ -189,7 +199,7 @@ const actions = {
 
       let quillContent = TEIToQuill(transcription.content);
       let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription');
+      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
       const data = {
@@ -296,20 +306,31 @@ const actions = {
       // and post new notes 
       const new_notes = notes.filter(n => n.id === null)
       if (new_notes.length > 0){
-        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
           data: {notes: new_notes}
         })
       }
+      
+      // update the store content
+      await dispatch('fetchTranscriptionContent')
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
       commit('LOADING_STATUS', false)
     } catch(error) {
-      // TODO: rollback to previous content and notes
       commit('SET_ERROR', error)
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
+  },
+
+  insertNotes({commit, rootState, state}, notes) {
+    const quillContent = TEIToQuill(state.transcription.content)
+    const textWithNotes = insertNotes(quillContent, notes)
+    const data = {
+      withNotes: convertLinebreakTEIToQuill(textWithNotes),
+    }
+    commit('UPDATE', data)
   },
 
   fetchReference ({commit}, {doc_id}) {

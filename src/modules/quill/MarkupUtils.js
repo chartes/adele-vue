@@ -8,7 +8,7 @@ const inlineTagsToClean = ['i', 'ex', 'del', 'u', 'b']
 const regexpOpeningToClean = []
 const regexpClosingToClean = []
 inlineTagsToClean.forEach(tag => {
-  regexpOpeningToClean.push(new RegExp('</'+tag+'><note id="(\\d+)"><'+tag+'>', 'gi'))
+  regexpOpeningToClean.push(new RegExp('</'+tag+'><note id="(-?\\d+)"><'+tag+'>', 'gi'))
   regexpClosingToClean.push(new RegExp('</'+tag+'></note><'+tag+'>', 'gi'))
 })
 
@@ -201,9 +201,8 @@ String.prototype.insert = function (index, string) {
 
 const insertNotes = (text, notes) => {
 
-  //console.group(`%c insertNotes`, 'color:orange')²
+  //console.log(`%c insertNotes`, 'color:orange')
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  //console.log("%c notePointers =>", 'color:orange', notePointers)
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
@@ -211,9 +210,8 @@ const insertNotes = (text, notes) => {
 
   notePointers.forEach(note => {
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+    console.log(`%c #=> ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
-  //console.groupEnd()
   return shadowQuillElement.children[0].innerHTML;
 
   /*let result = text;
@@ -486,13 +484,13 @@ const insertSpeechparts = (text, speechparts) => {
   return result
 };
 
-const stripNotes  = text => text.replace(/<\/?note( id="\d+")?>/gmi, '');
+const stripNotes  = text => text.replace(/<\/?note( id="-?\d+")?>/gmi, '');
 const stripSegments  = text => text.replace(/<\/?segment>/gmi, '');
 const stripSpeechparts  = text => text.replace(/<\/?speechpart( id="\d+")?>/gmi, '');
 
 const computeNotesPointers  = (htmlWithNotes) => {
 
-  const regexpStart = /<note id="(\d+)">/;
+  const regexpStart = /<note id="(-?\d+)">/;
   const regexpEnd = /<\/note>/;
   let resStart, resEnd;
   const notes = [];

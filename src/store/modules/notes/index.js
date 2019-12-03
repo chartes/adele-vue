@@ -15,11 +15,20 @@ const actions = {
 
 const getters = {
   notes: (state, getters, rootState, rootGetters) => {
-    const transcriptionNotes = rootState.transcription.transcription.notes
-    const translationNotes = rootState.transcription.transcription.notes
+    const tr = rootState.transcription
+    const tl = rootState.translation
+
+    const transcriptionNotes = tr !== undefined && tr.transcription ? tr.transcription.notes : []
+    const translationNotes = tl !== undefined && tl.translation ? tl.translation.notes : []
+
     return transcriptionNotes.concat(translationNotes)
   },
-
+  getNoteById: (state, getters) => (id) => {
+    id = parseInt(id)
+    return getters.notes.find(note => {
+      return note.id === id;
+    });
+  }
   /*
   notes: state => state.notes,
   newNote: state => state.newNote,

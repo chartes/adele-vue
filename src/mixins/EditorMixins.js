@@ -72,6 +72,7 @@ var EditorMixin = {
           this.selectedNoteId = null;
           this.buttons.note = true;
         }
+        this.currentSelection = range
       }
     },
     onFocus () {
