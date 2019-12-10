@@ -210,7 +210,7 @@ const insertNotes = (text, notes) => {
 
   notePointers.forEach(note => {
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(`%c #=> ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+    console.log(`%c # => ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
   return shadowQuillElement.children[0].innerHTML;
 
@@ -282,7 +282,9 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
   let shadowQuill = new Quill(shadowQuillElement);
 
   notePointers.forEach(note => {
+    //console.log(note, note.ptr_start, note.ptr_end, note.content, note.id)
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
+    console.log(`%c # => ${shadowQuillElement.children[0].innerHTML}`, 'color:green')
     //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
 
@@ -361,8 +363,7 @@ Converts TEI pointers which include some markup to quill pointers
 to be able to insert notes, segments, speechpart with quill's setFormat function
  */
 const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
-
-
+  console.log("computeQuillPointersFromTEIPointers", teiPointer)
   if (!teiPointer || teiPointer.length === 0) {
     return []
   }
@@ -374,17 +375,18 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
   let count = 0;
   let delta = 0;
-  const quillPointers = teiPointer.map(pointer => {
+  const quillPointers = teiPointer.sort((p1, p2) => p1.ptr_start - p2.ptr_start).map(pointer => {
 
     const start = count > 0 ? teiPointer[count-1].ptr_end : 0;
-    //console.group("%c ###", 'color:green', count, pointer.ptr_start, pointer.ptr_end)
+    console.log("%c ###", 'color:green', count, pointer.ptr_start, pointer.ptr_end)
 
     const startText = text.substring(start, pointer.ptr_start);
     const startTextSanitized = startText.replace(sanitizePattern, '')
     const deltaStart = startText.length - startTextSanitized.length;
+
     delta -= deltaStart;
     let startIndex = pointer.ptr_start + delta;
-    //console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
+    console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
 
     const linkedText =  text.substring(pointer.ptr_start, pointer.ptr_end);
     const linkedTextSanitized = linkedText.replace(sanitizePattern, '')
@@ -392,10 +394,10 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
     delta -= deltaLinked;
     let endIndex = pointer.ptr_end + delta;
 
-    //console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
+    console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
 
     let quillPointer = { ...pointer, ptr_start: startIndex, ptr_end: endIndex}
-    //console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
+    console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
     //console.groupEnd()
     count++;
     return quillPointer
@@ -490,37 +492,50 @@ const stripSpeechparts  = text => text.replace(/<\/?speechpart( id="\d+")?>/gmi,
 
 const computeNotesPointers  = (htmlWithNotes) => {
 
-  const regexpStart = /<note id="(-?\d+)">/;
-  const regexpEnd = /<\/note>/;
+  const regexpStart = /<note id="(-?\d+)">/
+  const regexpEnd = /<\/note>/
+  const regexpContent = /<[^>]*>/gmi
   let resStart, resEnd;
-  const notes = [];
+  let notes = [];
 
   htmlWithNotes = sanitizeHtmlWithNotesForSave(htmlWithNotes)
 
-
   //console.group("%c ###########################################", 'color:DarkOrchid')
-  //console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
-  //console.log("%c ######", 'color:DarkOrchid')
+  console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
+  console.log("%c ######", 'color:DarkOrchid')
 
   while((resStart = regexpStart.exec(htmlWithNotes)) !== null) {
-    //console.log(`# ${htmlWithNotes}`, 'color:DarkOrchid')
-    //console.log(`# resStart`, 'color:DarkOrchid', resStart)
+    resEnd = regexpEnd.exec(htmlWithNotes)
+    
+
+    //trying to achieve : <note><sup>t</sup></note> -> ptr_end - len(<sup>) - len(</sup>)
+    //todo: fonctionne que pour la première boucle. ptr_start (et ptr_end) pas bon ensuite ? 
+    // tours de boucle suivants : ptr_start est trop élevé car il garde les <note> précédentes? sinon pourquoi ?
+    console.log(`%c # htmlWithNotes ${resStart.index} ${resEnd.index}`, 'color:DarkOrchid')
+    let noteContentWithHtml = htmlWithNotes.substring(resStart.index + resStart[0].length, resEnd.index)
+    noteContentWithHtml = noteContentWithHtml.replace(regexpContent, '')
+    console.log(`%c # noteContentWithHtml ${noteContentWithHtml}`, 'color:DarkOrchid')
+
+    console.log(`%c # ${htmlWithNotes}`, 'color:DarkOrchid')
+    console.log(`%c # resStart`, 'color:DarkOrchid', resStart)
     htmlWithNotes = htmlWithNotes.replace(regexpStart, '');
-    resEnd = regexpEnd.exec(htmlWithNotes);
-    //console.log(`# resEnd`, 'color:DarkOrchid', resEnd)
-    htmlWithNotes = htmlWithNotes.replace(regexpEnd, '');
+    htmlWithNotes = htmlWithNotes.replace(regexpEnd, ''); 
+
+    console.log(`%c # resEnd`, 'color:DarkOrchid', resEnd)
+  
+   
     notes.push({
       "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
-      "ptr_end": resEnd.index
+      "ptr_end": resStart.index + noteContentWithHtml.length
     });
-    /*
+
     console.log('%c =>', 'color:DarkOrchid', {
-      "note_id" : parseInt(resStart[1]),
+      "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
-      "ptr_end": resEnd.index
+      "ptr_end": resStart.index + noteContentWithHtml.length
     })
-    */
+    
   }
   //console.warn('%c computeNotesPointers', 'color:DarkOrchid', notes.length, notes)
 
