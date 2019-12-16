@@ -63,9 +63,12 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
+          :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
         >
-          <i-i-i-f-viewer />
+          <i-i-i-f-viewer
+            :key="canvasManifestInfo"
+            :info="canvasManifestInfo"
+          />
         </div>
         <div
           v-if="showContent"
@@ -196,7 +199,12 @@ export default {
         ...mapState('document', ['document', 'loading',
                                  'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
         ...mapGetters('user', ['loggedIn']),
+        ...mapGetters('document', ['getManifestInfoUrl']),
         ...mapGetters('workflow', ['isTranscriptionValidated']),
+
+        canvasManifestInfo() {
+          return this.getManifestInfoUrl(0)
+        },
 
         showContent() {
           switch(this.$attrs.section){
