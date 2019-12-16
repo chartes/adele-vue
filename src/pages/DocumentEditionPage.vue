@@ -62,9 +62,12 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility && showContent ? 'is-two-fifths': ''}`"
+          :class="`${imageVisibility && showContent ? 'is-half': ''}`"
         >
-          <i-i-i-f-viewer />
+          <i-i-i-f-viewer
+            :key="`${canvasManifestInfo}${showContent}`"
+            :info="canvasManifestInfo"
+          />
         </div>
         <div
           v-if="showContent"
@@ -362,7 +365,7 @@ export default {
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated', 'isTranscriptionReadOnly', 'isTranslationReadOnly']),
-        ...mapGetters('document', ['documentOwner']),
+        ...mapGetters('document', ['documentOwner', 'getManifestInfoUrl']),
 
         showContent() {
           switch(this.$attrs.section){
@@ -384,7 +387,11 @@ export default {
         selectedUser() {
           const u = this.userFromWhitelist(this.document.whitelist, this.selectedUserId)
           return u ? u : this.currentUser
-        }
+        },
+
+        canvasManifestInfo() {
+          return this.getManifestInfoUrl(0)
+        },
     },
     watch:{
       selectedUserId() {

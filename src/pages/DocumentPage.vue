@@ -66,7 +66,7 @@
           :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
         >
           <i-i-i-f-viewer
-            :key="canvasManifestInfo"
+            :key="`${canvasManifestInfo}${showContent}`"
             :info="canvasManifestInfo"
           />
         </div>

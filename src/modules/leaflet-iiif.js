@@ -259,7 +259,7 @@ L.TileLayer.Iiif = L.TileLayer.extend({
       tolerance = 0,
       imageSize;
 
-    for (let i = 0; i < this.maxNativeZoom; i++) {
+    for (let i = 0; i <= this.maxNativeZoom; i++) {
       imageSize = this._imageSizes[i];
       if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
         return i;

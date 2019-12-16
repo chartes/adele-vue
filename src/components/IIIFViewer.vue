@@ -29,7 +29,7 @@ export default {
         currentZoom: 0,
         maxZoom: 3,
         mapOptions: {
-         
+          zoomSnap: 0.15
         }
       }
     },
