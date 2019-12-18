@@ -247,19 +247,20 @@ export default {
         console.log("No tr/tl alignemnt", error)
       }
 
+      try {
+        await this.fetchCommentariesView()
+      } catch(error) {
+        console.log("No commentaries", error)
+      }
+
       // init notes popup
     },
     methods: {
-      ...mapActions('transcription', {
-        'fetchTranscriptionContent': 'fetchTranscriptionContent',
-        }),
-      ...mapActions('translation', {
-        'fetchTranslationContent': 'fetchTranslationContent'
-        }),
       ...mapActions('document', {
         'fetchOne': 'fetch',
         'fetchTranscriptionView': 'fetchTranscriptionView',
         'fetchTranslationView': 'fetchTranslationView',
+        'fetchCommentariesView': 'fetchCommentariesView',
         'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
         }),
       toggleImageVisibility() {

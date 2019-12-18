@@ -9,6 +9,7 @@ const state = {
   transcriptionView: undefined,
   translationView: undefined,
   transcriptionAlignmentView: undefined,
+  commentariesView: undefined,
 
   loading: false,
 };
@@ -36,6 +37,12 @@ const mutations = {
       notes
     };
   },
+  UPDATE_COMMENTARIES_VIEW (state, {content, notes}) {
+    state.commentariesView = {
+      content,
+      notes
+    };
+  },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
   },
@@ -44,6 +51,9 @@ const mutations = {
   },
   RESET_TRANSCRIPTION_ALIGNMENT_VIEW(state) {
     state.transcriptionAlignmentView = null;
+  },
+  RESET_COMMENTARIES_VIEW(state) {
+    state.commentariesView = null;
   },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
@@ -70,6 +80,7 @@ const actions = {
       commit('UPDATE_DOCUMENT', response.data.data)
       commit('RESET_TRANSCRIPTION_VIEW')
       commit('RESET_TRANSLATION_VIEW')
+      commit('RESET_COMMENTARIES_VIEW')
       console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -80,7 +91,7 @@ const actions = {
   fetchTranscriptionView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tr")
-    return http.get(`documents/${rootState.document.document.id}/view/transcription${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+    return http.get(`documents/${rootState.document.document.id}/view/transcriptions${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSCRIPTION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
@@ -97,7 +108,7 @@ const actions = {
   fetchTranslationView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tl")
-    return http.get(`documents/${rootState.document.document.id}/view/translation${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+    return http.get(`documents/${rootState.document.document.id}/view/translations${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSLATION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
@@ -124,6 +135,23 @@ const actions = {
     }).catch((error) => {
       commit('LOADING_STATUS', false);
       throw error
+    })
+  },
+  fetchCommentariesView ({ dispatch, commit, rootState }, userId) {
+    commit('LOADING_STATUS', true);
+    console.log("fetching  tl")
+    return http.get(`documents/${rootState.document.document.id}/view/commentaries${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      commit('UPDATE_COMMENTARIES_VIEW',  {
+        content: response.data.data["content"],
+        notes: response.data.data["notes"]
+      })
+      console.log("tl ok")
+      dispatch('commentaries/setError', null, {root: true} )
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      dispatch('commentaries/setError', error, {root: true} )
+      commit('LOADING_STATUS', false);
+      //throw error
     })
   },
   fetchAll ({ commit }, {pageId, pageSize, filters}) {

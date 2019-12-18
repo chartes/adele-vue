@@ -62,7 +62,7 @@
         <div
           v-show="imageVisibility"
           class="column m-t-sm"
-          :class="`${imageVisibility && showContent ? 'is-half': ''}`"
+          :class="`${imageVisibility && showContent ? 'is-two-fifths': ''}`"
         >
           <i-i-i-f-viewer
             :key="`${canvasManifestInfo}${showContent}`"
