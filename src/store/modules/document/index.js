@@ -37,11 +37,8 @@ const mutations = {
       notes
     };
   },
-  UPDATE_COMMENTARIES_VIEW (state, {content, notes}) {
-    state.commentariesView = {
-      content,
-      notes
-    };
+  UPDATE_COMMENTARIES_VIEW (state, {commentaries}) {
+    state.commentariesView = commentaries
   },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
@@ -139,13 +136,19 @@ const actions = {
   },
   fetchCommentariesView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
-    console.log("fetching  tl")
+    console.log("fetching  coms")
     return http.get(`documents/${rootState.document.document.id}/view/commentaries${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      console.log(response.data)
       commit('UPDATE_COMMENTARIES_VIEW',  {
-        content: response.data.data["content"],
-        notes: response.data.data["notes"]
+        commentaries: response.data.data.map(c => {
+          return {
+            type: c["type"],
+            content: c["content"],
+            notes: c["notes"]
+          }
+        })
       })
-      console.log("tl ok")
+      console.log("coms ok")
       dispatch('commentaries/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {

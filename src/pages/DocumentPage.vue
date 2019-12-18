@@ -8,7 +8,7 @@
         :document="document"
       />
 
-      <!-- Visibility widget-->
+      <!-- Visibility widgets -->
       <div class="m-b-sm">
         <p class="is-size-6">
           <span class="tag">
@@ -74,6 +74,7 @@
           v-if="showContent"
           class="column"
         >
+          <!-- section tabs (notice, transcription, commentaires, etc) -->
           <div class="tabs">
             <ul>
               <li :class="$attrs.section === 'notice' || $attrs.section === undefined || !transcriptionView ? `is-active`: ''">
@@ -109,6 +110,7 @@
               </li>
             </ul>
           </div>
+          <!-- section content -->
           <div
             v-if="!!document"
             class=""
@@ -136,7 +138,7 @@
             </div>
             <document-commentaries
               v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
-              :document="document"
+              :readonly-data="commentariesView"
             />
             <document-speech-parts
               v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
@@ -197,7 +199,8 @@ export default {
     },
     computed: {
         ...mapState('document', ['document', 'loading',
-                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
+                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView',
+                                 'commentariesView']),
         ...mapGetters('user', ['loggedIn']),
         ...mapGetters('document', ['getManifestInfoUrl']),
         ...mapGetters('workflow', ['isTranscriptionValidated']),
