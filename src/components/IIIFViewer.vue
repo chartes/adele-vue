@@ -3,27 +3,34 @@
     <l-map
       ref="myMap"
       style="height: 640px"
-    >
-      <l-tile-layer :url="url" />
-    </l-map>
+      :zoom="currentZoom"
+      :max-zoom="maxZoom"
+      :options="mapOptions"
+      @update:zoom="zoomUpdate"
+    />
   </div>
 </template>
 
 <script>
 import {mapState, mapGetters} from 'vuex'
-import {LMap, LTileLayer, LMarker } from 'vue2-leaflet';
-
+import {LMap, LMarker } from 'vue2-leaflet'
+import tileLayerIiif from '../modules/leaflet-iiif'
 
 export default {
     name: "IIIFViewer",
     components: {
-        LMap,
-        LTileLayer,
-        //LMarker
+        LMap
+    },
+    props: {
+      info: {type: String, required: true}
     },
     data() {
       return {
-        url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+        currentZoom: 0,
+        maxZoom: 3,
+        mapOptions: {
+          zoomSnap: 0.15
+        }
       }
     },
     computed: {
@@ -31,11 +38,18 @@ export default {
     },
     mounted () {
       this.$nextTick(() => {
-        //this.$refs.myMap.mapObject.ANY_LEAFLET_MAP_METHOD();
+        const map = this.$refs.myMap.mapObject
+        const baseLayer = tileLayerIiif(this.$props.info)
+        baseLayer.addTo(this.$refs.myMap.mapObject)
       })
     },
     created() {
      
+    },
+    methods: {
+      zoomUpdate(zoom) {
+        this.currentZoom = zoom;
+      }
     }
 }
 </script>

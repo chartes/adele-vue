@@ -48,7 +48,7 @@ const mutations = {
     state.translationAlignments = [];
     state.translationContent = null;
     state.translationWithNotes = null;
-    state.translationWithSpeechparts = null;
+    //state.translationWithSpeechparts = null;
 
     if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
     if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";

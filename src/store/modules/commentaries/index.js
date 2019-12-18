@@ -1,5 +1,5 @@
-import axios from "axios/index";
-import Quill from '../../../modules/quill/AdeleQuill';
+import {http} from '../../../modules/http-common';
+
 import {
   insertNotes,
   quillToTEI,
@@ -8,6 +8,7 @@ import {
   TEIToQuill,
   computeNotesPointers, convertLinebreakQuillToTEI
 } from '../../../modules/quill/MarkupUtils';
+import { stat } from 'fs';
 
 
 const state = {
@@ -17,6 +18,8 @@ const state = {
   hasCommentaryTypes: [],
   commentaryTypes: [],
   saved: true,
+
+  error: null
 
 };
 
@@ -35,6 +38,9 @@ const mutations = {
   },
   SAVED (state, payload) {
     state.saved = payload
+  },
+  SET_ERROR(state, payload) {
+    state.error = payload
   }
 
 };
@@ -42,42 +48,63 @@ const mutations = {
 const actions = {
 
   fetchTypes ({ commit }) {
-    axios.get(`/adele/api/1.0/commentary-types`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const commentaryTypes = isArray ? respData : [respData];
-      commit('UPDATE_TYPES', commentaryTypes)
+    http.get(`commentary-types`).then( response => {
+      commit('UPDATE_TYPES', response.data.data)
     });
   },
 
-  fetch ({ commit }, {doc_id, user_id}) {
-    axios.get(`/adele/api/1.0/documents/${ doc_id }/commentaries/from-user/${ user_id }`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const commentaries = isArray ? respData : [respData];
-      let hasTypes = {};
-      let commentariesFormatted = [];
-      commentaries.forEach(comm => {
-        let quillContent = TEIToQuill(comm.content);
-        let withNotes = insertNotes(quillContent, comm.notes);
-        commentariesFormatted.push({
-          type: comm.type.id,
-          typeLabel: comm.type.label,
-          content: withNotes,
-          notes: comm.notes
-        });
-        hasTypes[comm.type.label] = true
-      });
+  fetchCommentariesFromUser ({ commit }, {doc_id, user_id}) {
+    http.get(`documents/${ doc_id }/commentaries/from-user/${ user_id }`).then( response => {
+        const commentaries = response.data.data;
+        let hasTypes = {};
+        let commentariesFormatted = [];
+        commentaries.forEach(comm => {
+          let quillContent = TEIToQuill(comm.content);
+          let withNotes = insertNotes(quillContent, comm.notes);
+          commentariesFormatted.push({
+            type: comm.type.id,
+            typeLabel: comm.type.label,
+            content: withNotes,
+            notes: comm.notes
+          });
+          hasTypes[comm.type.label] = true
+        })
+        commit('UPDATE', { commentaries: commentariesFormatted, hasTypes })
+        
+      }).catch((error) => {
+        commit('SET_ERROR', error)
+        //throw error
+      })
 
-      commit('UPDATE', { commentaries: commentariesFormatted, hasTypes })
-    });
   },
 
+  fetchCommentariesContent({dispatch, rootState, rootGetters}) {
+    //TODO: voir model dans translation
+    if (rootGetters['workflow/isCommentariesReadOnly']) {
+      // when in readonly mode
+      // students see the reference content
+      // teacher and admins can see other ppl readonly views
+      return dispatch('document/fetchCommentariesView', 
+        rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
+        {root: true})
+    } else {
+      return dispatch('fetchCommentariesFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
+      })
+    }
+  },
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
+  },
+  /*
   changed ({ commit, dispatch }, {content, type}) {
     commit('UPDATE_COMMENTARY', {content, type});
     commit('SAVED', false);
     //dispatch('transcription/translationChanged', null, {root:true})
   },
+ 
 
   add ({ commit, rootState }, typeId) {
     const config = { auth: { username: rootState.user.authToken, password: undefined }};
@@ -91,7 +118,7 @@ const actions = {
       }
     }
 
-    return axios.post(`/adele/api/1.0/documents/${ doc_id }/commentaries`, newCommentaryData, config).then( response => {
+    return http.post(`documents/${ doc_id }/commentaries`, newCommentaryData, config).then( response => {
       const respData = response.data.data;
       const isArray = Array.isArray(respData)
 
@@ -141,7 +168,7 @@ const actions = {
     }
 
     return new Promise( ( resolve, reject ) => {
-      axios.put(`/adele/api/1.0/documents/${rootState.document.document.id}/commentaries`, commData, auth)
+      http.put(`documents/${rootState.document.document.id}/commentaries`, commData, auth)
         .then( response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -176,7 +203,7 @@ const actions = {
 
 
     return new Promise((resolve, reject) => {
-      axios.put(`/adele/api/1.0/documents/${rootState.document.document.id}/commentaries/notes`, {data: notes}, auth)
+      http.put(`documents/${rootState.document.document.id}/commentaries/notes`, {data: notes}, auth)
         .then(response => {
           if (response.data.errors) {
             console.error("error", response.data.errors);
@@ -188,7 +215,7 @@ const actions = {
         });
     })
   }
-
+ */
 
 };
 
