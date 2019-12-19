@@ -93,7 +93,7 @@
                 </router-link>
               </li>
               <li
-                v-if="isTranscriptionValidated"
+                v-if="isTranscriptionValidated && !!commentariesView && commentariesView.length > 0"
                 :class="$attrs.section === 'commentaries' ? `is-active`: ''"
               >
                 <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'commentaries'}}">

@@ -68,7 +68,7 @@ const getters = {
     return getters.isStepReadOnly(TRANSLATION_STEP)
   },
   isCommentariesReadOnly: (state, getters)  => {
-    return getters.isStepReadOnly(TRANSCRIPTION_STEP)
+    return getters.isStepReadOnly(COMMENTARIES_STEP)
   },
 }
 

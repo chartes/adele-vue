@@ -245,10 +245,50 @@
             </div>
 
             <!-- Commentaires -->
-            <document-edition-commentaries
-              v-if="$attrs.section === 'commentaries'"
-              :document="document"
-            />
+            <div v-if="$attrs.section === 'commentaries'">
+              <!-- transcription error -->
+              <div v-if="commentariesError">
+                <message
+                  v-if="commentariesError.response.status === 404"
+                  message-class="is-info "
+                >
+                  <p class="m-b-sm">
+                    <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                    <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                    pas encore ajouté de commentaire pour ce document
+                  </p>
+                  <div
+                    v-if="currentUser.id === selectedUser.id"
+                    class="button is-info"
+                  >
+                    Ajouter un commentaire
+                  </div>
+                </message>
+                <message
+                  v-else
+                  message-class="is-danger"
+                >
+                  {{ commentariesError }}
+                </message>
+              </div>
+              <!-- commentaries readonly -->
+              <div v-else-if="isCommentariesReadOnly">
+                <transcription-action-bar />
+                <message
+                  v-if="isCommentariesValidated || currentUser.id !== selectedUserId"
+                  message-class=""
+                >
+                  <span v-if="currentUser.id == documentOwner.id">
+                    <p class="m-b-sm">Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.</p>
+                  </span>
+                  <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                </message>
+                <document-commentaries
+                  :readonly-data="commentariesView"
+                />
+              </div>
+            </div>
+            
             <!-- Parties du discours -->
             <document-edition-speech-parts
               v-if="$attrs.section === 'speech-parts'"
@@ -307,12 +347,13 @@ export default {
         DocumentEditionTranscription,
         DocumentEditionTranslation,
         DocumentEditionFacsimile,
-        DocumentEditionCommentaries,
+        //DocumentEditionCommentaries,
         DocumentEditionSpeechParts,
 
         DocumentTranscription,
         DocumentTranslation,
         DocumentTranscriptionAlignment,
+        DocumentCommentaries,
 
         IIIFViewer,
         WorkflowSteps,
@@ -357,14 +398,18 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
+        ...mapState('document', ['document', 'loading', 'transcriptionView', 
+        'translationView', 'transcriptionAlignmentView', 'commentariesView']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading', 'transcriptionError']),
         ...mapState('translation', ['translationWithNotes', 'transcriptionLoading', 'translationError']),
+        ...mapState('commentaries', ['commentaries', 'commentariesError']),
         ...mapState('user', ['currentUser']),
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
-        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated', 'isTranscriptionReadOnly', 'isTranslationReadOnly']),
+        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
+        'isTranscriptionReadOnly', 'isTranslationReadOnly',
+        'isCommentariesReadOnly', 'isCommentariesValidated']),
         ...mapGetters('document', ['documentOwner', 'getManifestInfoUrl']),
 
         showContent() {
@@ -423,6 +468,9 @@ export default {
         'fetchOne': 'fetch',
         'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView'
         }),
+      ...mapActions('commentaries', {
+        'fetchCommentariesContent': 'fetchCommentariesContent',
+        }),
       async fetchContentFromUser(){
         await this.fetchTranscriptionContent()
         await this.fetchTranslationContent()
@@ -432,6 +480,7 @@ export default {
         } catch(error) {
           this.transcriptionAlignmentError = error
         }
+        await this.fetchCommentariesContent()
       },
       async addNewTranscription() {
         await this.createTranscription()

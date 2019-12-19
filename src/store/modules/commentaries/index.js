@@ -19,7 +19,7 @@ const state = {
   commentaryTypes: [],
   saved: true,
 
-  error: null
+  commentariesError: null
 
 };
 
@@ -40,7 +40,7 @@ const mutations = {
     state.saved = payload
   },
   SET_ERROR(state, payload) {
-    state.error = payload
+    state.commentariesError = payload
   }
 
 };
@@ -53,8 +53,8 @@ const actions = {
     });
   },
 
-  fetchCommentariesFromUser ({ commit }, {doc_id, user_id}) {
-    http.get(`documents/${ doc_id }/commentaries/from-user/${ user_id }`).then( response => {
+  fetchCommentariesFromUser ({ commit }, {docId, userId}) {
+    http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
         const commentaries = response.data.data;
         let hasTypes = {};
         let commentariesFormatted = [];
@@ -77,7 +77,7 @@ const actions = {
       })
 
   },
-
+  /* useful */
   fetchCommentariesContent({dispatch, rootState, rootGetters}) {
     //TODO: voir model dans translation
     if (rootGetters['workflow/isCommentariesReadOnly']) {
