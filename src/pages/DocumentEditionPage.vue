@@ -249,7 +249,7 @@
               <!-- transcription error -->
               <div v-if="commentariesError">
                 <message
-                  v-if="commentariesError.response.status === 404"
+                  v-if="commentariesError.response && commentariesError.response.status === 404"
                   message-class="is-info "
                 >
                   <p class="m-b-sm">
@@ -272,8 +272,9 @@
                 </message>
               </div>
               <!-- commentaries readonly -->
+              
               <div v-else-if="isCommentariesReadOnly">
-                <transcription-action-bar />
+                <commentaries-action-bar />
                 <message
                   v-if="isCommentariesValidated || currentUser.id !== selectedUserId"
                   message-class=""
@@ -288,7 +289,6 @@
                 />
               </div>
             </div>
-            
             <!-- Parties du discours -->
             <document-edition-speech-parts
               v-if="$attrs.section === 'speech-parts'"
@@ -329,6 +329,7 @@ import WorkflowSteps from '../components/WorkflowSteps.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 import TranscriptionActionBar from '../components/document/edition/TranscriptionActionBar.vue'
 import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
+import CommentariesActionBar from '../components/document/edition/CommentariesActionBar.vue'
 
 import Message from '../components/Message.vue'
 import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
@@ -342,6 +343,7 @@ export default {
         DocumentTitleBar,
         TranscriptionActionBar,
         TranslationActionBar,
+        CommentariesActionBar,
 
         DocumentEditionNotice,
         DocumentEditionTranscription,
