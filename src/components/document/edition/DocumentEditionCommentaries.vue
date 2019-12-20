@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div class="columns">
-      <div class="column is-half ">
+      <div class="column is-two-fifths">
         <div class="has-text-weight-medium subtitle m-b-xl">
           Transcription
         </div>
@@ -9,7 +9,7 @@
           :readonly-data="transcriptionView"
         />
       </div>
-      <div class="column is-half ">
+      <div class="column  ">
         <div class="has-text-weight-medium subtitle m-b-xl">
           Commentaires
         </div>
@@ -35,7 +35,10 @@
             :key="index"
           >
             <div v-show="index === activeIdx">
-              {{ com }}
+              <commentary-editor
+                :initial-content="com.content"
+                :type="com.type"
+              />
             </div>
           </div>
         </div>
@@ -50,11 +53,13 @@
 import { mapState, mapActions } from 'vuex';
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
+import CommentaryEditor from '../../editors/CommentaryEditor.vue'
 
 export default {
     name: "DocumentEditionCommentaries",
     components: {
-        DocumentTranscription
+        DocumentTranscription,
+        CommentaryEditor
     },
     props: {
         

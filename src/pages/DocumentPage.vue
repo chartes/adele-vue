@@ -8,70 +8,8 @@
         :document="document"
       />
 
-      <!-- Visibility widgets -->
-      <div class="m-b-sm">
-        <p class="is-size-6">
-          <span class="tag">
-            <visibility-toggle
-              class="m-r-md"
-              :action="toggleImageVisibility"
-              :visible="imageVisibility"
-            >
-              image
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'notice'"
-              :action="toggleNoticeVisibility"
-              :visible="noticeVisibility"
-            >
-              notice
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
-              :action="toggleTranscriptionVisibility"
-              :visible="transcriptionVisibility"
-            >
-              transcription
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
-              class="m-l-md"
-              :action="toggleTranslationVisibility"
-              :visible="translationVisibility"
-            >
-              traduction
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'commentaries'"
-              :action="toggleCommentariesVisibility"
-              :visible="commentariesVisibility"
-            >
-              commentaires
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'speech-parts'"
-              :action="toggleSpeechPartsVisibility"
-              :visible="speechpartsVisibility"
-            >
-              parties du discours
-            </visibility-toggle>
-          </span>
-        </p>
-      </div>
-
       <div class="columns">
         <div
-          v-show="imageVisibility"
-          class="column m-t-sm"
-          :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
-        >
-          <i-i-i-f-viewer
-            :key="`${canvasManifestInfo}${showContent}`"
-            :info="canvasManifestInfo"
-          />
-        </div>
-        <div
-          v-if="showContent"
           class="column"
         >
           <!-- section tabs (notice, transcription, commentaires, etc) -->
@@ -115,43 +53,164 @@
             v-if="!!document"
             class=""
           >
-            <document-notice
-              v-if="$attrs.section === 'notice' || !transcriptionView"
-              :document="document"
-            />
-            <div
-              v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
-              class="content"
-            >
-              <document-transcription
-                v-if="transcriptionVisibility && !translationVisibility"
-                :readonly-data="transcriptionView"
-              />
-              <document-translation
-                v-if="!transcriptionVisibility && translationVisibility"
-                :readonly-data="translationView"
-              />
-              <document-transcription-alignment
-                v-if="transcriptionAlignmentView && transcriptionVisibility && translationVisibility"
-                :readonly-data="transcriptionAlignmentView"
-              />
+            <div class="columns">
+              <div
+                v-show="imageVisibility"
+                class="column m-t-sm"
+                :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
+              >
+                <!-- visibility widget -->
+                <div
+                  v-if="!showContent"
+                  class="m-b-md"
+                >
+                  <p class="is-size-6">
+                    <span class="tag">
+                      <visibility-toggle
+                        class="m-r-md"
+                        :action="toggleImageVisibility"
+                        :visible="imageVisibility"
+                      >
+                        image
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'notice'"
+                        :action="toggleNoticeVisibility"
+                        :visible="noticeVisibility"
+                      >
+                        notice
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                        :action="toggleTranscriptionVisibility"
+                        :visible="transcriptionVisibility"
+                      >
+                        transcription
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                        class="m-l-md"
+                        :action="toggleTranslationVisibility"
+                        :visible="translationVisibility"
+                      >
+                        traduction
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'commentaries'"
+                        :action="toggleCommentariesVisibility"
+                        :visible="commentariesVisibility"
+                      >
+                        commentaires
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'speech-parts'"
+                        :action="toggleSpeechPartsVisibility"
+                        :visible="speechpartsVisibility"
+                      >
+                        parties du discours
+                      </visibility-toggle>
+                    </span>
+                  </p>
+                </div>
+
+                <i-i-i-f-viewer
+                  :key="`${canvasManifestInfo}${showContent}`"
+                  :info="canvasManifestInfo"
+                />
+              </div>
+
+              <div
+                v-if="showContent"
+                class="column"
+              >
+                <!-- visibility widget -->
+                <div class="m-b-md">
+                  <p class="is-size-6">
+                    <span class="tag">
+                      <visibility-toggle
+                        class="m-r-md"
+                        :action="toggleImageVisibility"
+                        :visible="imageVisibility"
+                      >
+                        image
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'notice'"
+                        :action="toggleNoticeVisibility"
+                        :visible="noticeVisibility"
+                      >
+                        notice
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                        :action="toggleTranscriptionVisibility"
+                        :visible="transcriptionVisibility"
+                      >
+                        transcription
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                        class="m-l-md"
+                        :action="toggleTranslationVisibility"
+                        :visible="translationVisibility"
+                      >
+                        traduction
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'commentaries'"
+                        :action="toggleCommentariesVisibility"
+                        :visible="commentariesVisibility"
+                      >
+                        commentaires
+                      </visibility-toggle>
+                      <visibility-toggle
+                        v-if="$attrs.section === 'speech-parts'"
+                        :action="toggleSpeechPartsVisibility"
+                        :visible="speechpartsVisibility"
+                      >
+                        parties du discours
+                      </visibility-toggle>
+                    </span>
+                  </p>
+                </div>
+
+                <!-- section content -->
+                <div v-if="showContent">
+                  <document-notice
+                    v-if="$attrs.section === 'notice' || !transcriptionView"
+                    :document="document"
+                  />
+                  <div
+                    v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
+                    class="content"
+                  >
+                    <document-transcription
+                      v-if="transcriptionVisibility && !translationVisibility"
+                      :readonly-data="transcriptionView"
+                    />
+                    <document-translation
+                      v-if="!transcriptionVisibility && translationVisibility"
+                      :readonly-data="translationView"
+                    />
+                    <document-transcription-alignment
+                      v-if="transcriptionAlignmentView && transcriptionVisibility && translationVisibility"
+                      :readonly-data="transcriptionAlignmentView"
+                    />
+                  </div>
+                  <document-commentaries
+                    v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
+                    :readonly-data="commentariesView"
+                  />
+                  <document-speech-parts
+                    v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
+                    :document="document"
+                  />
+                </div>
+              </div>
             </div>
-            <document-commentaries
-              v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
-              :readonly-data="commentariesView"
-            />
-            <document-speech-parts
-              v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
-              :document="document"
-            />
           </div>
         </div>
-
-        <div 
-          v-show="false && !imageVisibility && showContent"
-          class="column is-one-quarter"
-        />
-      </div>
+</div>
     </div>
   </div>
 </template>

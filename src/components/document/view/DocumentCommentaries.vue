@@ -1,27 +1,49 @@
 <template>
   <div>
-    <div class="tabs is-small is-toggle is-fullwidth">
-      <ul>
-        <li
-          v-for="(com, index) in readonlyData"
-          :key="index"
-          :class="`${index === activeIdx ? 'is-active' : ''}`"
-        >
-          <a @click="() => selectItem(index)">
-            <span>{{ com.type.label }}</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div>
+    <div class="columns">
       <div
-        v-for="(com, index) in readonlyData"
-        :key="index"
+        v-if="showTranscription"
+        class="column is-two-fifths"
       >
-        <div
-          v-show="index === activeIdx"
-          v-html="com.content"
+        <div class="has-text-weight-medium subtitle m-b-xl">
+          Transcription
+        </div>
+        <document-transcription
+          :readonly-data="transcriptionView"
         />
+      </div>
+      <div class="column  ">
+        <div
+          v-if="showTranscription"
+          class="has-text-weight-medium subtitle m-b-xl"
+        >
+          Commentaires
+        </div>
+    
+        <div class="tabs is-small is-toggle is-fullwidth">
+          <ul>
+            <li
+              v-for="(com, index) in readonlyData"
+              :key="index"
+              :class="`${index === activeIdx ? 'is-active' : ''}`"
+            >
+              <a @click="() => selectItem(index)">
+                <span>{{ com.type.label }}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <div
+            v-for="(com, index) in readonlyData"
+            :key="index"
+          >
+            <div
+              v-show="index === activeIdx"
+              v-html="com.content"
+            />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -30,15 +52,18 @@
 
 <script>
 
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
+
+import DocumentTranscription from '../view/DocumentTranscription.vue'
 
 export default {
     name: "DocumentCommentaries",
     components: {
-        
+        DocumentTranscription
     },
     props: {
-        readonlyData: {type: Array, default: null}
+        readonlyData: {type: Array, default: null},
+        showTranscription: {type: Boolean, default: false}
     },
     data() {
       return {
@@ -46,12 +71,18 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['loading']),
+      ...mapState('document', ['loading']),
+      ...mapState('document', ['transcriptionView']),
+
     },
-    created() {
-      
+    async created() {
+      if (this.showTranscription) {
+        await this.fetchTranscriptionView()
+      }
     },
     methods: {
+      ...mapActions('document', ['fetchTranscriptionView']),
+
       selectItem(index) {
         this.activeIdx = index
       }

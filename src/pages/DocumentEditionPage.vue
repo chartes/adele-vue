@@ -303,6 +303,7 @@
                 </message>
                 <document-commentaries
                   :readonly-data="commentariesView"
+                  :show-transcription="true"
                 />
               </div>
               <div v-else>
