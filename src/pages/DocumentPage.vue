@@ -1,12 +1,14 @@
 <template>
   <div class="section">
     <div
-      v-if="document"
+      v-if="!!document"
       class="container is-fluid"
     >
+      <!-- header -->
       <document-title-bar
         :document="document"
       />
+      <!-- main container -->
       <div class="m-t-md">
         <!-- section tabs (notice, transcription, commentaires, etc) -->
         <div class="tabs">

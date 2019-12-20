@@ -1,19 +1,20 @@
 <template>
   <div class="section">
-    <div class="container is-fluid ">
-      <div
-        v-if="document"
-      >
-        <div class="columns">
-          <div class="column  is-half">
-            <document-title-bar />
-          </div>
-          <div class="is-divider-vertical p-t-xl p-b-xl" />
-          <div class="column">
-            <workflow-steps />
-          </div>
+    <div
+      v-if="!!document"
+      class="container is-fluid "
+    > 
+      <!-- header (title, workflow steps, switch) -->
+      <div class="columns">
+        <div class="column  is-half">
+          <document-title-bar />
+        </div>
+        <div class="is-divider-vertical p-t-xl p-b-xl" />
+        <div class="column">
+          <workflow-steps />
         </div>
       </div>
+      <!-- main container -->
       <div class="m-t-md">
         <!-- section tabs (notice, transcription, commentaires, etc) -->
         <div class="tabs">
@@ -534,7 +535,7 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
-      this.fetchContentFromUser()
+      await this.fetchContentFromUser()
       this.init = true
     },
     methods: {

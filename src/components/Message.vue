@@ -1,6 +1,6 @@
 <template>
   <article
-    class="message"
+    class="message is-small"
     :class="messageClass"
   >
     <div class="message-body">

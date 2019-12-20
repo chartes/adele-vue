@@ -28,13 +28,15 @@
             </li>
           </ul>
         </div>
-        <!-- content -->
+        <!-- editor -->
         <div>
           <div
             v-for="(com, index) in commentaries"
             :key="index"
           >
             <div v-show="index === activeIdx">
+              <commentaries-action-bar />
+
               <commentary-editor
                 :initial-content="com.content"
                 :type="com.type"
@@ -54,12 +56,14 @@ import { mapState, mapActions } from 'vuex';
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 import CommentaryEditor from '../../editors/CommentaryEditor.vue'
+import CommentariesActionBar from '../edition/CommentariesActionBar.vue'
 
 export default {
     name: "DocumentEditionCommentaries",
     components: {
         DocumentTranscription,
-        CommentaryEditor
+        CommentaryEditor,
+        CommentariesActionBar
     },
     props: {
         
