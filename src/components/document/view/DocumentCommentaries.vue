@@ -18,9 +18,10 @@
         v-for="(com, index) in readonlyData"
         :key="index"
       >
-        <div v-show="index === activeIdx">
-          {{ com.content }}
-        </div>
+        <div
+          v-show="index === activeIdx"
+          v-html="com.content"
+        />
       </div>
     </div>
   </div>

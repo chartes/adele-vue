@@ -12,7 +12,6 @@ import { stat } from 'fs';
 
 
 const state = {
-
   commentaries: [],
   //commentariesWithNotes: {},
   hasCommentaryTypes: [],
@@ -20,7 +19,6 @@ const state = {
   saved: true,
 
   commentariesError: null
-
 };
 
 const mutations = {
@@ -41,6 +39,10 @@ const mutations = {
   },
   SET_ERROR(state, payload) {
     state.commentariesError = payload
+  },
+  RESET(state) { 
+    state.commentaries = []
+    state.hasTypes = []
   }
 
 };
@@ -48,7 +50,7 @@ const mutations = {
 const actions = {
 
   fetchTypes ({ commit }) {
-    http.get(`commentary-types`).then( response => {
+    return http.get(`commentary-types`).then( response => {
       commit('UPDATE_TYPES', response.data.data)
     });
   },
@@ -69,13 +71,13 @@ const actions = {
           });
           hasTypes[comm.type.label] = true
         })
+        commit('RESET')
         commit('UPDATE', { commentaries: commentariesFormatted, hasTypes })
-        
+        commit('SET_ERROR', null)
       }).catch((error) => {
         commit('SET_ERROR', error)
         //throw error
       })
-
   },
   /* useful */
   fetchCommentariesContent({dispatch, rootState, rootGetters}) {

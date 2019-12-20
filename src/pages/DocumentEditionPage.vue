@@ -75,12 +75,18 @@
         >
           <div class="tabs">
             <ul>
-              <li :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''">
+              <li
+                :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
+                @click="showImage"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'notice'}}">
                   Notice
                 </router-link>
               </li>
-              <li :class="$attrs.section === 'transcription' ? `is-active`: ''">
+              <li
+                :class="$attrs.section === 'transcription' ? `is-active`: ''"
+                @click="showImage"
+              >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'transcription'}}">
                   Transcription
                 </router-link>
@@ -88,6 +94,7 @@
               <li
                 v-if="isTranscriptionValidated || currentUserIsTeacher"
                 :class="$attrs.section === 'translation' ? `is-active`: ''"
+                @click="showImage"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
                   <span v-if="currentUserIsTeacher">Traduction et alignement</span>
@@ -96,6 +103,7 @@
               </li>
               <li
                 :class="$attrs.section === 'commentaries' ? `is-active`: ''"
+                @click="hideImage"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'commentaries'}}">
                   Commentaires
@@ -105,6 +113,7 @@
               <li
                 v-if="currentUserIsTeacher"
                 :class="$attrs.section === 'facsimile' ? `is-active`: ''"
+                @click="showImage"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'facsimile'}}">
                   Facsimilé
@@ -112,6 +121,7 @@
               </li>
               <li
                 :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
+                @click="hideImage"
               >
                 <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">
                   Parties du discours
@@ -122,6 +132,7 @@
           <div
             v-if="!!document"
             class="container"
+            :class="`${imageVisibility ? '' : 'is-fluid' }`"
           >
             <!-- Notice -->
             <document-edition-notice
@@ -246,7 +257,7 @@
 
             <!-- Commentaires -->
             <div v-if="$attrs.section === 'commentaries'">
-              <!-- transcription error -->
+              <!-- commentaries error -->
               <div v-if="commentariesError">
                 <message
                   v-if="commentariesError.response && commentariesError.response.status === 404"
@@ -272,7 +283,6 @@
                 </message>
               </div>
               <!-- commentaries readonly -->
-              
               <div v-else-if="isCommentariesReadOnly">
                 <commentaries-action-bar />
                 <message
@@ -288,18 +298,22 @@
                   :readonly-data="commentariesView"
                 />
               </div>
+              <div v-else>
+                <!-- commentaries edition -->
+                <document-edition-commentaries />
+              </div>
+              <!-- Parties du discours -->
+              <document-edition-speech-parts
+                v-if="$attrs.section === 'speech-parts'"
+                :document="document"
+              />
             </div>
-            <!-- Parties du discours -->
-            <document-edition-speech-parts
-              v-if="$attrs.section === 'speech-parts'"
-              :document="document"
-            />
           </div>
+          <div 
+            v-show="!imageVisibility"
+            class="column is-one-quarter"
+          />
         </div>
-        <div 
-          v-show="!imageVisibility"
-          class="column is-one-quarter"
-        />
       </div>
     </div>
   </div>
@@ -349,7 +363,7 @@ export default {
         DocumentEditionTranscription,
         DocumentEditionTranslation,
         DocumentEditionFacsimile,
-        //DocumentEditionCommentaries,
+        DocumentEditionCommentaries,
         DocumentEditionSpeechParts,
 
         DocumentTranscription,
@@ -403,8 +417,8 @@ export default {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 
         'translationView', 'transcriptionAlignmentView', 'commentariesView']),
         ...mapState('workflow', ['selectedUserId']),
-        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionLoading', 'transcriptionError']),
-        ...mapState('translation', ['translationWithNotes', 'transcriptionLoading', 'translationError']),
+        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionError']),
+        ...mapState('translation', ['translationWithNotes', 'translationError']),
         ...mapState('commentaries', ['commentaries', 'commentariesError']),
         ...mapState('user', ['currentUser']),
 
@@ -454,7 +468,7 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
-      this.fetchContentFromUser() // already fetched by the watcher of selectedUserId
+      this.fetchContentFromUser()
       this.init = true
     },
     methods: {
@@ -497,7 +511,12 @@ export default {
           await this.fetchTranslationContent()
         }
       },
-
+      hideImage() {
+        this.imageVisibility = false
+      },
+      showImage() {
+        this.imageVisibility = true
+      },
       toggleImageVisibility() {
         // forbid hidding everything
         if (this.showContent) {
