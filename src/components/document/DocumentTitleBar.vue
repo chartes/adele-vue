@@ -2,7 +2,7 @@
   <div class="m-b-lg">
     <div class="tile is-ancestor is-vertical">
       <div class="tags tile has-text-uppercase">
-        <span class="tag  is-size-4">
+        <span class="tag  is-size-5">
           Document {{ document.id }}
         </span>
         <div v-if="loggedIn && documentCanBeModified">
@@ -10,7 +10,7 @@
             v-if="!isInEditionMode"
             :to="{name: 'document-edition', params:{docId: document.id, section:'notice'}}"
           >
-            <div class="tag button is-primary is-size-4">
+            <div class="tag button is-primary is-size-5">
               Modifier
             </div>
           </router-link> 
@@ -18,7 +18,7 @@
             v-else
             :to="{name: 'document-view', params:{docId: document.id, section:'notice'}}"
           >
-            <div class="tag button is-primary is-size-4">
+            <div class="tag button is-primary is-size-5">
               Consulter
             </div>
           </router-link>
@@ -26,7 +26,7 @@
       </div>
     
       <div class="tile is-parent">
-        <div class="tile is-child is-7">
+        <div class="tile is-child is-12">
           <div class="heading title">
             {{ document.title }}
           </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="tabs is-toggle is-fullwidth">
+    <div class="tabs is-small is-toggle is-fullwidth">
       <ul>
         <li
           v-for="(com, index) in readonlyData"

@@ -1,14 +1,14 @@
 <template>
-  <div class="m-b-xl m-t-md">
+  <div class="m-b-xl m-t-xl">
     <div class="tile is-ancestor  is-vertical">
       <div class="tile is-parent is-uppercase">
-        <span class="has-text-info is-size-5">
+        <span class="has-text-info is-size-6">
           Avancement du dossier
         </span> 
-        <span class="m-l-sm m-r-sm  is-size-5">
+        <span class="m-l-sm m-r-sm  is-size-6">
           |
         </span>
-        <span class="m-r-sm  is-size-5">
+        <span class="m-r-sm  is-size-6">
           Édité par
         </span> 
         <!-- Select workflow user -->
@@ -34,12 +34,12 @@
         </div>
         <span
           v-else
-          class="m-r-sm is-size-5"
+          class="m-r-sm is-size-6"
         >
           {{ documentOwner.first_name }}  {{ documentOwner.last_name }}
         </span> 
       </div>
-      <div class="tile steps m-t-md">
+      <div class="tile steps m-t-md is-size-7">
         <div
           class="step-item"
           :class="`${isTranscriptionValidated ? 'is-completed is-success': ''}`"

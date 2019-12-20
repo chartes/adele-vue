@@ -9,13 +9,13 @@
           :readonly-data="transcriptionView"
         />
       </div>
-      <div class="column ">
+      <div class="column is-half ">
         <div class="has-text-weight-medium subtitle m-b-xl">
           Commentaires
         </div>
     
         <!-- commentary types tabs -->
-        <div class="tabs is-toggle is-fullwidth">
+        <div class="tabs is-small is-toggle is-fullwidth">
           <ul>
             <li
               v-for="(comType, index) in commentaryTypes"

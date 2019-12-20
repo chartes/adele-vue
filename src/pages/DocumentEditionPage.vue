@@ -4,9 +4,16 @@
       v-if="document"
       class="container is-fluid"
     >
-      <document-title-bar />
-      <workflow-steps />
-      
+      <div class="columns">
+        <div class="column  is-half">
+          <document-title-bar />
+        </div>
+        <div class="is-divider-vertical p-t-xl p-b-xl" />
+        <div class="column">
+          <workflow-steps />
+        </div>
+      </div>
+
       <!-- Visibility widget-->
       <div class="m-b-sm">
         <p class="is-size-6">
