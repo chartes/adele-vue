@@ -1,6 +1,9 @@
 <template>
   <div>
-    Parties du discours
+    <transcription-editor
+      v-if="!!transcriptionWithNotes"
+      :initial-content="transcriptionWithNotes"
+    />
   </div>
 </template>
 
@@ -8,14 +11,15 @@
 <script>
 
 import { mapState } from 'vuex';
+import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
 
 export default {
     name: "DocumentEditionSpeechParts",
     components: {
-        
+        TranscriptionEditor
     },
     props: {
-        document: {type: Object, default: null}
+        transcriptionWithNotes: {type: String, default: null}
     },
     computed: {
         ...mapState('document', ['loading']),

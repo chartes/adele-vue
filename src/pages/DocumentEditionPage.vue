@@ -11,7 +11,7 @@
         </div>
         <div class="is-divider-vertical p-t-xl p-b-xl" />
         <div class="column">
-          <workflow-steps />
+          <workflow-steps :section="$attrs.section" />
         </div>
       </div>
       <!-- main container -->
@@ -55,7 +55,7 @@
             </li>
             <!-- students don't get to deal with facsimile alignment -->
             <li
-              v-if="currentUserIsTeacher"
+              v-if="currentUserIsTeacher && selectedUserId === documentOwner.id"
               :class="$attrs.section === 'facsimile' ? `is-active`: ''"
               @click="showImage"
             >
@@ -65,7 +65,7 @@
             </li>
             <li
               :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
-              @click="hideImage"
+              @click="showImage"
             >
               <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">
                 Parties du discours
@@ -102,7 +102,7 @@
                     notice
                   </visibility-toggle>
                   <visibility-toggle
-                    v-if="$attrs.section === 'translation' || $attrs.section === 'transcription'"
+                    v-if="$attrs.section === 'translation' || $attrs.section === 'transcription' || $attrs.section === 'facsimile'"
                     :action="toggleTranscriptionVisibility"
                     :visible="transcriptionVisibility"
                   >
@@ -162,7 +162,7 @@
                     notice
                   </visibility-toggle>
                   <visibility-toggle
-                    v-if="$attrs.section === 'translation' || $attrs.section === 'transcription'"
+                    v-if="$attrs.section === 'translation' || $attrs.section === 'transcription' || $attrs.section === 'facsimile'"
                     :action="toggleTranscriptionVisibility"
                     :visible="transcriptionVisibility"
                   >
@@ -369,9 +369,12 @@
                   <document-edition-commentaries />
                 </div>
                 <!-- Parties du discours -->
+              </div>
+              <div v-if="$attrs.section === 'speech-parts'">
+                <speech-parts-action-bar />
                 <document-edition-speech-parts
-                  v-if="$attrs.section === 'speech-parts'"
-                  :document="document"
+                  
+                  :transcription-with-notes="transcriptionWithNotes"
                 />
               </div>
             </div>
@@ -410,7 +413,7 @@ import WorkflowSteps from '../components/WorkflowSteps.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 import TranscriptionActionBar from '../components/document/edition/TranscriptionActionBar.vue'
 import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
-import CommentariesActionBar from '../components/document/edition/CommentariesActionBar.vue'
+import SpeechPartsActionBar from '../components/document/edition/SpeechPartsActionBar.vue'
 
 import Message from '../components/Message.vue'
 import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
@@ -424,7 +427,7 @@ export default {
         DocumentTitleBar,
         TranscriptionActionBar,
         TranslationActionBar,
-        CommentariesActionBar,
+        SpeechPartsActionBar,
 
         DocumentEditionNotice,
         DocumentEditionTranscription,
@@ -501,6 +504,8 @@ export default {
               return this.transcriptionVisibility
             case 'translation':
               return this.translationVisibility || this.transcriptionVisibility
+            case 'facsimile':
+              return this.transcriptionVisibility
             case 'notice':
               return this.noticeVisibility
             case 'commentaries':

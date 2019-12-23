@@ -162,6 +162,7 @@ export default {
         
     },
     props: {
+      section: {type: String, default: null}
     },
     data() {
         return {
@@ -203,7 +204,11 @@ export default {
         }
     },
     watch: {
-
+        selectedUserId() {
+          if (this.selectedUserId !== this.currentUser.id && this.$props.section === 'facsimile') {
+            this.$router.replace({name: 'document-edition', params: {section: 'notice'}})
+          }
+        }
     },
     created() {
         this.workflowUserId = this.currentUser.id
