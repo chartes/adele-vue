@@ -1,6 +1,14 @@
 <template>
   <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">
     <div class="document-card card">
+      <div class="card-header">
+        <div class="document-folder">
+          {{ doc.id }}
+        </div>
+        <div class="document-creation-lab">
+          {{ doc.creation_lab }}
+        </div>
+      </div>
       <div class="card-image">
         <figure
           v-if="thumbnail_url"
@@ -14,7 +22,8 @@
       </div>
       <div class="card-content">
         <div class="content">
-          {{ doc.title }}
+          <p class="title">{{ doc.title }}</p>
+          <p class="subtitle">{{ doc.subtitle }}</p>
         </div>
       </div>
     </div>

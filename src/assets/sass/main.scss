@@ -1,4 +1,6 @@
 
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700,800|Noto+Serif:700|Roboto:400');
 
 /* Uncomment to import the entire Bulma framework */
 @import '~bulma/bulma';
@@ -20,6 +22,7 @@
 @import "~bulma/sass/form/_all.sass";
 
 
+@import 'settings/fonts';
 @import 'settings/colors';
 @import 'settings/vars';
 
@@ -47,9 +50,11 @@
 
 
 @import "components/document.card";
+@import "components/document.titlebar";
 @import "components/navbar";
 @import "components/iiifviewer";
 @import "components/login.form";
+@import "components/tabs";
 
 // Objects – class-based selectors which define undecorated design patterns,
 // for example media object known from OOCSS

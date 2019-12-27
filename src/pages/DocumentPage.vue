@@ -123,6 +123,7 @@
               <!-- visibility widget -->
               <div class="m-b-md">
                 <p class="is-size-6">
+                  <span>AFFICHAGE</span>
                   <span class="tag">
                     <visibility-toggle
                       class="m-r-md"

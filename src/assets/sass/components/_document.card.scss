@@ -1,3 +1,42 @@
 .document-card {
-   
+
+  box-shadow: none;
+  border-bottom: 7px solid #E8E7E0;
+
+  .card-header {
+    box-shadow: none;
+    flex-direction: column;
+    font-weight: $weight-semibold;
+  }
+
+  .card-header .document-folder {
+    border-bottom: 6px solid #FFD500;
+    font-size: 14px;
+    padding-bottom: 6px;
+  }
+
+  .card-header .document-creation-lab {
+    color: #F5A623;
+    font-size: 16px;
+    margin: 6px 0 12px;
+  }
+
+  .card-content {
+    color: #000000;
+    padding: 1.5rem 0;
+  }
+
+  .card-content .title {
+    font-family: $family-serif;
+    font-size: 17px;
+    line-height: 23px;
+    margin-bottom: 0.8rem;
+  }
+
+  .card-content .subtitle {
+    font-family: $family-sans-serif;
+    font-size: 16px;
+    line-height: 21px;
+    margin: 0;
+  }
 }

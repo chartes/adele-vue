@@ -2,7 +2,7 @@
   <div class="m-b-lg">
     <div class="tile is-ancestor is-vertical">
       <div class="tags tile has-text-uppercase">
-        <span class="tag  is-size-5">
+        <span class="tag">
           Document {{ document.id }}
         </span>
         <div v-if="loggedIn && documentCanBeModified">
