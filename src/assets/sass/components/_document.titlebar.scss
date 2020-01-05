@@ -25,3 +25,11 @@
   }
 
 }
+
+.tile.is-ancestor {
+  margin-left: 0;
+  padding-left: 180px;
+  min-height: 150px;
+  background: url( #{$image-path}/lettrine_A.svg) top left no-repeat;
+}
+
