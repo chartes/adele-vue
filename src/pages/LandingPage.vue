@@ -46,6 +46,40 @@
             associés, elle est dès l’origine conçue pour dilater le champ de vision de son noyau primitif (actes médiévaux français) dans
             l’espace, le temps, le type.
           </p>
+
+          <div class="intro-cards">
+            <div class="card">
+              <div class="card-image">
+                <img src="../assets/images/accueil_illus01.svg" alt="" />
+              </div>
+              <div class="card-content">
+                <div class="card-title">
+                  Un outil d’enseignement et de recherche original <span class="card-subtitle">conçu pour favoriser les apprentissages et le comparatisme</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-image">
+                <img src="../assets/images/accueil_illus02.svg" alt="" />
+              </div>
+              <div class="card-content">
+                <div class="card-title">
+                  Des extensions spatiales et temporelles <span class="card-subtitle">accompagnant les nouvelles curiosités de la diplomatique</span>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-image">
+                <img src="../assets/images/accueil_illus03.svg" alt="" />
+              </div>
+              <div class="card-content">
+                <div class="card-title">
+                  De puissantes capacités de tri <span class="card-subtitle">permettant de créer des sous-corpus à volonté</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
         <div class="column documents">
           <div class="content">
