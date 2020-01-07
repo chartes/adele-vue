@@ -1,0 +1,15 @@
+.theme-card {
+
+  box-shadow: none;
+
+  .card-header {
+    box-shadow: none;
+    flex-direction: column;
+    font-weight: $weight-semibold;
+  }
+
+  .card-content {
+    color: #000000;
+    padding:0;
+  }
+}

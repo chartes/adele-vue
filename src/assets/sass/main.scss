@@ -1,6 +1,6 @@
 
 // Import Google Fonts
-@import url('https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700,800|Noto+Serif:700|Roboto:400');
+@import url('https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700,800|Noto+Serif:400,700|Roboto:400');
 
 /* Uncomment to import the entire Bulma framework */
 @import '~bulma/bulma';
@@ -51,7 +51,9 @@
 
 @import "components/document.card";
 @import "components/document.titlebar";
+@import "components/theme.card";
 @import "components/navbar";
+@import "components/inner.navbar";
 @import "components/leaflet";
 @import "components/iiifviewer";
 @import "components/login.form";

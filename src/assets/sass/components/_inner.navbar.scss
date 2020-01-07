@@ -1,0 +1,28 @@
+.inner-navbar {
+
+    min-height: 1rem;
+    padding: 0.5rem 0;
+
+    .navbar-item {
+        font-family: $family-sans-serif;
+        font-weight: $weight-semibold;
+        font-size: 14px;
+        color: $grey-darker;
+        text-transform: uppercase;
+    }
+
+    .navbar-item:first-child {
+        padding-left: 0;
+    }
+
+    .navbar-item:hover {
+        background: none;
+    }
+
+    .navbar-divider {
+        width: 1px;
+        height: 17px;
+        background-color: $grey-darker;
+    }
+
+}
