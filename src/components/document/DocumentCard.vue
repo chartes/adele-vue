@@ -3,7 +3,7 @@
     <div class="document-card card">
       <div class="card-header">
         <div class="document-folder">
-          {{ doc.id }}
+          Document {{ doc.id }}
         </div>
         <div class="document-creation-lab">
           {{ doc.creation_lab }}
