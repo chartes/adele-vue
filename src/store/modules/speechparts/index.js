@@ -7,10 +7,13 @@ const state = {
   mouseOver: false,
   mouseOverY: 0,
 
+  speechPartsError: null
 };
 
 const mutations = {
-
+  SET_ERROR(state, payload) {
+    state.speechPartsError = payload
+  },
   UPDATE_ALL (state, speechparts) {
     state.speechparts = speechparts;
   },
@@ -44,6 +47,10 @@ const actions = {
   },
   add ({ commit, getters, rootState }, newSpeechpart) {
     commit('NEW', newSpeechpart);
+  },
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
   },
   mouseover ({ commit, getters, rootState }, { speechpart, posY} ) {
     commit('MOUSE_OVER', { speechpart, posY });

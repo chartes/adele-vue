@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!!info">
     <l-map
       ref="myMap"
       style="height: 640px"

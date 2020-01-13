@@ -200,7 +200,7 @@
                 />
                 <document-speech-parts
                   v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
-                  :document="document"
+                  :readonly-data="speechPartsView"
                 />
               </div>
             </div>
@@ -254,7 +254,7 @@ export default {
     },
     computed: {
         ...mapState('document', ['document', 'loading',
-                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView',
+                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView', 'speechPartsView',
                                  'commentariesView']),
         ...mapGetters('user', ['loggedIn']),
         ...mapGetters('document', ['getManifestInfoUrl']),
@@ -305,10 +305,17 @@ export default {
         console.log("No tr/tl alignemnt", error)
       }
 
+
       try {
-        await this.fetchCommentariesView()
+        this.fetchCommentariesView()
       } catch(error) {
         console.log("No commentaries", error)
+      }
+
+      try {
+        this.fetchSpeechPartsView()
+      } catch(error) {
+        console.log("No speech parts", error)
       }
 
       // init notes popup
@@ -319,6 +326,7 @@ export default {
         'fetchTranscriptionView': 'fetchTranscriptionView',
         'fetchTranslationView': 'fetchTranslationView',
         'fetchCommentariesView': 'fetchCommentariesView',
+        'fetchSpeechPartsView': 'fetchSpeechPartsView',
         'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
         }),
       toggleImageVisibility() {

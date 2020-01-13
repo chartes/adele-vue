@@ -1,6 +1,10 @@
 <template>
   <div>
-    Parties du discours
+    <div
+      v-if="!!readonlyData"
+      class="content"
+      v-html="readonlyData.content"
+    />
   </div>
 </template>
 
@@ -15,10 +19,10 @@ export default {
         
     },
     props: {
-        document: {type: Object, default: null}
+        readonlyData: {type: Object, default: null}
     },
     computed: {
-        ...mapState('document', ['loading']),
+        ...mapState('document', ['loading', ]),
     },
     created() {
       

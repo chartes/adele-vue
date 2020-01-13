@@ -10,6 +10,7 @@ const state = {
   translationView: undefined,
   transcriptionAlignmentView: undefined,
   commentariesView: undefined,
+  speechPartsView: undefined,
 
   loading: false,
 };
@@ -40,6 +41,12 @@ const mutations = {
   UPDATE_COMMENTARIES_VIEW (state, {commentaries}) {
     state.commentariesView = commentaries
   },
+  UPDATE_SPEECH_PARTS_VIEW(state, {content, notes}) {
+    state.speechPartsView = {
+      content,
+      notes
+    }
+  },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
   },
@@ -51,6 +58,9 @@ const mutations = {
   },
   RESET_COMMENTARIES_VIEW(state) {
     state.commentariesView = null;
+  },
+  RESET_SPEECH_PARTS_VIEW(state) {
+    state.speechPartsView = null;
   },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
@@ -78,6 +88,7 @@ const actions = {
       commit('RESET_TRANSCRIPTION_VIEW')
       commit('RESET_TRANSLATION_VIEW')
       commit('RESET_COMMENTARIES_VIEW')
+      commit('RESET_SPEECH_PARTS_VIEW')
       console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -157,6 +168,24 @@ const actions = {
       //throw error
     })
   },
+  fetchSpeechPartsView ({ dispatch, commit, rootState }, userId) {
+    commit('LOADING_STATUS', true);
+    console.log("fetching speech parts view")
+    return http.get(`documents/${rootState.document.document.id}/view/speech-parts${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      console.log(response.data)
+      commit('UPDATE_SPEECH_PARTS_VIEW',  {
+          content: response.data.data["content"],
+          notes: response.data.data["notes"]
+      })
+      console.log("speech parts view ok")
+      dispatch('speechparts/setError', null, {root: true} )
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      dispatch('speechparts/setError', error, {root: true} )
+      commit('LOADING_STATUS', false);
+      //throw error
+    })
+  },
   fetchAll ({ commit }, {pageId, pageSize, filters}) {
     commit('LOADING_STATUS', true);
     return http.get(`documents?${filters}&page[size]=${pageSize}&page[number]=${pageId}`)
@@ -210,7 +239,12 @@ const getters = {
     return state.document.whitelist.users.find(u => u.id === state.document.user_id)
   },
   getManifestInfoUrl: state => (canvasIdx) => {
-    return state.document.images[canvasIdx].info
+    try {
+      return state.document.images[canvasIdx].info
+    } catch (error) {
+      console.error(error)
+      return null
+    }
   }
 };
 

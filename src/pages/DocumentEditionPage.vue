@@ -349,7 +349,6 @@
                 </div>
                 <!-- commentaries readonly -->
                 <div v-else-if="isCommentariesReadOnly">
-                  <commentaries-action-bar />
                   <message
                     v-if="isCommentariesValidated || currentUser.id !== selectedUserId"
                     message-class=""
