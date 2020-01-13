@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="47px" height="47px" viewBox="0 0 47 47" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>pic_edit04 over</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="COMPORTEMENTS" transform="translate(-791.000000, -2822.000000)">
+            <g id="pic_edit04-over" transform="translate(791.000000, 2822.000000)">
+                <rect id="Rectangle-Copy-27" fill="#E9E9E9" x="0" y="0" width="47" height="47" rx="4"></rect>
+                <g id="Group-21-Copy" transform="translate(8.000000, 9.000000)">
+                    <g id="Group-19">
+                        <circle id="Oval" fill="#9B9B9B" cx="12.5" cy="12.5" r="12.5"></circle>
+                        <text id="1" font-family="Roboto-Bold, Roboto" font-size="16" font-weight="bold" fill="#FFFFFF">
+                            <tspan x="8" y="18">1</tspan>
+                        </text>
+                    </g>
+                    <g id="Group" transform="translate(18.000000, 17.000000)">
+                        <path d="M0,6.15738995 C0,2.75714575 2.75714575,0 6.15839952,0 C9.55864372,0 12.3157895,2.75714575 12.3157895,6.15738995 C12.3157895,9.55864372 9.55864372,12.3157895 6.15839952,12.3157895 C2.75714575,12.3157895 0,9.55864372 0,6.15738995 Z" id="Stroke-6" stroke="#9B9B9B" stroke-width="2" fill="#FFFFFF"></path>
+                        <polygon id="Fill-8" fill="#9B9B9B" points="9.85263158 5.23453025 7.08125922 5.23453025 7.08125922 2.46315789 5.23453025 2.46315789 5.23453025 5.23453025 2.46315789 5.23453025 2.46315789 7.08125922 5.23453025 7.08125922 5.23453025 9.85263158 7.08125922 9.85263158 7.08125922 7.08125922 9.85263158 7.08125922"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

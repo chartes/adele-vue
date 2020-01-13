@@ -1,0 +1,35 @@
+.tile {
+
+  .tag:not(body) {
+    color: #8C8C8C;
+    background:none;
+    font-family: $family-sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight:$weight-medium;
+  }
+
+  .title {
+    color: #9C998C;
+    font-family: $family-serif;
+    font-size: 21px;
+    line-height: 25px;
+    text-transform: none;
+  }
+
+  .subtitle {
+    color: #2B0019;
+    font-family: $family-sans-serif;
+    font-size: 17px;
+    line-height: 21px;
+  }
+
+}
+
+.tile.is-ancestor {
+  margin-left: 0;
+  padding-left: 180px;
+  min-height: 150px;
+  background: url( #{$image-path}/lettrine_A.svg) top left no-repeat;
+}
+

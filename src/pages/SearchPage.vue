@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container">
+    <div class="container search-page">
       <progress
         v-show="loading" 
         class="progress is-small is-primary"
@@ -9,10 +9,112 @@
         15%
       </progress>
       <div class="columns">
-        <div class="column">
-          First column
+        <div class="column filters">
+
+          <section class="accordions">
+            <article class="accordion is-active">
+              <div class="accordion-header toggle">
+                <p>Dates du document</p>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Mode de tradition</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Type d’acte</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Langue du document</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Siècle du document</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Siècle de la copie</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Pays</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Région contemporaine</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Institution de conservation</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header">
+                <p>Types de commentaires fournis</p>
+                <button class="toggle" aria-label="toggle"></button>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content">
+                </div>
+              </div>
+            </article>
+          </section>
         </div>
-        <div class="column is-three-quarters">
+
+        <div class="column documents is-three-quarters">
           <div class="section">
             <div class="columns is-multiline ">
               <div
@@ -25,6 +127,7 @@
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

@@ -2,8 +2,8 @@
   <div class="m-b-lg">
     <div class="tile is-ancestor is-vertical">
       <div class="tags tile has-text-uppercase">
-        <span class="tag  is-size-5">
-          Document {{ document.id }}
+        <span class="tag">
+          Dossier {{ document.id }}
         </span>
         <div v-if="loggedIn && documentCanBeModified">
           <router-link
