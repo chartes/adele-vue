@@ -22,7 +22,7 @@ export default {
         LMap
     },
     props: {
-      info: {type: String, required: true}
+      info: {type: String, required: false, default: null}
     },
     data() {
       return {
@@ -38,9 +38,11 @@ export default {
     },
     mounted () {
       this.$nextTick(() => {
-        const map = this.$refs.myMap.mapObject
-        const baseLayer = tileLayerIiif(this.$props.info)
-        baseLayer.addTo(this.$refs.myMap.mapObject)
+        if (this.$props.info) {
+          const map = this.$refs.myMap.mapObject
+          const baseLayer = tileLayerIiif(this.$props.info)
+          baseLayer.addTo(this.$refs.myMap.mapObject)
+        }
       })
     },
     created() {

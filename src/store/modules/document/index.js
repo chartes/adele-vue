@@ -242,7 +242,7 @@ const getters = {
     try {
       return state.document.images[canvasIdx].info
     } catch (error) {
-      console.error(error)
+      console.warn(error)
       return null
     }
   }
