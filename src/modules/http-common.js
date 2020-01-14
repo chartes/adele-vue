@@ -2,8 +2,8 @@ import axios from 'axios';
 import { getCookie } from './cookies-helpers'
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 
-const _baseApiURL = `${process.env.VUE_APP_API_URL}/api/1.0`;
-const _baseAppURL = `/adele`;
+const _baseApiURL = `${process.env.VUE_APP_API_URL}`;
+const _baseAppURL = `${process.env.VUE_APP_ROOT_URL}`;
 
 
 export const baseApiURL = _baseApiURL;
