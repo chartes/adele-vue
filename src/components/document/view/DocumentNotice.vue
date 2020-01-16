@@ -29,7 +29,10 @@
         </div>
         <div class="column">
           <div class="field is-grouped is-grouped-multiline">
-            <div class="control">
+            <div
+              v-if="document.traditions.length > 0"
+              class="control"
+            >
               <div class="tags has-addons">
                 <span class="tag is-dark">Traditions</span>
                 <span
