@@ -11,19 +11,24 @@
       </div>
       <div class="card-image">
         <figure
-          v-if="thumbnail_url"
           class="image is-4by3"
         >
           <img
             :src="thumbnail_url"
-            alt="Placeholder image"
-          >
+            :key="thumbnail_url"
+            alt="thumbnail"
+            @error="thumbnail_error = true"
+          > 
         </figure>
       </div>
       <div class="card-content">
         <div class="content">
-          <p class="title">{{ doc.title }}</p>
-          <p class="subtitle">{{ doc.subtitle }}</p>
+          <p class="title">
+            {{ doc.title }}
+          </p>
+          <p class="subtitle">
+            {{ doc.subtitle }}
+          </p>
         </div>
       </div>
     </div>
@@ -36,11 +41,20 @@ export default {
   props: {
       doc: {type: Object, default: null}
   },
+  data() {
+    return {
+      thumbnail_error : false
+    }
+  },
   computed: {
       thumbnail_url() {
+        if (this.thumbnail_error) {
+          return  require('@/assets/images/document_placeholder.svg')
+        } else {
           const first_img = this.doc.images[0];
-          return first_img ? first_img["thumbnail_url"] : null
-      } 
+          return first_img ? first_img["thumbnail_url"] : require('@/assets/images/document_placeholder.svg')
+        }
+      },
   }
 }
 </script>

@@ -12,7 +12,7 @@
         class="image is-4by3"
       >
         <img
-          src="../../assets/images/document_placeholder.svg"
+          :src="require('@/assets/images/document_placeholder.svg')"
           alt="Placeholder image"
         >
       </figure>
