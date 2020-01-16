@@ -1,9 +1,7 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
-
-  speechpartTypes: undefined
-
+  speechpartTypes: []
 };
 
 const mutations = {
@@ -15,21 +13,18 @@ const mutations = {
 };
 
 const actions = {
-
   fetch ({ commit }) {
-    axios.get(`/adele/api/1.0/speech-part-types`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const speechpartTypes = isArray ? respData : [respData];
-      commit('UPDATE', speechpartTypes);
+    http.get(`/speech-part-types`).then( response => {
+      commit('UPDATE', response.data.data);
     });
   }
-
 };
 
 const getters = {
 
-  getSpeechpartTypeById: state => (id) => state.speechpartTypes.find(spt => spt.id === id)
+  getSpeechpartTypeById: (state) => (id) => {
+    return state.speechpartTypes.find(spt => spt.id === id)
+  }
 
 };
 

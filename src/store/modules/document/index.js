@@ -178,6 +178,7 @@ const actions = {
           notes: response.data.data["notes"]
       })
       console.log("speech parts view ok")
+      dispatch('speechpartTypes/fetch', null, {root: true} )
       dispatch('speechparts/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {

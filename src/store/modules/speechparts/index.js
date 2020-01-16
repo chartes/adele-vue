@@ -4,8 +4,8 @@ const state = {
 
   speechparts: [],
   newSpeechpart: false,
-  mouseOver: false,
-  mouseOverY: 0,
+  //mouseOver: false,
+  //mouseOverY: 0,
 
   speechPartsError: null
 };
@@ -52,9 +52,9 @@ const actions = {
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
-  mouseover ({ commit, getters, rootState }, { speechpart, posY} ) {
-    commit('MOUSE_OVER', { speechpart, posY });
-  },
+  //mouseover ({ commit, getters, rootState }, { speechpart, posY} ) {
+  //  commit('MOUSE_OVER', { speechpart, posY });
+  //},
 
   update ({ commit, getters, rootState }, speechpart) {
     return commit('UPDATE_ONE', speechpart);
@@ -99,13 +99,14 @@ const getters = {
 
   speechparts: state => state.speechparts,
   newSpeechpart: state => state.newSpeechpart,
+  /*
   getSpeechpartById: (state) => (id) => {
     id = parseInt(id);
     return state.speechparts.find(speechpart => {
       return speechpart.id === id;
     });
   }
-
+  */
 };
 
 const speechpartsModule = {

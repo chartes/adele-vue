@@ -1,0 +1,38 @@
+
+.speech-part {
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    &.type-01.active {
+        background-color: sandybrown;
+    }
+    &.type-02.active {
+        background-color: burlywood;
+    }
+    &.type-03.active {
+        background-color: violet;
+    }
+    &.type-04.active {
+        background-color: olivedrab;
+    }
+    &.type-05.active {
+        background-color: paleturquoise;
+    }
+    &.type-06.active {
+        background-color: palevioletred;
+    }
+    &.type-07.active {
+        background-color: honeydew;
+    }
+    &.type-08.active {
+        background-color: indianred;
+    }
+    &.type-09.active {
+        background-color: yellowgreen;
+    }
+    &.type-10.active {
+        background-color: brown;
+    }
+}

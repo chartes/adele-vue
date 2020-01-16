@@ -9,6 +9,10 @@
         font-size: 14px;
         color: $grey-darker;
         text-transform: uppercase;
+
+        &:hover {
+            cursor: pointer;
+        }
     }
 
     .navbar-item:first-child {
