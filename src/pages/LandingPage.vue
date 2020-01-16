@@ -4,7 +4,9 @@
       <div class="columns">
         <div class="column themes">
           <div class="content">
-            <p class="column-title">Dossiers thématiques</p>
+            <p class="column-title">
+              Dossiers thématiques
+            </p>
             <ul>
               <li>
                 <div class="theme-card card">
@@ -28,13 +30,23 @@
           </div>
         </div>
         <div class="column is-half">
-
           <nav class="navbar inner-navbar">
-            <a class="navbar-item" href="#projet">le projet</a>
+            <a
+              class="navbar-item"
+              href="#projet"
+            >le projet</a>
             <hr class="navbar-divider">
-            <a class="navbar-item" href="/documents">les dossiers</a>
+            <router-link
+              class="navbar-item"
+              :to="{ name: 'search'}"
+            >
+              les dossiers
+            </router-link>
             <hr class="navbar-divider">
-            <a class="navbar-item" href="#">métadonnées et tris croisés</a>
+            <a
+              class="navbar-item"
+              href="#"
+            >métadonnées et tris croisés</a>
           </nav>
 
           <h1>Bienvenue</h1>
@@ -50,7 +62,10 @@
           <div class="intro-cards">
             <div class="card">
               <div class="card-image">
-                <img src="../assets/images/accueil_illus01.svg" alt="" />
+                <img
+                  src="../assets/images/accueil_illus01.svg"
+                  alt=""
+                >
               </div>
               <div class="card-content">
                 <div class="card-title">
@@ -60,7 +75,10 @@
             </div>
             <div class="card">
               <div class="card-image">
-                <img src="../assets/images/accueil_illus02.svg" alt="" />
+                <img
+                  src="../assets/images/accueil_illus02.svg"
+                  alt=""
+                >
               </div>
               <div class="card-content">
                 <div class="card-title">
@@ -70,7 +88,10 @@
             </div>
             <div class="card">
               <div class="card-image">
-                <img src="../assets/images/accueil_illus03.svg" alt="" />
+                <img
+                  src="../assets/images/accueil_illus03.svg"
+                  alt=""
+                >
               </div>
               <div class="card-content">
                 <div class="card-title">
@@ -79,19 +100,23 @@
               </div>
             </div>
           </div>
-
         </div>
         <div class="column documents">
           <div class="content">
-            <p class="column-title">Derniers documents</p>
+            <p class="column-title">
+              Derniers documents
+            </p>
             <ul>
               <li>
                 <a href="#">
                   <div class="document-card card">
-                    <div class="card-header"></div>
+                    <div class="card-header" />
                     <div class="card-image">
                       <figure class="image is-3by1">
-                        <img src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg" alt="Placeholder image">
+                        <img
+                          src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
+                          alt="Placeholder image"
+                        >
                       </figure>
                     </div>
                     <div class="card-content">
@@ -106,10 +131,13 @@
               <li>
                 <a>
                   <div class="document-card card">
-                    <div class="card-header"></div>
+                    <div class="card-header" />
                     <div class="card-image">
                       <figure class="image is-3by1">
-                        <img src="https://iiif.chartes.psl.eu/images/adele/dossiers/39.jpg/full/800,/0/default.jpg" alt="Placeholder image">
+                        <img
+                          src="https://iiif.chartes.psl.eu/images/adele/dossiers/39.jpg/full/800,/0/default.jpg"
+                          alt="Placeholder image"
+                        >
                       </figure>
                     </div>
                     <div class="card-content">
@@ -128,7 +156,7 @@
     </div>
     <div class="bottom">
       <div class="columns">
-        <div class="column"></div>
+        <div class="column" />
         <div class="column is-half">
           <h2><a id="projet">Le projet</a></h2>
           <p>
@@ -150,7 +178,7 @@
             Le recours aux outils numériques est indispensable sous plusieurs aspects : pour gérer la constitution progressive du « recueil » ; pour aider à rebattre les cartes à volonté ; pour appuyer avec des instruments solides d’indexation et de tri la constitution de sous-corpus à la demande ; enfin, mais les premières explorations montrent la difficulté de l’entreprise, pour explorer les possibilités de recherche automatisée ou semi-automatisée d’une documentation complémentaire (bibliographie, éditions, clichés…) disponible ailleurs sur le web…
           </p>
         </div>
-        <div class="column"></div>
+        <div class="column" />
       </div>
     </div>
   </div>
