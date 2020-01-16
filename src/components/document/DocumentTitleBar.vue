@@ -1,5 +1,5 @@
 <template>
-  <div class="m-b-lg">
+  <div class="title-bar m-b-lg">
     <div class="tile is-ancestor is-vertical">
       <div class="tags tile has-text-uppercase">
         <span class="tag">

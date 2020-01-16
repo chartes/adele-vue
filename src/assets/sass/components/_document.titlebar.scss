@@ -1,4 +1,4 @@
-.tile {
+.title-bar > .tile {
 
   .tag:not(body) {
     color: #8C8C8C;
@@ -26,10 +26,10 @@
 
 }
 
-.tile.is-ancestor {
+.title-bar > .tile.is-ancestor {
   margin-left: 0;
   padding-left: 180px;
   min-height: 150px;
-  background: url( #{$image-path}/lettrine_A.svg) top left no-repeat;
+  background: url( #{$image-path}/lettrine_E.svg) top left no-repeat;
 }
 
