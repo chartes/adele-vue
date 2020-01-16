@@ -186,17 +186,19 @@ export default {
       fetchAll() {
         this.$store.dispatch('document/fetchAll', {
           pageId: 1,
-          pageSize: 40,
+          pageSize: 50,
           filters: ''
         }).then(r => {
         });
       },
+      /*
       fetchOne() {
         this.$store.dispatch('document/fetch', {
           id: 20,
         }).then(r => {
         });
       }
+      */
     }
 }
 </script>
