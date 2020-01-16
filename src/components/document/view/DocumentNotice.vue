@@ -58,6 +58,20 @@
         <div class="column" />
       </div>
     </div>
+
+    <div>
+      <div>Date de l'acte : {{ document.creation_lab ? document.creation_lab : 'inconnue' }} </div>
+      <div>Date du document : {{ document.copy_year ? document.copy_year : 'inconnue' }} </div>
+      <div v-if="document.institution">
+        Institution de conservation : <a :href="document.institution.ref">{{ document.institution.name }}</a>
+      </div>
+      <div v-else>
+        Institution de conservation : inconnue
+      </div>
+      <div v-if="document.argument ">
+        Argument : <div v-html="document.argument" />
+      </div>
+    </div>
   </div>
 </template>
 
