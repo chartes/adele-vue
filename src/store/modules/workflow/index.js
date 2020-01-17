@@ -70,6 +70,9 @@ const getters = {
   isCommentariesReadOnly: (state, getters)  => {
     return getters.isStepReadOnly(COMMENTARIES_STEP)
   },
+  isSpeechPartsReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly(SPEECH_PARTS_STEP)
+  },
 }
 
 const workflowModule = {

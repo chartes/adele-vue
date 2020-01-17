@@ -367,14 +367,58 @@
                   <!-- commentaries edition -->
                   <document-edition-commentaries />
                 </div>
-                <!-- Parties du discours -->
               </div>
+
+              <!-- Parties du discours -->
               <div v-if="$attrs.section === 'speech-parts'">
-                <speech-parts-action-bar />
-                <document-edition-speech-parts
-                  
-                  :transcription-with-notes="transcriptionWithNotes"
-                />
+                <!-- Parties du discours error -->
+                <div v-if="speechPartsError">
+                  <message
+                    v-if="speechPartsError.response.status === 404"
+                    message-class="is-info"
+                  >
+                    <p class="m-b-sm">
+                      <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                      <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                      pas encore commencé à identifier les parties du discours de ce document.
+                    </p>
+                    <div 
+                      v-if="currentUser.id === selectedUser.id"
+                      class="button is-info"
+                    >
+                      Commencer à identifier les parties de discours
+                    </div>
+                  </message>
+                  <message
+                    v-else
+                    message-class="is-danger"
+                  >
+                    {{ speechPartsError }}
+                  </message>
+                </div>
+                <!-- speechparts readonly -->
+                <div v-else-if="isSpeechPartsReadOnly">
+                  <message
+                    v-if="isTranslationValidated || currentUser.id !== selectedUserId"
+                    message-class=""
+                  >
+                    <span v-if="currentUser.id == documentOwner.id">
+                      Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
+                    </span>
+                    <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                  </message>
+                  <document-speech-parts 
+                    v-if="!speechpartsVisibility || currentUser.id !== selectedUserId"
+                    :readonly-data="speechPartsView"
+                  />
+                </div>
+                <!-- translation edition -->
+                <div v-else>
+                  <speech-parts-action-bar />
+                  <document-edition-speech-parts
+                    :transcription-with-notes="transcriptionWithNotes"
+                  />
+                </div>
               </div>
             </div>
             <div 
@@ -439,6 +483,7 @@ export default {
         DocumentTranslation,
         DocumentTranscriptionAlignment,
         DocumentCommentaries,
+        DocumentSpeechParts,
 
         IIIFViewer,
         WorkflowSteps,
@@ -446,10 +491,7 @@ export default {
         VisibilityToggle
 
         /*
-        DocumentNotice,
-        DocumentTranscription,
-        DocumentCommentaries,
-        DocumentSpeechParts
+
         */
     },
     props: {
@@ -484,16 +526,18 @@ export default {
     },
     computed: {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 
-        'translationView', 'transcriptionAlignmentView', 'commentariesView']),
+        'translationView', 'transcriptionAlignmentView', 'commentariesView', 'speechPartsView']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionError']),
         ...mapState('translation', ['translationWithNotes', 'translationError']),
         ...mapState('commentaries', ['commentaries', 'commentariesError']),
+        ...mapState('speechparts', ['speechPartsError']),
+
         ...mapState('user', ['currentUser']),
 
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
-        'isTranscriptionReadOnly', 'isTranslationReadOnly',
+        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated',
         'isCommentariesReadOnly', 'isCommentariesValidated']),
         ...mapGetters('document', ['documentOwner', 'getManifestInfoUrl']),
 
@@ -558,6 +602,9 @@ export default {
       ...mapActions('commentaries', {
         'fetchCommentariesContent': 'fetchCommentariesContent',
         }),
+      ...mapActions('speechparts', {
+        'fetchSpeechPartsContent': 'fetchSpeechPartsContent',
+        }),
       async fetchContentFromUser(){
         await this.fetchTranscriptionContent()
         await this.fetchTranslationContent()
@@ -568,6 +615,7 @@ export default {
           this.transcriptionAlignmentError = error
         }
         await this.fetchCommentariesContent()
+        await this.fetchSpeechPartsContent()
       },
       async addNewTranscription() {
         await this.createTranscription()

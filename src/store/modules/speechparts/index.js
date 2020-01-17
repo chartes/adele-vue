@@ -1,4 +1,4 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
 
@@ -17,6 +17,8 @@ const mutations = {
   UPDATE_ALL (state, speechparts) {
     state.speechparts = speechparts;
   },
+
+  /* need review */
   NEW (state, speechpart) {
     state.newSpeechpart = speechpart;
     state.speechparts.push(speechpart);
@@ -32,67 +34,41 @@ const mutations = {
 };
 
 const actions = {
-
-  fetch ({ commit, getters, rootGetters }, { doc_id, user_id }) {
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/alignments/discours/from-user/${user_id}`)
-      .then( (response) => {
-        if (response.data && response.data.errors) {
-          commit('UPDATE_ALL', []);
-        } else {
-          commit('UPDATE_ALL', response.data.data);
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
-  },
-  add ({ commit, getters, rootState }, newSpeechpart) {
-    commit('NEW', newSpeechpart);
-  },
   /* useful */
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
-  //mouseover ({ commit, getters, rootState }, { speechpart, posY} ) {
-  //  commit('MOUSE_OVER', { speechpart, posY });
-  //},
-
-  update ({ commit, getters, rootState }, speechpart) {
-    return commit('UPDATE_ONE', speechpart);
-    /*
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theSpeechpart = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": speechpart.id,
-        "type_id": speechpart.type_id,
-        "content": speechpart.content
-      }]
-    };
-    return axios.put(`/adele/api/1.0/speechparts`, theSpeechpart, config)
-      .then( response => {
-        const speechpart = response.data.data;
-        commit('UPDATE_ONE', speechpart);
-        return speechpart;
-      })
-      */
+  /* useful */
+  fetchSpeechPartsFromUser ({ commit }, {docId, userId}) { 
+    //TODO: implement!
+    http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then( response => {
+      
+     
+      commit('RESET')
+      commit('UPDATE_ALL', { speechparts: [] })
+      commit('SET_ERROR', null)
+    }).catch((error) => {
+      commit('SET_ERROR', error)
+      //throw error
+    })
   },
-  delete ({ commit, getters, rootState }, speechpart) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theSpeechpart = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": speechpart.id,
-        "type_id": speechpart.type_id,
-        "content": speechpart.content
-      }]
-    };
-    return axios.delete(`/adele/api/1.0/speechparts`, theSpeechpart, config)
-      .then( response => {
-        const speechpart = response.data.data;
-        commit('UPDATE_ONE', speechpart);
+  /* useful */
+  fetchSpeechPartsContent({dispatch, rootState, rootGetters}) {
+    //TODO: voir model dans translation
+    if (rootGetters['workflow/isSpeechPartsReadOnly']) {
+      // when in readonly mode
+      // students see the reference content
+      // teacher and admins can see other ppl readonly views
+      return dispatch('document/fetchSpeechPartsView', 
+        rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
+        {root: true})
+    } else {
+      return dispatch('fetchSpeechPartsFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
       })
-  }
-
+    }
+  },
 };
 
 const getters = {

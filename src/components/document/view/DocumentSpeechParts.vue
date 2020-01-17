@@ -54,6 +54,7 @@ export default {
     },
     watch: {
       hoverId() {
+        /* when you hover the top section items, the speech parts are highligthed accordingly to their type */
         const allParts = document.querySelectorAll('.speech-part');
         allParts.forEach(p => {
           if (this.hoverId) {
@@ -68,6 +69,8 @@ export default {
       }
     },
     mounted() {
+
+      /* find the speech part types to display in the top section */
       const allParts = document.querySelectorAll('.speech-part');
       if (allParts) {
         this.spTypes = [];
