@@ -30,17 +30,17 @@ const router = new VueRouter({
       name: 'search'
     },
     {
-      path: '/documents/view/:docId',
+      path: '/documents/:docId/view/',
       redirect:  '/documents/:docId/notice'
     },
     {
-      path: '/documents/view/:docId/:section',
+      path: '/documents/:docId/view/:section',
       component: DocumentPage,
       name: 'document-view',
       props: true
     },
     {
-      path: '/documents/edit/:docId/:section',
+      path: '/documents/:docId/edit/:section',
       component: DocumentEditionPage,
       name: 'document-edition',
       props: true
