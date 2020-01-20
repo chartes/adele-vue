@@ -8,7 +8,7 @@
         <span class="m-l-sm m-r-sm  is-size-6">
           |
         </span>
-        <span class="m-r-sm  is-size-6">
+        <span class="m-r-sm is-size-6">
           Édité par
         </span> 
         <!-- Select workflow user -->
@@ -40,65 +40,38 @@
         </span> 
       </div>
 
-      <div class="m-l-sm m-t-sm is-size-7 ">
-        <div class="">
-          <input
-            class="is-checkradio has-no-border is-success"
-            type="checkbox"
-            name="notice"
-            checked="checked"
-          >
-          <label for="notice">Notice</label>
+      <div class="columns m-l-sm m-t-sm">
+        <div class="column">
+          <div class="is-size-6 subtitle">
+            <div>
+              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Notice
+            </div>
+            <div>
+              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Transcription
+            </div>
+            <div>
+              <span class="sub-step-divider" />
+              <span>
+                <div>
+                  <span class="icon step-dot unvalidated" />Traduction
+                </div>
+                <div>
+                  <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Commentaires
+                </div>
+                <div>
+                  <span class="icon step-dot" />Facsimilé
+                </div>
+                <div>
+                  <span class="icon step-dot" />Parties du discours
+                </div>
+              </span>
+            </div>
+          </div>
         </div>
-        <div class="">
-          <input
-            class="is-checkradio has-no-border is-success"
-            type="checkbox"
-            name="notice"
-            checked="checked"
-          >
-          <label for="notice">Transcription</label>
-        </div>
-
-        <div>
-          <span style="height: 96px; width: 2px; border-right: 0px solid lightgrey; margin-right: 4px; margin-left: 8px; position: relative; float:left" />
-          <span>
-            <div class="">
-              <input
-                class="is-checkradio has-no-border "
-                type="checkbox"
-                name="notice"
-              >
-              <label for="notice">Traduction</label>
-            </div>
-            <div class="">
-              <input
-                class="is-checkradio has-no-border is-success"
-                type="checkbox"
-                name="notice"
-                checked="checked"
-              >
-              <label for="notice">Commentaires</label>
-            </div>
-            <div class="">
-              <input
-                class="is-checkradio has-no-border "
-                type="checkbox"
-                name="notice"
-                disabled
-              >
-              <label for="notice">Facsimilé</label>
-            </div>
-            <div class="">
-              <input
-                class="is-checkradio has-no-border"
-                type="checkbox"
-                name="notice"
-                disabled
-              >
-              <label for="notice">Parties du discours</label>
-            </div>
-          </span>
+        <div class="column is-two-thirds">
+          <p class="step-description">
+            Contrairement à une opinion répandue, le Lorem Ipsum n'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C
+          </p>
         </div>
       </div>
     </div>
@@ -172,4 +145,33 @@ export default {
 
 <style lang="scss" scoped>
 
+.sub-step-divider {
+  height: 96px;
+  width: 1px;
+  border-right: 1px solid lightgrey;
+  margin-right: 12px;
+  margin-left: 8px;
+  position: relative;
+  float: left;
+}
+
+.step-dot {
+  height: 16px;
+  width: 16px;
+  
+  background-color: #bbb;
+  border-radius: 50%;
+  margin-right: 0.75em;
+  margin-bottom: 10px;
+
+  color: white;
+  vertical-align: text-top;
+
+  &.unvalidated {
+     background-color:hsl(48, 100%, 67%);
+  }
+  &.validated {
+     background-color:hsl(141, 53%, 53%);
+  }
+}
 </style>
