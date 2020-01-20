@@ -43,34 +43,80 @@
       <div class="columns m-l-sm m-t-sm">
         <div class="column">
           <div class="is-size-6 subtitle">
-            <div>
-              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Notice
+            <div
+              class="workflow-step-radio"
+              @mouseover="stepDoc = 'notice'"
+              @mouseleave="stepDoc = $route.params.section"
+            >
+              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+              <span
+                :class="stepDoc === 'notice' ? 'selected-step' : ''"
+              >Notice
+              </span>
             </div>
-            <div>
-              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Transcription
+            <div
+              class="workflow-step-radio"
+              @mouseover="stepDoc = 'transcription'"
+              @mouseleave="stepDoc = $route.params.section"
+            >
+              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+              <span
+                :class="stepDoc === 'transcription' ? 'selected-step' : ''"
+              >Transcription
+              </span>
             </div>
             <div>
               <span class="sub-step-divider" />
               <span>
-                <div>
-                  <span class="icon step-dot unvalidated" />Traduction
+                <div
+                  class="workflow-step-radio"
+                  @mouseover="stepDoc = 'translation'"
+                  @mouseleave="stepDoc = $route.params.section"
+                >
+                  <span class="icon step-dot unvalidated" />
+                  <span
+                    :class="stepDoc === 'translation' ? 'selected-step' : ''"
+                  >Traduction
+                  </span>
                 </div>
-                <div>
-                  <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>Commentaires
+                <div
+                  class="workflow-step-radio"
+                  @mouseover="stepDoc = 'commentaries'"
+                  @mouseleave="stepDoc = $route.params.section"
+                >
+                  <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+                  <span
+                    :class="stepDoc === 'commentaries' ? 'selected-step' : ''"
+                  >Commentaires
+                  </span>
                 </div>
-                <div>
-                  <span class="icon step-dot" />Facsimilé
-                </div>
-                <div>
-                  <span class="icon step-dot" />Parties du discours
-                </div>
+                <div
+                  class="workflow-step-radio"
+                  @mouseover="stepDoc = 'facsimile'"
+                  @mouseleave="stepDoc = $route.params.section"
+                >
+                  <span class="icon step-dot "><i class="fa fa-check is-size-7" /></span>
+                  <span
+                    :class="stepDoc === 'facsimile' ? 'selected-step' : ''"
+                  >Facsimilé
+                  </span></div>
+                <div
+                  class="workflow-step-radio"
+                  @mouseover="stepDoc = 'speech-parts'"
+                  @mouseleave="stepDoc = $route.params.section"
+                >
+                  <span class="icon step-dot "><i class="fa fa-check is-size-7" /></span>
+                  <span
+                    :class="stepDoc === 'speech-parts' ? 'selected-step' : ''"
+                  >Parties du discours
+                  </span></div>
               </span>
             </div>
           </div>
         </div>
         <div class="column is-two-thirds">
           <p class="step-description">
-            Contrairement à une opinion répandue, le Lorem Ipsum n'est pas simplement du texte aléatoire. Il trouve ses racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C
+            {{ descriptions[stepDoc] }}
           </p>
         </div>
       </div>
@@ -90,6 +136,15 @@ export default {
     },
     data() {
         return {
+          stepDoc: null,
+          descriptions: {
+            notice: 'description de la notice',
+            transcription: 'description de l\'étape transcription',
+            translation: 'description de l\'étape traduction',
+            facsimile: 'description de l\'étape facsimilé',
+            commentaries: 'description de l\'étape transcription',
+            'speech-parts': 'description de l\'étape parties du discours',
+          }
         }
     },
     computed: {
@@ -132,10 +187,16 @@ export default {
           if (this.selectedUserId !== this.currentUser.id && this.$props.section === 'facsimile') {
             this.$router.replace({name: 'document-edition', params: {section: 'notice'}})
           }
+        },
+        $route (to, from){
+          this.stepDoc = this.$route.params.section
         }
     },
     created() {
         this.workflowUserId = this.currentUser.id
+    },
+    mounted() {
+       
     },
     methods: {
  
@@ -144,6 +205,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+.workflow-step-radio {
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.selected-step {
+  text-decoration: underline;
+}
 
 .sub-step-divider {
   height: 96px;
