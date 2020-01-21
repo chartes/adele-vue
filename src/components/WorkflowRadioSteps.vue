@@ -225,22 +225,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.workflow-step-radio {
-  &:hover {
-    cursor: default;
-  }
-}
-
-.selected-step {
-  text-decoration: underline;
-}
-
-.sub-step-divider {
-  border-left: 1px solid lightgrey;
-  margin-right: 12px;
-  margin-left: 8px;
-  padding-left: 14px;
-}
-
 </style>
