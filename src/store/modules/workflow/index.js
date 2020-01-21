@@ -73,6 +73,38 @@ const getters = {
   isSpeechPartsReadOnly: (state, getters)  => {
     return getters.isStepReadOnly(SPEECH_PARTS_STEP)
   },
+  selectedUserHasTranscription: (state, getters, rootState,) => {
+    if (getters.isTranscriptionReadOnly) {
+      return rootState.document.transcriptionView !== null
+    } else {
+      return rootState.transcription.transcription !== null
+    }
+  },
+  selectedUserHasTranslation: (state, getters, rootState) => {
+    if (getters.isTranslationReadOnly) {
+      return rootState.document.translationView !== null
+    } else {
+      return rootState.translation.translation !== null
+    }
+  },
+  selectedUserHasCommentaries: (state, getters, rootState) => {
+    if (getters.isCommentariesReadOnly) {
+      return rootState.document.commentariesView !== null
+    } else {
+      return rootState.commentaries.commentaries.length > 0
+    }
+  },
+  selectedUserHasFacsimile: (state, getters, rootState) => {
+    console.warn('not implemented')
+    return false;
+  },
+  selectedUserHasSpeechParts: (state, getters, rootState) => {
+    if (getters.isSpeechPartsReadOnly) {
+      return rootState.document.speechPartsView !== null
+    } else {
+      return rootState.speechparts.speechparts.length > 0
+    }
+  },
 }
 
 const workflowModule = {

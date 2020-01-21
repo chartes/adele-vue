@@ -39,7 +39,6 @@ const state = {
   transcriptionSaved: true,
   transcriptionError: null,
   transcriptionAlignments: [],
-  referenceTranscription: null,
   savingStatus: 'uptodate'
 };
 
@@ -88,9 +87,6 @@ const mutations = {
   },
   SET_ERROR(state, payload) {
     state.transcriptionError = payload
-  },
-  REFERENCE(state, payload) {
-    state.referenceTranscription = payload;
   },
   LOADING_STATUS (state, payload) {
     state.transcriptionLoading = payload;
@@ -169,9 +165,7 @@ const actions = {
       .then(() => this.dispatch('facsimile/fetchAlignments'))
       .then(() => this.dispatch('transcription/fetchAlignments', { doc_id, user_id }))
       .then(() => this.dispatch('transcription/fetchTranscriptionFromUser', { doc_id, user_id }))
-      .then(() => this.dispatch('transcription/fetchReference', { doc_id }))
       .then(() => this.dispatch('translation/fetch', { doc_id, user_id }))
-      .then(() => this.dispatch('translation/fetchReference', { doc_id, user_id }))
       .then(() => this.dispatch('commentaries/fetch', { doc_id, user_id }))
       .catch(err => {
         console.error("Une erreur est survenue", err)
@@ -182,8 +176,8 @@ const actions = {
   /* useful */
   fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
     commit('RESET')
+    commit('LOADING_STATUS', true);
     return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
-      commit('LOADING_STATUS', true);
 
       let transcription = response.data.data;
 
@@ -310,35 +304,6 @@ const actions = {
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
-  },
-
-  fetchReference ({commit}, {doc_id}) {
-
-    //console.log('STORE ACTION transcription/fetchReference', doc_id);
-
-    return http.get(`documents/${doc_id}/transcriptions/reference`).then( response => {
-
-      commit('LOADING_STATUS', false);
-
-
-      if (response.data.errors && response.data.errors.status === 404) {
-        console.warn("NO reference transcription found");
-        return;
-      }
-      let transcription = false;
-
-      if (response.data.data) {
-        transcription = response.data.data;
-      }
-
-      if (!transcription) return commit('REFERENCE', false);
-
-      let quillContent = TEIToQuill(transcription.content);
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, [], 'transcription');
-      transcription.content = withNotes;
-
-      commit('REFERENCE', transcription)
-    })
   },
   save ({dispatch, commit, rootState, rootGetters}) {
     //console.log('STORE ACTION transcription/save');

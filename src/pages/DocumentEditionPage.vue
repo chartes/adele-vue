@@ -11,7 +11,7 @@
         </div>
         <div class="is-divider-vertical p-t-xl p-b-xl" />
         <div class="column">
-          <workflow-steps :section="$attrs.section" />
+          <workflow-radio-steps :section="$attrs.section" />
         </div>
       </div>
       <!-- main container -->
@@ -452,7 +452,8 @@ import DocumentCommentaries from '../components/document/view/DocumentCommentari
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
 
 import IIIFViewer from '../components/IIIFViewer.vue'
-import WorkflowSteps from '../components/WorkflowSteps.vue'
+import WorkflowRadioSteps from '../components/WorkflowRadioSteps.vue'
+
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 import TranscriptionActionBar from '../components/document/edition/TranscriptionActionBar.vue'
 import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
@@ -486,7 +487,8 @@ export default {
         DocumentSpeechParts,
 
         IIIFViewer,
-        WorkflowSteps,
+        WorkflowRadioSteps,
+
         Message,
         VisibilityToggle
 
