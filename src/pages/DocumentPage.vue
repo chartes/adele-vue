@@ -37,7 +37,7 @@
               </router-link>
             </li>
             <li
-              v-if="isTranscriptionValidated"
+              v-if="isTranscriptionValidated && !!speechPartsView && speechPartsView.length > 0"
               :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
             >
               <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'speech-parts'}}">
