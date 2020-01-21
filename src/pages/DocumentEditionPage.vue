@@ -19,7 +19,7 @@
         <!-- section tabs (notice, transcription, commentaires, etc) -->
         <div class="tabs">
           <ul>
-            <li
+            <li 
               :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
               @click="showImage"
             >
@@ -46,6 +46,7 @@
               </router-link>
             </li>
             <li
+              v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'commentaries' ? `is-active`: ''"
               @click="hideImage"
             >
@@ -64,6 +65,7 @@
               </router-link>
             </li>
             <li
+              v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
               @click="showImage"
             >

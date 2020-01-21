@@ -45,6 +45,7 @@
         <div class="column">
           <div class="is-size-6 subtitle">
             <div
+              v-if="currentUserIsTeacher"
               class="workflow-step-radio"
               @mouseover="stepDoc = 'notice'"
               @mouseleave="stepDoc = $route.params.section"
