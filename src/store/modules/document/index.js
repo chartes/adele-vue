@@ -3,14 +3,14 @@ import { VALIDATION_STEPS_LABELS } from '../workflow';
 
 const state = {
 
-  document: undefined,
+  document: null,
   documents: [],
   
-  transcriptionView: undefined,
-  translationView: undefined,
-  transcriptionAlignmentView: undefined,
-  commentariesView: undefined,
-  speechPartsView: undefined,
+  transcriptionView: null,
+  translationView: null,
+  transcriptionAlignmentView: null,
+  commentariesView: null,
+  speechPartsView: null,
 
   loading: false,
 };

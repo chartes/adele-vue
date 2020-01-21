@@ -1,5 +1,5 @@
 <template>
-  <div class="m-b-md m-t-md">
+  <div class="m-b-md m-t-sm">
     <div class="tile is-ancestor  is-vertical">
       <div class="tile is-parent is-uppercase">
         <span class="has-text-info is-size-6">
@@ -9,7 +9,8 @@
           |
         </span>
         <span class="m-r-sm is-size-6">
-          Édité par
+          <span v-if="currentUser.id !== documentOwner.id || !currentUserIsTeacher">Dirigé par</span>
+          <span v-else>Édité par</span>
         </span> 
         <!-- Select workflow user -->
         <div
@@ -40,7 +41,7 @@
         </span> 
       </div>
 
-      <div class="columns m-l-sm m-t-sm">
+      <div class="columns m-l-sm m-t-xxs">
         <div class="column">
           <div class="is-size-6 subtitle">
             <div
@@ -48,7 +49,10 @@
               @mouseover="stepDoc = 'notice'"
               @mouseleave="stepDoc = $route.params.section"
             >
-              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+              <validation-radio-icon
+                :is-validated="true"
+                :is-content-empty="false"
+              />
               <span
                 :class="stepDoc === 'notice' ? 'selected-step' : ''"
               >Notice
@@ -59,21 +63,26 @@
               @mouseover="stepDoc = 'transcription'"
               @mouseleave="stepDoc = $route.params.section"
             >
-              <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+              <validation-radio-icon
+                :is-validated="isTranscriptionValidated"
+                :is-content-empty="!selectedUserHasTranscription"
+              />
               <span
                 :class="stepDoc === 'transcription' ? 'selected-step' : ''"
               >Transcription
               </span>
             </div>
-            <div>
-              <span class="sub-step-divider" />
+            <div class="sub-step-divider">
               <span>
                 <div
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'translation'"
                   @mouseleave="stepDoc = $route.params.section"
                 >
-                  <span class="icon step-dot unvalidated" />
+                  <validation-radio-icon
+                    :is-validated="isTranslationValidated"
+                    :is-content-empty="!selectedUserHasTranslation"
+                  />
                   <span
                     :class="stepDoc === 'translation' ? 'selected-step' : ''"
                   >Traduction
@@ -84,18 +93,25 @@
                   @mouseover="stepDoc = 'commentaries'"
                   @mouseleave="stepDoc = $route.params.section"
                 >
-                  <span class="icon step-dot validated"><i class="fa fa-check is-size-7" /></span>
+                  <validation-radio-icon
+                    :is-validated="isCommentariesValidated"
+                    :is-content-empty="!selectedUserHasCommentaries"
+                  />
                   <span
                     :class="stepDoc === 'commentaries' ? 'selected-step' : ''"
                   >Commentaires
                   </span>
                 </div>
                 <div
+                  v-if="currentUserIsTeacher"
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'facsimile'"
                   @mouseleave="stepDoc = $route.params.section"
                 >
-                  <span class="icon step-dot "><i class="fa fa-check is-size-7" /></span>
+                  <validation-radio-icon
+                    :is-validated="isFacsimileValidated"
+                    :is-content-empty="!selectedUserHasFacsimile"
+                  />
                   <span
                     :class="stepDoc === 'facsimile' ? 'selected-step' : ''"
                   >Facsimilé
@@ -105,7 +121,10 @@
                   @mouseover="stepDoc = 'speech-parts'"
                   @mouseleave="stepDoc = $route.params.section"
                 >
-                  <span class="icon step-dot "><i class="fa fa-check is-size-7" /></span>
+                  <validation-radio-icon
+                    :is-validated="isSpeechPartsValidated"
+                    :is-content-empty="!selectedUserHasSpeechParts"
+                  />
                   <span
                     :class="stepDoc === 'speech-parts' ? 'selected-step' : ''"
                   >Parties du discours
@@ -126,10 +145,11 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import ValidationRadioIcon from '@/components/ui/ValidationRadioIcon.vue'
 export default {
     name: 'WorkflowRadioSteps',
     components: {
-        
+        ValidationRadioIcon
     },
     props: {
       section: {type: String, default: null}
@@ -138,7 +158,7 @@ export default {
         return {
           stepDoc: null,
           descriptions: {
-            notice: 'description de la notice',
+            notice: 'description de l\'étape notice',
             transcription: 'description de l\'étape transcription',
             translation: 'description de l\'étape traduction',
             facsimile: 'description de l\'étape facsimilé',
@@ -155,11 +175,11 @@ export default {
         ...mapGetters('document', ['documentOwner']),
         
         ...mapGetters('workflow', [
-          'isTranscriptionValidated',
-          'isTranslationValidated',
-          'isCommentariesValidated',
-          'isFacsimileValidated',
-          'isSpeechPartsValidated'
+          'isTranscriptionValidated', 'selectedUserHasTranscription',
+          'isTranslationValidated', 'selectedUserHasTranslation',
+          'isCommentariesValidated', 'selectedUserHasCommentaries',
+          'isFacsimileValidated', 'selectedUserHasFacsimile',
+          'isSpeechPartsValidated', 'selectedUserHasSpeechParts'
           ]),
 
         workflowUserId: {
@@ -208,7 +228,7 @@ export default {
 
 .workflow-step-radio {
   &:hover {
-    cursor: pointer;
+    cursor: default;
   }
 }
 
@@ -217,32 +237,10 @@ export default {
 }
 
 .sub-step-divider {
-  height: 96px;
-  width: 1px;
-  border-right: 1px solid lightgrey;
+  border-left: 1px solid lightgrey;
   margin-right: 12px;
   margin-left: 8px;
-  position: relative;
-  float: left;
+  padding-left: 14px;
 }
 
-.step-dot {
-  height: 16px;
-  width: 16px;
-  
-  background-color: #bbb;
-  border-radius: 50%;
-  margin-right: 0.75em;
-  margin-bottom: 10px;
-
-  color: white;
-  vertical-align: text-top;
-
-  &.unvalidated {
-     background-color:hsl(48, 100%, 67%);
-  }
-  &.validated {
-     background-color:hsl(141, 53%, 53%);
-  }
-}
 </style>
