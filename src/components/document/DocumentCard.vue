@@ -14,8 +14,8 @@
           class="image is-4by3"
         >
           <img
-            :src="thumbnail_url"
             :key="thumbnail_url"
+            :src="thumbnail_url"
             alt="thumbnail"
             @error="thumbnail_error = true"
           > 

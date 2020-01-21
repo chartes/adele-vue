@@ -96,7 +96,7 @@ const getters = {
   },
   selectedUserHasFacsimile: (state, getters, rootState) => {
     console.warn('not implemented')
-    return false;
+    return false
   },
   selectedUserHasSpeechParts: (state, getters, rootState) => {
     if (getters.isSpeechPartsReadOnly) {

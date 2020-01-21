@@ -191,14 +191,6 @@ export default {
         }).then(r => {
         });
       },
-      /*
-      fetchOne() {
-        this.$store.dispatch('document/fetch', {
-          id: 20,
-        }).then(r => {
-        });
-      }
-      */
     }
 }
 </script>

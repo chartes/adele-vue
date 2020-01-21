@@ -135,9 +135,15 @@
             </div>
 
             <i-i-i-f-viewer
+              v-if="canvasManifestInfo"
               :key="`${canvasManifestInfo}${showContent}`"
               :info="canvasManifestInfo"
             />
+            <img
+              v-else
+              :src="require('@/assets/images/document_placeholder.svg')"
+              class="iiif-viewer-placeholder"
+            >
           </div>
           <div
             v-if="showContent"
