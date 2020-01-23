@@ -267,9 +267,15 @@
               <!-- Translation -->
               <div v-if="$attrs.section === 'translation'">
                 <!-- translation error -->
-                <div v-if="translationError">
+                <div v-if="translationError || !isTranscriptionValidated">
                   <message
-                    v-if="translationError.response.status === 404"
+                    v-if="!isTranscriptionValidated"
+                    message-class="is-info"
+                  >
+                    Veuillez valider votre transcription
+                  </message>
+                  <message
+                    v-else-if="translationError.response.status === 404"
                     message-class="is-info"
                   >
                     <p class="m-b-sm">
@@ -331,9 +337,15 @@
               <!-- Commentaires -->
               <div v-if="$attrs.section === 'commentaries'">
                 <!-- commentaries error -->
-                <div v-if="commentariesError">
+                <div v-if="commentariesError || !isTranscriptionValidated">
                   <message
-                    v-if="commentariesError.response && commentariesError.response.status === 404"
+                    v-if="!isTranscriptionValidated"
+                    message-class="is-info"
+                  >
+                    Veuillez valider votre transcription
+                  </message>
+                  <message
+                    v-else-if="commentariesError.response && commentariesError.response.status === 404"
                     message-class="is-info "
                   >
                     <p class="m-b-sm">
@@ -380,9 +392,15 @@
               <!-- Parties du discours -->
               <div v-if="$attrs.section === 'speech-parts'">
                 <!-- Parties du discours error -->
-                <div v-if="speechPartsError">
+                <div v-if="speechPartsError || !isTranscriptionValidated">
                   <message
-                    v-if="speechPartsError.response.status === 404"
+                    v-if="!isTranscriptionValidated"
+                    message-class="is-info"
+                  >
+                    Veuillez valider votre transcription
+                  </message>
+                  <message
+                    v-else-if="speechPartsError.response.status === 404"
                     message-class="is-info"
                   >
                     <p class="m-b-sm">
@@ -437,6 +455,18 @@
         </div>
       </div>
     </div>
+
+    <!-- modals -->
+    <div v-if="!loading">
+      <delete-transcription-modal 
+        :doc-id="parseInt($attrs.docId)"
+        :user-id="selectedUserId"
+      />
+      <delete-translation-modal
+        :doc-id="parseInt($attrs.docId)"
+        :user-id="selectedUserId"
+      />
+    </div>
   </div>
 </template>
 
@@ -470,6 +500,9 @@ import SpeechPartsActionBar from '../components/document/edition/SpeechPartsActi
 import Message from '../components/Message.vue'
 import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
 
+import DeleteTranscriptionModal from '@/components/document/edition/modals/DeleteTranscriptionModal.vue'
+import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
+
 import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '../store/modules/workflow'
 
 export default {
@@ -498,7 +531,10 @@ export default {
         WorkflowRadioSteps,
 
         Message,
-        VisibilityToggle
+        VisibilityToggle,
+
+        DeleteTranscriptionModal,
+        DeleteTranslationModal
 
         /*
 

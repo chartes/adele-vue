@@ -1,7 +1,7 @@
 <template>
   <a
     class="button is-text is-small has-text-danger"
-    @click="deleteTranslation"
+    @click="openDeleteModal"
   >
     <span>Supprimer la traduction</span>
   </a>
@@ -17,20 +17,15 @@ export default {
 
     },
     props: {
-        userId: {type: Number, default: null},
-        docId: {type: Number, default: null}
+
     },
     computed: {
     },
     methods: {
-      ...mapActions('translation', ['deleteTranslationFromUser']),
-      async deleteTranslation() {
-        console.log("delete translation")
-        await this.deleteTranslationFromUser({
-          docId: this.docId,
-          userId: this.userId
-        })
-      }
+      openDeleteModal() {
+        document.querySelector('#delete-translation-modal').classList.add('is-active')
+        document.querySelector('html').classList.add('is-clipped')
+      },
     }
 }
 </script>

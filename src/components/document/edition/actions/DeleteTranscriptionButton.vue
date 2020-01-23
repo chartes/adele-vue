@@ -1,10 +1,14 @@
 <template>
-  <a
-    class="button is-text is-small has-text-danger"
-    @click="deleteTranscription"
-  >
-    <span>Supprimer la transcription</span>
-  </a>
+  <div>
+    <div>
+      <a
+        class="button is-text is-small has-text-danger"
+        @click="openDeleteModal"
+      >
+        <span>Supprimer la transcription</span>
+      </a>
+    </div>
+  </div>
 </template>
 
 
@@ -16,21 +20,15 @@ export default {
     components: {
 
     },
-    props: {
-        userId: {type: Number, default: null},
-        docId: {type: Number, default: null}
-    },
     computed: {
+
     },
     methods: {
-      ...mapActions('transcription', ['deleteTranscriptionFromUser']),
-      async deleteTranscription() {
-        console.log("delete transcription")
-        await this.deleteTranscriptionFromUser({
-          docId: this.docId,
-          userId: this.userId
-        })
-      }
+      openDeleteModal() {
+        document.querySelector('#delete-transcription-modal').classList.add('is-active')
+        document.querySelector('html').classList.add('is-clipped')
+      },
+     
     }
 }
 </script>

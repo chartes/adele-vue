@@ -2,7 +2,7 @@
   <div v-if="!!info">
     <l-map
       ref="myMap"
-      style="height: 640px"
+      style="height: 640px; z-index: 0"
       :zoom="currentZoom"
       :max-zoom="maxZoom"
       :options="mapOptions"
