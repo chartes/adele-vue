@@ -207,12 +207,18 @@ const actions = {
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
-  deleteTranslationFromUser({dispatch, commit}, {docId, userId}) {
-    return http.delete(`documents/${docId}/translations/from-user/${userId}`).then(response => {
+   /* useful */
+  async deleteTranslationFromUser({dispatch, commit}, {docId, userId}) {
+    try {
       commit('SET_ERROR', null)
-    }).catch(error => {
+      const response = await http.delete(`documents/${docId}/translations/from-user/${userId}`)
+      await dispatch('document/partialUpdate', {
+        validation_step: response.data.data.validation_step
+      }, {root: true})
+      await dispatch('fetchTranslationContent')
+    } catch(error) {
       commit('SET_ERROR', error)
-    })
+    }
   },
 
   /* useful */

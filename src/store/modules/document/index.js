@@ -109,6 +109,7 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       dispatch('transcription/setError', error, {root: true} )
+      commit('RESET_TRANSCRIPTION_VIEW')
       commit('LOADING_STATUS', false);
       //throw error
     })
@@ -126,6 +127,7 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       dispatch('translation/setError', error, {root: true} )
+      commit('RESET_TRANSLATION_VIEW')
       commit('LOADING_STATUS', false);
       //throw error
     })
@@ -209,6 +211,9 @@ const actions = {
       commit('LOADING_STATUS', false);
       throw error
     })
+  },
+  partialUpdate({commit}, payload) {
+    commit('PARTIAL_UPDATE_DOCUMENT', payload)
   }
   /*
   save ({ commit, rootGetters }, data) {

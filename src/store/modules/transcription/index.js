@@ -78,7 +78,6 @@ const mutations = {
     state.transcriptionWithSpeechparts = null;
     state.transcriptionWithFacsimile = null;
 
-    
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
     if (speechpartsShadowQuillElement && speechpartsShadowQuillElement.children[0]) speechpartsShadowQuillElement.children[0].innerHTML = "";
@@ -253,7 +252,10 @@ const actions = {
   async deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
     try {
       commit('SET_ERROR', null)
-      await http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
+      const response = await http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
+      await dispatch('document/partialUpdate', {
+        validation_step: response.data.data.validation_step
+      }, {root: true})
       await dispatch('fetchTranscriptionContent')
     } catch(error) {
       commit('SET_ERROR', error)
