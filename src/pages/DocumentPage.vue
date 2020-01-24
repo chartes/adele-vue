@@ -11,7 +11,7 @@
       <!-- main container -->
       <div class="m-t-md">
         <!-- section tabs (notice, transcription, commentaires, etc) -->
-        <div class="tabs">
+        <div class="section-tabs tabs">
           <ul>
             <li :class="$attrs.section === 'notice' || $attrs.section === undefined || !transcriptionView ? `is-active`: ''">
               <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'notice'}}">

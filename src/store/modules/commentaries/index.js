@@ -8,8 +8,6 @@ import {
   TEIToQuill,
   computeNotesPointers, convertLinebreakQuillToTEI
 } from '../../../modules/quill/MarkupUtils';
-import { stat } from 'fs';
-
 
 const state = {
   commentaries: [],
@@ -100,6 +98,23 @@ const actions = {
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
+
+   /* useful */
+   addNewCommentary({commit, dispatch, rootState}) {
+    const emptyCommentary = {
+      data: {
+        notes: [],
+        content: ""
+      }
+    }
+    return http.post(`documents/${rootState.document.document.id}/commentary/from-user/${rootState.user.currentUser.id}`,
+    emptyCommentary).then(response => {
+      commit('SET_ERROR', null)
+    }).catch(error => {
+      commit('SET_ERROR', error)
+    })
+  },
+
   /*
   changed ({ commit, dispatch }, {content, type}) {
     commit('UPDATE_COMMENTARY', {content, type});
@@ -227,6 +242,10 @@ const getters = {
       return !state.hasCommentaryTypes[ct.label]
     }
     )
+  },
+  getCommentary : (state) => (label) => {
+    console.log("find com", state.commentaries, label, state.commentaries.find(c => c.label === label))
+    return state.commentaries.find(c => c.typeLabel === label)
   }
 };
 

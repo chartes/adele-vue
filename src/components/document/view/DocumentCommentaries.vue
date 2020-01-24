@@ -20,7 +20,7 @@
           Commentaires
         </div>
     
-        <div class="tabs is-small is-toggle is-fullwidth">
+        <div class="commentaries-tabs tabs is-small is-toggle">
           <ul>
             <li
               v-for="(com, index) in readonlyData"

@@ -1,7 +1,7 @@
 <template>
   <div class="">
     <div class="columns">
-      <div class="column is-two-fifths">
+      <div class="column">
         <div class="has-text-weight-medium subtitle m-b-xl">
           Transcription
         </div>
@@ -9,13 +9,13 @@
           :readonly-data="transcriptionView"
         />
       </div>
-      <div class="column  ">
+      <div class="column is-two-thirds">
         <div class="has-text-weight-medium subtitle m-b-xl">
           Commentaires
         </div>
     
         <!-- commentary types tabs -->
-        <div class="tabs is-small is-toggle is-fullwidth">
+        <div class="commentaries-tabs tabs is-small is-toggle">
           <ul>
             <li
               v-for="(comType, index) in commentaryTypes"
@@ -23,23 +23,26 @@
               :class="`${index === activeIdx ? 'is-active' : ''}`"
             >
               <a @click="() => selectItem(index)">
-                <span>{{ comType.label }}</span>
+                {{ comType.label }}
               </a>
             </li>
           </ul>
         </div>
         <!-- editor -->
-        <div>
+        <div style="min-height: 100%">
           <div
-            v-for="(com, index) in commentaries"
+            v-for="(com, index) in commentaryTypes"
             :key="index"
           >
             <div v-show="index === activeIdx">
-              <commentaries-action-bar />
-
+              <commentaries-action-bar
+                :type="com.id"
+                :label="com.label"
+              />
               <commentary-editor
-                :initial-content="com.content"
-                :type="com.type"
+                v-if="hasCommentaryTypes[com.label]"
+                :initial-content="getCommentaryContent(com.label)"
+                :type="com.id"
               />
             </div>
           </div>
@@ -52,11 +55,11 @@
 
 <script>
 
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 import CommentaryEditor from '../../editors/CommentaryEditor.vue'
-import CommentariesActionBar from '../edition/CommentariesActionBar.vue'
+import CommentariesActionBar from './actionbars/CommentariesActionBar.vue'
 
 export default {
     name: "DocumentEditionCommentaries",
@@ -76,6 +79,7 @@ export default {
     computed: {
         ...mapState('document', ['transcriptionView']),
         ...mapState('commentaries', ['commentaryTypes', 'commentaries', 'hasCommentaryTypes']),
+        ...mapGetters('commentaries', ['getCommentary'])
     },
     async created() {
       await this.fetchTypes()
@@ -86,6 +90,10 @@ export default {
       ...mapActions('commentaries', ['fetchTypes']),
       selectItem(index) {
         this.activeIdx = index
+      },
+      getCommentaryContent(label) {
+        const com = this.getCommentary(label);
+        return com ? com.content : ''
       }
     }
 }

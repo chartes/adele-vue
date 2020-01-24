@@ -17,7 +17,7 @@
       <!-- main container -->
       <div class="m-t-md">
         <!-- section tabs (notice, transcription, commentaires, etc) -->
-        <div class="tabs">
+        <div class="section-tabs tabs">
           <ul>
             <li 
               :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
@@ -275,7 +275,7 @@
                     Veuillez valider votre transcription
                   </message>
                   <message
-                    v-else-if="translationError.response.status === 404"
+                    v-if="translationError.response.status === 404"
                     message-class="is-info"
                   >
                     <p class="m-b-sm">
@@ -356,6 +356,7 @@
                     <div
                       v-if="currentUser.id === selectedUser.id"
                       class="button is-info"
+                      @click="addNewCommentaries"
                     >
                       Ajouter un commentaire
                     </div>
@@ -484,26 +485,26 @@ import DocumentEditionSpeechParts from '../components/document/edition/DocumentE
 
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
-import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
-import DocumentTranscriptionAlignment from '../components/document/view/DocumentTranscriptionAlignment.vue'
-import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
-import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
+import DocumentTranslation from '@/components/document/view/DocumentTranslation.vue'
+import DocumentTranscriptionAlignment from '@/components/document/view/DocumentTranscriptionAlignment.vue'
+import DocumentCommentaries from '@/components/document/view/DocumentCommentaries.vue'
+import DocumentSpeechParts from '@/components/document/view/DocumentSpeechParts.vue'
 
-import IIIFViewer from '../components/IIIFViewer.vue'
-import WorkflowRadioSteps from '../components/WorkflowRadioSteps.vue'
+import IIIFViewer from '@/components/IIIFViewer.vue'
+import WorkflowRadioSteps from '@/components/WorkflowRadioSteps.vue'
 
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
-import TranscriptionActionBar from '../components/document/edition/TranscriptionActionBar.vue'
-import TranslationActionBar from '../components/document/edition/TranslationActionBar.vue'
-import SpeechPartsActionBar from '../components/document/edition/SpeechPartsActionBar.vue'
+import TranscriptionActionBar from '@/components/document/edition/actionbars/TranscriptionActionBar.vue'
+import TranslationActionBar from '@/components/document/edition/actionbars/TranslationActionBar.vue'
+import SpeechPartsActionBar from '@/components/document/edition/actionbars/SpeechPartsActionBar.vue'
 
-import Message from '../components/Message.vue'
-import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
+import Message from '@/components/Message.vue'
+import VisibilityToggle from '@/components/ui/VisibilityToggle.vue'
 
 import DeleteTranscriptionModal from '@/components/document/edition/modals/DeleteTranscriptionModal.vue'
 import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
 
-import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '../store/modules/workflow'
+import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
 export default {
     name: "DocumentEditionPage",
@@ -647,6 +648,7 @@ export default {
         }),
       ...mapActions('commentaries', {
         'fetchCommentariesContent': 'fetchCommentariesContent',
+        'setCommentariesError' : 'setError'
         }),
       ...mapActions('speechparts', {
         'fetchSpeechPartsContent': 'fetchSpeechPartsContent',
@@ -669,12 +671,14 @@ export default {
           await this.fetchTranscriptionContent()
         }
       },
-
       async addNewTranslation() {
         await this.createTranslation()
         if (!this.translationError){
           await this.fetchTranslationContent()
         }
+      },
+      async addNewCommentaries() {
+        this.setCommentariesError(null)
       },
       hideImage() {
         this.imageVisibility = false

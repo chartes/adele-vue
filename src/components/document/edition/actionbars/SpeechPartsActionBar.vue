@@ -17,9 +17,9 @@
 import { mapState, mapGetters } from 'vuex'
 import { TRANSCRIPTION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
-import SaveTranscriptionButton from './actions/SaveTranscriptionButton.vue'
-import ValidateTranscriptionButton from './actions/ValidateTranscriptionButton.vue'
-import DeleteTranscriptionButton from './actions/DeleteTranscriptionButton.vue'
+import SaveTranscriptionButton from '../actions/SaveTranscriptionButton.vue'
+import ValidateTranscriptionButton from '../actions/ValidateTranscriptionButton.vue'
+import DeleteTranscriptionButton from '../actions/DeleteTranscriptionButton.vue'
 
 export default {
     name: 'SpeechPartsActionBar',

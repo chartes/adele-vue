@@ -40,10 +40,10 @@
 import { mapState, mapGetters } from 'vuex'
 import { TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
-import DeleteTranslationButton from './actions/DeleteTranslationButton.vue'
-import ValidateTranslationButton from './actions/ValidateTranslationButton.vue'
-import TranscriptionAlignmentButton from './actions/TranscriptionAlignmentButton.vue'
-import SaveTranslationButton from './actions/SaveTranslationButton.vue'
+import DeleteTranslationButton from '../actions/DeleteTranslationButton.vue'
+import ValidateTranslationButton from '../actions/ValidateTranslationButton.vue'
+import TranscriptionAlignmentButton from '../actions/TranscriptionAlignmentButton.vue'
+import SaveTranslationButton from '../actions/SaveTranslationButton.vue'
 
 export default {
     name: 'TranslationActionBar',
