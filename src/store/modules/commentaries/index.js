@@ -12,7 +12,7 @@ import {
 const state = {
   commentaries: [],
   //commentariesWithNotes: {},
-  hasCommentaryTypes: [],
+  hasCommentaryTypes: {},
   commentaryTypes: [],
   saved: true,
 
@@ -28,10 +28,20 @@ const mutations = {
     state.commentaries = commentaries;
     state.hasCommentaryTypes = hasTypes
   },
+  ADD_COMMENTARY (state, {commentary}) {
+    const comm = state.commentaries.find(c => c.type === commentary.type);
+    if (!comm) {
+      state.commentaries.push(commentary)
+      const typeLabel = state.commentaryTypes[commentary.type]
+      state.hasCommentaryTypes[typeLabel] = true
+    }
+  },
+  /*
   UPDATE_COMMENTARY (state, {content, type}) {
     const comm = state.commentaries.find(c => c.type === type);
     comm.content = content
   },
+  */
   SAVED (state, payload) {
     state.saved = payload
   },
@@ -45,6 +55,24 @@ const mutations = {
 
 };
 
+function parseComsFromResponse(response) {
+  const commentaries = response.data.data;
+  let hasTypes = {};
+  let commentariesFormatted = [];
+  commentaries.forEach(comm => {
+    let quillContent = TEIToQuill(comm.content);
+    let withNotes = insertNotes(quillContent, comm.notes);
+    commentariesFormatted.push({
+      type: comm.type.id,
+      typeLabel: comm.type.label,
+      content: withNotes,
+      notes: comm.notes
+    });
+    hasTypes[comm.type.label] = true
+  })
+  return { commentaries: commentariesFormatted, hasTypes }
+}
+
 const actions = {
 
   fetchTypes ({ commit }) {
@@ -55,22 +83,9 @@ const actions = {
 
   fetchCommentariesFromUser ({ commit }, {docId, userId}) {
     http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
-        const commentaries = response.data.data;
-        let hasTypes = {};
-        let commentariesFormatted = [];
-        commentaries.forEach(comm => {
-          let quillContent = TEIToQuill(comm.content);
-          let withNotes = insertNotes(quillContent, comm.notes);
-          commentariesFormatted.push({
-            type: comm.type.id,
-            typeLabel: comm.type.label,
-            content: withNotes,
-            notes: comm.notes
-          });
-          hasTypes[comm.type.label] = true
-        })
+        const formattedData = parseComsFromResponse(response)
         commit('RESET')
-        commit('UPDATE', { commentaries: commentariesFormatted, hasTypes })
+        commit('UPDATE', formattedData)
         commit('SET_ERROR', null)
       }).catch((error) => {
         commit('SET_ERROR', error)
@@ -100,16 +115,20 @@ const actions = {
   },
 
    /* useful */
-   addNewCommentary({commit, dispatch, rootState}) {
-    const emptyCommentary = {
+   addNewCommentary({commit, dispatch, rootState}, {type}) {
+    const newCommentary = {
       data: {
-        notes: [],
-        content: ""
+        doc_id : rootState.document.document.id,
+        user_id : rootState.user.currentUser.id,
+        type_id: type,
+        content : '<p></p>'
       }
     }
-    return http.post(`documents/${rootState.document.document.id}/commentary/from-user/${rootState.user.currentUser.id}`,
-    emptyCommentary).then(response => {
-      commit('SET_ERROR', null)
+    return http.post(`documents/${rootState.document.document.id}/commentaries`, newCommentary).then(response => {
+      return dispatch('fetchCommentariesFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
+      })
     }).catch(error => {
       commit('SET_ERROR', error)
     })
@@ -244,7 +263,6 @@ const getters = {
     )
   },
   getCommentary : (state) => (label) => {
-    console.log("find com", state.commentaries, label, state.commentaries.find(c => c.label === label))
     return state.commentaries.find(c => c.typeLabel === label)
   }
 };

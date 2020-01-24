@@ -31,8 +31,8 @@ export default {
       ...mapState('commentaries', ['commentariesError']),
     },
     methods: {
-      addCommentary() {
-        //return this.$store.dispatch('commentaries/initNewCommentary') 
+      async addCommentary() {
+        await this.$store.dispatch('commentaries/addNewCommentary', {type: this.$props.type}) 
       },
     }
 }
