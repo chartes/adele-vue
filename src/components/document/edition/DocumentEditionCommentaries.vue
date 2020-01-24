@@ -21,6 +21,7 @@
               v-for="(comType, index) in commentaryTypes"
               :key="index"
               :class="`${index === activeIdx ? 'is-active' : ''}`"
+              :data-com-type="comType.id"
             >
               <a @click="() => selectItem(index)">
                 {{ comType.label }}

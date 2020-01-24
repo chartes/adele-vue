@@ -460,13 +460,16 @@
     <!-- modals -->
     <div v-if="!loading">
       <delete-transcription-modal 
+        v-if="$attrs.section === 'transcription'"
         :doc-id="parseInt($attrs.docId)"
         :user-id="selectedUserId"
       />
       <delete-translation-modal
+        v-if="$attrs.section === 'translation'"
         :doc-id="parseInt($attrs.docId)"
         :user-id="selectedUserId"
       />
+      <delete-commentary-modal v-if="$attrs.section === 'commentaries'" />
     </div>
   </div>
 </template>
@@ -503,6 +506,7 @@ import VisibilityToggle from '@/components/ui/VisibilityToggle.vue'
 
 import DeleteTranscriptionModal from '@/components/document/edition/modals/DeleteTranscriptionModal.vue'
 import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
+import DeleteCommentaryModal from '@/components/document/edition/modals/DeleteCommentaryModal.vue'
 
 import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
@@ -535,7 +539,8 @@ export default {
         VisibilityToggle,
 
         DeleteTranscriptionModal,
-        DeleteTranslationModal
+        DeleteTranslationModal,
+        DeleteCommentaryModal,
 
         /*
 

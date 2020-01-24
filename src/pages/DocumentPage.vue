@@ -29,7 +29,7 @@
               </router-link>
             </li>
             <li
-              v-if="isTranscriptionValidated && !!commentariesView && commentariesView.length > 0"
+              v-if="isCommentariesValidated && !!commentariesView && commentariesView.length > 0"
               :class="$attrs.section === 'commentaries' ? `is-active`: ''"
             >
               <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'commentaries'}}">
@@ -37,7 +37,7 @@
               </router-link>
             </li>
             <li
-              v-if="isTranscriptionValidated && !!speechPartsView && speechPartsView.length > 0"
+              v-if="isSpeechPartsValidated && !!speechPartsView && speechPartsView.length > 0"
               :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
             >
               <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'speech-parts'}}">
@@ -265,7 +265,9 @@ export default {
                                  'commentariesView']),
         ...mapGetters('user', ['loggedIn']),
         ...mapGetters('document', ['getManifestInfoUrl']),
-        ...mapGetters('workflow', ['isTranscriptionValidated']),
+        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
+        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated',
+        'isCommentariesReadOnly', 'isCommentariesValidated']),
 
         canvasManifestInfo() {
           return this.getManifestInfoUrl(0)

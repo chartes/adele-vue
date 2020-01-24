@@ -133,7 +133,22 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
-
+   /* useful */
+   async deleteCommentaryFromUser({dispatch, commit, rootState}, comType) {
+    try {
+      commit('SET_ERROR', null)
+      const response = await http.delete(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}/and-type/${comType}`)
+     /*
+     //TODO: faire le bouton de validation avant, histoire de tester facilement
+      await dispatch('document/partialUpdate', {
+        validation_step: response.data.data.validation_step
+      }, {root: true})
+      */
+      await dispatch('fetchCommentariesContent')
+    } catch(error) {
+      commit('SET_ERROR', error)
+    }
+  },
   /*
   changed ({ commit, dispatch }, {content, type}) {
     commit('UPDATE_COMMENTARY', {content, type});
