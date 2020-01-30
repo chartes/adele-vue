@@ -1,0 +1,49 @@
+.visibility-controls {
+
+    border-bottom-color: $yellow;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 10px;
+
+    .control:first-child > span {
+        font-family: $family-secondary;
+        font-size: 14px;
+        color: $grey-dark;
+    }
+
+    a.control  > span > i {
+        display: none;
+    }
+
+    a.control  {
+        font-family: $family-secondary;
+        font-size: 14px;
+        line-height: 28px;
+        color: $grey-darker;
+    }
+
+    a.control:hover {
+        color: $yellow;
+    }
+
+    a.control > span {
+        padding-left: 30px;
+    }
+
+    a.control > span:first-child {
+        background: url( #{$image-path}/edit_visible.svg) center left no-repeat;
+    }
+
+    a.control:hover > span:first-child {
+        background: url( #{$image-path}/edit_visible_OVER.svg) center left no-repeat;
+    }
+
+    a.control > span:last-child {
+        background: url( #{$image-path}/edit_invisible.svg) center left no-repeat;
+    }
+
+    a.control:hover > span:last-child {
+        background: url( #{$image-path}/edit_invisible_OVER.svg) center left no-repeat;
+    }
+
+}
