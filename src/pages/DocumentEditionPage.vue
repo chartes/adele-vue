@@ -508,7 +508,6 @@ import DeleteTranscriptionModal from '@/components/document/edition/modals/Delet
 import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
 import DeleteCommentaryModal from '@/components/document/edition/modals/DeleteCommentaryModal.vue'
 
-import {TRANSCRIPTION_STEP, TRANSLATION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
 export default {
     name: "DocumentEditionPage",

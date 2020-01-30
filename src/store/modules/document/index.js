@@ -1,5 +1,4 @@
 import {http} from '../../../modules/http-common';
-import { VALIDATION_STEPS_LABELS } from '../workflow';
 
 const state = {
 
@@ -200,11 +199,23 @@ const actions = {
       throw error
     })
   },
-  setValidationStep ({commit }, {docId, step}) {
+  setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
-    http.get(`documents/${docId}/validate-${VALIDATION_STEPS_LABELS[step]}`).then( (response) => {
+    http.get(`documents/${docId}/validate-${flagName}`).then( (response) => {
       commit('PARTIAL_UPDATE_DOCUMENT',  {
-        validation_step: step
+        validation_flags: response.data.data.validation_flags
+      })
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
+    })
+  },
+  unsetValidationFlag ({commit }, {docId, flagName}) {
+    commit('LOADING_STATUS', true);
+    http.get(`documents/${docId}/unvalidate-${flagName}`).then( (response) => {
+      commit('PARTIAL_UPDATE_DOCUMENT',  {
+        validation_flags: response.data.data.validation_flags
       })
       commit('LOADING_STATUS', false);
     }).catch((error) => {

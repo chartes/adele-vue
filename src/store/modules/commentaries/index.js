@@ -141,7 +141,7 @@ const actions = {
      /*
      //TODO: faire le bouton de validation avant, histoire de tester facilement
       await dispatch('document/partialUpdate', {
-        validation_step: response.data.data.validation_step
+        validation_flags: response.data.data.validation_flags
       }, {root: true})
       */
       await dispatch('fetchCommentariesContent')

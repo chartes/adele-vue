@@ -31,7 +31,6 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-import { TRANSCRIPTION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
 import SaveTranscriptionButton from '../actions/SaveTranscriptionButton.vue'
 import ValidateTranscriptionButton from '../actions/ValidateTranscriptionButton.vue'

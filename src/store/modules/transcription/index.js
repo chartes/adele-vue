@@ -254,7 +254,7 @@ const actions = {
       commit('SET_ERROR', null)
       const response = await http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
       await dispatch('document/partialUpdate', {
-        validation_step: response.data.data.validation_step
+        validation_flags: response.data.data.validation_flags
       }, {root: true})
       await dispatch('fetchTranscriptionContent')
     } catch(error) {

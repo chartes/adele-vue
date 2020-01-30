@@ -16,7 +16,6 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { TRANSCRIPTION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
 export default {
     name: 'ValidateTranscriptionButton',
@@ -32,11 +31,11 @@ export default {
     methods: {
       validateTranscription() {
         // TODO: give warnings about side effects
-        return this.$store.dispatch('document/setValidationStep', {docId: this.$props.docId, step: TRANSCRIPTION_STEP}) 
+        return this.$store.dispatch('document/setValidationFlag', {docId: this.$props.docId, flagName: 'transcription'}) 
       },
       unvalidateTranscription() {
         // TODO: give warnings about side effects
-        return this.$store.dispatch('document/setValidationStep', {docId: this.$props.docId, step: NONE_STEP}) 
+        return this.$store.dispatch('document/unsetValidationFlag', {docId: this.$props.docId, flagName: 'transcription'}) 
       },
       toggleTranscriptionValidation() {
         if (this.isTranscriptionValidated) {

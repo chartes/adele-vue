@@ -10,7 +10,6 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex'
-import { TRANSCRIPTION_STEP, NONE_STEP} from '@/store/modules/workflow'
 
 export default {
     name: 'TranscriptionAlignmentButton',
