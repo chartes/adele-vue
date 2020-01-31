@@ -1,11 +1,19 @@
 <template>
   <div class="m-b-md">
-    <div class="field is-grouped">
+    <div
+      v-if="!hasCommentaryTypes[label]"
+      class="field is-grouped"
+    >
       <add-commentary-button
-        v-if="!hasCommentaryTypes[label]"
         :type="type"
         :label="label"
       />
+    </div>
+    <div
+      v-else
+      class="field is-grouped"
+    >
+      <validate-commentaries-button :doc-id="document.id" />
       <delete-commentary-button
         v-if="hasCommentaryTypes[label]"
       />
@@ -17,12 +25,14 @@
 import { mapState, mapGetters } from 'vuex'
 import AddCommentaryButton from '../actions/AddCommentaryButton.vue'
 import DeleteCommentaryButton from '../actions/DeleteCommentaryButton.vue'
+import ValidateCommentariesButton from '../actions/ValidateCommentariesButton.vue'
 
 export default {
     name: 'CommentariesActionBar',
     components: {
       AddCommentaryButton,
-      DeleteCommentaryButton
+      DeleteCommentaryButton,
+      ValidateCommentariesButton
     },
     props: {
       type: {type: Number, required: true},
@@ -32,7 +42,7 @@ export default {
     computed: {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId']),
-        ...mapState('commentaries', ['commentaryTypes', 'commentaries', 'hasCommentaryTypes']),
+        ...mapState('commentaries', ['hasCommentaryTypes']),
     },
     methods: {
       

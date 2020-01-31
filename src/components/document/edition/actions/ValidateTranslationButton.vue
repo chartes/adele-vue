@@ -2,6 +2,7 @@
   <button
     class="button is-small"
     :class="`${isTranslationValidated ? 'is-success' : 'is-light'}`"
+    :disabled="!isTranscriptionValidated"
     @click="toggleTranslationValidation"
   >
     <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
@@ -26,12 +27,12 @@ export default {
         docId: {type: Number, default: null}
     },
     computed: {
-      ...mapGetters('workflow', ['isTranslationValidated', ])
+      ...mapGetters('workflow', ['isTranslationValidated', 'isTranscriptionValidated' ])
     },
     methods: {
       validateTranslation() {
         // TODO: give warnings about side effects
-        return this.$store.dispatch('document/setValidationFlag', {docId: this.$props.docId, flagName: 'transcription'}) 
+        return this.$store.dispatch('document/setValidationFlag', {docId: this.$props.docId, flagName: 'translation'}) 
       },
       unvalidateTranslation() {
         // TODO: give warnings about side effects

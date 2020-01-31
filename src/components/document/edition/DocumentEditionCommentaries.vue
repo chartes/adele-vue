@@ -14,6 +14,17 @@
           Commentaires
         </div>
     
+        <div
+          v-for="(com, index) in commentaryTypes"
+          :key="index"
+        >
+          <div v-show="index === activeIdx">
+            <commentaries-action-bar
+              :type="com.id"
+              :label="com.label"
+            />
+          </div>
+        </div>
         <!-- commentary types tabs -->
         <div class="commentaries-tabs tabs is-small is-toggle">
           <ul>
@@ -36,10 +47,6 @@
             :key="index"
           >
             <div v-show="index === activeIdx">
-              <commentaries-action-bar
-                :type="com.id"
-                :label="com.label"
-              />
               <commentary-editor
                 v-if="hasCommentaryTypes[com.label]"
                 :initial-content="getCommentaryContent(com.label)"

@@ -215,7 +215,7 @@
               <!-- Transcription -->
               <div v-if="$attrs.section === 'transcription'">
                 <!-- transcription error -->
-                <div v-if="transcriptionError">
+                <div v-if="transcriptionError && !selectedUserHasTranscription">
                   <message
                     v-if="transcriptionError.response.status === 404"
                     message-class="is-info "
@@ -267,15 +267,15 @@
               <!-- Translation -->
               <div v-if="$attrs.section === 'translation'">
                 <!-- translation error -->
-                <div v-if="translationError || !isTranscriptionValidated">
+                <div v-if="translationError && !selectedUserHasTranslation || !isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
-                    message-class="is-info"
+                    message-class="is-info "
                   >
-                    Veuillez valider votre transcription
+                    Vous devez valider la transcription avant d'entammer la traduction
                   </message>
                   <message
-                    v-if="translationError.response.status === 404"
+                    v-else-if="translationError.response.status === 404"
                     message-class="is-info"
                   >
                     <p class="m-b-sm">
@@ -337,12 +337,12 @@
               <!-- Commentaires -->
               <div v-if="$attrs.section === 'commentaries'">
                 <!-- commentaries error -->
-                <div v-if="commentariesError || !isTranscriptionValidated">
+                <div v-if="commentariesError && !selectedUserHasCommentaries || !isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
-                    message-class="is-info"
+                    message-class="is-info "
                   >
-                    Veuillez valider votre transcription
+                    Vous devez valider la transcription avant d'entammer la rédaction de commentaires
                   </message>
                   <message
                     v-else-if="commentariesError.response && commentariesError.response.status === 404"
@@ -393,12 +393,12 @@
               <!-- Parties du discours -->
               <div v-if="$attrs.section === 'speech-parts'">
                 <!-- Parties du discours error -->
-                <div v-if="speechPartsError || !isTranscriptionValidated">
+                <div v-if="speechPartsError && !selectedUserHasSpeechParts || !isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
-                    message-class="is-info"
+                    message-class="is-info "
                   >
-                    Veuillez valider votre transcription
+                    Vous devez valider la transcription avant d'entammer l'identification des parties de discours
                   </message>
                   <message
                     v-else-if="speechPartsError.response.status === 404"
@@ -426,7 +426,7 @@
                 <!-- speechparts readonly -->
                 <div v-else-if="isSpeechPartsReadOnly">
                   <message
-                    v-if="isTranslationValidated || currentUser.id !== selectedUserId"
+                    v-if="isSpeechPartsValidated || currentUser.id !== selectedUserId"
                     message-class=""
                   >
                     <span v-if="currentUser.id == documentOwner.id">
@@ -589,7 +589,9 @@ export default {
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
         'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated',
-        'isCommentariesReadOnly', 'isCommentariesValidated']),
+        'isCommentariesReadOnly', 'isCommentariesValidated',
+        'selectedUserHasTranscription', 'selectedUserHasTranslation', 
+        'selectedUserHasFacsimile', 'selectedUserHasCommentaries', 'selectedUserHasSpeechParts']),
         ...mapGetters('document', ['documentOwner', 'getManifestInfoUrl']),
 
         showContent() {

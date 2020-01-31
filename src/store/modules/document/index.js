@@ -201,6 +201,7 @@ const actions = {
   },
   setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
+    console.log('set validation flag', flagName)
     http.get(`documents/${docId}/validate-${flagName}`).then( (response) => {
       commit('PARTIAL_UPDATE_DOCUMENT',  {
         validation_flags: response.data.data.validation_flags
