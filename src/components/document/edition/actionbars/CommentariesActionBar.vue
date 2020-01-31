@@ -1,8 +1,9 @@
 <template>
-  <div class="m-b-md">
+  <div class="m-b-md ">
+    <!-- SAVE COMMENTARIES --> 
     <div
-      v-if="!hasCommentaryTypes[label]"
-      class="field is-grouped"
+      v-if="!hasCommentaryTypes[label]" 
+      class="control"
     >
       <add-commentary-button
         :type="type"
@@ -13,10 +14,19 @@
       v-else
       class="field is-grouped"
     >
-      <validate-commentaries-button :doc-id="document.id" />
-      <delete-commentary-button
-        v-if="hasCommentaryTypes[label]"
-      />
+      <div class="control">
+        <save-commentaries-button
+          v-if="!isCommentariesReadOnly"
+        />
+      </div>
+      <div class="control">
+        <validate-commentaries-button :doc-id="document.id" />
+      </div>
+      <div class="control">
+        <delete-commentary-button
+          v-if="hasCommentaryTypes[label]"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -26,13 +36,15 @@ import { mapState, mapGetters } from 'vuex'
 import AddCommentaryButton from '../actions/AddCommentaryButton.vue'
 import DeleteCommentaryButton from '../actions/DeleteCommentaryButton.vue'
 import ValidateCommentariesButton from '../actions/ValidateCommentariesButton.vue'
+import SaveCommentariesButton from '../actions/SaveCommentariesButton.vue'
 
 export default {
     name: 'CommentariesActionBar',
     components: {
       AddCommentaryButton,
       DeleteCommentaryButton,
-      ValidateCommentariesButton
+      ValidateCommentariesButton,
+      SaveCommentariesButton
     },
     props: {
       type: {type: Number, required: true},
@@ -41,7 +53,7 @@ export default {
     },
     computed: {
         ...mapState('document', ['document']),
-        ...mapState('workflow', ['selectedUserId']),
+        ...mapState('workflow', ['selectedUserId', 'isCommentariesReadOnly']),
         ...mapState('commentaries', ['hasCommentaryTypes']),
     },
     methods: {

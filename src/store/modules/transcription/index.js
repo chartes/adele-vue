@@ -147,31 +147,7 @@ const mutations = {
 
 const actions = {
 
-  fetch ({ commit, rootState }) {
-
-    commit('LOADING_STATUS', true);
-
-    const doc_id = rootState.document.document.id;
-    const user_id = rootState.user.author.id;
-
-    this.dispatch('noteTypes/fetch')
-      .then(() => this.dispatch('speechpartTypes/fetch', doc_id))
-      .then(() => this.dispatch('commentaries/fetchTypes'))
-      .then(() => this.dispatch('notes/fetch', doc_id))
-      .then(() => this.dispatch('speechparts/fetch', { doc_id, user_id }))
-      .then(() => this.dispatch('facsimile/fetchCanvasNames'))
-      .then(() => this.dispatch('facsimile/fetchFragments'))
-      .then(() => this.dispatch('facsimile/fetchAlignments'))
-      .then(() => this.dispatch('transcription/fetchAlignments', { doc_id, user_id }))
-      .then(() => this.dispatch('transcription/fetchTranscriptionFromUser', { doc_id, user_id }))
-      .then(() => this.dispatch('translation/fetch', { doc_id, user_id }))
-      .then(() => this.dispatch('commentaries/fetch', { doc_id, user_id }))
-      .catch(err => {
-        console.error("Une erreur est survenue", err)
-      })
-
-  },
-
+ 
   /* useful */
   fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
     commit('RESET')
@@ -306,71 +282,6 @@ const actions = {
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
-  },
-  save ({dispatch, commit, rootState, rootGetters}) {
-    //console.log('STORE ACTION transcription/save');
-
-    commit('SAVING_STATUS', 'saving');
-
-    return dispatch('saveContent')
-      .then(response => {
-        console.warn("content saved", rootGetters['document/manifestURL']);
-        if (rootGetters['document/manifestURL']) {
-          console.warn("content saved", rootGetters['document/manifestURL']);
-          dispatch('saveImageAlignments')
-        }
-      })
-      .then(reponse => {
-        if (rootState.translation.translation.id) {
-          // Saves alignment if translation exists
-          return dispatch('saveAlignment')
-        }
-        return true;
-      })
-      .then(reponse => dispatch('saveSpeechparts'))
-      .then(reponse => dispatch('saveNotes'))
-      .then(reponse => {
-        if (rootState.translation.translation) return dispatch('translation/save', null, {root:true});
-        else return true;
-      })
-      .then(function(values) {
-        //console.log('all saved', values);
-        commit('SAVED');
-        commit('SAVING_STATUS', 'uptodate');
-      })
-      .catch( error => {
-        console.error('something bad happened', error);
-        commit('SAVING_STATUS', 'error');
-        //dispatch( 'error', { error } )
-      });
-
-  },
-  saveContent ({ state, rootGetters, rootState }) {
-    console.log('STORE ACTION transcription/saveContent', state.transcriptionContent);
-    const auth = rootGetters['user/authHeader'];
-    const tei = quillToTEI(state.transcriptionContent);
-    const sanitized = stripSegments(tei);
-    console.log(`%c save transcription ${sanitized}`, 'color:red');
-    const data = { data: [{
-        "content" : sanitized,
-        "username": rootState.user.author.username
-      }]};
-    const method  = (state.transcription && state.transcription.doc_id) ? http.put : http.post;
-    
-    return new Promise( ( resolve, reject ) => {
-      method(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
   },
   cloneContent: function ({dispatch, state, rootGetters, rootState}) {
     console.log('STORE ACTION transcription/cloneContent', state.transcriptionContent);
@@ -543,11 +454,6 @@ const actions = {
   changed ({ commit }, deltas) {
     console.warn('STORE ACTION transcription/changed');
     commit('ADD_OPERATION', deltas);
-    commit('CHANGED');
-    commit('SAVING_STATUS', 'tobesaved')
-  },
-  translationChanged ({ commit }, deltas) {
-    console.warn('STORE ACTION transcription/translationChanged');
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
   },
