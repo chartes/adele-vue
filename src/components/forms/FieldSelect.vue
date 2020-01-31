@@ -8,11 +8,11 @@
       >
         <select
           v-model="val"
+          v-if="hasOptions"
           @change="onChange(val)"
         >
           <option
-            v-for="opt, index in options"
-            v-if="hasOptions"
+            v-for="(opt, index) in options"
             :key="opt.id"
             :value="opt.id"
             :selected="optionSelected(opt.id, index)"
