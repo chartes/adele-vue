@@ -41,7 +41,7 @@
               @click="showImage"
             >
               <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
-                <span v-if="currentUserIsTeacher">Traduction et alignement</span>
+                <span v-if="currentUserIsTeacher">Traduction</span>
                 <span v-else>Traduction</span>
               </router-link>
             </li>
