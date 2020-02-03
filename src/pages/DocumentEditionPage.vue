@@ -88,7 +88,10 @@
               class="m-b-sm"
             >
               <p class="is-size-6">
-                <span class="tag">
+                <span
+                  v-if="$attrs.section !== 'commentaries'"
+                  class="tag"
+                >
                   <visibility-toggle
                     class="m-r-md"
                     :action="toggleImageVisibility"
@@ -117,13 +120,6 @@
                     :visible="translationVisibility"
                   >
                     traduction
-                  </visibility-toggle>
-                  <visibility-toggle
-                    v-if="$attrs.section === 'commentaries'"
-                    :action="toggleCommentariesVisibility"
-                    :visible="commentariesVisibility"
-                  >
-                    commentaires
                   </visibility-toggle>
                   <visibility-toggle
                     v-if="$attrs.section === 'speech-parts'"
@@ -154,7 +150,10 @@
             <!-- visibility widget -->
             <div class="m-b-sm">
               <p class="is-size-6">
-                <span class="tag">
+                <span
+                  v-if="$attrs.section !== 'commentaries'"
+                  class="tag"
+                >
                   <visibility-toggle
                     class="m-r-md"
                     :action="toggleImageVisibility"
@@ -183,13 +182,6 @@
                     :visible="translationVisibility"
                   >
                     traduction
-                  </visibility-toggle>
-                  <visibility-toggle
-                    v-if="$attrs.section === 'commentaries'"
-                    :action="toggleCommentariesVisibility"
-                    :visible="commentariesVisibility"
-                  >
-                    commentaires
                   </visibility-toggle>
                   <visibility-toggle
                     v-if="$attrs.section === 'speech-parts'"
@@ -567,13 +559,14 @@ export default {
 
         transcriptionAlignmentError: null,
 
-        imageVisibility: true,
+        imageVisibility: this.$attrs.section !== 'commentaries',
         noticeVisibility: true,
         transcriptionVisibility: true,
         translationVisibility: true,
-        commentariesVisibility: true,
         speechpartsVisibility: true,
       }
+    },
+    mounted() {
     },
     computed: {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 
@@ -605,7 +598,7 @@ export default {
             case 'notice':
               return this.noticeVisibility
             case 'commentaries':
-              return this.commentariesVisibility
+              return true
             case 'speech-parts':
               return this.speechpartsVisibility
             default:
@@ -714,12 +707,6 @@ export default {
         // forbid hidding everything
         if (this.imageVisibility || this.transcriptionVisibility) {
           this.translationVisibility = !this.translationVisibility
-        }
-      },
-      toggleCommentariesVisibility() {
-        // forbid hidding everything
-        if (this.imageVisibility) {
-          this.commentariesVisibility = !this.commentariesVisibility
         }
       },
       toggleSpeechPartsVisibility() {

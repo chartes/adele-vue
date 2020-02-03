@@ -13,7 +13,6 @@
         <div class="has-text-weight-medium subtitle m-b-xl">
           Commentaires
         </div>
-    
         <div
           v-for="(com, index) in commentaryTypes"
           :key="index"
@@ -52,6 +51,12 @@
                 :initial-content="getCommentaryContent(com.label)"
                 :type="com.id"
               />
+              <message
+                v-else
+                class="is-info"
+              >
+                Aucun commentaire de ce type 
+              </message>
             </div>
           </div>
         </div>
@@ -68,13 +73,15 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 import CommentaryEditor from '../../editors/CommentaryEditor.vue'
 import CommentariesActionBar from './actionbars/CommentariesActionBar.vue'
+import Message from '../../Message'
 
 export default {
     name: "DocumentEditionCommentaries",
     components: {
         DocumentTranscription,
         CommentaryEditor,
-        CommentariesActionBar
+        CommentariesActionBar,
+        Message
     },
     props: {
         

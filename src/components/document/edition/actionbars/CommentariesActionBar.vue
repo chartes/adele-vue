@@ -1,15 +1,21 @@
 <template>
   <div class="m-b-md ">
-    <!-- SAVE COMMENTARIES --> 
+    <!-- NEW COMMENTARIES --> 
     <div
       v-if="!hasCommentaryTypes[label]" 
-      class="control"
+      class="field is-grouped"
     >
-      <add-commentary-button
-        :type="type"
-        :label="label"
-      />
+      <div class="control">
+        <add-commentary-button
+          :type="type"
+          :label="label"
+        />
+      </div>
+      <div class="control">
+        <validate-commentaries-button :doc-id="document.id" />
+      </div>
     </div>
+    <!-- EXISTING COMMENTARIES --> 
     <div
       v-else
       class="field is-grouped"
