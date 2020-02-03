@@ -46,6 +46,10 @@
             >
               Valider
             </button>
+            <span
+              v-show="error"
+              class="control has-text-danger is-pulled-right p-t-sm"
+            >Nom d'utilisateur ou mot de passe incorrect(s)</span>
           </span>
         </div>
       </div>
@@ -65,21 +69,31 @@ export default {
     data () {
         return {
           email: '',
-          password: ''
+          password: '',
+          error: false
         }
     },
     computed: {
       ...mapState("user", ["currentUser"])
     },
+    mounted() {
+      this.error = false
+    },
     methods: {
         login () {
+          this.error = false
           return this.$store
             .dispatch('user/login', {
               email: this.email,
               password: this.password
             })
-            .then(() => { 
-              this.$router.go(-1)
+            .then((response) => { 
+              console.log(this.currentUser)
+              if (this.currentUser) {
+                this.$router.go(-1)
+              } else {
+                this.error = true
+              }
             })
         }
       }
