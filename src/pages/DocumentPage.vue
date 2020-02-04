@@ -53,24 +53,24 @@
           <div class="columns">
             <div
               v-show="imageVisibility"
-              class="column m-t-sm"
+              class="column"
               :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
             >
               <!-- visibility widget -->
               <div
                 v-if="!showContent"
-                class="m-b-md"
+                class="visibility-controls m-b-md"
               >
-                <p class="is-size-6">
-                  <span class="tag">
+                <div class="field is-grouped">
                     <visibility-toggle
-                      class="m-r-md"
+                      class="control"
                       :action="toggleImageVisibility"
                       :visible="imageVisibility"
                     >
                       image
                     </visibility-toggle>
                     <visibility-toggle
+                      class="control"
                       v-if="$attrs.section === 'notice'"
                       :action="toggleNoticeVisibility"
                       :visible="noticeVisibility"
@@ -78,6 +78,7 @@
                       notice
                     </visibility-toggle>
                     <visibility-toggle
+                      class="control"
                       v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
                       :action="toggleTranscriptionVisibility"
                       :visible="transcriptionVisibility"
@@ -85,14 +86,15 @@
                       transcription
                     </visibility-toggle>
                     <visibility-toggle
+                      class="control"
                       v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
-                      class="m-l-md"
                       :action="toggleTranslationVisibility"
                       :visible="translationVisibility"
                     >
                       traduction
                     </visibility-toggle>
                     <visibility-toggle
+                      class="control"
                       v-if="$attrs.section === 'commentaries'"
                       :action="toggleCommentariesVisibility"
                       :visible="commentariesVisibility"
@@ -100,14 +102,14 @@
                       commentaires
                     </visibility-toggle>
                     <visibility-toggle
+                      class="control"
                       v-if="$attrs.section === 'speech-parts'"
                       :action="toggleSpeechPartsVisibility"
                       :visible="speechpartsVisibility"
                     >
                       parties du discours
                     </visibility-toggle>
-                  </span>
-                </p>
+                </div>
               </div>
 
               <i-i-i-f-viewer
@@ -127,55 +129,57 @@
               class="column"
             >
               <!-- visibility widget -->
-              <div class="m-b-md">
-                <p class="is-size-6">
-                  <span>AFFICHAGE</span>
-                  <span class="tag">
-                    <visibility-toggle
-                      class="m-r-md"
-                      :action="toggleImageVisibility"
-                      :visible="imageVisibility"
-                    >
-                      image
-                    </visibility-toggle>
-                    <visibility-toggle
-                      v-if="$attrs.section === 'notice'"
-                      :action="toggleNoticeVisibility"
-                      :visible="noticeVisibility"
-                    >
-                      notice
-                    </visibility-toggle>
-                    <visibility-toggle
+              <div class="visibility-controls m-b-md">
+                <div class="field is-grouped">
+                  <div class="control"><span>AFFICHAGE</span></div>
+                     <visibility-toggle
+                        class="control"
+                        :action="toggleImageVisibility"
+                        :visible="imageVisibility"
+                      >
+                        image
+                      </visibility-toggle>
+                     <visibility-toggle
+                        class="control"
+                        v-if="$attrs.section === 'notice'"
+                        :action="toggleNoticeVisibility"
+                        :visible="noticeVisibility"
+                      >
+                        notice
+                      </visibility-toggle>
+                     <visibility-toggle
+                      class="control"
                       v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
                       :action="toggleTranscriptionVisibility"
                       :visible="transcriptionVisibility"
                     >
                       transcription
                     </visibility-toggle>
-                    <visibility-toggle
+                     <visibility-toggle
                       v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
-                      class="m-l-md"
+                      class="control"
                       :action="toggleTranslationVisibility"
                       :visible="translationVisibility"
                     >
                       traduction
                     </visibility-toggle>
-                    <visibility-toggle
+                     <visibility-toggle
+                      class="control"
                       v-if="$attrs.section === 'commentaries'"
                       :action="toggleCommentariesVisibility"
                       :visible="commentariesVisibility"
                     >
                       commentaires
                     </visibility-toggle>
-                    <visibility-toggle
+                     <visibility-toggle
+                      class="control"
                       v-if="$attrs.section === 'speech-parts'"
                       :action="toggleSpeechPartsVisibility"
                       :visible="speechpartsVisibility"
                     >
                       parties du discours
                     </visibility-toggle>
-                  </span>
-                </p>
+                </div>
               </div>
 
               <!-- section content -->

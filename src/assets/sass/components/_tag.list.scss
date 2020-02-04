@@ -1,0 +1,32 @@
+ul.tag-list {
+    padding: 10px;
+    margin: 0;
+}
+
+.tag-list > li {
+    list-style-type: none;
+    margin: 0;
+}
+
+.tag:not(body) {
+    background: none;
+    color: $black;
+    font-family: $family-sans-serif;
+    font-size: 18px;
+    line-height: 30px;
+    padding: 0;
+    margin: 0;
+}
+
+.tag:not(body).is-dark {
+    background: none;
+    color:#B2AB8A;
+    font-weight: bold;
+}
+
+.tag:not(body):first-child:after {
+    content:":";
+    display: inline;
+    margin: 0 5px;
+    color:black;
+}

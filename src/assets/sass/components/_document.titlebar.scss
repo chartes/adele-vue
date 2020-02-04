@@ -5,8 +5,45 @@
     background:none;
     font-family: $family-sans-serif;
     font-size: 14px;
-    text-transform: uppercase;
     font-weight:$weight-medium;
+    text-transform: uppercase;
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .tags:not(:last-child) {
+    margin-bottom: 0;
+  }
+
+  .tag.button {
+    color: $blue-light;
+    margin-left:0.5rem;
+  }
+
+  .navbar-divider {
+    width: 1px;
+    height: 14px;
+    background-color:$grey-dark;
+  }
+
+  .tile.is-parent {
+    padding: 0;
+  }
+
+  .tile.is-parent.dates {
+
+    padding: 20px 0;
+
+    p {
+      color:#9B9B9B;
+      font-size: 15px;
+      font-family: $family-secondary;
+    }
+
+    span.date {
+      font-weight: 500;
+    }
+
   }
 
   .title {
@@ -27,9 +64,36 @@
 }
 
 .title-bar > .tile.is-ancestor {
+
+  width: 58%;
   margin-left: 0;
   padding-left: 180px;
   min-height: 150px;
   background: url( #{$image-path}/lettrine_E.svg) top left no-repeat;
+
+  .navbar {
+    padding: 0;
+    margin-bottom: 12px;
+    border-bottom-color: $yellow;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    justify-content: space-between;
+
+    .navbar-item {
+      color: $grey-dark;
+      font-weight: 500;
+    }
+
+    .navbar-item:first-child {
+      padding-left: 30px;
+      background: url( #{$image-path}/edit_fleche_G.svg) center left no-repeat;
+    }
+
+    .navbar-item:last-child {
+      padding-right: 30px;
+      background: url( #{$image-path}/edit_fleche_D.svg) center right no-repeat;
+    }
+
+  }
 }
 
