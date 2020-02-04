@@ -1,5 +1,6 @@
 import {http} from '../../../modules/http-common';
 import Quill from '../../../modules/quill/AdeleQuill';
+import Vue from 'vue';
 
 import {
   TEIToQuill,
@@ -16,46 +17,49 @@ import {
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
 
-const commentariesShadowQuillElement = document.createElement('div');
-const notesShadowQuillElement = document.createElement('div');
-let commentariesShadowQuill;
-let notesShadowQuill;
+let notesShadowQuillElements = {} 
+let notesShadowQuills = {}
 
 
 const state = {
-  commentaries: [],
-  commentariesWithNotes: [],
-  hasCommentaryTypes: {},
+
   commentaryTypes: [],
+  selectedCommentaryLabel : null,
+
+  commentariesWithNotes: {},
   savingStatus: 'uptodate',
   commentariesSaved: true,
-  commentariesError: null
+  commentariesError: null,
 };
 
 const mutations = {
-  INIT(state, payload) {
+  INIT(state, data) {
+      state.commentariesWithNotes = {}
+      state.selectedCommentaryLabel = null
 
-      // TODO : le faire pour tous les coms
+      data.forEach(commentary => {
+        const t = commentary.typeLabel
 
+        notesShadowQuillElements[t] = document.createElement('div')
+        notesShadowQuillElements[t].innerHTML = commentary.withNotes || ""
+        notesShadowQuills[t] = new Quill(notesShadowQuillElements[t]);
+        Vue.set(state.commentariesWithNotes, t, {
+          ...commentary,
+          content: notesShadowQuillElements[t].children[0].innerHTML
+        })
+      })
 
-      commentariesShadowQuillElement.innerHTML = payload.content || "";
-      commentariesShadowQuill = new Quill(commentariesShadowQuillElement);
-      state.transcriptionContent = commentariesShadowQuillElement.children[0].innerHTML;
-      //console.log("INIT with content", state.transcriptionContent);
-
-      notesShadowQuillElement.innerHTML = payload.withNotes || "";
-      notesShadowQuill = new Quill(notesShadowQuillElement);
-      state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
-      //console.log("INIT with notes", state.transcriptionWithNotes);
-
+      if (data.length > 0) {
+        state.selectedCommentaryLabel = data[0].typeLabel
+      }
   },
   UPDATE_TYPES (state, payload) {
     state.commentaryTypes = payload
   },
-  UPDATE (state, { commentaries, hasTypes}) {
-    state.commentaries = commentaries;
-    state.hasCommentaryTypes = hasTypes
+  SELECT(state, label) {
+    state.selectedCommentaryLabel = label
   },
+  /*
   ADD_COMMENTARY (state, {commentary}) {
     const comm = state.commentaries.find(c => c.type === commentary.type);
     if (!comm) {
@@ -64,6 +68,7 @@ const mutations = {
       state.hasCommentaryTypes[typeLabel] = true
     }
   },
+  */
   /*
   UPDATE_COMMENTARY (state, {content, type}) {
     const comm = state.commentaries.find(c => c.type === type);
@@ -74,10 +79,8 @@ const mutations = {
     state.commentariesError = payload
   },
   RESET(state) { 
-    state.commentaries = []
-    state.commentariesWithNotes = []
-    state.hasTypes = []
-
+    state.commentariesWithNotes = {}
+    state.selectedCommentaryLabel = null
     // TODO: le faire pour commentaries[current_com] et commentariesNotes[current_com]
     //if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     //if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
@@ -87,18 +90,19 @@ const mutations = {
     //console.log("STORE MUTATION transcription/CHANGED")
     state.commentariesSaved = false;
   },
-
+  SAVING_STATUS (state, payload) {
+    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
+    state.savingStatus = payload;
+  },
   ADD_OPERATION (state, payload) {
-    const deltaFilteredForContent = filterDeltaOperations(commentariesShadowQuill, payload, 'content');
-    const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
-  
-    commentariesShadowQuill.updateContents(deltaFilteredForContent);
-  
-    notesShadowQuill.updateContents(deltaFilteredForNotes);
+    const t = state.selectedCommentaryLabel
+    const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuills[t], payload, 'notes')
+    notesShadowQuills[t].updateContents(deltaFilteredForNotes)
 
-    // TODO: le faire pour commentaries[current_com] et commentariesNotes[current_com]
-    state.transcriptionContent = commentariesShadowQuillElement.children[0].innerHTML;
-    state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
+    Vue.set(state.commentariesWithNotes, t, {
+      ...state.commentariesWithNotes[t],
+      content: notesShadowQuillElements[t].children[0].innerHTML
+    })
   },
 };
 
@@ -112,7 +116,8 @@ function parseComsFromResponse(response) {
     commentariesFormatted.push({
       type: comm.type.id,
       typeLabel: comm.type.label,
-      content: withNotes,
+      content: quillContent,
+      withNotes: withNotes,
       notes: comm.notes
     });
     hasTypes[comm.type.label] = true
@@ -130,10 +135,10 @@ const actions = {
 
   fetchCommentariesFromUser ({ commit }, {docId, userId}) {
     http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
-        //TODO commit('INIT', data);
         const formattedData = parseComsFromResponse(response)
-        commit('RESET') // enlever quand le INIT sera ok
-        commit('UPDATE', formattedData)
+        commit('INIT', formattedData.commentaries); //TODO
+        //commit('RESET') // enlever quand le INIT sera ok
+        //commit('UPDATE', formattedData.hasTypes)
         commit('SET_ERROR', null)
       }).catch((error) => {
         commit('SET_ERROR', error)
@@ -161,9 +166,11 @@ const actions = {
   setError({commit}, payload) {
     commit('SET_ERROR', payload)
   },
-
-   /* useful */
-   addNewCommentary({commit, dispatch, rootState}, {type}) {
+  selectCommentaryTab({commit}, label) {
+    commit('SELECT', label)
+  },
+  /* useful */
+  addNewCommentary({commit, dispatch, rootState}, {type}) {
     const newCommentary = {
       data: {
         doc_id : rootState.document.document.id,
@@ -200,7 +207,7 @@ const actions = {
 
   /* useful */
   changed ({ commit }, deltas) {
-    console.warn('STORE ACTION commentaries/changed');
+    console.warn('STORE ACTION commentaries/changed', deltas);
     commit('ADD_OPERATION', deltas);
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
@@ -210,180 +217,29 @@ const actions = {
   async saveCommentaries({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
     commit('LOADING_STATUS', true)
-    /*
-    try {
-      // prepare notes
-      let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
-      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
-      const notes = computeNotesPointers(sanitizedWithNotes)
-      notes.forEach(note => {
-        const found = rootGetters['notes/notes'].find((element) => {
-          return element.id === note.id
-        })
-        note.content = found.content
-        note.type_id = found.note_type.id
-      })
-
-      // put content && update notes
-      const tei = quillToTEI(state.transcriptionContent)
-      const sanitizedContent = stripSegments(tei)
-      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
-        data: {
-          content: sanitizedContent,
-          notes: notes.filter(n => n.id !== null)
-        }
-      })
-            
-      // and post new notes 
-      const new_notes = notes.filter(n => n.id === null)
-      if (new_notes.length > 0){
-        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
-          data: {notes: new_notes}
-        })
-      }
-
-      commit('SAVING_STATUS', 'uptodate')
-      commit('SET_ERROR', false)
-      commit('LOADING_STATUS', false)
-    } catch(error) {
-      // TODO: rollback to previous content and notes
-      commit('SET_ERROR', error)
-      commit('SAVING_STATUS', 'error')
-      commit('LOADING_STATUS', false)
-    }
-    */
+   
   },
-  
-  /*
-  changed ({ commit, dispatch }, {content, type}) {
-    commit('UPDATE_COMMENTARY', {content, type});
-    commit('SAVED', false);
-    //dispatch('transcription/translationChanged', null, {root:true})
-  },
- 
-
-  add ({ commit, rootState }, typeId) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const doc_id = rootState.document.document.id
-    const newCommentaryData = {
-      "data": {
-        "doc_id": doc_id,
-        "type_id": typeId,
-        "user_id": rootState.user.currentUser.id,
-        "content": "<p></p>"
-      }
-    }
-
-    return http.post(`documents/${ doc_id }/commentaries`, newCommentaryData, config).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData)
-
-      const commentaries = isArray ? respData : [respData];
-      let hasTypes = {};
-
-      let commentariesFormatted = [];
-      commentaries.forEach(comm => {
-        let quillContent = TEIToQuill(comm.content);
-        let withNotes = insertNotes(quillContent, comm.notes);
-        commentariesFormatted.push({
-          type: comm.type.id,
-          typeLabel: comm.type.label,
-          content: withNotes,
-          notes: comm.notes
-        });
-        hasTypes[comm.type.label] = true;
-      });
-      console.log(commentariesFormatted);
-      commit('UPDATE', { commentaries: commentariesFormatted, hasTypes })
-    });
-  },
-
-  save ({ commit, dispatch }, typeId) {
-    console.log('STORE ACTION commentaries/save', typeId);
-
-    return dispatch('saveContent', typeId)
-      .then(reponse => dispatch('saveNotes', typeId))
-      .then(function(values) {
-        console.log('commentary saved', values);
-      })
-  },
-  saveContent ({ commit, rootState, rootGetters }, typeId) {
-
-    const auth = rootGetters['user/authHeader'];
-    const comm = state.commentaries.find(c => c.type === typeId)
-    const tei = quillToTEI(comm.content);
-    let sanitized = stripSegments(tei);
-    sanitized = stripNotes(sanitized);
-    const commData = {
-      "data": {
-        "doc_id": rootState.document.document.id,
-        "type_id": typeId,
-        "user_id": rootState.user.currentUser.id,
-        "content": sanitized
-      }
-    }
-
-    return new Promise( ( resolve, reject ) => {
-      http.put(`documents/${rootState.document.document.id}/commentaries`, commData, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error)
-          reject( error )
-        });
-    } );
-
-
-  },
-  saveNotes ({ commit, rootState, rootGetters }, typeId) {
-    console.log('STORE ACTION commentaries/saveContent', typeId);
-    const auth = rootGetters['user/authHeader'];
-    const comm = state.commentaries.find(c => c.type === typeId);
-    let sanitizedWithNotes = stripSegments(comm.content);
-    sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes);
-    const notes = computeNotesPointers(sanitizedWithNotes);
-    notes.forEach(note => {
-      let found = rootState.notes.notes.find(element => {
-        return element.id === note.note_id;
-      });
-      note.content = found.content;
-      note.commentary_username = rootState.user.author.username;
-      note.commentary_type_id = comm.type;
-      note.note_type = found.note_type.id;
-    });
-
-
-    return new Promise((resolve, reject) => {
-      http.put(`documents/${rootState.document.document.id}/commentaries/notes`, {data: notes}, auth)
-        .then(response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else {
-            resolve(response.data);
-          }
-        });
-    })
-  }
- */
 
 };
 
 const getters = {
   missingCommentaryTypes (state) {
     return state.commentaryTypes.filter(ct => {
-      return !state.hasCommentaryTypes[ct.label]
-    }
+        return !(ct.label in state.commentariesWithNotes)
+      }
     )
   },
+  hasCommentaryTypes: (state) => (typeLabel) => {
+    return  typeLabel in state.commentariesWithNotes
+  },
   getCommentary : (state) => (label) => {
-    return state.commentaries.find(c => c.typeLabel === label)
+    let c
+    try {
+      c = state.commentariesWithNotes[label]
+    } catch (e) {
+      c = null
+    }
+    return c
   },
   isCommentariesSaved(state) {
     return state.savingStatus === 'uptodate'

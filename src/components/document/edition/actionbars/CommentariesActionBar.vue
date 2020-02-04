@@ -30,7 +30,7 @@
       </div>
       <div class="control">
         <delete-commentary-button
-          v-if="hasCommentaryTypes[label]"
+          v-if="hasCommentaryTypes(label)"
         />
       </div>
     </div>
@@ -60,7 +60,7 @@ export default {
     computed: {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId', 'isCommentariesReadOnly']),
-        ...mapState('commentaries', ['hasCommentaryTypes']),
+        ...mapGetters('commentaries', ['hasCommentaryTypes']),
     },
     methods: {
       

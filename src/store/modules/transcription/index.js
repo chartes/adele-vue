@@ -452,7 +452,6 @@ const actions = {
     } );
   },
   changed ({ commit }, deltas) {
-    console.warn('STORE ACTION transcription/changed');
     commit('ADD_OPERATION', deltas);
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')

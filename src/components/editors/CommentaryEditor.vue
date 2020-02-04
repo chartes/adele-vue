@@ -206,9 +206,9 @@
           location: false,
           note: false,
           segment: false,
-          paragraph: false,
+          //paragraph: false,
           list: false,
-          verse: false,
+          //verse: false,
           blockquote: false,
           cite: false,
         }
@@ -227,7 +227,7 @@
     },
 
     methods: {
-
+/*
       onTextChange (delta, oldDelta, source) {
         this.lastOperations = delta;
         if (this.editorInited) {
@@ -235,7 +235,7 @@
             {type: this.type, content: this.editorContentElement.innerHTML})
         }
       },
-
+*/
       updateContent () {
         this.delta = this.editor.getContents().ops;
 

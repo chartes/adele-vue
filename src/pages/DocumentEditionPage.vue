@@ -566,8 +566,6 @@ export default {
         speechpartsVisibility: true,
       }
     },
-    mounted() {
-    },
     computed: {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 
         'translationView', 'transcriptionAlignmentView', 'commentariesView', 'speechPartsView']),

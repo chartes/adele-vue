@@ -14,10 +14,10 @@
           Commentaires
         </div>
         <div
-          v-for="(com, index) in commentaryTypes"
-          :key="index"
+          v-for="com in commentaryTypes"
+          :key="com.id"
         >
-          <div v-show="index === activeIdx">
+          <div v-show="com.label === selectedCommentaryLabel">
             <commentaries-action-bar
               :type="com.id"
               :label="com.label"
@@ -28,12 +28,12 @@
         <div class="commentaries-tabs tabs is-small is-toggle">
           <ul>
             <li
-              v-for="(comType, index) in commentaryTypes"
-              :key="index"
-              :class="`${index === activeIdx ? 'is-active' : ''}`"
+              v-for="comType in commentaryTypes"
+              :key="comType.id"
+              :class="`${comType.label === selectedCommentaryLabel ? 'is-active' : ''}`"
               :data-com-type="comType.id"
             >
-              <a @click="() => selectItem(index)">
+              <a @click="() => selectItem(comType.label)">
                 {{ comType.label }}
               </a>
             </li>
@@ -42,12 +42,12 @@
         <!-- editor -->
         <div style="min-height: 100%">
           <div
-            v-for="(com, index) in commentaryTypes"
-            :key="index"
+            v-for="com in commentaryTypes"
+            :key="com.label"
           >
-            <div v-show="index === activeIdx">
+            <div v-show="com.label === selectedCommentaryLabel">
               <commentary-editor
-                v-if="hasCommentaryTypes[com.label]"
+                v-if="hasCommentaryTypes(com.label)"
                 :initial-content="getCommentaryContent(com.label)"
                 :type="com.id"
               />
@@ -88,13 +88,12 @@ export default {
     },
     data() {
       return {
-        activeIdx: 0  
       }
     },
     computed: {
         ...mapState('document', ['transcriptionView']),
-        ...mapState('commentaries', ['commentaryTypes', 'commentaries', 'hasCommentaryTypes']),
-        ...mapGetters('commentaries', ['getCommentary'])
+        ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel']),
+        ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes'])
     },
     async created() {
       await this.fetchTypes()
@@ -103,8 +102,8 @@ export default {
     methods: {
       ...mapActions('document', ['fetchTranscriptionView']),
       ...mapActions('commentaries', ['fetchTypes']),
-      selectItem(index) {
-        this.activeIdx = index
+      async selectItem(typeLabel) {
+        await this.$store.dispatch('commentaries/selectCommentaryTab', typeLabel)
       },
       getCommentaryContent(label) {
         const com = this.getCommentary(label);
