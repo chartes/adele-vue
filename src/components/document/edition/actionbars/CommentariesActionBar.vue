@@ -2,7 +2,7 @@
   <div class="m-b-md ">
     <!-- NEW COMMENTARIES --> 
     <div
-      v-if="!hasCommentaryTypes[label]" 
+      v-if="!hasCommentaryTypes(label)" 
       class="field is-grouped"
     >
       <div class="control">
@@ -29,9 +29,7 @@
         <validate-commentaries-button :doc-id="document.id" />
       </div>
       <div class="control">
-        <delete-commentary-button
-          v-if="hasCommentaryTypes(label)"
-        />
+        <delete-commentary-button />
       </div>
     </div>
   </div>

@@ -257,12 +257,13 @@ const actions = {
       let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
       const notes = computeNotesPointers(sanitizedWithNotes)
+
       notes.forEach(note => {
-        const found = rootGetters['notes/notes'].find((element) => {
-          return element.id === note.id
-        })
+        const found = rootGetters['notes/getNoteById'](note.id)
         note.content = found.content
-        note.type_id = found.note_type.id
+        if (found.note_type) {
+          note.type_id = found.note_type.id
+        }
       })
 
       // put content && update notes
@@ -271,14 +272,17 @@ const actions = {
       await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
         data: {
           content: sanitizedContent,
-          notes: notes.filter(n => n.id !== null)
+          notes: notes.filter(n => n.id !== null && n.id >= 0)
         }
       })
             
       // and post new notes 
-      const new_notes = notes.filter(n => n.id === null)
+      const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+        delete n.id
+        return n
+       })
       if (new_notes.length > 0){
-        return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
           data: {notes: new_notes}
         })
       }
@@ -326,6 +330,7 @@ const actions = {
         });
     });
   },
+  /*
   saveNotes ({ commit, rootState, state, rootGetters }) {
 
       console.warn('STORE ACTION transcription/saveNotes');
@@ -361,6 +366,8 @@ const actions = {
               });
       })
   },
+  */
+ /*
   saveSpeechparts ({ commit, rootState, state, rootGetters }) {
 
 
@@ -471,6 +478,7 @@ const actions = {
         });
     } );
   },
+  */
   changed ({ commit }, deltas) {
     commit('ADD_OPERATION', deltas);
     commit('CHANGED');

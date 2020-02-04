@@ -147,7 +147,6 @@ const actions = {
   },
   /* useful */
   fetchCommentariesContent({dispatch, rootState, rootGetters}) {
-    //TODO: voir model dans translation
     if (rootGetters['workflow/isCommentariesReadOnly']) {
       // when in readonly mode
       // students see the reference content
@@ -216,10 +215,69 @@ const actions = {
   /* useful */
   async saveCommentaries({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
-    commit('LOADING_STATUS', true)
+    //commit('LOADING_STATUS', true)
+    
+    try {
+      // save each commentary independently
+      Object.values(state.commentariesWithNotes).forEach(async com => {
+          console.log("saving", state.commentariesWithNotes, com)
+
+          // prepare notes
+          let sanitizedWithNotes = com.withNotes
+          sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+
+          const notes = computeNotesPointers(sanitizedWithNotes)
+
+          notes.forEach(note => {
+            const found = rootGetters['notes/getNoteById'](note.id)
+            note.content = found.content
+            if (found.note_type) {
+              note.type_id = found.note_type.id
+            }
+          })
+    
+          const content = quillToTEI(com.content)
+          // put content & update notes
+          await http.put(`documents/${rootState.document.document.id}/commentaries`, {
+            data: {
+              type_id: com.type,
+              content: content,
+              notes: notes.filter(n => n.id !== null && n.id >= 0)
+            }
+          })
+                
+          // and post new notes 
+          const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+            delete n.id
+            return n
+          })
+
+          if (new_notes.length > 0){
+            await http.post(`documents/${rootState.document.document.id}/commentaries`, {
+              data: {
+                type_id: com.type,
+                notes: new_notes
+              }
+            })
+          }
+      })
+
+      // update the store content
+      await dispatch('fetchCommentariesContent')
+  
+      commit('SAVING_STATUS', 'uptodate')
+      commit('SET_ERROR', false)
+      //commit('LOADING_STATUS', false)
+    } catch(error) {
+      commit('SET_ERROR', error)
+      commit('SAVING_STATUS', 'error')
+      throw error
+      //commit('LOADING_STATUS', false)
+    }
+
+
    
   },
-
 };
 
 const getters = {
