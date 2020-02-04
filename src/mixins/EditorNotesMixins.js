@@ -12,14 +12,11 @@ var EditorNotesMixin = {
   methods: {
 
     onNoteSelected (note, range) {
-     //console.log("onNoteSelected", note, range.index, range.length)
-
+      console.log("onNoteSelected", note, range.index, range.length)
       if (!range.length) return;
       this.selectedNoteId = note;
-
-      var deltas = this.editor.getContents().ops;
-      var length = deltas.length;
-
+      //var deltas = this.editor.getContents().ops;
+      //var length = deltas.length;
     },
 
     updateNoteId(newId) {
@@ -28,23 +25,34 @@ var EditorNotesMixin = {
       this.closeNoteEdit();
     },
     updateNote(note) {
-      const isNewNote = this.noteEditMode === 'new';
-      const action = isNewNote ? 'notes/add' : 'notes/update';
-      this.$store.dispatch(action, note).then(()=>{
+      const isNewNote = this.noteEditMode === 'new'
+      const store = this.$route.params['section'] === 'transcription' ? 'transcription' : 'translation'
+      const action = isNewNote ? `${store}/insertNote` : `${store}/updateNotes`
+
+      // set note missing data (ptrs)
+      note.ptr_start = this.currentSelection.index
+      note.ptr_end = note.ptr_start + this.currentSelection.length
+      if (isNewNote) {
+        // generate a temporary unique-ish id to avoid duplicates before saving
+        note.id = 0 - new Date().getTime()
+      }
+      // update the shadow quill content
+      this.$store.dispatch(action, note).then((response)=>{
         if (isNewNote) {
-          this.editor.format('note', this.$store.getters['notes/newNote'].id);
-          this.selectedNoteId = this.$store.getters['notes/newNote'].id;
+          // finally, format the selection in the editor
+          this.updateNoteId(response.id)
+        } else {
+          this.closeNoteEdit()
         }
-        this.closeNoteEdit();
       })
     },
     unlinkNote() {
-     //console.log('unlinkNote')
+      //console.log('unlinkNote')
       this.editor.format('note', false);
       this.selectedNoteId = null;
     },
     deleteNote() {
-     //console.log('deleteNote')
+      //console.log('deleteNote')
       // TODO delete note
       this.editor.format('note', false);
       this.selectedNoteId = null;

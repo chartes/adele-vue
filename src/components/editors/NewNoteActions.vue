@@ -1,46 +1,69 @@
 <template>
-    <div class="modal is-active">
-        <div class="modal-background" @click="cancel" />
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title">Définir une nouvelle note</p>
-                <button class="delete" aria-label="close" @click="cancel"></button>
-            </header>
-            <section class="modal-card-body">
-                <div class="new-note-actions">
-                    <div class="field">
-                        <p class="control">
-                            <a class="button is-primary" @click="modeNew">
-                                <span class="icon is-small">
-                                    <i class="fas fa-plus"></i>
-                                </span>
-                                <span>Lier à une nouvelle note</span>
-                            </a>
-                        </p>
-                    </div>
-                    <div class="field" v-if="notes && notes.length > 0">
-                        <p class="control">
-                            <a class="button is-info" @click="modeLink">
-                                <span class="icon is-small">
-                                    <i class="fas fa-link"></i>
-                                </span>
-                                <span>Lier à une note existante</span>
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button" @click="cancel">Annuler</button>
-            </footer>
+  <div class="modal is-active">
+    <div
+      class="modal-background"
+      @click="cancel"
+    />
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">
+          Définir une nouvelle note
+        </p>
+        <button
+          class="delete"
+          aria-label="close"
+          @click="cancel"
+        />
+      </header>
+      <section class="modal-card-body">
+        <div class="new-note-actions">
+          <div class="field">
+            <p class="control">
+              <a
+                class="button is-primary"
+                @click="modeNew"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-plus" />
+                </span>
+                <span>Lier à une nouvelle note</span>
+              </a>
+            </p>
+          </div>
+          <div
+v-if="notes && notes.length > 0"
+               class="field"
+>
+            <p class="control">
+              <a
+                class="button is-info"
+                @click="modeLink"
+              >
+                <span class="icon is-small">
+                  <i class="fas fa-link" />
+                </span>
+                <span>Lier à une note existante</span>
+              </a>
+            </p>
+          </div>
         </div>
+      </section>
+      <footer class="modal-card-foot">
+        <button
+          class="button"
+          @click="cancel"
+        >
+          Annuler
+        </button>
+      </footer>
     </div>
+  </div>
 </template>
 
 <script>
     import {mapState} from 'vuex'
   export default {
-    name: "new-note-actions",
+    name: "NewNoteActions",
     props: {
       modeNew: {
         type: Function,
