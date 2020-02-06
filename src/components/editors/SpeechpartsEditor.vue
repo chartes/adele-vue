@@ -1,42 +1,51 @@
 <template>
-    <div>
-        <h1 class="title">Parties du discours</h1>
-        <div class="editor-area">
-            <div class="editor-controls" ref="controls">
-                <div class="editor-controls-group">
-                    <label>Structure éditoriale</label>
-                    <editor-button :active="isSpeechpartButtonActive" :callback="setSpeechpartEditModeNew" :format="'speechpart'"/>
-                </div>
-            </div>
-            <div class="editor-container">
-                <div class="quill-editor" ref="editor" spellcheck="false"></div>
-                <in-editor-actions
-                        class="speechpart-actions"
-                        v-show="selectedSpeechpartId && this.editor.hasFocus()"
-                        :style="actionsPosition"
-                        refs="speechpartActions"
-                        :edit="setSpeechpartEditModeEdit"
-                        :delete="setSpeechpartEditModeDelete"
-                        :editText="'Éditer la partie du discours'"
-                        :deleteText="'Supprimer la partie du discours'"
-                />
-            </div>
-
-            <speechpart-form
-                    v-if="speechpartEditMode === 'new' || speechpartEditMode === 'edit'"
-                    :speechpart="currentSpeechpart"
-                    :speechpartId="selectedSpeechpartId"
-                    :submit="updateSpeechpart"
-                    :cancel="closeSpeechpartEdit"
-            />
-            <modal-confirm-speechpart-delete
-                    v-if="speechpartEditMode === 'delete'"
-                    :cancel="closeSpeechpartEdit"
-                    :submit="deleteSpeechpart"
-            />
-
+  <div> 
+    <div class="editor-area">
+      <div
+        ref="controls"
+        class="editor-controls"
+      >
+        <div class="editor-controls-group">
+          <label>Structure éditoriale</label>
+          <editor-button
+            :active="isSpeechpartButtonActive"
+            :callback="setSpeechpartEditModeNew"
+            :format="'speechpart'"
+          />
         </div>
+      </div>
+      <div class="editor-container">
+        <div
+          ref="editor"
+          class="quill-editor"
+          spellcheck="false"
+        />
+        <in-editor-actions
+          v-show="selectedSpeechpartId && editor.hasFocus()"
+          class="speechpart-actions"
+          :style="actionsPosition"
+          refs="speechpartActions"
+          :edit="setSpeechpartEditModeEdit"
+          :delete="setSpeechpartEditModeDelete"
+          :edit-text="'Éditer la partie du discours'"
+          :delete-text="'Supprimer la partie du discours'"
+        />
+      </div>
+
+      <speechpart-form
+        v-if="speechpartEditMode === 'new' || speechpartEditMode === 'edit'"
+        :speechpart="currentSpeechpart"
+        :speechpart-id="selectedSpeechpartId"
+        :submit="updateSpeechpart"
+        :cancel="closeSpeechpartEdit"
+      />
+      <modal-confirm-speechpart-delete
+        v-if="speechpartEditMode === 'delete'"
+        :cancel="closeSpeechpartEdit"
+        :submit="deleteSpeechpart"
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -45,21 +54,19 @@
   import EditorButton from './EditorButton.vue';
   import EditorMixins from '../../mixins/EditorMixins'
   import InEditorActions from './InEditorActions';
-  import SaveBar from "../ui/SaveBar";
   import SpeechpartForm from "../forms/SpeechpartForm";
   import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
 
   export default {
-    name: "speechparts-editior",
-    props: ['initialContent'],
-    mixins: [EditorMixins],
+    name: "SpeechpartsEditior",
     components: {
       ModalConfirmSpeechpartDelete,
       SpeechpartForm,
-      SaveBar,
       InEditorActions,
       EditorButton,
     },
+    mixins: [EditorMixins],
+    props: ['initialContent'],
     data() {
       return {
         storeActions: {
@@ -104,7 +111,7 @@
           let formats = this.editor.getFormat(range.index, range.length);
           console.log(formats);
           this.updateButtons(formats);
-          if (!!formats.speechpart) {
+          if (formats.speechpart) {
             this.onSpeechpartSelected(formats.speechpart, range);
             this.buttons.speechpart = false;
           } else {

@@ -1,11 +1,8 @@
 import {http} from '../../../modules/http-common';
 
 const state = {
-
   speechparts: [],
   newSpeechpart: false,
-  //mouseOver: false,
-  //mouseOverY: 0,
 
   speechPartsError: null
 };
@@ -22,10 +19,6 @@ const mutations = {
   NEW (state, speechpart) {
     state.newSpeechpart = speechpart;
     state.speechparts.push(speechpart);
-  },
-  MOUSE_OVER (state, { speechpart, posY}) {
-    state.mouseOver = speechpart;
-    state.mouseOverY = posY;
   },
   UPDATE_ONE (state, speechpart) {
     state.speechparts = [...state.speechparts.filter(sp => sp.id !== speechpart.id), speechpart];

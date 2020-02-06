@@ -385,7 +385,7 @@
               <!-- Parties du discours -->
               <div v-if="$attrs.section === 'speech-parts'">
                 <!-- Parties du discours error -->
-                <div v-if="speechPartsError && !selectedUserHasSpeechParts || !isTranscriptionValidated">
+                <div v-if="!isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
@@ -393,23 +393,7 @@
                     Vous devez valider la transcription avant d'entammer l'identification des parties de discours
                   </message>
                   <message
-                    v-else-if="speechPartsError.response.status === 404"
-                    message-class="is-info"
-                  >
-                    <p class="m-b-sm">
-                      <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
-                      pas encore commencé à identifier les parties du discours de ce document.
-                    </p>
-                    <div 
-                      v-if="currentUser.id === selectedUser.id"
-                      class="button is-info"
-                    >
-                      Commencer à identifier les parties de discours
-                    </div>
-                  </message>
-                  <message
-                    v-else
+                    v-else-if="speechPartsError.response.status !== 404"
                     message-class="is-danger"
                   >
                     {{ speechPartsError }}
