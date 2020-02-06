@@ -5,7 +5,7 @@
     :disabled="!isTranscriptionValidated"
     @click="toggleTranslationValidation"
   >
-    <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider la traduction' }} </span>
+    <span> {{ isTranslationValidated ? 'Traduction validée' : 'Valider' }} </span>
     <span
       v-show="isTranslationValidated"
       class="icon"

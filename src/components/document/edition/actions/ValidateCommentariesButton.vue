@@ -5,7 +5,7 @@
     :disabled="!isTranscriptionValidated"
     @click="toggleCommentariesValidation"
   >
-    <span> {{ isCommentariesValidated ? 'Commentaires validés' : 'Valider les commentaires' }} </span>
+    <span> {{ isCommentariesValidated ? 'Commentaires validés' : 'Valider' }} </span>
     <span
       v-show="isCommentariesValidated"
       class="icon"

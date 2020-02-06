@@ -202,11 +202,11 @@
           id = parseInt(e.target.parentNode.getAttribute('id'));
         }
         if (id === null) return;
-        this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
+        //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
 
       },
       mouseOutHandler (e) {
-        this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+        //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
       },
 
     },

@@ -11,7 +11,10 @@
           :label="label"
         />
       </div>
-      <div class="control">
+      <div
+        v-if="currentUserIsTeacher"
+        class="control"
+      >
         <validate-commentaries-button :doc-id="document.id" />
       </div>
     </div>
@@ -25,7 +28,10 @@
           v-if="!isCommentariesReadOnly"
         />
       </div>
-      <div class="control">
+      <div
+        v-if="currentUserIsTeacher"
+        class="control"
+      >
         <validate-commentaries-button :doc-id="document.id" />
       </div>
       <div class="control">
@@ -58,6 +64,7 @@ export default {
     computed: {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId', 'isCommentariesReadOnly']),
+        ...mapGetters('user', ['currentUserIsTeacher']),
         ...mapGetters('commentaries', ['hasCommentaryTypes']),
     },
     methods: {

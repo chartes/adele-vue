@@ -5,7 +5,7 @@
       :disabled="isCommentariesSaved"
       @click="saveCommentaries"
     >
-      <span> Sauvegarder tous les commentaires</span>
+      <span>Sauvegarder tous les commentaires</span>
       <span
         v-if="isCommentariesSaved"
         class="icon"

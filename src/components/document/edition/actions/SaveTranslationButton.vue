@@ -5,7 +5,7 @@
       :disabled="isTranslationSaved"
       @click="saveTranslation"
     >
-      <span> Sauvegarder la traduction</span>
+      <span>Sauvegarder</span>
       <span
         v-if="isTranslationSaved"
         class="icon"

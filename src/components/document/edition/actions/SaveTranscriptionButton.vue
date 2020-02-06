@@ -5,7 +5,7 @@
       :disabled="isTranscriptionSaved"
       @click="saveTranscription"
     >
-      <span> Sauvegarder la transcription</span>
+      <span>Sauvegarder</span>
       <span
         v-if="isTranscriptionSaved"
         class="icon"
