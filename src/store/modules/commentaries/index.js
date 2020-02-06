@@ -78,6 +78,7 @@ const mutations = {
   SET_ERROR(state, payload) {
     state.commentariesError = payload
   },
+  /*
   RESET(state) { 
     state.commentariesWithNotes = {}
     state.selectedCommentaryLabel = null
@@ -85,6 +86,7 @@ const mutations = {
     //if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     //if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
   },
+  */
   CHANGED (state) {
     // transcription changed and needs to be saved
     //console.log("STORE MUTATION transcription/CHANGED")
@@ -134,10 +136,9 @@ const actions = {
   },
 
   fetchCommentariesFromUser ({ commit }, {docId, userId}) {
-    http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
+    return http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
         const formattedData = parseComsFromResponse(response)
-        commit('INIT', formattedData.commentaries); //TODO
-        //commit('RESET') // enlever quand le INIT sera ok
+        commit('INIT', formattedData.commentaries); 
         //commit('UPDATE', formattedData.hasTypes)
         commit('SET_ERROR', null)
       }).catch((error) => {
@@ -169,7 +170,7 @@ const actions = {
     commit('SELECT', label)
   },
   /* useful */
-  addNewCommentary({commit, dispatch, rootState}, {type}) {
+  addNewCommentary({commit, state, dispatch, rootState}, {type}) {
     const newCommentary = {
       data: {
         doc_id : rootState.document.document.id,
@@ -178,10 +179,13 @@ const actions = {
         content : '<p></p>'
       }
     }
+    const newLabel = state.selectedCommentaryLabel
     return http.post(`documents/${rootState.document.document.id}/commentaries`, newCommentary).then(response => {
       return dispatch('fetchCommentariesFromUser', {
         docId: rootState.document.document.id,
         userId: rootState.workflow.selectedUserId
+      }).then(() => {
+        commit('SELECT', newLabel)
       })
     }).catch(error => {
       commit('SET_ERROR', error)
