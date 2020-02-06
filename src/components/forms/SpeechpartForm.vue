@@ -9,7 +9,7 @@
     <div class="SpeechpartForm">
       <form>
         <field-select
-          :label="'Type'"
+          :label="'Partie du discours'"
           :selected="form.type_id"
           :options="speechpartTypes"
           :on-change="onSelectChange"

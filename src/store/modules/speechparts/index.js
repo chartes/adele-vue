@@ -32,13 +32,15 @@ const actions = {
     commit('SET_ERROR', payload)
   },
   /* useful */
-  fetchSpeechPartsFromUser ({ commit }, {docId, userId}) { 
+  fetchSpeechPartsFromUser ({dispatch, commit }, {docId, userId}) { 
     //TODO: implement!
-    http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then( response => {
-      
-     
-      commit('RESET')
-      commit('UPDATE_ALL', { speechparts: [] })
+    return http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then(async response => {
+      console.log("sp fetched", response.data)
+      //commit('RESET')
+      commit('UPDATE_ALL', response.data.data)
+      // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
+      await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
+
       commit('SET_ERROR', null)
     }).catch((error) => {
       commit('SET_ERROR', error)
@@ -47,7 +49,6 @@ const actions = {
   },
   /* useful */
   fetchSpeechPartsContent({dispatch, rootState, rootGetters}) {
-    //TODO: voir model dans translation
     if (rootGetters['workflow/isSpeechPartsReadOnly']) {
       // when in readonly mode
       // students see the reference content
@@ -62,6 +63,12 @@ const actions = {
       })
     }
   },
+  add({dispatch, rootState, rootGetters}, speechpart) {
+
+  },
+  update({dispatch, rootState, rootGetters}, speechpart) {
+    
+  }
 };
 
 const getters = {

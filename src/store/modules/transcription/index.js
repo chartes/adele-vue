@@ -159,18 +159,20 @@ const actions = {
 
  
   /* useful */
-  fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
+  fetchTranscriptionFromUser ({dispatch, commit, state, rootState}, {docId, userId}) {
     commit('RESET')
     commit('LOADING_STATUS', true);
-    return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
+    return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
 
       let transcription = response.data.data;
 
       let quillContent = TEIToQuill(transcription.content);
       let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
+
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
+
       const data = {
         transcription: transcription,
         content: convertLinebreakTEIToQuill(content),
@@ -178,6 +180,8 @@ const actions = {
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
       };
+
+      console.log(rootState.speechparts.speechparts)
 
       commit('INIT', data);
       commit('UPDATE', data);

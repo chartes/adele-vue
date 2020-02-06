@@ -1,8 +1,31 @@
+speechpart {
+
+    &:hover {
+        cursor: pointer;
+    }
+    
+
+  // 36 loop iterations
+  @for $i from 1 through 36 { 
+    &:nth-of-type(#{$i}) {
+      // multiply by 10 for larger hue increments
+      background: hsl($i * 40, 70%, 50%);
+    }
+  }
+}
 
 .speech-part {
 
     &:hover {
         cursor: pointer;
+    }
+
+    &.navbar-item {
+        &:hover{
+            background: $yellow;
+            border-radius: 3px;
+        }
+        padding-left: 12px !important
     }
 
     &.type-01.active, &.type-01:hover {

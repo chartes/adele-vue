@@ -479,6 +479,7 @@ const insertSpeechparts = (text, speechparts) => {
         break;
     }
     result = result.insert(ins.index + indexCorrection, insertTag);
+    console.log(insertTag)
     if (inserted) //console.log(" =>", result)
       indexCorrection += insertTag.length;
   });

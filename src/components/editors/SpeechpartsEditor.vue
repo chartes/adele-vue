@@ -83,6 +83,7 @@
       }
     },
     mounted () {
+      this.$store.dispatch('speechpartTypes/fetch')
 
       this.initEditor(this.$refs.editor, this.$props.initialContent);
       this.preventKeyboard();

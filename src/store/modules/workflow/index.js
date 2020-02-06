@@ -1,5 +1,3 @@
-import {http} from '../../../modules/http-common'
-
 
 const state = {
   selectedUserId: null,

@@ -13,8 +13,8 @@ const mutations = {
 };
 
 const actions = {
-  fetch ({ commit }) {
-    http.get(`/speech-part-types`).then( response => {
+  async fetch ({ commit }) {
+    await http.get(`/speech-part-types`).then( response => {
       commit('UPDATE', response.data.data);
     });
   }

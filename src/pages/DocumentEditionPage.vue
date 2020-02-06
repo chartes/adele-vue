@@ -419,7 +419,7 @@
                 <div v-else>
                   <speech-parts-action-bar />
                   <document-edition-speech-parts
-                    :transcription-with-notes="transcriptionWithNotes"
+                    :transcription-with-speech-parts="transcriptionWithSpeechparts"
                   />
                 </div>
               </div>
@@ -554,7 +554,7 @@ export default {
         ...mapState('document', ['document', 'loading', 'transcriptionView', 
         'translationView', 'transcriptionAlignmentView', 'commentariesView', 'speechPartsView']),
         ...mapState('workflow', ['selectedUserId']),
-        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionError']),
+        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionWithSpeechparts', 'transcriptionError']),
         ...mapState('translation', ['translationWithNotes', 'translationError']),
         ...mapState('commentaries', ['commentaries', 'commentariesError']),
         ...mapState('speechparts', ['speechPartsError']),

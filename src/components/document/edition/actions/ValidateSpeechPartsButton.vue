@@ -27,7 +27,7 @@ export default {
         docId: {type: Number, default: null}
     },
     computed: {
-      ...mapGetters('workflow', ['isSpeechPartsValidated', ])
+      ...mapGetters('workflow', ['isSpeechPartsValidated', 'isTranscriptionValidated' ])
     },
     methods: {
       validateSpeechParts() {

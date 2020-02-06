@@ -1,22 +1,19 @@
 <template>
   <div>
     <div>
-      <nav class="navbar inner-navbar">
+      <nav class="navbar inner-navbar m-b-md">
         <span
-          v-for="(spType, index) in spTypes"
+          v-for="(spType) in spTypes"
           :key="spType.id"
           @mouseover="hoverId = spType.id"
           @mouseleave="hoverId = null"
         >
           <span
-            class="navbar-item"
+            class="navbar-item speech-part m-xs"
           >
-            {{ spType.label }} 
+            {{ spType.label }}
           </span>
-          <hr
-            v-if="index+1 < spTypes.length"
-            class="navbar-divider"
-          >
+
         </span>
       </nav>
     </div>
@@ -44,7 +41,7 @@ export default {
     data() {
       return {
         spTypes: [],
-        hoverId: null
+        hoverId: null,
       }
     },
     computed: {
@@ -69,20 +66,23 @@ export default {
       }
     },
     mounted() {
-
-      /* find the speech part types to display in the top section */
-      const allParts = document.querySelectorAll('.speech-part');
-      if (allParts) {
-        this.spTypes = [];
-        allParts.forEach(p => {
-          const spType = [...p.classList].find(c => c.startsWith('type-'));
-          if (spType) {
-            const spTypeId = spType.replace('type-', '');
-            const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
-            this.spTypes.push(sp)
-          }
-        });
-      }
+        if (this.$props.readonlyData) {
+ /* find the speech part types to display in the top section */
+        const fakeDOM = new DOMParser().parseFromString(this.$props.readonlyData.content,  'text/html')
+        const allParts = fakeDOM.querySelectorAll('.speech-part')
+        console.log(allParts)
+        if (allParts) {
+          this.spTypes = [];
+          allParts.forEach(p => {
+            const spType = [...p.classList].find(c => c.startsWith('type-'));
+            if (spType) {
+              const spTypeId = spType.replace('type-', '');
+              const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
+              this.spTypes.push(sp)
+            }
+          })
+        }
+        } 
     },
     methods: {
       hightlight(id) {
