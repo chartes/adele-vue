@@ -6,10 +6,9 @@
         v-if="!isSpeechPartsReadOnly"
         class="control"
       >
-        <save-transcription-button />
+        <save-speech-parts-button />
       </p>
       <!-- VALIDATE / UNVALIDATE SPEECH PARTS --> 
-      <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
       <p
         v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
         class="control"
@@ -23,14 +22,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import SaveTranscriptionButton from '../actions/SaveTranscriptionButton.vue'
+import SaveSpeechPartsButton from '../actions/SaveSpeechPartsButton.vue'
 import ValidateSpeechPartsButton from '../actions/ValidateSpeechPartsButton.vue'
-import DeleteTranscriptionButton from '../actions/DeleteTranscriptionButton.vue'
 
 export default {
     name: 'SpeechPartsActionBar',
     components: {
-      SaveTranscriptionButton,
+      SaveSpeechPartsButton,
       ValidateSpeechPartsButton
     },
     computed: {

@@ -212,7 +212,7 @@
                   :readonly-data="commentariesView"
                 />
                 <document-speech-parts
-                  v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
+                  v-if="isTranscriptionValidated && $attrs.section === 'speech-parts' && speechPartsView != null"
                   :readonly-data="speechPartsView"
                 />
               </div>
@@ -304,6 +304,7 @@ export default {
         this.$router.push({name: 'error', params: {error: error}})
       }
 
+      await this.fetchSpeechPartsView()
       await this.fetchTranscriptionView()
       await this.fetchTranslationView()
 
@@ -313,20 +314,13 @@ export default {
       try {
         await this.fetchTranscriptionAlignmentView()
       } catch(error) {
-        console.log("No tr/tl alignemnt", error)
+        console.log("No tr/tl alignment", error)
       }
-
 
       try {
         this.fetchCommentariesView()
       } catch(error) {
         console.log("No commentaries", error)
-      }
-
-      try {
-        this.fetchSpeechPartsView()
-      } catch(error) {
-        console.log("No speech parts", error)
       }
 
       // init notes popup

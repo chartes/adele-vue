@@ -33,13 +33,11 @@ const actions = {
   },
   /* useful */
   fetchSpeechPartsFromUser ({dispatch, commit }, {docId, userId}) { 
-    //TODO: implement!
     return http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then(async response => {
-      console.log("sp fetched", response.data)
       //commit('RESET')
       commit('UPDATE_ALL', response.data.data)
       // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
-      await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
+      //await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
 
       commit('SET_ERROR', null)
     }).catch((error) => {
@@ -75,6 +73,10 @@ const getters = {
 
   speechparts: state => state.speechparts,
   newSpeechpart: state => state.newSpeechpart,
+
+  isSpeechPartsSaved : state => {
+    return true
+  }
   /*
   getSpeechpartById: (state) => (id) => {
     id = parseInt(id);

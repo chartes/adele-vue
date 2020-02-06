@@ -9,7 +9,7 @@ const state = {
   translationView: null,
   transcriptionAlignmentView: null,
   commentariesView: null,
-  speechPartsView: null,
+  speechPartsView: {content: null, notes: null},
 
   loading: false,
 };
@@ -40,10 +40,11 @@ const mutations = {
   UPDATE_COMMENTARIES_VIEW (state, {commentaries}) {
     state.commentariesView = commentaries
   },
-  UPDATE_SPEECH_PARTS_VIEW(state, {content, notes}) {
+  UPDATE_SPEECH_PARTS_VIEW(state, payload) {
+    console.log("wtf", payload)
     state.speechPartsView = {
-      content,
-      notes
+      content: payload.content,
+      notes: payload.notes
     }
   },
   RESET_TRANSCRIPTION_VIEW(state) {
@@ -169,17 +170,16 @@ const actions = {
       //throw error
     })
   },
-  fetchSpeechPartsView ({ dispatch, commit, rootState }, userId) {
+  async fetchSpeechPartsView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
     console.log("fetching speech parts view")
+    await dispatch('speechpartTypes/fetch', null, {root: true} )
     return http.get(`documents/${rootState.document.document.id}/view/speech-parts${userId ? '/from-user/' + userId: ''}`).then( (response) => {
-      console.log(response.data)
-      commit('UPDATE_SPEECH_PARTS_VIEW',  {
-          content: response.data.data["content"],
-          notes: response.data.data["notes"]
+      commit('UPDATE_SPEECH_PARTS_VIEW', {
+        content: response.data.data["content"],
+        notes: response.data.data["notes"]
       })
       console.log("speech parts view ok")
-      dispatch('speechpartTypes/fetch', null, {root: true} )
       dispatch('speechparts/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {

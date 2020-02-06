@@ -635,6 +635,8 @@ export default {
         'fetchSpeechPartsContent': 'fetchSpeechPartsContent',
         }),
       async fetchContentFromUser(){
+        await this.fetchSpeechPartsContent()
+
         await this.fetchTranscriptionContent()
         await this.fetchTranslationContent()
         try {
@@ -644,7 +646,6 @@ export default {
           this.transcriptionAlignmentError = error
         }
         await this.fetchCommentariesContent()
-        await this.fetchSpeechPartsContent()
       },
       async addNewTranscription() {
         await this.createTranscription()

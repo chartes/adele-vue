@@ -18,9 +18,9 @@
       </nav>
     </div>
     <div
-      v-if="!!readonlyData"
+      v-if="content"
       class="content"
-      v-html="readonlyData.content"
+      v-html="content"
     />
   </div>
 </template>
@@ -48,6 +48,9 @@ export default {
       ...mapState('document', ['loading', ]),
       ...mapState('speechpartTypes', ['speechpartTypes', ]),
       ...mapGetters('speechpartTypes', ['getSpeechpartTypeById', ]),
+      content() {
+        return this.readonlyData ? this.readonlyData.content : null
+      }
     },
     watch: {
       hoverId() {
@@ -66,22 +69,21 @@ export default {
       }
     },
     mounted() {
-        if (this.$props.readonlyData) {
- /* find the speech part types to display in the top section */
-        const fakeDOM = new DOMParser().parseFromString(this.$props.readonlyData.content,  'text/html')
-        const allParts = fakeDOM.querySelectorAll('.speech-part')
-        console.log(allParts)
-        if (allParts) {
-          this.spTypes = [];
-          allParts.forEach(p => {
-            const spType = [...p.classList].find(c => c.startsWith('type-'));
-            if (spType) {
-              const spTypeId = spType.replace('type-', '');
-              const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
-              this.spTypes.push(sp)
-            }
-          })
-        }
+        if (this.content) {
+          /* find the speech part types to display in the top section */
+          const fakeDOM = new DOMParser().parseFromString(this.content,  'text/html')
+          const allParts = fakeDOM.querySelectorAll('.speech-part')
+          if (allParts) {
+            this.spTypes = [];
+            allParts.forEach(p => {
+              const spType = [...p.classList].find(c => c.startsWith('type-'));
+              if (spType) {
+                const spTypeId = spType.replace('type-', '');
+                const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
+                this.spTypes.push(sp)
+              }
+            })
+          }
         } 
     },
     methods: {
