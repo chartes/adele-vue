@@ -334,6 +334,13 @@ const actions = {
         });
     });
   },
+  updateSpeechpartsPointers({state}) {
+      //console.log("state.transcriptionWithSpeechparts", sanitizedWithSpeechparts)
+      let sanitizedWithSpeechparts = stripSegments(state.transcriptionWithSpeechparts);
+      //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
+      sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
+      return computeSpeechpartsPointers(sanitizedWithSpeechparts);
+  },
   /*
   saveNotes ({ commit, rootState, state, rootGetters }) {
 

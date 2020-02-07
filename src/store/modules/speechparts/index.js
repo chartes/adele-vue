@@ -61,12 +61,36 @@ const actions = {
       })
     }
   },
-  add({dispatch, rootState, rootGetters}, speechpart) {
-
+  add({commit}, speechpart) {
+    commit('UPDATE_ONE', speechpart)
   },
   update({dispatch, rootState, rootGetters}, speechpart) {
     
-  }
+  },
+   /* useful */
+  async saveSpeechParts({dispatch, commit, state, rootState, rootGetters}) {
+      commit('SET_ERROR', false);
+
+      const spWithPointers =  dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
+      console.log("TODO: sp with pointers", spWithPointers)
+      const data = {
+        data: state.speechparts.map(sp => {
+          return {
+            speech_part_type_id: sp.speech_part_type.id,
+            ptr_start: sp.ptr_start,
+            ptr_end: sp.ptr_end,
+            note: sp.note
+          }
+        })
+      }
+      console.log(data)
+      await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, data).then(async response => {
+        // update the store content
+        await dispatch('transcription/fetchTranscriptionContent', null, {root: true})
+      }).catch(error => {
+        commit('SET_ERROR', error)
+      })
+  },
 };
 
 const getters = {
@@ -75,7 +99,7 @@ const getters = {
   newSpeechpart: state => state.newSpeechpart,
 
   isSpeechPartsSaved : state => {
-    return true
+    return false
   }
   /*
   getSpeechpartById: (state) => (id) => {
