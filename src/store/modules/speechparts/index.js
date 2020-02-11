@@ -78,7 +78,9 @@ const actions = {
   update({commit}, speechpart) {
     commit('UPDATE_ONE', speechpart)
   },
-   /* useful */
+  setToBeSaved({commit}) {
+    commit('SAVING_STATUS', 'tobesaved')
+  },
   async saveSpeechParts({dispatch, commit, state, rootState, rootGetters}) {
       commit('SET_ERROR', false);
       const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})

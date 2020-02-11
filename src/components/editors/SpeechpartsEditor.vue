@@ -147,6 +147,7 @@
         this.editor.format('speechpart', false);
         this.selectedSpeechpartId = null;
         this.closeSpeechpartEdit();
+        this.$store.dispatch(`speechparts/setToBeSaved`)
       },
 
 
