@@ -70,27 +70,25 @@ const actions = {
    /* useful */
   async saveSpeechParts({dispatch, commit, state, rootState, rootGetters}) {
       commit('SET_ERROR', false);
-
-      const spWithPointers =  dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
-      console.log("TODO: sp with pointers", spWithPointers)
+      const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
+      //console.log("TODO: sp with pointers", spWithPointers)
       const data = {
-        data: state.speechparts.map(sp => {
+        data: spWithPointers.map(sp => {
           return {
-            speech_part_type_id: sp.speech_part_type.id,
+            speech_part_type_id: state.speechparts[sp.index].speech_part_type.id,
             ptr_start: sp.ptr_start,
             ptr_end: sp.ptr_end,
-            note: sp.note
+            note: state.speechparts[sp.index].note
           }
         })
       }
-      console.log(data)
-      await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, data).then(async response => {
-        // update the store content
-        await dispatch('transcription/fetchTranscriptionContent', null, {root: true})
-      }).catch(error => {
+      try {
+        await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, data)
+        await dispatch('fetchSpeechPartsContent')
+      } catch(error) {
         commit('SET_ERROR', error)
-      })
-  },
+      }
+  }
 };
 
 const getters = {
