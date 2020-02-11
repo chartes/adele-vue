@@ -456,10 +456,11 @@ const getRelevantSegmentsIndices = (text, segments, translationOrTranscription) 
 
 const insertSpeechparts = (text, speechparts) => {
   let insertions = [];
-  speechparts.forEach((note, index) => {
-    insertions.push({index: note.ptr_start, type: 'sp_start', note: note, fakeId: index});
+  for (let key in speechparts){
+    const note = speechparts[key]
+    insertions.push({index: note.ptr_start, type: 'sp_start', note: note, fakeId: note.ptr_start});
     insertions.push({index: note.ptr_end, type: 'sp_end'});
-  });
+  }
   insertions.sort((a, b) => { return a.index - b.index; });
 
   let result = text;
@@ -609,7 +610,7 @@ const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
     console.log(" ", resStart, resEnd)
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
     speechparts.push({
-      "index" : parseInt(resStart[1]),
+      "index" : resStart.index,//parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     });

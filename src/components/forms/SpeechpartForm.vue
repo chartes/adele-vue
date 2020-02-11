@@ -112,7 +112,7 @@
       this.editor.on('text-change', this.onTextChange);
       this.textLength = this.editor.getLength();
       this.form = Object.assign({}, this.speechpart);
-      this.form.type_id = this.speechpart.speech_part_type ? this.speechpart.speech_part_type.id : 0;
+      this.form.type_id = this.speechpart ? this.speechpart.speech_part_type.id : 0;
 
       console.log("SpeechpartForm.mounted", this.form)
     },

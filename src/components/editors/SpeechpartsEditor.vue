@@ -116,7 +116,7 @@
             this.onSpeechpartSelected(formats.speechpart, range);
             this.buttons.speechpart = false;
           } else {
-            this.selectedSpeechpartId = null;
+            this.selectedSpeechpartId = range.index;
             this.buttons.speechpart = true;
           }
         }
@@ -130,10 +130,8 @@
         const isNewSpeechpart = this.speechpartEditMode === 'new';
         const action = isNewSpeechpart ? 'add' : 'update';
         sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
-        const nb = this.$store.state.speechparts.speechparts.length;
-        console.log("sp in store:", this.$store.state.speechparts.speechparts, nb);
-
-        this.editor.format('speechpart', nb.toString());
+        sp.ptr_start = this.selectedSpeechpartId;
+        this.editor.format('speechpart', sp.ptr_start.toString());
         this.$store.dispatch(`speechparts/${action}`, sp)
         this.closeSpeechpartEdit()
       },
