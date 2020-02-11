@@ -7,19 +7,18 @@
       {{ document.subtitle }}
     </h2>
     <div class="content">
-      <div class="columns">
-        <div class="column">
-          <div class="field is-grouped is-grouped-multiline">
-            <div class="control ">
-              <div class="tags has-addons">
-                <span class="tag is-dark">Langues</span>
-                <span
-                  v-for="lang in document.languages"
-                  :key="lang.code"
-                  class="tag"
-                >{{ lang.label }}</span>
-              </div>
+      <ul class="tag-list">
+        <li>
+            <div class="tags has-addons">
+              <span class="tag is-dark">Langues</span>
+              <span
+                v-for="lang in document.languages"
+                :key="lang.code"
+                class="tag"
+              >{{ lang.label }}</span>
             </div>
+        </li>
+        <li>
             <div
               v-for="country in document.countries"
               :key="country.id"
@@ -31,20 +30,18 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="column">
-          <div class="field is-grouped is-grouped-multiline">
-            <div class="control">
-              <div class="tags has-addons">
-                <span class="tag is-dark">Traditions</span>
-                <span
-                  v-for="tradition in document.traditions"
-                  :key="tradition.id"
-                  class="tag"
-                >{{ tradition.label }}</span>
-              </div>
+        </li>
+        <li>
+            <div class="tags has-addons">
+              <span class="tag is-dark">Traditions</span>
+              <span
+                v-for="tradition in document.traditions"
+                :key="tradition.id"
+                class="tag"
+              >{{ tradition.label }}</span>
             </div>
+        </li>
+        <li>
             <div
               v-if="document.acte_types.length > 0"
               class="control"
@@ -58,11 +55,8 @@
                 >{{ acte_type.label }}</span>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <div class="column" />
-      </div>
+        </li>
+      </ul>
     </div>
   </div>
 </template>
