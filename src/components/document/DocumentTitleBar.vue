@@ -1,9 +1,18 @@
 <template>
   <div class="title-bar m-b-lg">
-    <div class="tile is-ancestor is-vertical">
+    <div
+      class="tile is-ancestor is-vertical"
+      :class="isInEditionMode?'is-edition-mode':''"
+    >
       <div class="navbar inner-navbar">
-        <a href="#" class="navbar-item">Dossier 34</a>
-        <a href="#" class="navbar-item">Dossier 35</a>
+        <a
+          href="#"
+          class="navbar-item"
+        >Dossier 34</a>
+        <a
+          href="#"
+          class="navbar-item"
+        >Dossier 35</a>
       </div>
       <div class="tags tile has-text-uppercase">
         <span class="tag">
@@ -23,7 +32,7 @@
             v-else
             :to="{name: 'document-view', params:{docId: document.id, section:'notice'}}"
           >
-             <div class="tag button is-primary is-size-5">
+            <div class="tag button is-primary">
               Consulter
             </div>
           </router-link>
@@ -47,7 +56,6 @@
           <p>Date du document : <span class="date">{{ document.copy_year ? document.copy_year : 'inconnue' }}</span></p>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -66,7 +74,7 @@ export default {
         ...mapState('document', ['document']),
 
         isInEditionMode() {
-          return this.$route.name.indexOf('edition') > -1
+          return this.$route.name === 'document-edition'
         },
         documentCanBeModified() {
           // admin
