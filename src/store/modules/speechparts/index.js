@@ -3,7 +3,7 @@ import {http} from '../../../modules/http-common';
 const state = {
   speechparts: {},
   newSpeechpart: false,
-
+  savingStatus: 'uptodate',
   speechPartsError: null
 };
 
@@ -14,17 +14,21 @@ const mutations = {
   UPDATE_ALL (state, speechparts) {
     state.speechparts = speechparts;
   },
-
+  SAVING_STATUS (state, payload) {
+    state.savingStatus = payload;
+  },
   /* need review */
   NEW (state, speechpart) {
     state.newSpeechpart = speechpart;
     state.speechparts.push(speechpart);
+    state.savingStatus = 'tobesaved'
   },
   UPDATE_ONE (state, speechpart) {
     let newEntry = {}
     newEntry[speechpart.ptr_start] = speechpart
     //state.speechparts = [...state.speechparts.filter(sp => sp.id !== speechpart.id), speechpart];
     state.speechparts = Object.assign({}, state.speechparts, newEntry)
+    state.savingStatus = 'tobesaved'
   }
 
 };
@@ -101,6 +105,7 @@ const actions = {
       try {
         await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, {data: data})
         await dispatch('fetchSpeechPartsContent')
+        commit('SAVING_STATUS', 'uptodate')
       } catch(error) {
         commit('SET_ERROR', error)
       }
@@ -113,7 +118,7 @@ const getters = {
   newSpeechpart: state => state.newSpeechpart,
 
   isSpeechPartsSaved : state => {
-    return false
+    return state.savingStatus === 'uptodate'
   }
   /*
   getSpeechpartById: (state) => (id) => {

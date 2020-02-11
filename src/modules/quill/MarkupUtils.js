@@ -480,7 +480,6 @@ const insertSpeechparts = (text, speechparts) => {
         break;
     }
     result = result.insert(ins.index + indexCorrection, insertTag);
-    console.log(insertTag)
     if (inserted) //console.log(" =>", result)
       indexCorrection += insertTag.length;
   });
@@ -607,7 +606,6 @@ const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
   while((resStart = regexpStart.exec(htmlWithSpeechparts)) !== null) {
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpStart, '');
     resEnd = regexpEnd.exec(htmlWithSpeechparts);
-    console.log(" ", resStart, resEnd)
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
     speechparts.push({
       "index" : resStart.index,//parseInt(resStart[1]),

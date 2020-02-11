@@ -6,12 +6,14 @@
         class="editor-controls"
       >
         <div class="editor-controls-group">
+          <!--
           <label>Structure éditoriale</label>
           <editor-button
             :active="isSpeechpartButtonActive"
             :callback="setSpeechpartEditModeNew"
             :format="'speechpart'"
           />
+          -->
         </div>
       </div>
       <div class="editor-container">
@@ -33,7 +35,7 @@
       </div>
 
       <speechpart-form
-        v-if="speechpartEditMode === 'new' || speechpartEditMode === 'edit'"
+        v-if="selectedSpeechpartId && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
         :speechpart="currentSpeechpart"
         :speechpart-id="selectedSpeechpartId"
         :submit="updateSpeechpart"
@@ -63,7 +65,7 @@
       ModalConfirmSpeechpartDelete,
       SpeechpartForm,
       InEditorActions,
-      EditorButton,
+      //EditorButton,
     },
     mixins: [EditorMixins],
     props: ['initialContent'],
@@ -78,9 +80,12 @@
         currentSpeechpart: null,
         defineNewSpeechpart: false,
         buttons: {
-          speechpart: false,
+          //speechpart: false,
         }
       }
+    },
+    watch: {
+
     },
     mounted () {
       this.$store.dispatch('speechpartTypes/fetch')
@@ -100,25 +105,28 @@
         this.delta = this.editor.getContents().ops;
 
       },
-
+      /*
       updateButtons (formats) {
         for (let key in this.buttons) {
           this.buttons[key] = !!formats[key];
         }
       },
+      */
       onSelection (range) {
-        if (range) {
+        if (range && range.length > 0) {
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);
           console.log(formats);
-          this.updateButtons(formats);
+          //this.updateButtons(formats);
           if (formats.speechpart) {
             this.onSpeechpartSelected(formats.speechpart, range);
-            this.buttons.speechpart = false;
+            //this.buttons.speechpart = false;
           } else {
             this.selectedSpeechpartId = range.index;
-            this.buttons.speechpart = true;
+            //this.buttons.speechpart = true;
           }
+        } else if (this.editor.hasFocus()){
+          this.selectedSpeechpartId = null
         }
       },
       onSpeechpartSelected (speechpart, range) {
@@ -153,15 +161,20 @@
       setSpeechpartEditModeEdit() {
         this.speechpartEditMode = 'edit';
         this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
+        if (!this.currentSpeechpart) {
+                  this.currentSpeechpart = { transcription_id: this.transcription.id };
+        }
       },
 
       newSpeechpartChoiceClose() {
         this.defineNewSpeechpart = false;
+        this.selectedSpeechpartId = null
       },
 
       closeSpeechpartEdit() {
         this.speechpartEditMode = null;
         this.currentSpeechpart = null;
+        this.selectedSpeechpartId = null
         this.editor.focus();
       },
 
@@ -211,10 +224,12 @@
     },
 
     computed: {
+      /*
       isSpeechpartButtonActive () {
         const cond = this.editorHasFocus && this.buttons.speechpart;
         return cond;
       },
+      */
       ...mapState('transcription', ['transcription']),
       ...mapState('speechparts', ['newSpeechpart']),
       ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
