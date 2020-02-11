@@ -17,10 +17,20 @@
   button {
     font-weight: bold;
     margin: .125em 0;
+    width: 47px;
+    height: 47px;
+    padding: 0;
+
     &:active, &:focus {
       outline: none;
     }
-  }
+
+    img {
+      object-fit: cover;
+    }
+}
+
+
 }
 .editor-controls-group {
   margin-right: 2em;
