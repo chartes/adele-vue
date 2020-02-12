@@ -29,6 +29,12 @@
           :callback="insertSegment"
           :format="'segment'"
         />
+        <editor-button
+          :selected="buttons.segment"
+          :active="editorHasFocus"
+          :callback="insertSegment"
+          :format="'page'"
+        />
       </div>
       <div class="editor-controls-group">
         <label>Enrichissements typographiques</label>
@@ -45,22 +51,28 @@
           :format="'italic'"
         />
         <editor-button
+                :selected="buttons.smallcaps"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'smallcaps'"
+        />
+        <editor-button
           :selected="buttons.superscript"
           :active="editorHasFocus"
           :callback="simpleFormat"
           :format="'superscript'"
         />
         <editor-button
-          :selected="buttons.smallcaps"
+          :selected="buttons.underline"
           :active="editorHasFocus"
           :callback="simpleFormat"
-          :format="'smallcaps'"
+          :format="'underline'"
         />
         <editor-button
           :selected="buttons.underline"
           :active="editorHasFocus"
           :callback="simpleFormat"
-          :format="'underline'"
+          :format="'del'"
         />
       </div>
       <div class="editor-controls-group">
@@ -88,6 +100,18 @@
           :active="editorHasFocus"
           :callback="displayLocationForm"
           :format="'location'"
+        />
+        <editor-button
+          :selected="buttons.location"
+          :active="editorHasFocus"
+          :callback="displayLocationForm"
+          :format="'link'"
+        />
+        <editor-button
+          :selected="buttons.location"
+          :active="editorHasFocus"
+          :callback="displayLocationForm"
+          :format="'cite'"
         />
       </div>
     </div>
