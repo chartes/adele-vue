@@ -1,11 +1,5 @@
 <template>
   <div v-if="!loading">
-    <h1 class="title">
-      {{ document.title }}
-    </h1>
-    <h2 class="subtitle">
-      {{ document.subtitle }}
-    </h2>
     <div class="content">
       <ul class="tag-list">
         <li>

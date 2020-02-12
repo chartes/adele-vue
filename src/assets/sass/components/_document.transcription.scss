@@ -1,0 +1,32 @@
+.transcription-alignement {
+
+  table td, table thead th {
+    border-width: 0;
+  }
+  table thead th {
+    padding-bottom: 30px;
+    font-family: $family-sans-serif;
+  }
+
+  table tr:nth-child(2n+1) {
+    background-color: #F8F7F0;
+  }
+
+  table td {
+    font-family: $family-secondary;
+    color: #000000;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  table td:nth-child(2) {
+    color: #676137;
+  }
+
+  table td ex {
+    color: #373200;
+    opacity: 0.5;
+  }
+
+}
+
