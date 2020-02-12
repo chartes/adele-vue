@@ -145,11 +145,14 @@
             >
           </div>
           <div
-            v-if="showContent && $attrs.section !== 'commentaries'"
+            v-if="showContent"
             class="column"
           >
             <!-- visibility widget -->
-            <div class="visibility-controls m-b-md">
+            <div
+              v-if="$attrs.section !== 'commentaries'"
+              class="visibility-controls"
+            >
               <div class="field is-grouped">
                 <div class="control">
                   <span>AFFICHAGE</span>
@@ -329,7 +332,10 @@
               </div>
 
               <!-- Commentaires -->
-              <div v-if="$attrs.section === 'commentaries'">
+              <div
+                v-if="$attrs.section === 'commentaries'"
+                class="m-t-md"
+              >
                 <!-- commentaries error -->
                 <div v-if="commentariesError && !selectedUserHasCommentaries || !isTranscriptionValidated">
                   <message
