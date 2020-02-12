@@ -29,8 +29,8 @@
           refs="speechpartActions"
           :edit="setSpeechpartEditModeEdit"
           :delete="setSpeechpartEditModeDelete"
-          :edit-text="'Éditer la partie du discours'"
-          :delete-text="'Supprimer la partie du discours'"
+          :edit-text="'Éditer'"
+          :delete-text="'Supprimer'"
         />
       </div>
 
