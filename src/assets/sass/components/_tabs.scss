@@ -38,6 +38,11 @@
     margin: 6px 4px 6px 0;
 }
 
+.commentaries-tabs.tabs.is-toggle li:first-child a,
+.commentaries-tabs.tabs.is-toggle li:last-child a {
+    border-radius: 0;
+}
+
 .commentaries-tabs.tabs.is-toggle ul {
     border-bottom:solid 1px $yellow;
 }

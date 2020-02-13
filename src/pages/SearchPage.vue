@@ -36,7 +36,7 @@
                 <div class="accordion-content" />
               </div>
             </article>
-            <article class="accordion">
+            <article class="accordion opened">
               <div class="accordion-header">
                 <p>Langue du document</p>
                 <button
@@ -45,7 +45,25 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div class="accordion-content">
+                  <ul>
+                    <li>
+                      <div class="labelled-checkbox">
+                        <label><input type="checkbox" value="fr" checked="checked" /><span class="checkmark"></span>Français</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="labelled-checkbox">
+                        <label><input type="checkbox" value="latin" checked="checked" /><span class="checkmark"></span>Latin</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="labelled-checkbox">
+                        <label><input type="checkbox" value="occitan" /><span class="checkmark"></span>Occitan</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article class="accordion">
