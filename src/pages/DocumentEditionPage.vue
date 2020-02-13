@@ -38,7 +38,7 @@
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'translation' ? `is-active`: ''"
-              @click="showImage"
+              @click="hideImage"
             >
               <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
                 <span v-if="currentUserIsTeacher">Traduction</span>
@@ -619,6 +619,11 @@ export default {
       catch (error) {
         this.$router.push({name: 'error', params: {error: error}})
       }
+
+      if (this.$attrs.section === 'translation') {
+        this.hideImage()
+      }
+      
       await this.fetchContentFromUser()
       this.init = true
     },

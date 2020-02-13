@@ -41,7 +41,6 @@ const mutations = {
     state.commentariesView = commentaries
   },
   UPDATE_SPEECH_PARTS_VIEW(state, payload) {
-    console.log("wtf", payload)
     state.speechPartsView = {
       content: payload.content,
       notes: payload.notes
