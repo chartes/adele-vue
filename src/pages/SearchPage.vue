@@ -4,7 +4,7 @@
       <div class="columns">
         <div class="column filters">
           <section class="accordions">
-            <article class="accordion is-active">
+            <article class="accordion">
               <div class="accordion-header toggle">
                 <p>Dates du document</p>
               </div>
@@ -36,7 +36,7 @@
                 <div class="accordion-content" />
               </div>
             </article>
-            <article class="accordion opened">
+            <article class="accordion is-active">
               <div class="accordion-header">
                 <p>Langue du document</p>
                 <button
@@ -150,6 +150,81 @@
             >
               15%
             </progress>
+            <div class="filters-sort-options">
+              <h4>Filtres</h4>
+              <div class="filter-tag-list">
+                <div class="filter-tag-list field is-grouped is-grouped-multiline">
+                  <div class="control">
+                    <div class="tags filter-category">
+                      <a class="tag" href="#"></a>
+                      <a class="tag" href="#">Type d’acte</a>
+                    </div>
+                  </div>
+                  <div class="control">
+                    <div class="tags">
+                      <a class="tag" href="#">Actes privés sous le sceau et/ou la signature de l’auteur</a>
+                    </div>
+                  </div>
+                  <div class="control">
+                    <div class="tags">
+                      <a class="tag" href="#">Actes privés sous le/les sceaux d’autorités locales</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-tag-list field is-grouped is-grouped-multiline">
+                  <div class="control">
+                    <div class="tags filter-category">
+                      <a class="tag" href="#"></a>
+                      <a class="tag" href="#">Langue du document</a>
+                    </div>
+                  </div>
+                  <div class="control">
+                    <div class="tags">
+                      <a class="tag" href="#">Latin</a>
+                    </div>
+                  </div>
+                  <div class="control">
+                    <div class="tags">
+                      <a class="tag" href="#">Occitan</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="filter-tag-list field is-grouped is-grouped-multiline">
+                  <div class="control">
+                    <div class="tags filter-category">
+                      <a class="tag" href="#"></a>
+                      <a class="tag" href="#">Pays</a>
+                    </div>
+                  </div>
+                  <div class="control">
+                    <div class="tags">
+                      <a class="tag" href="#">France</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <h4>Tris</h4>
+              <select>
+                <option>Date de l'acte</option>
+              </select>
+            </div>
+
+            <nav class="pagination" role="navigation" aria-label="pagination">
+              <span class="pagination-documents-count pagination-previous">32 documents</span>
+              <ul class="pagination-list">
+                <li>
+                  <a class="pagination-link" aria-label="Goto page 1">1</a>
+                  <a class="pagination-link is-current" aria-label="Goto page 2">2</a>
+                  <a class="pagination-link" aria-label="Goto page 3">3</a>
+                </li>
+                <li>
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li>
+                  <a class="pagination-link" aria-label="Goto page 10">10</a>
+                </li>
+              </ul>
+            </nav>
             <div
               v-if="!loading"
               class="columns is-multiline "
@@ -174,6 +249,21 @@
                 <document-card-placeholder />
               </div>
             </div>
+            <nav class="pagination bottom" role="navigation" aria-label="pagination">
+              <ul class="pagination-list">
+                <li>
+                  <a class="pagination-link" aria-label="Goto page 1">1</a>
+                  <a class="pagination-link is-current" aria-label="Goto page 2">2</a>
+                  <a class="pagination-link" aria-label="Goto page 3">3</a>
+                </li>
+                <li>
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li>
+                  <a class="pagination-link" aria-label="Goto page 10">10</a>
+                </li>
+              </ul>
+            </nav>
           </div>
         </div>
       </div>

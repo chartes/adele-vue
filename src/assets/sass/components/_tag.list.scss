@@ -8,7 +8,7 @@ ul.tag-list {
     margin: 0;
 }
 
-.tag:not(body) {
+.tag-list .tag:not(body) {
     background: none;
     color: $black;
     font-family: $family-sans-serif;
@@ -18,13 +18,13 @@ ul.tag-list {
     margin: 0;
 }
 
-.tag:not(body).is-dark {
+.tag-list .tag:not(body).is-dark {
     background: none;
     color:#B2AB8A;
     font-weight: bold;
 }
 
-.tag:not(body):first-child:after {
+.tag-list .tag:not(body):first-child:after {
     content:":";
     display: inline;
     margin: 0 5px;

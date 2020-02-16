@@ -49,11 +49,11 @@
                 top:14px;
             }
 
-            .accordion.opened .accordion-header {
+            .accordion.is-active .accordion-header {
                 background-color: #D9D8D3;
             }
 
-            .accordion.opened button.toggle {
+            .accordion.is-active button.toggle {
                 background: url(#{$image-path}/home_Menu_close.svg) center / contain no-repeat;
             }
 
@@ -71,4 +71,16 @@
 
     }
 
+    .filters-sort-options {
+        margin-bottom: 50px;
+
+        h4 {
+            font-family: $family-sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #676137;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+    }
 }
