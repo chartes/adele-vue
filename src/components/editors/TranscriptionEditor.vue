@@ -23,12 +23,13 @@
           :callback="newNoteChoiceOpen"
           :format="'note'"
         />
+        <!--
         <editor-button
           :selected="buttons.segment"
           :active="editorHasFocus"
           :callback="insertSegment"
           :format="'segment'"
-        />
+        />-->
       </div>
       <div class="editor-controls-group">
         <label>Enrichissements typographiques</label>
