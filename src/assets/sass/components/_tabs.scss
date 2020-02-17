@@ -20,21 +20,44 @@
     text-transform: uppercase;
 }
 
-.section-tabs.tabs li.is-active a, .commentaries-tabs.tabs li.is-active a {
+.section-tabs.tabs li.is-active a {
     color:$black;
     background: $yellow;
     border-radius: 3px;
-    border-bottom:none;
+    border-bottom-:none;
 }
 
 .commentaries-tabs.tabs li a {
     border: none;
+    border-radius: 0;
     color:$black;
     font-family: $family-sans-serif;
     font-weight:$weight-medium;
     font-size: 14px;
     line-height: 15px;
-    margin: 6px 12px 6px 0;
-    text-transform: uppercase;
+    margin: 6px 4px 6px 0;
 }
 
+.commentaries-tabs.tabs.is-toggle li:first-child a,
+.commentaries-tabs.tabs.is-toggle li:last-child a {
+    border-radius: 0;
+}
+
+.commentaries-tabs.tabs.is-toggle ul {
+    border-bottom:solid 1px $yellow;
+}
+
+.commentaries-tabs.tabs li a {
+    color: #929292;
+    background: #E8E7DF;
+    border-bottom:none;
+    border-radius: 0;
+}
+
+.commentaries-tabs.tabs.is-toggle li.is-active a,
+.commentaries-tabs.tabs li.is-active a {
+    color:$black;
+    background: $yellow;
+    border-bottom:none;
+    border-radius: 0;
+}

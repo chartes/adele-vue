@@ -45,16 +45,16 @@
           :format="'italic'"
         />
         <editor-button
-          :selected="buttons.superscript"
-          :active="editorHasFocus"
-          :callback="simpleFormat"
-          :format="'superscript'"
-        />
-        <editor-button
           :selected="buttons.smallcaps"
           :active="editorHasFocus"
           :callback="simpleFormat"
           :format="'smallcaps'"
+        />
+        <editor-button
+          :selected="buttons.superscript"
+          :active="editorHasFocus"
+          :callback="simpleFormat"
+          :format="'superscript'"
         />
         <editor-button
           :selected="buttons.underline"

@@ -17,10 +17,20 @@
   button {
     font-weight: bold;
     margin: .125em 0;
+    width: 47px;
+    height: 47px;
+    padding: 0;
+
     &:active, &:focus {
       outline: none;
     }
-  }
+
+    img {
+      object-fit: cover;
+    }
+}
+
+
 }
 .editor-controls-group {
   margin-right: 2em;
@@ -31,7 +41,10 @@
   label {
     display: block;
     font-size: 60%;
-    font-variant: small-caps;
+    font-family: $family-secondary;
+    font-size: 14px;
+    color: $grey-darker;
+    padding-bottom: 4px;
   }
   .button {
 
@@ -71,6 +84,7 @@
 
   &:focus {
     outline: none;
+    border:$primary solid 1px ;
   }
   p {
     margin: 0.75em 0;

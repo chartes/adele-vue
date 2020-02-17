@@ -26,21 +26,17 @@
         .accordions {
 
             background: #E5E4E0;
-            padding: 82px 0.75rem 0.75rem;
+            padding: 82px 0 50px;
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
 
             .accordion {
-                margin-bottom: 30px;
             }
 
             .accordion-header {
                 position: relative;
                 color: #8B8A7E;
-            }
-
-            .accordion-body {
-                background-color: #EFEFEC;
+                padding: 0.75em 1em;
             }
 
             button.toggle {
@@ -49,8 +45,25 @@
                 width: 23px;
                 height: 22px;
                 position: absolute;
-                right: 0;
-                top:0;
+                right: 0.75em;
+                top:14px;
+            }
+
+            .accordion.is-active .accordion-header {
+                background-color: #D9D8D3;
+            }
+
+            .accordion.is-active button.toggle {
+                background: url(#{$image-path}/home_Menu_close.svg) center / contain no-repeat;
+            }
+
+            .accordion-body {
+                background-color: #EFEFEC;
+                padding: 0 1em;
+
+                .accordion-content ul {
+                    padding: 0.75em 0;
+                }
             }
 
         }
@@ -58,4 +71,16 @@
 
     }
 
+    .filters-sort-options {
+        margin-bottom: 50px;
+
+        h4 {
+            font-family: $family-sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: #676137;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+    }
 }

@@ -2,11 +2,15 @@
   <div>
     <div
       v-if="!!readonlyData"
-      class="content"
+      class="content transcription-alignement"
     >
       <table>
+        <thead>
+          <th>Transcription</th>
+          <th>Traduction</th>
+        </thead>
         <tbody>
-          <tr
+           <tr
             v-for="(seg, index) in readonlyData.content"
             :key="index"
           >

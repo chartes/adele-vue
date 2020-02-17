@@ -48,11 +48,14 @@
 @import 'elements/body';
 @import 'elements/a';
 @import 'elements/img';
+@import 'elements/select';
 
 
 @import "components/document.card";
 @import "components/document.titlebar";
+@import "components/document.transcription";
 @import "components/theme.card";
+@import "components/pagination";
 @import "components/navbar";
 @import "components/inner.navbar";
 @import "components/visibility.controls";
@@ -63,8 +66,10 @@
 @import "components/search.page";
 @import "components/tabs";
 @import "components/tag.list";
+@import "components/filter.tag.list";
 @import "components/speechparts";
 @import "components/workflow-steps";
+@import "components/labelled-checkbox";
 
 // Objects – class-based selectors which define undecorated design patterns,
 // for example media object known from OOCSS
