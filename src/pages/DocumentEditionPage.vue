@@ -21,7 +21,7 @@
           <ul>
             <li 
               :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
-              @click="showImage"
+              @click="hideImage"
             >
               <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'notice'}}">
                 Notice
@@ -551,7 +551,7 @@ export default {
 
         transcriptionAlignmentError: null,
 
-        imageVisibility: this.$attrs.section !== 'commentaries',
+        imageVisibility: this.$attrs.section !== 'commentaries' && this.$attrs.section !== 'notice',
         noticeVisibility: true,
         transcriptionVisibility: true,
         translationVisibility: true,

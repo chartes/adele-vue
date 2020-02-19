@@ -1,67 +1,83 @@
 <template>
   <div>
     <div class="content">
-      <ul class="tag-list">
-        <li>
-          <div class="tags has-addons">
-            <span class="tag is-dark">Traditions</span>
-            <span
-              v-for="tradition in document.traditions"
-              :key="tradition.id"
-              class="tag"
-            >{{ tradition.label }}</span>
-          </div>
-        </li>
-        <li>
-          <div
-            v-if="document.acte_types.length > 0"
-            class="control"
-          >
-            <div class="tags has-addons">
-              <span class="tag is-dark">Type d'acte</span>
-              <span
-                v-for="acte_type in document.acte_types"
-                :key="acte_type.id"
-                class="tag"
-              >{{ acte_type.label }}</span>
+      <div class="columns">
+        <div class="column is-two-fifths" />
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <div>
+                <div class="select-with-tags">
+                  <p class="subtitle">
+                    Langue(s)
+                  </p>
+                  <select-with-tags-input
+                    default-text="Ajouter une langue"
+                    :choices="allLanguagesChoices"
+                    :selection="selectedLanguages"
+                    :on-change="onLanguagesChange"
+                  />
+                </div>
+                <div class="select-with-tags">
+                  <p class="subtitle">
+                    Pays
+                  </p>
+                  <select-with-tags-input
+                    default-text="Ajouter un pays"
+                    :choices="allCountriesChoices"
+                    :selection="selectedCountries"
+                    :on-change="onPaysChange"
+                  />
+                </div>
+                <div class="select-with-tags">
+                  <p class="subtitle">
+                    District(s)
+                  </p>
+                  <select-with-tags-input
+                    default-text="Ajouter un district"
+                    :choices="allDistrictChoices"
+                    :selection="selectedDistricts"
+                    :on-change="onDistrictsChange"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="select-with-tags">
+                <p class="subtitle">
+                  Tradition(s)
+                </p>
+                <select-with-tags-input
+                  default-text="Ajouter une tradition"
+                  :choices="allTraditionsChoices"
+                  :selection="selectedTraditions"
+                  :on-change="onTraditionsChange"
+                />
+              </div>
+              <div class="select-with-tags">
+                <p class="subtitle">
+                  Type(s) d'acte
+                </p>
+                <select-with-tags-input
+                  default-text="Ajouter un type d'acte"
+                  :choices="allActeTypesChoices"
+                  :selection="selectedActeTypes"
+                  :on-change="onActeTypesChange"
+                />
+              </div>
+              <div class="select-with-tags">
+                <p class="subtitle">
+                  Éditeur(s)
+                </p>
+                <select-with-tags-input
+                  default-text="Ajouter un éditeur"
+                  :choices="allEditorsChoices"
+                  :selection="selectedEditors"
+                  :on-change="onEditorsChange"
+                />
+              </div>
             </div>
           </div>
-        </li>
-      </ul>
-
-      <div>
-        <div>
-          <p class="subtitle">
-            Langue(s)
-          </p>
-          <select-with-tags-input
-            default-text="Ajouter une langue"
-            :choices="allLanguagesChoices"
-            :selection="selectedLanguages"
-            :on-change="onLanguagesChange"
-          />
-        </div>
-        <div>
-          <p class="subtitle">
-            Pays
-          </p>
-          <select-with-tags-input
-            default-text="Ajouter un pays"
-            :choices="allCountriesChoices"
-            :selection="selectedCountries"
-            :on-change="onPaysChange"
-          />
-        </div>
-        <div>
-          <p class="subtitle">
-            District(s)
-          </p>
-          <select-with-tags-input
-            default-text="Ajouter un district"
-            :choices="allDistrictChoices"
-            :selection="selectedDistricts"
-            :on-change="onDistrictsChange"
-          />
         </div>
       </div>
     </div>
@@ -86,7 +102,10 @@ export default {
       Promise.all([
         this.$store.dispatch('languages/fetch'), 
         this.$store.dispatch('countries/fetch'),
-        this.$store.dispatch('districts/fetch')
+        this.$store.dispatch('districts/fetch'),
+        this.$store.dispatch('traditions/fetch'),
+        this.$store.dispatch('acteTypes/fetch'),
+        this.$store.dispatch('editors/fetch')
       ])
     },
     computed: {
@@ -94,6 +113,9 @@ export default {
         ...mapState('languages', ['languages']),
         ...mapState('countries', ['countries']),
         ...mapState('districts', ['districts']),
+        ...mapState('traditions', ['traditions']),
+        ...mapState('acteTypes', ['acteTypes']),
+        ...mapState('editors', ['editors']),
 
         allLanguagesChoices() {
           let choices = {}
@@ -138,6 +160,51 @@ export default {
             choices[this.document.districts[key].id] = this.document.districts[key].label
           }
           return choices
+        },
+
+        allTraditionsChoices() {
+          let choices = {}
+          for (let item of this.traditions) {
+            choices[item.id] = item.label
+          }
+          return choices
+        },
+        selectedTraditions() {
+          let choices = {}
+          for (let key in this.document.traditions) {
+            choices[this.document.traditions[key].id] = this.document.traditions[key].label
+          }
+          return choices
+        },
+
+        allActeTypesChoices() {
+          let choices = {}
+          for (let item of this.acteTypes) {
+            choices[item.id] = item.label
+          }
+          return choices
+        },
+        selectedActeTypes() {
+          let choices = {}
+          for (let key in this.document.acte_types) {
+            choices[this.document.acte_types[key].id] = this.document.acte_types[key].label
+          }
+          return choices
+        },
+
+        allEditorsChoices() {
+          let choices = {}
+          for (let item of this.editors) {
+            choices[item.ref] = item.name
+          }
+          return choices
+        },
+        selectedEditors() {
+          let choices = {}
+          for (let key in this.document.editors) {
+            choices[this.document.editors[key].ref] = this.document.editors[key].name
+          }
+          return choices
         }
     },
     created() {
@@ -164,11 +231,33 @@ export default {
               docId: this.document.id,
               data: {district_id: Object.keys(districts)}
             })
+        },
+        onTraditionsChange(traditions) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {tradition_id: Object.keys(traditions)}
+            })
+        },
+        onActeTypesChange(acteTypes) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {acte_type_id: Object.keys(acteTypes)}
+            })
+        },
+        onEditorsChange(editors) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {editor_id: Object.keys(editors)}
+            })
         }
     }
 }
 </script>
 
 <style>
-
+  .select-with-tags {
+    margin-top: 10px;
+    margin-bottom: 28px;
+    
+  }
 </style>
