@@ -225,7 +225,18 @@ const actions = {
   },
   partialUpdate({commit}, payload) {
     commit('PARTIAL_UPDATE_DOCUMENT', payload)
-  }
+  },
+  save ({ commit }, {docId, data}) {
+    commit('LOADING_STATUS', true);
+    return http.put(`documents/${docId}`, {data: data})
+      .then( (response) => {
+      commit('PARTIAL_UPDATE_DOCUMENT', response.data.data);
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      throw error
+    })
+  },
   /*
   save ({ commit, rootGetters }, data) {
 

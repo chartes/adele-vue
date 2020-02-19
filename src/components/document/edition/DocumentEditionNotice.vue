@@ -4,29 +4,6 @@
       <ul class="tag-list">
         <li>
           <div class="tags has-addons">
-            <span class="tag is-dark">Langues</span>
-            <span
-              v-for="lang in document.languages"
-              :key="lang.code"
-              class="tag"
-            >{{ lang.label }}</span>
-          </div>
-        </li>
-        <li>
-          <div
-            v-for="country in document.countries"
-            :key="country.id"
-          >
-            <div class="control">
-              <div class="tags has-addons">
-                <span class="tag is-dark">Pays</span>
-                <span class="tag">{{ country.label }}, {{ filterDistricts(country.id) }}</span>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="tags has-addons">
             <span class="tag is-dark">Traditions</span>
             <span
               v-for="tradition in document.traditions"
@@ -51,6 +28,42 @@
           </div>
         </li>
       </ul>
+
+      <div>
+        <div>
+          <p class="subtitle">
+            Langue(s)
+          </p>
+          <select-with-tags-input
+            default-text="Ajouter une langue"
+            :choices="allLanguagesChoices"
+            :selection="selectedLanguages"
+            :on-change="onLanguagesChange"
+          />
+        </div>
+        <div>
+          <p class="subtitle">
+            Pays
+          </p>
+          <select-with-tags-input
+            default-text="Ajouter un pays"
+            :choices="allCountriesChoices"
+            :selection="selectedCountries"
+            :on-change="onPaysChange"
+          />
+        </div>
+        <div>
+          <p class="subtitle">
+            District(s)
+          </p>
+          <select-with-tags-input
+            default-text="Ajouter un district"
+            :choices="allDistrictChoices"
+            :selection="selectedDistricts"
+            :on-change="onDistrictsChange"
+          />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -64,14 +77,68 @@ import SelectWithTagsInput from './SelectWithTagsInput.vue'
 export default {
     name: "DocumentEditionNotice",
     components: {
-       // SelectWithTagsInput
+       SelectWithTagsInput
     },
     props: {
         document: {type: Object, default: null}
     },
+    async beforeCreate() {
+      Promise.all([
+        this.$store.dispatch('languages/fetch'), 
+        this.$store.dispatch('countries/fetch'),
+        this.$store.dispatch('districts/fetch')
+      ])
+    },
     computed: {
         ...mapState('document', ['loading']),
-        //...mapState('user', ['currentUser']),
+        ...mapState('languages', ['languages']),
+        ...mapState('countries', ['countries']),
+        ...mapState('districts', ['districts']),
+
+        allLanguagesChoices() {
+          let choices = {}
+          for (let item of this.languages) {
+            choices[item.code] = item.label
+          }
+          return choices
+        },
+        selectedLanguages() {
+          let choices = {}
+          for (let key in this.document.languages) {
+            choices[this.document.languages[key].code] = this.document.languages[key].label
+          }
+          return choices
+        },
+
+        allCountriesChoices() {
+          let choices = {}
+          for (let item of this.countries) {
+            choices[item.ref] = item.label
+          }
+          return choices
+        },
+        selectedCountries() {
+          let choices = {}
+          for (let key in this.document.countries) {
+            choices[this.document.countries[key].ref] = this.document.countries[key].label
+          }
+          return choices
+        },
+
+        allDistrictChoices() {
+          let choices = {}
+          for (let item of this.districts) {
+            choices[item.id] = item.label
+          }
+          return choices
+        },
+        selectedDistricts() {
+          let choices = {}
+          for (let key in this.document.districts) {
+            choices[this.document.districts[key].id] = this.document.districts[key].label
+          }
+          return choices
+        }
     },
     created() {
        
@@ -80,8 +147,23 @@ export default {
         filterDistricts(country_id) {
             return this.document.districts.filter(d => d.country_id === country_id).map(d => d.label).join(' et ')
         },
-        onLanguagesChange(data) {
-            console.log("OnLanguagesChange", data)
+        onLanguagesChange(langs) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {language_code: Object.keys(langs)}
+            })
+        },
+        onPaysChange(countries) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {country_ref: Object.keys(countries)}
+            })
+        },
+        onDistrictsChange(districts) {
+            this.$store.dispatch("document/save", {
+              docId: this.document.id,
+              data: {district_id: Object.keys(districts)}
+            })
         }
     }
 }
