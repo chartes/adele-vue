@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div>
     <div class="content">
       <ul class="tag-list">
         <li>
