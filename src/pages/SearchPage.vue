@@ -49,17 +49,28 @@
                   <ul>
                     <li>
                       <div class="labelled-checkbox">
-                        <label><input type="checkbox" value="fr" checked="checked" /><span class="checkmark"></span>Français</label>
+                        <label><input
+                          type="checkbox"
+                          value="fr"
+                          checked="checked"
+                        ><span class="checkmark" />Français</label>
                       </div>
                     </li>
                     <li>
                       <div class="labelled-checkbox">
-                        <label><input type="checkbox" value="latin" checked="checked" /><span class="checkmark"></span>Latin</label>
+                        <label><input
+                          type="checkbox"
+                          value="latin"
+                          checked="checked"
+                        ><span class="checkmark" />Latin</label>
                       </div>
                     </li>
                     <li>
                       <div class="labelled-checkbox">
-                        <label><input type="checkbox" value="occitan" /><span class="checkmark"></span>Occitan</label>
+                        <label><input
+                          type="checkbox"
+                          value="occitan"
+                        ><span class="checkmark" />Occitan</label>
                       </div>
                     </li>
                   </ul>
@@ -156,49 +167,82 @@
                 <div class="filter-tag-list field is-grouped is-grouped-multiline">
                   <div class="control">
                     <div class="tags filter-category">
-                      <a class="tag" href="#"></a>
-                      <a class="tag" href="#">Type d’acte</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      />
+                      <a
+                        class="tag"
+                        href="#"
+                      >Type d’acte</a>
                     </div>
                   </div>
                   <div class="control">
                     <div class="tags">
-                      <a class="tag" href="#">Actes privés sous le sceau et/ou la signature de l’auteur</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      >Actes privés sous le sceau et/ou la signature de l’auteur</a>
                     </div>
                   </div>
                   <div class="control">
                     <div class="tags">
-                      <a class="tag" href="#">Actes privés sous le/les sceaux d’autorités locales</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      >Actes privés sous le/les sceaux d’autorités locales</a>
                     </div>
                   </div>
                 </div>
                 <div class="filter-tag-list field is-grouped is-grouped-multiline">
                   <div class="control">
                     <div class="tags filter-category">
-                      <a class="tag" href="#"></a>
-                      <a class="tag" href="#">Langue du document</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      />
+                      <a
+                        class="tag"
+                        href="#"
+                      >Langue du document</a>
                     </div>
                   </div>
                   <div class="control">
                     <div class="tags">
-                      <a class="tag" href="#">Latin</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      >Latin</a>
                     </div>
                   </div>
                   <div class="control">
                     <div class="tags">
-                      <a class="tag" href="#">Occitan</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      >Occitan</a>
                     </div>
                   </div>
                 </div>
                 <div class="filter-tag-list field is-grouped is-grouped-multiline">
                   <div class="control">
                     <div class="tags filter-category">
-                      <a class="tag" href="#"></a>
-                      <a class="tag" href="#">Pays</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      />
+                      <a
+                        class="tag"
+                        href="#"
+                      >Pays</a>
                     </div>
                   </div>
                   <div class="control">
                     <div class="tags">
-                      <a class="tag" href="#">France</a>
+                      <a
+                        class="tag"
+                        href="#"
+                      >France</a>
                     </div>
                   </div>
                 </div>
@@ -207,21 +251,44 @@
               <select>
                 <option>Date de l'acte</option>
               </select>
+
+              <div style="width: 220px; margin-top: 20px">
+                <slider
+                  id="dateSlider"
+                  :options="dateSliderOptions"
+                />
+              </div>
             </div>
 
-            <nav class="pagination" role="navigation" aria-label="pagination">
+            <nav
+              class="pagination"
+              role="navigation"
+              aria-label="pagination"
+            >
               <span class="pagination-documents-count pagination-previous">32 documents</span>
               <ul class="pagination-list">
                 <li>
-                  <a class="pagination-link" aria-label="Goto page 1">1</a>
-                  <a class="pagination-link is-current" aria-label="Goto page 2">2</a>
-                  <a class="pagination-link" aria-label="Goto page 3">3</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 1"
+                  >1</a>
+                  <a
+                    class="pagination-link is-current"
+                    aria-label="Goto page 2"
+                  >2</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 3"
+                  >3</a>
                 </li>
                 <li>
                   <span class="pagination-ellipsis">&hellip;</span>
                 </li>
                 <li>
-                  <a class="pagination-link" aria-label="Goto page 10">10</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 10"
+                  >10</a>
                 </li>
               </ul>
             </nav>
@@ -249,18 +316,34 @@
                 <document-card-placeholder />
               </div>
             </div>
-            <nav class="pagination bottom" role="navigation" aria-label="pagination">
+            <nav
+              class="pagination bottom"
+              role="navigation"
+              aria-label="pagination"
+            >
               <ul class="pagination-list">
                 <li>
-                  <a class="pagination-link" aria-label="Goto page 1">1</a>
-                  <a class="pagination-link is-current" aria-label="Goto page 2">2</a>
-                  <a class="pagination-link" aria-label="Goto page 3">3</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 1"
+                  >1</a>
+                  <a
+                    class="pagination-link is-current"
+                    aria-label="Goto page 2"
+                  >2</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 3"
+                  >3</a>
                 </li>
                 <li>
                   <span class="pagination-ellipsis">&hellip;</span>
                 </li>
                 <li>
-                  <a class="pagination-link" aria-label="Goto page 10">10</a>
+                  <a
+                    class="pagination-link"
+                    aria-label="Goto page 10"
+                  >10</a>
                 </li>
               </ul>
             </nav>
@@ -275,6 +358,7 @@
 
 import DocumentCard from '../components/document/DocumentCard.vue'
 import DocumentCardPlaceholder from '../components/document/DocumentCardPlaceholder.vue'
+import Slider from '../components/ui/Slider.vue'
 
 import { mapState } from 'vuex';
 
@@ -282,7 +366,19 @@ export default {
     name: "SearchPage",
     components: {
         DocumentCard,
-        DocumentCardPlaceholder
+        DocumentCardPlaceholder,
+        Slider
+    },
+    data() {
+      return {
+        dateSliderOptions: {
+          start: [1240, 1630],
+          range: {
+              'min': [500],
+              'max': [1800]
+          }
+        }
+      }
     },
     computed: {
             ...mapState('document', ['documents', 'document', 'loading'])
