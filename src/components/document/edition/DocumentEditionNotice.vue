@@ -247,7 +247,7 @@ export default {
         onEditorsChange(editors) {
             this.$store.dispatch("document/save", {
               docId: this.document.id,
-              data: {editor_id: Object.keys(editors)}
+              data: {editor_ref: Object.keys(editors)}
             })
         }
     }
