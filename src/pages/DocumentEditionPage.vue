@@ -207,7 +207,6 @@
               <!-- Notice -->
               <document-edition-notice
                 v-if="$attrs.section === 'notice'"
-                :document="document"
               />
               <!-- Transcription -->
               <div v-if="$attrs.section === 'transcription'">

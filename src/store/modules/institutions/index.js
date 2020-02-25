@@ -1,9 +1,7 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
-
-  institutions: []
-
+  institutions: [],
 };
 
 const mutations = {
@@ -17,23 +15,14 @@ const mutations = {
 const actions = {
 
   fetch ({ commit }) {
-    axios.get(`/adele/api/1.0/institutions`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const institutions = isArray ? respData : [respData];
-      commit('UPDATE', institutions)
-    });
+    return http.get(`institutions`).then( response => {
+      commit('UPDATE', response.data.data)
+    })
   }
 
 };
 
 const getters = {
-
-  institutionsSelect: state => {
-    const options = state.institutions.map(i =>  ({ id: i.id, label: i.name }))
-    options.unshift({ id: null, label: 'Non définie' });
-    return options;
-  }
 
 };
 

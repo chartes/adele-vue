@@ -237,29 +237,6 @@ const actions = {
       throw error
     })
   },
-  /*
-  save ({ commit, rootGetters }, data) {
-
-    const auth = rootGetters['user/authHeader'];
-
-    return new Promise( ( resolve, reject ) => {
-      axios.put(`/adele/api/1.0/documents`, { data: data }, auth)
-        .then(response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          } else {
-            commit('UPDATE_DOCUMENT', response.data.data)
-            resolve(response.data)
-          }
-        })
-        .catch(error => {
-          console.error("error", error)
-          reject(error)
-        });
-    })
-  },
-  */
 };
 
 const getters = {
