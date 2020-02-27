@@ -1,38 +1,41 @@
 <template>
   <div class="m-sm">
-    <div class="select">
-      <select
-        v-model="selected"
-        @change="addItem($event)"
-      >
-        <option
-          selected
-          value="-1"
-        >
-          {{ defaultText }}
-        </option>
-        <option
-          v-for="(val, key) in choices"
-          :key="val"
-          :value="key"
-        >
-          {{ key }}
-        </option>
-      </select>
+    <div class="field">
+      <div class="control is-small">
+        <div class="">
+          <select
+            v-model="selected"
+            @change="addItem($event)"
+          >
+            <option
+              selected
+              value="-1"
+            >
+              {{ defaultText }}
+            </option>
+            <option
+              v-for="val in filteredChoices"
+              :key="getKeyByValue(choices, val)"
+              :value="getKeyByValue(choices, val)"
+            >
+              {{ val }}
+            </option>
+          </select>
+        </div>
+      </div>
     </div>
     <!-- tags -->
-    <div class="field is-grouped is-grouped-multiline m-t-sm">
+    <div class="field filter-tag-list is-grouped is-grouped-multiline m-t-sm">
       <div
-        v-for="key in selection"
+        v-for="(val, key) in selection"
         :key="key"
         class="control"
       >
-        <div class="tags has-addons">
-          <a class="tag is-link">{{ key }}</a>
+        <div class="tags">
           <a
-            class="tag is-delete"
+            class="tag"
             @click="removeItem(key)"
-          />
+          >{{ val }}</a>
         </div>
       </div>
     </div>
@@ -51,37 +54,45 @@ export default {
     props: {
         defaultText: {type: String, default: "Ajouter"},
         choices: {type: Object, default: () => {}, required: true},
-        initialSelection: {type: Array, default: () => []},
+        selection: {type: Object, default: () => {}},
         onChange: {type: Function, required: true}
     },
     data(){
         return {
-            selection: [],
             selected: -1
         }
     },
     computed: {
-   
-    },
-    watch: {
-        selection() {
-            this.$props.onChange(this.selection)
+        filteredChoices() {
+            let f = []
+            for (let c in this.choices) {
+                if (!this.selection[c]) {
+                    f.push(this.choices[c])
+                }
+            }
+            return Object.values(f).sort()
         }
     },
     mounted() {
-        //restore selection
-        this.selection = this.$props.initialSelection
+
     },
     methods: {
+        getKeyByValue(object, value) {
+            return Object.keys(object).find(key => object[key] === value);
+        },
         addItem(event) {
-            const item = event.target.value
-            if (this.selection.indexOf(item) === -1 && item !== this.defaultText) {
-                this.selection.push(item)
+            const key = event.target.value
+            if (this.choices[key]) {
+                let newItem = {}
+                newItem[key] = this.choices[key]
+                this.$props.onChange({...this.selection, ...newItem})
             }
             this.selected = -1
         },
         removeItem(key) {
-            this.selection.splice( this.selection.indexOf(key), 1 );
+            let tmpSelection = {...this.selection}
+            delete tmpSelection[key]
+            this.$props.onChange(tmpSelection)
         }
     }
 }

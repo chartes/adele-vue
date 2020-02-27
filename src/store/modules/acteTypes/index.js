@@ -1,13 +1,13 @@
 import {http} from '../../../modules/http-common';
 
 const state = {
-  districts: [],
+  acteTypes: [],
 };
 
 const mutations = {
 
   UPDATE (state, payload) {
-    state.districts = payload;
+    state.acteTypes = payload;
   }
 
 };
@@ -15,7 +15,7 @@ const mutations = {
 const actions = {
 
   fetch ({ commit }) {
-    return http.get(`districts`).then( response => {
+    return http.get(`acte-types`).then( response => {
       commit('UPDATE', response.data.data)
     })
   }
@@ -26,7 +26,7 @@ const getters = {
 
 };
 
-const districtsModule = {
+const acteTypesModule = {
   namespaced: true,
   state,
   mutations,
@@ -34,4 +34,4 @@ const districtsModule = {
   getters
 }
 
-export default districtsModule;
+export default acteTypesModule;

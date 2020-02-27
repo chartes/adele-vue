@@ -1,4 +1,4 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
 
@@ -17,12 +17,9 @@ const mutations = {
 const actions = {
 
   fetch ({ commit }) {
-    axios.get(`/adele/api/1.0/languages`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const languages = isArray ? respData : [respData];
-      commit('UPDATE', languages)
-    });
+    return http.get(`languages`).then( response => {
+      commit('UPDATE', response.data.data)
+    })
   }
 
 };

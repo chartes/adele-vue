@@ -21,7 +21,7 @@
           <ul>
             <li 
               :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
-              @click="showImage"
+              @click="hideImage"
             >
               <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'notice'}}">
                 Notice
@@ -207,7 +207,6 @@
               <!-- Notice -->
               <document-edition-notice
                 v-if="$attrs.section === 'notice'"
-                :document="document"
               />
               <!-- Transcription -->
               <div v-if="$attrs.section === 'transcription'">
@@ -551,7 +550,7 @@ export default {
 
         transcriptionAlignmentError: null,
 
-        imageVisibility: this.$attrs.section !== 'commentaries',
+        imageVisibility: this.$attrs.section !== 'commentaries' && this.$attrs.section !== 'notice',
         noticeVisibility: true,
         transcriptionVisibility: true,
         translationVisibility: true,
