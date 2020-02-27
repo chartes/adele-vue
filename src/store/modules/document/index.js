@@ -12,6 +12,7 @@ const state = {
   speechPartsView: {content: null, notes: null},
 
   loading: false,
+  error: null,
 };
 
 const mutations = {
@@ -64,7 +65,9 @@ const mutations = {
   UPDATE_ALL (state, payload) {
     state.documents = payload;
   },
-
+  SET_ERROR(error) {
+    state.error = error
+  },
   PARTIAL_UPDATE_DOCUMENT(state, payload) {
     state.document =  {
       ...state.document,
@@ -170,7 +173,7 @@ const actions = {
     })
   },
   async fetchSpeechPartsView ({ dispatch, commit, rootState }, userId) {
-    commit('LOADING_STATUS', true);
+    commit('LOADING_STATUS', true)
     console.log("fetching speech parts view")
     await dispatch('speechpartTypes/fetch', null, {root: true} )
     return http.get(`documents/${rootState.document.document.id}/view/speech-parts${userId ? '/from-user/' + userId: ''}`).then( (response) => {
@@ -184,23 +187,23 @@ const actions = {
     }).catch((error) => {
       dispatch('speechparts/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
-      //throw error
     })
   },
   fetchAll ({ commit }, {pageId, pageSize, filters}) {
-    commit('LOADING_STATUS', true);
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
     return http.get(`documents?${filters}&page[size]=${pageSize}&page[number]=${pageId}`)
       .then( (response) => {
       commit('UPDATE_ALL', response.data.data);
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
-      throw error
+      commit('SET_ERROR', error)
     })
   },
   setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
-    console.log('set validation flag', flagName)
+    commit('SET_ERROR', null)
     http.get(`documents/${docId}/validate-${flagName}`).then( (response) => {
       commit('PARTIAL_UPDATE_DOCUMENT',  {
         validation_flags: response.data.data.validation_flags
@@ -208,11 +211,12 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
-      throw error
+      commit('SET_ERROR', error)
     })
   },
   unsetValidationFlag ({commit }, {docId, flagName}) {
-    commit('LOADING_STATUS', true);
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
     http.get(`documents/${docId}/unvalidate-${flagName}`).then( (response) => {
       commit('PARTIAL_UPDATE_DOCUMENT',  {
         validation_flags: response.data.data.validation_flags
@@ -220,7 +224,7 @@ const actions = {
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
-      throw error
+      commit('SET_ERROR', error)
     })
   },
   partialUpdate({commit}, payload) {
@@ -228,13 +232,14 @@ const actions = {
   },
   save ({ commit }, {docId, data}) {
     commit('LOADING_STATUS', true);
+    commit('SET_ERROR', null)
     return http.put(`documents/${docId}`, {data: data})
       .then( (response) => {
-      commit('PARTIAL_UPDATE_DOCUMENT', response.data.data);
-      commit('LOADING_STATUS', false);
+      commit('PARTIAL_UPDATE_DOCUMENT', response.data.data)
+      commit('LOADING_STATUS', false)
     }).catch((error) => {
-      commit('LOADING_STATUS', false);
-      throw error
+      commit('LOADING_STATUS', false)
+      commit('SET_ERROR', error)
     })
   },
 };

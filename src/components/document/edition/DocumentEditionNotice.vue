@@ -207,7 +207,10 @@
                 spellcheck="false"
               />
             </div>
-            <argument-action-bar class="m-t-sm is-pulled-right" />
+            <notice-action-bar
+              :data="document"
+              class="m-t-sm is-pulled-right"
+            />
           </div>
         </div>
         <div class="is-divider-vertical m-sm" />
@@ -300,7 +303,7 @@ import { mapState } from 'vuex'
 import SelectWithTagsInput from './SelectWithTagsInput.vue'
 import EditorMixins from '../../../mixins/EditorMixins'
 import EditorButton from "../../editors/EditorButton"
-import ArgumentActionBar from '../edition/actionbars/ArgumentActionBar'
+import NoticeActionBar from '../edition/actionbars/NoticeActionBar'
 import { getNewQuill } from '../../../modules/quill/AdeleQuill'
 
 export default {
@@ -308,7 +311,7 @@ export default {
     components: {
        SelectWithTagsInput,
        EditorButton,
-       ArgumentActionBar,
+       NoticeActionBar,
     },
     mixins: [EditorMixins],
     props: {
@@ -499,7 +502,7 @@ export default {
             return this.$store.dispatch("document/partialUpdate", {
               argument: this.$refs.editor.childNodes[0].innerHTML
             })
-        },
+        }
     }
 }
 </script>

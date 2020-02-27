@@ -3,21 +3,9 @@
     <button
       class="button is-small is-primary"
       :disabled="error || loading"
-      @click="saveArgument"
+      @click="saveNotice"
     >
-      <span>Sauvegarder le regeste</span>
-      <span
-        v-if="!error && !loading"
-        class="icon"
-      >
-        <i class="fa fa-check" />
-      </span>
-      <span
-        v-else
-        class="icon"
-      >
-        <i class="fas fa-save" />
-      </span>
+      <span>Sauvegarder</span>
     </button>
     <message
       v-if="error"
@@ -36,13 +24,15 @@ import { mapState, mapGetters } from 'vuex'
 import Message from '@/components/Message.vue'
 
 export default {
-    name: 'SaveArgumentButton',
+    name: 'SaveNoticeButton',
     components: {
       Message
     },
+    props: {
+      data: {type: Object, default: () => {}}
+    },
     computed: {
-      ...mapState('document', ['document', 'loading']),
-      ...mapGetters('transcription', ['isTranscriptionSaved'])
+      ...mapState('document', ['loading']),
     },
     data() {
       return {
@@ -50,12 +40,12 @@ export default {
       }
     },
     methods: {
-      saveArgument() {
-          return this.$store.dispatch("document/save", {
-              docId: this.document.id,
-              data: {argument: this.document.argument}
+        saveNotice() {
+            return this.$store.dispatch("document/save", {
+              docId: this.data.id,
+              data: this.data
             })
-      },
+        }
     }
 }
 </script>

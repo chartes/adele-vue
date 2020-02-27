@@ -1,12 +1,12 @@
 <template>
   <div class="m-b-md">
     <div class="field is-grouped">
-      <!-- SAVE ARGUMENT --> 
+      <!-- SAVE Notice --> 
       <p
         v-if="currentUserIsTeacher"
         class="control"
       >
-        <save-argument-button />
+        <save-Notice-button :data="data" />
       </p>
     </div>
   </div>
@@ -15,12 +15,15 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-import SaveArgumentButton from '../actions/SaveArgumentButton.vue'
+import SaveNoticeButton from '../actions/SaveNoticeButton.vue'
 
 export default {
-    name: 'ArgumentActionBar',
+    name: 'NoticeActionBar',
     components: {
-      SaveArgumentButton
+      SaveNoticeButton
+    },
+    props: {
+      data: {type: Object, default: () => {}}
     },
     computed: {
         ...mapState('document', ['document']),
