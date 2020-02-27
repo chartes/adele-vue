@@ -252,7 +252,10 @@
                 <option>Date de l'acte</option>
               </select>
 
-              <div style="width: 220px; margin-top: 20px">
+              <div
+                v-show="false"
+                style="width: 220px; margin-top: 20px"
+              >
                 <slider
                   id="dateSlider"
                   :options="dateSliderOptions"
