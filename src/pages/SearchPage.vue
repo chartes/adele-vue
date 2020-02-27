@@ -381,7 +381,25 @@ export default {
       }
     },
     computed: {
-            ...mapState('document', ['documents', 'document', 'loading'])
+        ...mapState('document', ['documents', 'document', 'loading']),
+        ...mapState('languages', ['languages']),
+        ...mapState('countries', ['countries']),
+        ...mapState('districts', ['districts']),
+        ...mapState('traditions', ['traditions']),
+        ...mapState('acteTypes', ['acteTypes']),
+        ...mapState('editors', ['editors']),
+        ...mapState('institutions', ['institutions']),
+    },
+    beforeCreate() {
+      Promise.all([
+        this.$store.dispatch('languages/fetch'), 
+        this.$store.dispatch('countries/fetch'),
+        this.$store.dispatch('districts/fetch'),
+        this.$store.dispatch('traditions/fetch'),
+        this.$store.dispatch('acteTypes/fetch'),
+        this.$store.dispatch('editors/fetch'),
+        this.$store.dispatch('institutions/fetch')
+      ])
     },
     created() {
       this.fetchAll()
