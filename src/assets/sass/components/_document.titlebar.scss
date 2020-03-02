@@ -20,6 +20,10 @@
     margin-left:0.5rem;
   }
 
+  .tag.button:hover {
+    color: $blue;
+  }
+
   .navbar-divider {
     width: 1px;
     height: 14px;
@@ -99,6 +103,17 @@
       background: url( #{$image-path}/edit_fleche_D.svg) center right no-repeat;
     }
 
+    .navbar-item:hover {
+      color: #272727;
+    }
+
+    .navbar-item:first-child:hover {
+      background: url( #{$image-path}/edit_fleche_G_OVER.svg) center left no-repeat;
+    }
+
+    .navbar-item:last-child:hover {
+      background: url( #{$image-path}/edit_fleche_D_OVER.svg) center right no-repeat;
+    }
   }
 }
 

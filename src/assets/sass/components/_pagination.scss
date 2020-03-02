@@ -35,6 +35,10 @@
         color:#fff;
     }
 
+    .pagination-link:not(.is-current):hover {
+        background-color:#C8C6BC;
+    }
+
     .pagination-documents-count {
         position: absolute;
         right:0;

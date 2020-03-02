@@ -79,10 +79,15 @@
 
   line-height: 1.8;
 
+  &:hover {
+    border:#818181 solid 1px ;
+  }
+
   &:focus {
     outline: none;
     border:$primary solid 1px ;
   }
+
   p {
     margin: 0.75em 0;
   }
