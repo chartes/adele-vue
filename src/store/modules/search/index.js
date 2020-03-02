@@ -1,6 +1,6 @@
 import {http} from '../../../modules/http-common';
 
-const state = {
+const initState = () => ({
   selection: {
       languages : [],
       acteTypes: [],
@@ -12,11 +12,16 @@ const state = {
       countries: [],
       districts: []
   },
-};
+})
 
 const mutations = {
-
-
+  CLEAR (state, {filter}) {
+    state.selection[filter] = []
+  },
+  CLEAR_ALL (state) {
+    const initial = initState()
+    Object.keys(initial).forEach(key => { state[key] = initial[key] })
+  },
   REMOVE (state, {filter, index}) {
     state.selection[filter].splice(index, 1)
   },
@@ -27,16 +32,21 @@ const mutations = {
 };
 
 const actions = {
-
-  toggleSelection({commit, state}, {filter, item}) {
-    console.log("toggleSelection", filter, item)
-    const index = state.selection[filter].indexOf(item)
-    if (index > -1) {
-       commit('REMOVE', {filter, index})
-    } else {
-      commit('ADD', {filter, item})
+    clear({commit, state}, {filter}) {
+        commit('CLEAR', {filter})
+    },
+    clearAll({commit, state}) {
+        commit('CLEAR_ALL')
+    },
+    toggleSelection({commit, state}, {filter, item}) {
+      console.log("toggleSelection", filter, item)
+      const index = state.selection[filter].indexOf(item)
+      if (index > -1) {
+         commit('REMOVE', {filter, index})
+      } else {
+        commit('ADD', {filter, item})
+      }
     }
-  }
 
 };
 
@@ -72,7 +82,7 @@ const getters = {
 
 const searchModule = {
   namespaced: true,
-  state,
+  state: initState(),
   mutations,
   actions,
   getters

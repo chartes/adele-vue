@@ -32,11 +32,11 @@
             </article>
             <article
               class="accordion"
-              :class="showTraditions ? 'is-active' : ''"
+              :class="showFilters.traditions ? 'is-active' : ''"
             >
               <div
                 class="accordion-header"
-                @click="showTraditions = !showTraditions"
+                @click="showFilters.traditions = !showFilters.traditions"
               >
                 <p>Mode de tradition</p>
                 <button
@@ -46,7 +46,7 @@
               </div>
               <div class="accordion-body">
                 <div
-                  v-if="showTraditions"
+                  v-if="showFilters.traditions"
                   class="accordion-content"
                 >
                   <ul>
@@ -74,11 +74,11 @@
             </article>
             <article
               class="accordion"               
-              :class="showActeTypes ? 'is-active' : ''"
+              :class="showFilters.acteTypes ? 'is-active' : ''"
             >
               <div
                 class="accordion-header"     
-                @click="showActeTypes = !showActeTypes"
+                @click="showFilters.acteTypes = !showFilters.acteTypes"
               >
                 <p>Type d’acte</p>
                 <button
@@ -88,7 +88,7 @@
               </div>
               <div class="accordion-body">
                 <div
-                  v-if="showActeTypes"
+                  v-if="showFilters.acteTypes"
                   class="accordion-content"
                 >
                   <ul>
@@ -116,11 +116,11 @@
             </article>
             <article
               class="accordion"
-              :class="showLanguages ? 'is-active' : ''"
+              :class="showFilters.languages ? 'is-active' : ''"
             >
               <div
                 class="accordion-header"
-                @click="showLanguages = !showLanguages"
+                @click="showFilters.languages = !showFilters.languages"
               >
                 <p>Langue du document</p>
                 <button
@@ -130,7 +130,7 @@
               </div>
               <div class="accordion-body">
                 <div
-                  v-if="showLanguages"
+                  v-if="showFilters.languages"
                   class="accordion-content"
                 >
                   <ul>
@@ -157,12 +157,12 @@
               </div>
             </article>
             <article 
-              :class="showCenturies ? 'is-active' : ''"
+              :class="showFilters.centuries ? 'is-active' : ''"
               class="accordion"
             >
               <div 
                 class="accordion-header"
-                @click="showCenturies = !showCenturies"
+                @click="showFilters.centuries = !showFilters.centuries"
               >
                 <p>Siècle du document</p>
                 <button
@@ -172,7 +172,7 @@
               </div>
               <div class="accordion-body">
                 <div
-                  v-if="showCenturies"
+                  v-if="showFilters.centuries"
                   class="accordion-content"
                 >
                   <ul>
@@ -199,12 +199,12 @@
               </div>
             </article>
             <article 
-              :class="showCopyCenturies ? 'is-active' : ''"
+              :class="showFilters.copyCenturies ? 'is-active' : ''"
               class="accordion"
             >
               <div 
                 class="accordion-header"
-                @click="showCopyCenturies = !showCopyCenturies"
+                @click="showFilters.copyCenturies = !showFilters.copyCenturies"
               >
                 <p>Siècle de la copie</p>
                 <button
@@ -214,7 +214,7 @@
               </div>
               <div class="accordion-body">
                 <div
-                  v-if="showCopyCenturies"
+                  v-if="showFilters.copyCenturies"
                   class="accordion-content"
                 >
                   <ul>
@@ -241,12 +241,12 @@
               </div>
             </article>
             <article 
-              :class="showCountries ? 'is-active' : ''"
+              :class="showFilters.countries ? 'is-active' : ''"
               class="accordion"
             >
               <div 
                 class="accordion-header"
-                @click="showCountries = !showCountries"
+                @click="showFilters.countries = !showFilters.countries"
               >
                 <p>Pays</p>
                 <button
@@ -256,7 +256,7 @@
               </div>
               <div class="accordion-body">
                 <div 
-                  v-if="showCountries"
+                  v-if="showFilters.countries"
                   class="accordion-content"
                 >
                   <ul>
@@ -283,12 +283,12 @@
               </div>
             </article>
             <article 
-              :class="showDistricts ? 'is-active' : ''"
+              :class="showFilters.districts ? 'is-active' : ''"
               class="accordion"
             >
               <div 
                 class="accordion-header"
-                @click="showDistricts = !showDistricts"
+                @click="showFilters.districts = !showFilters.districts"
               >
                 <p>Région contemporaine</p>
                 <button
@@ -298,7 +298,7 @@
               </div>
               <div class="accordion-body">
                 <div 
-                  v-if="showDistricts"
+                  v-if="showFilters.districts"
                   class="accordion-content"
                 >
                   <ul>
@@ -325,12 +325,12 @@
               </div>
             </article>
             <article 
-              :class="showInstitutions ? 'is-active' : ''"
+              :class="showFilters.institutions ? 'is-active' : ''"
               class="accordion"
             >
               <div 
                 class="accordion-header"
-                @click="showInstitutions = !showInstitutions"
+                @click="showFilters.institutions = !showFilters.institutions"
               >
                 <p>Institution de conservation</p>
                 <button
@@ -340,7 +340,7 @@
               </div>
               <div class="accordion-body">
                 <div 
-                  v-if="showInstitutions"
+                  v-if="showFilters.institutions"
                   class="accordion-content"
                 >
                   <ul>
@@ -367,12 +367,12 @@
               </div>
             </article>
             <article
-              :class="showAvailableCommentaries ? 'is-active' : ''"
+              :class="showFilters.availableCommentaries ? 'is-active' : ''"
               class="accordion"
             >
               <div
                 class="accordion-header"
-                @click="showAvailableCommentaries = !showAvailableCommentaries"
+                @click="showFilters.availableCommentaries = !showFilters.availableCommentaries"
               >
                 <p>Types de commentaires fournis</p>
                 <button
@@ -391,7 +391,10 @@
           <div class="section">
             <div class="filters-sort-options">
               <h4 v-if="isFiltered">
-                Filtres
+                Filtres  <a
+                  href="#"
+                  @click="resetFilters()"
+                >tout effacer</a>
               </h4>
               <div class="filter-tag-list">
                 <div 
@@ -403,7 +406,10 @@
                     v-if="filter.values.length > 0"
                     class="control"
                   >
-                    <div class="tags filter-category">
+                    <div 
+                      class="tags filter-category"
+                      @click.prevent="resetFilter(idFilter)"
+                    >
                       <a
                         class="tag"
                         href="#"
@@ -419,11 +425,13 @@
                     :key="filter.getId(item)"
                     class="control"
                   >
-                    <div class="tags">
+                    <div
+                      class="tags"  
+                      @click.prevent="toggleSelection({filter: idFilter, item: filter.getId(item)})"
+                    >
                       <a 
                         class="tag"
                         href="#"
-                        @click.prevent="toggleSelection({filter: idFilter, item: filter.getId(item)})"
                       >{{ filter.getLabel(item) }}</a>
                     </div>
                   </div>
@@ -553,16 +561,17 @@ export default {
     },
     data() {
       return {
-        showLanguages: false,
-        showTraditions: false,
-        showActeTypes: false,
-        showCenturies: false,
-        showCopyCenturies: false,
-        showCountries: false,
-        showDistricts: false,
-        showInstitutions: false,
-        showAvailableCommentaries: false,
-
+        showFilters: {
+          languages: false,
+          traditions: false,
+          acteTypes: false,
+          centuries: false,
+          copyCenturies: false,
+          countries: false,
+          districts: false,
+          institutions: false,
+          availableCommentaries: false,
+        },
         dateSliderOptions: {
           start: [1240, 1630],
           range: {
@@ -680,7 +689,23 @@ export default {
       this.fetchAll()
     },
     methods: {
-      ...mapActions('search', ['toggleSelection']),
+      ...mapActions('search', ['toggleSelection', 'clear', 'clearAll']),
+      resetFilter(filter) {
+        this.showFilters[filter] = false
+        this.clear({filter: filter})
+      },
+      resetFilters() {
+        this.showFilters.languages = false
+        this.showFilters.traditions = false
+        this.showFilters.acteTypes = false
+        this.showFilters.centuries = false
+        this.showFilters.copyCenturies = false
+        this.showFilters.countries = false
+        this.showFilters.districts = false
+        this.showFilters.institutions = false
+        this.showFilters.availableCommentaries = false
+        this.clearAll()
+      },
       fetchAll() {
         return this.$store.dispatch('document/fetchAll', {
           pageId: 1,
