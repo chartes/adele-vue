@@ -19,11 +19,13 @@ import speechparts from './modules/speechparts'
 import speechpartTypes from './modules/speechpartTypes'
 import notes from './modules/notes'
 import workflow from './modules/workflow'
+import search from './modules/search'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
+      search,
       acteTypes,
       commentaries,
       countries,

@@ -12,8 +12,14 @@
                 <div class="accordion-content" />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article
+              class="accordion"
+              :class="showTraditions ? 'is-active' : ''"
+            >
+              <div
+                class="accordion-header"
+                @click="showTraditions = !showTraditions"
+              >
                 <p>Mode de tradition</p>
                 <button
                   class="toggle"
@@ -21,11 +27,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div
+                  v-if="showTraditions"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article
+              class="accordion"               
+              :class="showActeTypes ? 'is-active' : ''"
+            >
+              <div
+                class="accordion-header"     
+                @click="showActeTypes = !showActeTypes"
+              >
                 <p>Type d’acte</p>
                 <button
                   class="toggle"
@@ -33,11 +48,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div
+                  v-if="showActeTypes"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion is-active">
-              <div class="accordion-header">
+            <article
+              class="accordion"
+              :class="showLanguages ? 'is-active' : ''"
+            >
+              <div
+                class="accordion-header"
+                @click="showLanguages = !showLanguages"
+              >
                 <p>Langue du document</p>
                 <button
                   class="toggle"
@@ -45,40 +69,41 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content">
+                <div
+                  v-if="showLanguages"
+                  class="accordion-content"
+                >
                   <ul>
-                    <li>
-                      <div class="labelled-checkbox">
+                    <li
+                      v-for="lang in languages"
+                      :key="lang.code"
+                      @click.prevent="toggleSelection({filter: 'languages', item: lang.code})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
                         <label><input
                           type="checkbox"
-                          value="fr"
-                          checked="checked"
-                        ><span class="checkmark" />Français</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="labelled-checkbox">
-                        <label><input
-                          type="checkbox"
-                          value="latin"
-                          checked="checked"
-                        ><span class="checkmark" />Latin</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div class="labelled-checkbox">
-                        <label><input
-                          type="checkbox"
-                          value="occitan"
-                        ><span class="checkmark" />Occitan</label>
+                          :value="lang.code"
+                          :checked="isLanguageSelected(lang.code)"
+                        ><span
+                          v-show="isLanguageSelected(lang.code)"
+                          class="checkmark"
+                        />{{ lang.label }}</label>
                       </div>
                     </li>
                   </ul>
                 </div>
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article 
+              :class="showCenturies ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div 
+                class="accordion-header"
+                @click="showCenturies = !showCenturies"
+              >
                 <p>Siècle du document</p>
                 <button
                   class="toggle"
@@ -86,11 +111,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div
+                  v-if="showCenturies"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article 
+              :class="showCopyCenturies ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div 
+                class="accordion-header"
+                @click="showCopyCenturies = !showCopyCenturies"
+              >
                 <p>Siècle de la copie</p>
                 <button
                   class="toggle"
@@ -98,11 +132,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div
+                  v-if="showCopyCenturies"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article 
+              :class="showCountries ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div 
+                class="accordion-header"
+                @click="showCountries = !showCountries"
+              >
                 <p>Pays</p>
                 <button
                   class="toggle"
@@ -110,11 +153,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div 
+                  v-if="showCountries"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article 
+              :class="showDistricts ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div 
+                class="accordion-header"
+                @click="showDistricts = !showDistricts"
+              >
                 <p>Région contemporaine</p>
                 <button
                   class="toggle"
@@ -122,11 +174,20 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div 
+                  v-if="showDistricts"
+                  class="accordion-content"
+                />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article 
+              :class="showInstitutions ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div 
+                class="accordion-header"
+                @click="showInstitutions = !showInstitutions"
+              >
                 <p>Institution de conservation</p>
                 <button
                   class="toggle"
@@ -137,8 +198,14 @@
                 <div class="accordion-content" />
               </div>
             </article>
-            <article class="accordion">
-              <div class="accordion-header">
+            <article
+              :class="showAvailableCommentaries ? 'is-active' : ''"
+              class="accordion"
+            >
+              <div
+                class="accordion-header"
+                @click="showAvailableCommentaries = !showAvailableCommentaries"
+              >
                 <p>Types de commentaires fournis</p>
                 <button
                   class="toggle"
@@ -363,7 +430,7 @@ import DocumentCard from '../components/document/DocumentCard.vue'
 import DocumentCardPlaceholder from '../components/document/DocumentCardPlaceholder.vue'
 import Slider from '../components/ui/Slider.vue'
 
-import { mapState } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 
 export default {
     name: "SearchPage",
@@ -374,6 +441,16 @@ export default {
     },
     data() {
       return {
+        showLanguages: false,
+        showTraditions: false,
+        showActeTypes: false,
+        showCenturies: false,
+        showCopyCenturies: false,
+        showCountries: false,
+        showDistricts: false,
+        showInstitutions: false,
+        showAvailableCommentaries: false,
+
         dateSliderOptions: {
           start: [1240, 1630],
           range: {
@@ -392,6 +469,7 @@ export default {
         ...mapState('acteTypes', ['acteTypes']),
         ...mapState('editors', ['editors']),
         ...mapState('institutions', ['institutions']),
+        ...mapGetters('search', ['isLanguageSelected']),
     },
     beforeCreate() {
       Promise.all([
@@ -408,13 +486,13 @@ export default {
       this.fetchAll()
     },
     methods: {
+      ...mapActions('search', ['toggleSelection']),
       fetchAll() {
-        this.$store.dispatch('document/fetchAll', {
+        return this.$store.dispatch('document/fetchAll', {
           pageId: 1,
           pageSize: 50,
           filters: ''
-        }).then(r => {
-        });
+        })
       },
     }
 }
