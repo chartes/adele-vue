@@ -709,8 +709,9 @@ export default {
       fetchAll() {
         return this.$store.dispatch('document/fetchAll', {
           pageId: 1,
-          pageSize: 50,
-          filters: ''
+          pageSize: 25,
+          filters: '',
+          sorts: ''
         })
       },
     }

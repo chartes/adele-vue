@@ -124,11 +124,11 @@
                           Non défini
                         </option>
                         <option
-                          v-for="(val, cent) in centuries"
-                          :key="cent"
-                          :value="cent"
+                          v-for="century in copyCenturies"
+                          :key="century.id"
+                          :value="century.id"
                         >
-                          {{ val }}
+                          {{ century.label }}
                         </option>
                       </select>
                     </div>
@@ -305,7 +305,7 @@ import EditorMixins from '../../../mixins/EditorMixins'
 import EditorButton from "../../editors/EditorButton"
 import NoticeActionBar from '../edition/actionbars/NoticeActionBar'
 import { getNewQuill } from '../../../modules/quill/AdeleQuill'
-import centuries from '@/modules/utils'
+import {centuries} from '@/modules/utils'
 
 export default {
     name: "DocumentEditionNotice",
@@ -320,7 +320,6 @@ export default {
     },
     data() {
       return {
-          centuries:centuries,
           status: 'normal',
           buttons: {
             bold: false,
@@ -361,6 +360,11 @@ export default {
         ...mapState('editors', ['editors']),
         ...mapState('institutions', ['institutions']),
 
+        copyCenturies() {
+          return Object.keys(centuries).map(arb => {
+            return {id: arb, label: centuries[arb]}
+          })
+        },
         allLanguagesChoices() {
           let choices = {}
           for (let item of this.languages) {

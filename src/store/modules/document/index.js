@@ -189,10 +189,10 @@ const actions = {
       commit('LOADING_STATUS', false);
     })
   },
-  fetchAll ({ commit }, {pageId, pageSize, filters}) {
+  fetchAll ({ commit }, {pageId, pageSize, filters, sorts}) {
     commit('LOADING_STATUS', true)
     commit('SET_ERROR', null)
-    return http.get(`documents?${filters}&page[size]=${pageSize}&page[number]=${pageId}`)
+    return http.get(`documents?filters=${filters}&sorts=${sorts}&page[size]=${pageSize}&page[number]=${pageId}`)
       .then( (response) => {
       commit('UPDATE_ALL', response.data.data);
       commit('LOADING_STATUS', false);
