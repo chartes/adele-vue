@@ -1,7 +1,12 @@
 .document-card {
 
   box-shadow: none;
-  border-bottom: 7px solid #E8E7E0;
+  padding: 14px 12px 16px 12px;
+  border:solid 1px transparent;
+
+  &:hover {
+    border:solid 1px $primary;
+  }
 
   .card-header {
     box-shadow: none;
@@ -26,6 +31,7 @@
   .card-content {
     color: #000000;
     padding: 1.5rem 0;
+    border-bottom: 7px solid #E8E7E0;
   }
 
   .card-content .title {
