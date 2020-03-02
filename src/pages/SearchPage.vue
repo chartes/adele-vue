@@ -5,8 +5,12 @@
         <div class="column filters">
           <section class="accordions">
             <article class="accordion">
-              <div class="accordion-header toggle">
+              <div class="accordion-header no-toggle">
                 <p>Dates du document</p>
+                <div class="date-range-selector">
+                  <p>Entre <input class="min-date" type="text" value="1200" /> et <input class="max-date" type="text" value="1400" /></p>
+                  <slider id="dateSlider" class="date-slider" :options="dateSliderOptions"  />
+                </div>
               </div>
               <div class="accordion-body">
                 <div class="accordion-content" />
@@ -415,16 +419,6 @@
               <select>
                 <option>Date de l'acte</option>
               </select>
-
-              <div
-                v-show="false"
-                style="width: 220px; margin-top: 20px"
-              >
-                <slider
-                  id="dateSlider"
-                  :options="dateSliderOptions"
-                />
-              </div>
             </div>
             <progress
               v-show="loading" 

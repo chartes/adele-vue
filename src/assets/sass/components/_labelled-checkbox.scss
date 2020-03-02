@@ -14,7 +14,6 @@
 
     input[type=checkbox] {
         visibility: hidden;
-        width: 0;
     }
 
     span.checkmark {
@@ -22,6 +21,7 @@
         border-radius: 50%;
         width: 14px;
         height: 14px;
+        border: 3px solid transparent;
         background: transparent;
         position: absolute;
         left:0;
@@ -30,6 +30,20 @@
 
     input[type=checkbox]:checked ~ span.checkmark {
         background: #BAB9B6;
+    }
+
+    input[type=checkbox]:hover ~ span.checkmark {
+        background: #FFFFFF;
+        border: 3px solid #C7C7C7;
+        width: 16px;
+        height: 16px;
+    }
+
+    input[type=checkbox]:checked:hover ~ span.checkmark {
+        background: #BAB9B6;
+        border: 3px solid transparent;
+        width: 14px;
+        height: 14px;
     }
 
 }

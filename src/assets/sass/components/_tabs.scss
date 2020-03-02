@@ -18,12 +18,16 @@
     line-height: 15px;
     margin: 12px 70px 12px 0;
     text-transform: uppercase;
+    border-radius: 3px;
+}
+
+.section-tabs.tabs li:not(.is-active) a:hover {
+    background: #EAEAEA;
 }
 
 .section-tabs.tabs li.is-active a {
     color:$black;
     background: $yellow;
-    border-radius: 3px;
     border-bottom-:none;
 }
 
