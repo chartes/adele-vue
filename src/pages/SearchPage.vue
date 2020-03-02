@@ -8,8 +8,22 @@
               <div class="accordion-header no-toggle">
                 <p>Dates du document</p>
                 <div class="date-range-selector">
-                  <p>Entre <input class="min-date" type="text" value="1200" /> et <input class="max-date" type="text" value="1400" /></p>
-                  <slider id="dateSlider" class="date-slider" :options="dateSliderOptions"  />
+                  <p>
+                    Entre <input
+                      class="min-date"
+                      type="text"
+                      value="1200"
+                    > et <input
+                      class="max-date"
+                      type="text"
+                      value="1400"
+                    >
+                  </p>
+                  <slider
+                    id="dateSlider"
+                    class="date-slider"
+                    :options="dateSliderOptions"
+                  />
                 </div>
               </div>
               <div class="accordion-body">
@@ -640,6 +654,12 @@ export default {
               values: this.districts.filter(t => this.isDistrictSelected(t.id)),
               getId: c => c.id,
               getLabel: c => c.label
+            },
+            institutions: {
+              label: 'Institution de conservation',
+              values: this.institutions.filter(t => this.isInstitutionSelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.name 
             },
           }
         }
