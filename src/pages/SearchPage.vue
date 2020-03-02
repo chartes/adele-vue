@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="container search-page">
+    <div class="container is-fluid search-page">
       <div class="columns">
         <div class="column filters">
           <section class="accordions">
@@ -30,7 +30,28 @@
                 <div
                   v-if="showTraditions"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="tradition in traditions"
+                      :key="tradition.id"
+                      @click.prevent="toggleSelection({filter: 'traditions', item: tradition.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="tradition.id"
+                          :checked="isTraditionSelected(tradition.id)"
+                        ><span
+                          v-show="isTraditionSelected(tradition.id)"
+                          class="checkmark"
+                        />{{ tradition.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article
@@ -51,7 +72,28 @@
                 <div
                   v-if="showActeTypes"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="acteType in acteTypes"
+                      :key="acteType.id"
+                      @click.prevent="toggleSelection({filter: 'acteTypes', item: acteType.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="acteType.id"
+                          :checked="isActeTypeSelected(acteType.id)"
+                        ><span
+                          v-show="isActeTypeSelected(acteType.id)"
+                          class="checkmark"
+                        />{{ acteType.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article
@@ -114,7 +156,28 @@
                 <div
                   v-if="showCenturies"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="century in centuries"
+                      :key="century.id"
+                      @click.prevent="toggleSelection({filter: 'centuries', item: century.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="century.id"
+                          :checked="isCenturySelected(century.id)"
+                        ><span
+                          v-show="isCenturySelected(century.id)"
+                          class="checkmark"
+                        />{{ century.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article 
@@ -135,7 +198,28 @@
                 <div
                   v-if="showCopyCenturies"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="century in copyCenturies"
+                      :key="century.id"
+                      @click.prevent="toggleSelection({filter: 'copyCenturies', item: century.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="century.id"
+                          :checked="isCopyCenturySelected(century.id)"
+                        ><span
+                          v-show="isCopyCenturySelected(century.id)"
+                          class="checkmark"
+                        />{{ century.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article 
@@ -156,7 +240,28 @@
                 <div 
                   v-if="showCountries"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="country in countries"
+                      :key="country.id"
+                      @click.prevent="toggleSelection({filter: 'countries', item: country.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="country.id"
+                          :checked="isCountrySelected(country.id)"
+                        ><span
+                          v-show="isCountrySelected(country.id)"
+                          class="checkmark"
+                        />{{ country.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article 
@@ -177,7 +282,28 @@
                 <div 
                   v-if="showDistricts"
                   class="accordion-content"
-                />
+                >
+                  <ul>
+                    <li
+                      v-for="district in districts"
+                      :key="district.id"
+                      @click.prevent="toggleSelection({filter: 'districts', item: district.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="district.id"
+                          :checked="isDistrictSelected(district.id)"
+                        ><span
+                          v-show="isDistrictSelected(district.id)"
+                          class="checkmark"
+                        />{{ district.label }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article 
@@ -195,7 +321,31 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div 
+                  v-if="showInstitutions"
+                  class="accordion-content"
+                >
+                  <ul>
+                    <li
+                      v-for="institution in institutions"
+                      :key="institution.id"
+                      @click.prevent="toggleSelection({filter: 'institutions', item: institution.id})"
+                    >
+                      <div
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="institution.id"
+                          :checked="isInstitutionSelected(institution.id)"
+                        ><span
+                          v-show="isInstitutionSelected(institution.id)"
+                          class="checkmark"
+                        />{{ institution.name }}</label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
             <article
@@ -221,18 +371,20 @@
 
         <div class="column documents is-three-quarters">
           <div class="section">
-            <progress
-              v-show="loading" 
-              class="progress is-small is-warning"
-              max="100"
-            >
-              15%
-            </progress>
             <div class="filters-sort-options">
-              <h4>Filtres</h4>
+              <h4 v-if="isFiltered">
+                Filtres
+              </h4>
               <div class="filter-tag-list">
-                <div class="filter-tag-list field is-grouped is-grouped-multiline">
-                  <div class="control">
+                <div 
+                  v-for="(filter, idFilter) in selectedFilters"
+                  :key="idFilter"
+                  class="filter-tag-list field is-grouped is-grouped-multiline"
+                >
+                  <div
+                    v-if="filter.values.length > 0"
+                    class="control"
+                  >
                     <div class="tags filter-category">
                       <a
                         class="tag"
@@ -241,75 +393,20 @@
                       <a
                         class="tag"
                         href="#"
-                      >Type d’acte</a>
+                      >{{ filter.label }}</a>
                     </div>
                   </div>
-                  <div class="control">
+                  <div
+                    v-for="item in filter.values" 
+                    :key="filter.getId(item)"
+                    class="control"
+                  >
                     <div class="tags">
-                      <a
+                      <a 
                         class="tag"
                         href="#"
-                      >Actes privés sous le sceau et/ou la signature de l’auteur</a>
-                    </div>
-                  </div>
-                  <div class="control">
-                    <div class="tags">
-                      <a
-                        class="tag"
-                        href="#"
-                      >Actes privés sous le/les sceaux d’autorités locales</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="filter-tag-list field is-grouped is-grouped-multiline">
-                  <div class="control">
-                    <div class="tags filter-category">
-                      <a
-                        class="tag"
-                        href="#"
-                      />
-                      <a
-                        class="tag"
-                        href="#"
-                      >Langue du document</a>
-                    </div>
-                  </div>
-                  <div class="control">
-                    <div class="tags">
-                      <a
-                        class="tag"
-                        href="#"
-                      >Latin</a>
-                    </div>
-                  </div>
-                  <div class="control">
-                    <div class="tags">
-                      <a
-                        class="tag"
-                        href="#"
-                      >Occitan</a>
-                    </div>
-                  </div>
-                </div>
-                <div class="filter-tag-list field is-grouped is-grouped-multiline">
-                  <div class="control">
-                    <div class="tags filter-category">
-                      <a
-                        class="tag"
-                        href="#"
-                      />
-                      <a
-                        class="tag"
-                        href="#"
-                      >Pays</a>
-                    </div>
-                  </div>
-                  <div class="control">
-                    <div class="tags">
-                      <a
-                        class="tag"
-                        href="#"
-                      >France</a>
+                        @click.prevent="toggleSelection({filter: idFilter, item: filter.getId(item)})"
+                      >{{ filter.getLabel(item) }}</a>
                     </div>
                   </div>
                 </div>
@@ -329,7 +426,13 @@
                 />
               </div>
             </div>
-
+            <progress
+              v-show="loading" 
+              class="progress is-small is-warning"
+              max="100"
+            >
+              15%
+            </progress>
             <nav
               class="pagination"
               role="navigation"
@@ -431,6 +534,7 @@ import DocumentCardPlaceholder from '../components/document/DocumentCardPlacehol
 import Slider from '../components/ui/Slider.vue'
 
 import { mapState, mapGetters, mapActions } from 'vuex';
+import {centuries} from '@/modules/utils'
 
 export default {
     name: "SearchPage",
@@ -469,7 +573,83 @@ export default {
         ...mapState('acteTypes', ['acteTypes']),
         ...mapState('editors', ['editors']),
         ...mapState('institutions', ['institutions']),
-        ...mapGetters('search', ['isLanguageSelected']),
+        ...mapGetters('search', [
+          'isLanguageSelected',
+          'isActeTypeSelected',
+          'isTraditionSelected',
+          'isCenturySelected',
+          'isCopyCenturySelected',
+          'isInstitutionSelected',
+          'isCountrySelected',
+          'isDistrictSelected',
+          'isAvailableCommentarySelected'
+        ]),
+
+        centuries() {
+          return Object.keys(centuries).map(arb => {
+            return {id: arb, label: centuries[arb]}
+          })
+        },
+        copyCenturies() {
+          return Object.keys(centuries).map(arb => {
+            return {id: arb, label: centuries[arb]}
+          })
+        },
+        isFiltered() {
+          for(let f in this.selectedFilters) {
+            if (this.selectedFilters[f].values.length > 0) {
+              return true
+            }  
+          }
+          return false
+        },
+        selectedFilters() {
+          return {
+            traditions: {
+              label: 'Mode de tradition',
+              values: this.traditions.filter(t => this.isTraditionSelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label 
+            },
+            acteTypes: {
+              label: 'Type d\'acte',
+              values: this.acteTypes.filter(t => this.isActeTypeSelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label 
+              },
+            languages: {
+              label: 'Langue du document',
+              values: this.languages.filter(t => this.isLanguageSelected(t.code)),
+              getId: c => c.code,
+              getLabel: c => c.label 
+            },
+            centuries: {
+              label: 'Siècle du document', 
+              values: this.centuries.filter(t => this.isCenturySelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label 
+            },
+            copyCenturies: {
+              label: 'Siècle de la copie', 
+              values: this.copyCenturies.filter(t => this.isCopyCenturySelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label 
+            },
+            countries: {
+              label: 'Pays',
+              values: this.countries.filter(t => this.isCountrySelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label
+            },
+            districts: {
+              label: 'Région contemporaine',
+              values: this.districts.filter(t => this.isDistrictSelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label
+            },
+          }
+        }
+
     },
     beforeCreate() {
       Promise.all([

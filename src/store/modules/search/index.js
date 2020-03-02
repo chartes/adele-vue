@@ -3,7 +3,14 @@ import {http} from '../../../modules/http-common';
 const state = {
   selection: {
       languages : [],
-      acteTypes: []
+      acteTypes: [],
+      institutions: [],
+      traditions: [],
+      centuries: [],
+      copyCenturies: [],
+      availableCommentaries: [],
+      countries: [],
+      districts: []
   },
 };
 
@@ -34,8 +41,32 @@ const actions = {
 };
 
 const getters = {
-    isLanguageSelected : (state) => (langCode) => {
-        return state.selection.languages.indexOf(langCode) > -1
+    isLanguageSelected : (state) => (item) => {
+        return state.selection.languages.indexOf(item) > -1
+    },
+    isActeTypeSelected : (state) => (item) => {
+        return state.selection.acteTypes.indexOf(item) > -1
+    },
+    isTraditionSelected : (state) => (item) => {
+        return state.selection.traditions.indexOf(item) > -1
+    },
+    isCenturySelected : (state) => (item) => {
+        return state.selection.centuries.indexOf(item) > -1
+    },
+    isCopyCenturySelected : (state) => (item) => {
+        return state.selection.copyCenturies.indexOf(item) > -1
+    },
+    isInstitutionSelected : (state) => (item) => {
+        return state.selection.institutions.indexOf(item) > -1
+    },
+    isCountrySelected : (state) => (item) => {
+        return state.selection.countries.indexOf(item) > -1
+    },
+    isDistrictSelected : (state) => (item) => {
+        return state.selection.districts.indexOf(item) > -1
+    },
+    isAvailableCommentarySelected : (state) => (item) => {
+        return state.selection.availableCommentaries.indexOf(item) > -1
     }
 };
 
