@@ -449,35 +449,53 @@
             >
               15%
             </progress>
-            <nav
+
+            <nav 
               class="pagination"
               role="navigation"
               aria-label="pagination"
             >
-              <span class="pagination-documents-count pagination-previous">32 documents</span>
+              <span class="pagination-documents-count pagination-previous">{{ meta.totalCount }} {{ meta.totalCount === 1 ? 'document' : 'documents' }}</span>
               <ul class="pagination-list">
-                <li>
+                <li v-if="pagination.first">
                   <a
                     class="pagination-link"
-                    aria-label="Goto page 1"
-                  >1</a>
-                  <a
-                    class="pagination-link is-current"
-                    aria-label="Goto page 2"
-                  >2</a>
-                  <a
-                    class="pagination-link"
-                    aria-label="Goto page 3"
-                  >3</a>
+                    :aria-label="`Goto page ${pagination.first}`"
+                    @click="currentPage=pagination.first"
+                  >{{ pagination.first }}</a>
                 </li>
-                <li>
+                <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
                   <span class="pagination-ellipsis">&hellip;</span>
                 </li>
-                <li>
+                <li v-if="pagination.previous">
                   <a
                     class="pagination-link"
-                    aria-label="Goto page 10"
-                  >10</a>
+                    :aria-label="`Goto page ${pagination.previous}`"
+                    @click="currentPage=pagination.previous"
+                  >{{ pagination.previous }}</a>
+                </li>
+                <li>
+                  <a
+                    class="pagination-link is-current"
+                    :aria-label="`Goto page ${pagination.current}`"
+                  >{{ pagination.current }}</a>
+                </li>
+                <li v-if="pagination.next">
+                  <a
+                    class="pagination-link"
+                    :aria-label="`Goto page ${pagination.next}`"
+                    @click="currentPage=pagination.next"
+                  >{{ pagination.next }}</a>
+                </li>
+                <li v-if="pagination.last && pagination.next + 1 < pagination.last">
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li v-if="pagination.last">
+                  <a
+                    class="pagination-link"
+                    :aria-label="`Goto page ${pagination.last}`"
+                    @click="currentPage=pagination.last"
+                  >{{ pagination.last }}</a>
                 </li>
               </ul>
             </nav>
@@ -550,7 +568,7 @@ import DocumentCardPlaceholder from '../components/document/DocumentCardPlacehol
 import Slider from '../components/ui/Slider.vue'
 
 import { mapState, mapGetters, mapActions } from 'vuex';
-import {centuries} from '@/modules/utils'
+import {centuries, debounce} from '@/modules/utils'
 
 export default {
     name: "SearchPage",
@@ -561,6 +579,7 @@ export default {
     },
     data() {
       return {
+        currentPage: 1,
         showFilters: {
           languages: false,
           traditions: false,
@@ -582,7 +601,7 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['documents', 'document', 'loading']),
+        ...mapState('document', ['documents', 'document', 'loading', 'meta']),
         ...mapState('languages', ['languages']),
         ...mapState('countries', ['countries']),
         ...mapState('districts', ['districts']),
@@ -601,7 +620,6 @@ export default {
           'isDistrictSelected',
           'isAvailableCommentarySelected'
         ]),
-
         centuries() {
           return Object.keys(centuries).map(arb => {
             return {id: arb, label: centuries[arb]}
@@ -671,8 +689,33 @@ export default {
               getLabel: c => c.name 
             },
           }
+        },
+        pagination() {
+          let pagination = {
+            current: this.meta.currentPage
+          }
+          if (pagination.current > 1) {
+            pagination.previous = pagination.current - 1
+          } 
+          if (pagination.current < this.meta.nbPages) {
+            pagination.next = pagination.current + 1
+          }
+          if (pagination.previous > 1) {
+            pagination.first = 1
+          } 
+          if (pagination.next < this.meta.nbPages) {
+            pagination.last = this.meta.nbPages
+          } 
+          return pagination
         }
-
+    },
+    watch: {
+      selectedFilters() {
+        this.fetchAll()
+      },
+      currentPage() {
+        this.fetchAll()
+      }
     },
     beforeCreate() {
       Promise.all([
@@ -706,14 +749,21 @@ export default {
         this.showFilters.availableCommentaries = false
         this.clearAll()
       },
-      fetchAll() {
+      fetchAll: debounce(function() {
+        let filters = {}
+        for (let f in this.selectedFilters){
+          filters[f] = this.selectedFilters[f].values
+        }
+
+        let sorts = {}
+
         return this.$store.dispatch('document/fetchAll', {
-          pageId: 1,
-          pageSize: 25,
-          filters: '',
-          sorts: ''
+          pageNum: this.currentPage,
+          pageSize: 10,
+          filters,
+          sorts
         })
-      },
+      }, 750),
     }
 }
 </script>

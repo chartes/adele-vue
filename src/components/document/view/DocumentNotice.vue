@@ -6,10 +6,13 @@
           <div class="tags has-addons">
             <span class="tag is-dark">Langues</span>
             <span
-              v-for="lang in document.languages"
+              v-for="(lang, i) in document.languages"
               :key="lang.code"
               class="tag"
-            >{{ lang.label }}</span>
+            >{{ lang.label }}<span
+              v-if="i < document.languages.length-1"
+              style="white-space: pre"
+            >, </span></span>
           </div>
         </li>
         <li
@@ -40,10 +43,13 @@
           <div class="tags has-addons">
             <span class="tag is-dark">Type d'acte</span>
             <span
-              v-for="acte_type in document.acte_types"
+              v-for="(acte_type, i) in document.acte_types"
               :key="acte_type.id"
               class="tag"
-            >{{ acte_type.label }}</span>
+            >{{ acte_type.label }}<span
+              v-if="i < document.acte_types.length-1"
+              style="white-space: pre"
+            >, </span></span>
           </div>
         </li>
         <li>

@@ -4,6 +4,11 @@ const state = {
 
   document: null,
   documents: [],
+  meta: {
+    totalCount: 0,
+    currentPage: 0,
+    nbPages: 0
+  },
   
   transcriptionView: null,
   translationView: null,
@@ -19,6 +24,12 @@ const mutations = {
 
   UPDATE_DOCUMENT (state, payload) {
     state.document = payload;
+  },
+  UPDATE_META(state, payload) {
+    state.meta = {
+      ...state.meta,
+      ...payload
+    };
   },
   UPDATE_TRANSCRIPTION_VIEW (state, {content, notes}) {
     state.transcriptionView = {
@@ -189,12 +200,14 @@ const actions = {
       commit('LOADING_STATUS', false);
     })
   },
-  fetchAll ({ commit }, {pageId, pageSize, filters, sorts}) {
+  fetchAll ({ commit }, {pageNum, pageSize, filters, sorts}) {
     commit('LOADING_STATUS', true)
     commit('SET_ERROR', null)
-    return http.get(`documents?filters=${filters}&sorts=${sorts}&page[size]=${pageSize}&page[number]=${pageId}`)
-      .then( (response) => {
-      commit('UPDATE_ALL', response.data.data);
+    return http.post('documents', {
+      pageNum, pageSize, filters, sorts
+    }).then( (response) => {
+      commit('UPDATE_ALL', response.data.data.data);
+      commit('UPDATE_META', response.data.data.meta);
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
