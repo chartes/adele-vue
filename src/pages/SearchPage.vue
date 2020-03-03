@@ -10,19 +10,21 @@
                 <div class="date-range-selector">
                   <p>
                     Entre <input
+                      v-model="startDocDate"
                       class="min-date"
                       type="text"
-                      value="1200"
                     > et <input
+                      v-model="endDocDate"
                       class="max-date"
                       type="text"
-                      value="1400"
                     >
                   </p>
                   <slider
                     id="dateSlider"
+                    :key="sliderKey"
                     class="date-slider"
                     :options="dateSliderOptions"
+                    :update="updateDocDate"
                   />
                 </div>
               </div>
@@ -528,29 +530,47 @@
               role="navigation"
               aria-label="pagination"
             >
+              <span class="pagination-documents-count pagination-previous">{{ meta.totalCount }} {{ meta.totalCount === 1 ? 'document' : 'documents' }}</span>
               <ul class="pagination-list">
-                <li>
+                <li v-if="pagination.first">
                   <a
                     class="pagination-link"
-                    aria-label="Goto page 1"
-                  >1</a>
-                  <a
-                    class="pagination-link is-current"
-                    aria-label="Goto page 2"
-                  >2</a>
-                  <a
-                    class="pagination-link"
-                    aria-label="Goto page 3"
-                  >3</a>
+                    :aria-label="`Goto page ${pagination.first}`"
+                    @click="currentPage=pagination.first"
+                  >{{ pagination.first }}</a>
                 </li>
-                <li>
+                <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
                   <span class="pagination-ellipsis">&hellip;</span>
                 </li>
-                <li>
+                <li v-if="pagination.previous">
                   <a
                     class="pagination-link"
-                    aria-label="Goto page 10"
-                  >10</a>
+                    :aria-label="`Goto page ${pagination.previous}`"
+                    @click="currentPage=pagination.previous"
+                  >{{ pagination.previous }}</a>
+                </li>
+                <li>
+                  <a
+                    class="pagination-link is-current"
+                    :aria-label="`Goto page ${pagination.current}`"
+                  >{{ pagination.current }}</a>
+                </li>
+                <li v-if="pagination.next">
+                  <a
+                    class="pagination-link"
+                    :aria-label="`Goto page ${pagination.next}`"
+                    @click="currentPage=pagination.next"
+                  >{{ pagination.next }}</a>
+                </li>
+                <li v-if="pagination.last && pagination.next + 1 < pagination.last">
+                  <span class="pagination-ellipsis">&hellip;</span>
+                </li>
+                <li v-if="pagination.last">
+                  <a
+                    class="pagination-link"
+                    :aria-label="`Goto page ${pagination.last}`"
+                    @click="currentPage=pagination.last"
+                  >{{ pagination.last }}</a>
                 </li>
               </ul>
             </nav>
@@ -591,13 +611,10 @@ export default {
           institutions: false,
           availableCommentaries: false,
         },
-        dateSliderOptions: {
-          start: [1240, 1630],
-          range: {
-              'min': [500],
-              'max': [1800]
-          }
-        }
+        startDocDate: 700,
+        endDocDate: 1700,
+        minDocDate: 700,
+        maxDocDate: 1900
       }
     },
     computed: {
@@ -620,6 +637,28 @@ export default {
           'isDistrictSelected',
           'isAvailableCommentarySelected'
         ]),
+        sliderKey() {
+          return this.startDocDate + "," + this.endDocDate
+        },
+        dateSliderOptions() {
+          let start = parseInt(this.startDocDate)
+          let end = parseInt(this.endDocDate)
+
+          if(isNaN(start)) {
+            start = this.minDocDate
+          }
+          if(isNaN(end)) {
+            end = this.maxDocDate
+          }
+          
+          return {
+            start: [start, end],
+            range: {
+                'min': [this.minDocDate],
+                'max': [this.maxDocDate]
+            }
+          }
+        },
         centuries() {
           return Object.keys(centuries).map(arb => {
             return {id: arb, label: centuries[arb]}
@@ -733,6 +772,11 @@ export default {
     },
     methods: {
       ...mapActions('search', ['toggleSelection', 'clear', 'clearAll']),
+      updateDocDate(values, handle, unencoded, tap, positions) {
+        this.startDocDate = Math.ceil(unencoded[0])
+        this.endDocDate = Math.ceil(unencoded[1])
+        this.fetchAll()
+      },
       resetFilter(filter) {
         this.showFilters[filter] = false
         this.clear({filter: filter})
@@ -755,11 +799,13 @@ export default {
           filters[f] = this.selectedFilters[f].values
         }
 
+        filters['creationRange'] = this.dateSliderOptions.start
+
         let sorts = {}
 
         return this.$store.dispatch('document/fetchAll', {
           pageNum: this.currentPage,
-          pageSize: 10,
+          pageSize: 25,
           filters,
           sorts
         })

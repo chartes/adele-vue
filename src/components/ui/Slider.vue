@@ -15,7 +15,8 @@ export default {
     },
     props: {
         id: {type: String, required: true},
-        options : {type: Object, default: () => {}}
+        options : {type: Object, default: () => {}},
+        update: {type: Function, default: (values, handle, unencoded, tap, positions) => {}}
     },
     data() {
         return {
@@ -27,15 +28,11 @@ export default {
     },
     mounted() {
         const slider = document.getElementById(this.$props.id)
-        console.log(slider)
         nouislider.create(slider, {
-            start: [20, 80],
             connect: true,
-            range: {
-                'min': 0,
-                'max': 100
-            }
+            ...this.options
         })
+        slider.noUiSlider.on('update.one', this.$props.update);
     },
     methods: {
 
