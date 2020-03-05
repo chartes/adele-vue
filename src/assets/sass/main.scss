@@ -49,11 +49,13 @@
 @import 'elements/a';
 @import 'elements/img';
 @import 'elements/select';
+@import 'elements/input';
 
 
 @import "components/document.card";
 @import "components/document.titlebar";
 @import "components/document.transcription";
+@import "components/document.notice";
 @import "components/theme.card";
 @import "components/pagination";
 @import "components/navbar";

@@ -19,7 +19,7 @@
     </div>
     <div
       v-if="content"
-      class="content"
+      class="content speech-parts"
       v-html="content"
     />
   </div>

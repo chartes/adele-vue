@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="content">
+    <div class="content notice">
       <div class="columns">
         <div class="column is-two-fifths">
           <!-- titre -->
@@ -77,7 +77,7 @@
                       <select
                         v-model="document.institution_id"
                         class="select"
-                        style="width: 300px"
+                        style="width: 100%"
                       >
                         <option :value="null">
                           Non définie

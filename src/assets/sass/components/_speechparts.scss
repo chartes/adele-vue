@@ -14,6 +14,14 @@ speechpart {
   }
 }
 
+.speech-parts.content {
+    & > p {
+        font-family: $family-sans-serif;
+        font-size: 1.25em;
+        line-height: 1.75;
+    }
+}
+
 .speech-part {
 
     &:hover {
