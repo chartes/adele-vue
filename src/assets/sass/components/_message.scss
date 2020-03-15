@@ -1,0 +1,24 @@
+.message {
+
+    &.is-info .message-body {
+        color: #4A4A4A;
+        background: #F2F2F2 url( #{$image-path}/warning-info.svg) left 12px center / 31px 31px no-repeat;
+    }
+
+    &.is-danger .message-body {
+        color: #4A4A4A;
+        background: #F2F2F2 url( #{$image-path}/warning-error.svg) left 12px center / 31px 31px no-repeat;
+    }
+
+    .message-body {
+        border: none;
+        border-radius: 3px;
+        font-family: $family-secondary;
+        font-size: 16px;
+        padding-left: 60px;
+    }
+
+
+
+}
+

@@ -7,6 +7,7 @@
           :key="spType.id"
           @mouseover="hoverId = spType.id"
           @mouseleave="hoverId = null"
+          class="speech-part-item"
         >
           <span
             class="navbar-item speech-part m-xs"

@@ -22,18 +22,23 @@ speechpart {
     }
 }
 
+
 .speech-part {
 
     &:hover {
         cursor: pointer;
     }
 
+    &.navbar {
+        opacity: 0.5;
+    }
+
     &.navbar-item {
         &:hover{
             background: $yellow;
-            border-radius: 3px;
         }
-        padding-left: 12px !important
+        text-transform: capitalize;
+        padding: 0 6px !important;
     }
 
     &.type-01.active, &.type-01:hover {
@@ -66,4 +71,20 @@ speechpart {
     &.type-10.active, &.type-10:hover {
         background-color: brown;
     }
+}
+
+.speech-part-item {
+
+    display: inline-block;
+
+    .navbar-item {
+        display: inline-block;
+        margin: 0;
+    }
+
+    &:not(:last-child)::after {
+        content:'|';
+        margin: 0 4px;
+    }
+
 }

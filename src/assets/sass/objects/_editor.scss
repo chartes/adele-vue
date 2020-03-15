@@ -2,7 +2,6 @@
   font-size: 1em;
   margin: 0 auto;
   width: 100%;
-  border: 1px solid #eee;
   max-height: 80vh;
   overflow: scroll;
   background: white;
@@ -288,7 +287,6 @@
   }
   label {
     display: block;
-    font-size: 60%;
     font-family: $family-secondary;
     font-size: 14px;
     color: $grey-darker;
@@ -326,13 +324,13 @@
 .ql-editor {
 
   line-height: 1.8;
+  border: 1px solid #eee;
 
   &:hover {
     border:#818181 solid 1px ;
   }
 
   &:focus {
-    outline: none;
     border:$primary solid 1px ;
   }
 

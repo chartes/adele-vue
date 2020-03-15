@@ -10,7 +10,7 @@
           <document-title-bar />
         </div>
         <div class="is-divider-vertical p-t-xl p-b-xl" />
-        <div class="column">
+        <div class="column workflow">
           <workflow-radio-steps :section="$attrs.section" />
         </div>
       </div>

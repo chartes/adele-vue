@@ -47,6 +47,7 @@
 @import 'elements/html';
 @import 'elements/body';
 @import 'elements/a';
+@import 'elements/button';
 @import 'elements/img';
 @import 'elements/select';
 @import 'elements/input';
@@ -70,6 +71,7 @@
 @import "components/tag.list";
 @import "components/filter.tag.list";
 @import "components/speechparts";
+@import "components/workflow";
 @import "components/workflow-steps";
 @import "components/labelled-checkbox";
 
@@ -83,6 +85,9 @@
 @import "objects/editor";
 
 @import "components/note";
+@import "components/message";
+@import "components/modal";
+
 //@import "objects/error-page";
 // Components – specific UI components.
 // This is where majority of our work takes place
