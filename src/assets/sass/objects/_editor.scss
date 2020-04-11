@@ -366,6 +366,34 @@
     z-index: -1;
   }
 
+  a.button {
+
+    width: 100%;
+    justify-content:left;
+    font-family: $family-sans-serif;
+    font-weight: 500;
+    font-size:15px;
+
+    &.is-primary {
+      background-color: $primary;
+      color: #000000;
+    }
+
+    &.is-danger {
+      background-color: #FF5C37;
+    }
+
+    &.is-new {
+      background-color: #01BED1;
+      color:#FFFFFF;
+    }
+
+    span:not(.icon) {
+      margin-left: 0.5em;
+    }
+
+  }
+
 }
 .note-actions, .new-note-actions {
   .button { width: 100%; }

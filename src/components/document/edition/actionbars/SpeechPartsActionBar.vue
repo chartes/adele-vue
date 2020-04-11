@@ -1,5 +1,5 @@
 <template>
-  <div class="m-b-md">
+  <div class="edition-action-bar m-b-md">
     <div class="field is-grouped">
       <!-- SAVE TRANSCRIPTION --> 
       <p 

@@ -149,3 +149,27 @@
         }
     }
 }
+
+
+@media screen and (max-width:768px) {
+
+    .search-page {
+
+        .column.documents  {
+            padding: 0;
+        }
+
+        &.container.is-fluid {
+            padding-left: 6%;
+            padding-right: 6%;
+        }
+
+        .section {
+            padding: 1rem 0 ;
+        }
+
+        .pagination .pagination-documents-count {
+            font-size: 15px;
+        }
+    }
+}

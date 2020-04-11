@@ -73,18 +73,26 @@ speechpart {
     }
 }
 
-.speech-part-item {
+.inner-navbar {
 
-    display: inline-block;
+    padding: 0;
 
-    .navbar-item {
+    .speech-part-item {
+
         display: inline-block;
-        margin: 0;
-    }
 
-    &:not(:last-child)::after {
-        content:'|';
-        margin: 0 4px;
-    }
+        .navbar-item {
+            display: inline-block;
+            margin: 0;
+            font-family: $family-secondary;
+            font-weight: normal;
+            font-size:16px;
+        }
 
+        &:not(:last-child)::after {
+            content:'|';
+            margin: 0 4px;
+        }
+
+    }
 }

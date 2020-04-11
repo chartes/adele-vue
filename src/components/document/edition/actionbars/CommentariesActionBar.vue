@@ -1,5 +1,5 @@
 <template>
-  <div class="m-b-md ">
+  <div class="edition-action-bar m-b-md m-b-md">
     <!-- NEW COMMENTARIES --> 
     <div
       v-if="!hasCommentaryTypes(label)" 

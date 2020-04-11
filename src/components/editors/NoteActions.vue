@@ -3,7 +3,7 @@
     <div class="field">
       <p class="control">
         <a
-          class="button is-primary"
+          class="button is-new"
           @click="newAction"
         >
           <span class="icon is-small">

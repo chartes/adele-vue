@@ -16,6 +16,10 @@
         display: none;
     }
 
+    a.control:first-letter  {
+        text-transform: uppercase;
+    }
+
     a.control  {
         font-family: $family-secondary;
         font-size: 14px;
