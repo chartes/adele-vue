@@ -18,6 +18,17 @@
                       class="max-date"
                       type="text"
                     >
+                    
+                    <label class="checkbox">
+                      <input 
+                        v-model="filterByCreationRange"
+                        style="display: none"
+                        type="checkbox"
+                        :value="filterByCreationRange"
+                      >
+                      <span v-if="filterByCreationRange"> Ne pas filtrer </span>
+                      <span v-else>filtrer</span>
+                    </label>
                   </p>
                   <slider
                     id="dateSlider"
@@ -611,6 +622,7 @@ export default {
           institutions: false,
           availableCommentaries: false,
         },
+        filterByCreationRange: true,
         startDocDate: 700,
         endDocDate: 1700,
         minDocDate: 700,
@@ -752,6 +764,9 @@ export default {
       selectedFilters() {
         this.fetchAll()
       },
+      filterByCreationRange() {
+        this.fetchAll()
+      },
       currentPage() {
         this.fetchAll()
       }
@@ -772,11 +787,11 @@ export default {
     },
     methods: {
       ...mapActions('search', ['toggleSelection', 'clear', 'clearAll']),
-      updateDocDate(values, handle, unencoded, tap, positions) {
+      updateDocDate: debounce(function(values, handle, unencoded, tap, positions) {
         this.startDocDate = Math.ceil(unencoded[0])
         this.endDocDate = Math.ceil(unencoded[1])
         this.fetchAll()
-      },
+      }, 10),
       resetFilter(filter) {
         this.showFilters[filter] = false
         this.clear({filter: filter})
@@ -800,6 +815,7 @@ export default {
         }
 
         filters['creationRange'] = this.dateSliderOptions.start
+        filters['filterByCreationRange'] = this.filterByCreationRange
 
         let sorts = {}
 

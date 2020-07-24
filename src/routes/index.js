@@ -3,6 +3,8 @@ import VueRouter, {Location, Route, RouteConfig} from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
+import AddDocumentPage from "@/pages/AddDocumentPage.vue"
+
 import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
 import LoginPage from "@/pages/LoginPage.vue"
 import ErrorPage from "@/pages/ErrorPage.vue"
@@ -28,6 +30,11 @@ const router = new VueRouter({
       path: '/documents',
       component: SearchPage,
       name: 'search'
+    },
+    {
+      path: '/documents/add',
+      component: AddDocumentPage,
+      name: 'document-add'
     },
     {
       path: '/documents/:docId/view/',

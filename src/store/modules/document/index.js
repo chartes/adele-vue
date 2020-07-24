@@ -76,7 +76,7 @@ const mutations = {
   UPDATE_ALL (state, payload) {
     state.documents = payload;
   },
-  SET_ERROR(error) {
+  SET_ERROR(state, error) {
     state.error = error
   },
   PARTIAL_UPDATE_DOCUMENT(state, payload) {
@@ -92,7 +92,27 @@ const mutations = {
 };
 
 const actions = {
-
+  async addDocument ({ commit, rootState }, {title, subtitle}) {
+    commit('SET_ERROR', null)
+    let doc = null
+    try {
+      const user = rootState.user.currentUser;
+      if (user === null || user.roles.indexOf('admin') < 0 || user.roles.indexOf('teacher') < 0) {
+        throw 'Forbidden access!'
+      }
+      doc = await http.post('documents/add', {
+        data: {
+          title, 
+          subtitle, user_id: 
+          rootState.user.currentUser.id
+        }
+      })
+    } catch (e) {
+      console.warn("cannot add document:", e)
+      commit('SET_ERROR', 'cannot add document: ' + e)
+    }
+    return doc
+  },
   fetch ({ commit }, {id}) {
     commit('LOADING_STATUS', true);
     console.log("fetching doc")
