@@ -225,10 +225,11 @@ const actions = {
       // save each commentary independently
       Object.values(state.commentariesWithNotes).forEach(async com => {
           console.log("saving", state.commentariesWithNotes, com)
+          const content = quillToTEI(com.content)
 
           // prepare notes
-          let sanitizedWithNotes = com.withNotes
-          sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+          const teiWithNotes = quillToTEI(com.withNotes)
+          let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
 
           const notes = computeNotesPointers(sanitizedWithNotes)
 
@@ -240,7 +241,6 @@ const actions = {
             }
           })
     
-          const content = quillToTEI(com.content)
           // put content & update notes
           await http.put(`documents/${rootState.document.document.id}/commentaries`, {
             data: {

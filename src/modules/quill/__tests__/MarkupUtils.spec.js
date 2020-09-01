@@ -2,6 +2,9 @@ import jsdom from 'jsdom';
 import {
   convertLinebreakTEIToQuill,
   convertLinebreakQuillToTEI,
+  TEIToQuill,
+  quillToTEI,
+  computeQuillPointersFromTEIPointers,
   getRelevantSegmentsIndices,
   insertSegments,
   sanitizeHtmlWithNotesForSave,
@@ -56,7 +59,7 @@ const testNotes = [
 ]
 
 
-describe.skip('MarkupUtils', () => {
+describe('MarkupUtils', () => {
 
   test('convertLinebreakTEIToQuill', () => {
     let input = '<lb></lb> <lb/>'
@@ -89,7 +92,7 @@ describe.skip('MarkupUtils', () => {
 
   })
 
-  test('insertSegments', () => {
+  test.skip('insertSegments', () => {
     const transcription = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis, . . offic<ex>ialis</ex> Belvacen<ex>sis</ex>, sal<ex>u</ex>t<ex>em</ex> in D<ex>om</ex>in<ex>o</ex>.<lb/>Nov<ex>er</ex>int univ<ex>er</ex>si q<ex>uo</ex>d i<ex>n</ex> n<ex>ost</ex>ra constituti p<ex>re</ex>sentia Ricardus d<ex>i</ex>c<ex>t</ex>us de Gres de S<ex>an</ex>c<ex>t</ex>o Felice <ex>et</ex> Aya ejus uxor</p><p><ex>et</ex> Eufemia eor<ex>um</ex> filia recognov<ex>er</ex>unt se imp<ex>er</ex>petuum vendidisse p<ex>ro</ex> co<ex>m</ex>muni eor<ex>um</ex> utilitate ac necessitate</p><p>abbati <ex>et</ex> conventui S<ex>an</ex>c<ex>t</ex>i G<ex>er</ex>emari Flaviacen<ex>sis</ex> q<ex>u</ex>amdam peciam t<ex>er</ex>re s<ex>em</ex>entis q<ex>u</ex>am h<ex>ab</ex>ebant ex caduco Asceline de Amuchi, matertere dicti Ricardi</p>';
     const translation = '<p>A tous ceux qui verront les présentes lettres, . . l’official de Beauvais, salut dans le Seigneur. <lb/>Sachent tous que constitués en notre présence Richard dit de Grez, de Saint-Félix, Aye son épouse</p><p>et Euphémie leur fille ont reconnu qu’ils ont vendu à perpétuité pour leur commune utilité et leur commun</p><p>besoin à l’abbé et au convent de Saint-Germer de Fly une pièce de terre arable qu’ils avaient de l’héritage d’Asceline d’Amuchy, tante maternelle dudit Richard</p>';
     const incoming = [
@@ -109,14 +112,35 @@ describe.skip('MarkupUtils', () => {
     expect(insertSegments(translation, incoming, 'translation')).toEqual(translationOk)
 
   })
-
+  test('TEIToQuill', () => {
+    const TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de Dieu. Moi la dame enfante <hi rend="i">Urraka</hi>, confirme <hi rend="i"><ex>seing</ex></hi>.</p>';
+    const QUILLData = '<p><i><ex>Chrismon</ex></i> Au nom de Dieu. Moi la dame enfante <i>Urraka</i>, confirme <i><ex>seing</ex></i>.</p>'
+    expect(TEIToQuill(TEIData)).toBe(QUILLData)
+  })
+  test('QuillToTEI', () => {
+    const TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de Dieu. Moi la dame enfante <hi rend="i">Urraka</hi>, confirme <hi rend="i"><ex>seing</ex></hi>.</p>';
+    const QUILLData = '<p><i><ex>Chrismon</ex></i> Au nom de Dieu. Moi la dame enfante <i>Urraka</i>, confirme <i><ex>seing</ex></i>.</p>'
+    expect(quillToTEI(QUILLData)).toBe(TEIData)
+  })
+  test('computeQuillPointersFromTEIPointers', () => {
+    const TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de Dieu. Moi la dame enfante <hi rend="i">Urraka</hi>, confirme <hi rend="i"><ex>seing</ex></hi>.</p>';
+    const TEIPointers = [
+      {ptr_start: 59, ptr_end: 66}, // la dame
+      {ptr_start: 75, ptr_end: 99}, // <hi rend="i">Urraka</hi>
+      {ptr_start: 123, ptr_end: 137} // <ex>seing</ex>
+    ]
+    const ExpectedQUILLPointers = [
+      {ptr_start: 48, ptr_end: 55}, // la dame
+      {ptr_start: 64, ptr_end: 77}, // <i>Urraka</i>
+      {ptr_start: 91, ptr_end: 105} // <ex>seing</ex>
+    ]
+    // compute
+    const QuillData = TEIToQuill(TEIData)
+    const QuillPointers = computeQuillPointersFromTEIPointers(QuillData, TEIPointers)
+    expect(QuillPointers).toEqual(ExpectedQUILLPointers)
+  })
   // TODO
-  /*test('TEIToQuill', () => {
-    expect(true).toBe(false)
-  })
-  test('quillToTEI', () => {
-    expect(true).toBe(false)
-  })
+  /*
   test('changeElementName', () => {
     expect(true).toBe(false)
   })
@@ -157,35 +181,23 @@ describe.skip('MarkupUtils', () => {
     expect(true).toBe(false)
   })
   */
-
   test('stripSegments', () => {
     const int = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis, . . <segment></segment>offic<ex>ialis</ex> Belvacen<ex>sis</ex>, sal<ex>u</ex>t<ex>em</ex> in D<ex>om</ex>in<ex>o</ex>avo, die 1248, le lune post Jubilat<ex>e</ex>.</p>'
     const ok = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis, . . offic<ex>ialis</ex> Belvacen<ex>sis</ex>, sal<ex>u</ex>t<ex>em</ex> in D<ex>om</ex>in<ex>o</ex>avo, die 1248, le lune post Jubilat<ex>e</ex>.</p>'
     expect(stripSegments(int)).toBe(ok)
-
   })
   test('stripNotes', () => {
     let int = '<p><note id="1156">Om<ex>n</ex>ib<ex>u</note>s</ex> p<ex>re</ex>se<note id="1157">ntes litt<ex>e</note>r</ex>as insp<ex>e</ex>cturis</p>'
     let ok = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis</p>'
     expect(stripNotes(int)).toBe(ok)
-
   })
   test('stripSpeechparts', () => {
     let int = '<p><speechpart id="1156">Om<ex>n</ex>ib<ex>u</speechpart>s</ex> p<ex>re</ex>se<speechpart id="1157">ntes litt<ex>e</speechpart>r</ex>as insp<ex>e</ex>cturis</p>'
     let ok = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis</p>'
     expect(stripSpeechparts(int)).toBe(ok)
-
   })
   test('sanitizeHtmlWithNotesForSave', () => {
-
     expect(sanitizeHtmlWithNotesForSave(htmlWithNotes)).toBe(htmlWithNotesSanitized)
-
   })
-  test('sanitizeHtmlWithNotesForSave', () => {
-
-    expect(sanitizeHtmlWithNotesForSave(htmlWithNotes)).toBe(htmlWithNotesSanitized)
-
-  })
-
 
 })

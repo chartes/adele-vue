@@ -258,7 +258,11 @@ const actions = {
 
     try {
       // prepare notes
-      let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes)
+      const tei = quillToTEI(state.transcriptionContent)
+      const sanitizedContent = stripSegments(tei)
+
+      const teiWithNotes = quillToTEI(state.transcriptionWithNotes)
+      let sanitizedWithNotes = stripSegments(teiWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
       const notes = computeNotesPointers(sanitizedWithNotes)
 
@@ -271,8 +275,6 @@ const actions = {
       })
 
       // put content && update notes
-      const tei = quillToTEI(state.transcriptionContent)
-      const sanitizedContent = stripSegments(tei)
       await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
         data: {
           content: sanitizedContent,

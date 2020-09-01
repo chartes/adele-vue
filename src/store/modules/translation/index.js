@@ -195,8 +195,12 @@ const actions = {
     commit('LOADING_STATUS', true)
 
     try {
+      const tei = quillToTEI(state.translationContent)
+      const sanitizedContent = stripSegments(tei)
+
       // prepare notes
-      let sanitizedWithNotes = stripSegments(state.translationWithNotes)
+      const teiWithNotes = quillToTEI(state.translationWithNotes)
+      let sanitizedWithNotes = stripSegments(teiWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
       const notes = computeNotesPointers(sanitizedWithNotes)
       //console.log("preparing notes", state.translationWithNotes, computeNotesPointers(sanitizedWithNotes), notes)
@@ -210,8 +214,6 @@ const actions = {
       })
 
       // put content && update notes
-      const tei = quillToTEI(state.translationContent)
-      const sanitizedContent = stripSegments(tei)
       await http.put(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, {
         data: {
           content: sanitizedContent,

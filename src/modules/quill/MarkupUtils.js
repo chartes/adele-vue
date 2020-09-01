@@ -115,16 +115,18 @@ const convertLinebreakTEIToQuill = str => {
 const convertLinebreakQuillToTEI = str => {
   return str.replace(/<lb><span class="br"><\/span><span class="segment-bullet"><\/span><\/lb>/gi, '<lb/>');
 }
-
+/*
 function changeElementName (elt, name) {
   var newElt = document.createElement(name);
   newElt.innerHTML = elt.innerHTML;
   copyEltContent(elt, newElt);
   elt.parentNode.replaceChild(newElt, elt);
 }
+
 function copyEltContent (sourceElt, destElt) {
   destElt.innerHTML = sourceElt.innerHTML;
 }
+*/
 function copyEltAttributes (sourceElt, destElt) {
   if (sourceElt.hasAttributes()) {
     var attrs = sourceElt.attributes;
@@ -202,6 +204,8 @@ String.prototype.insert = function (index, string) {
 const insertNotes = (text, notes) => {
 
   //console.log(`%c insertNotes`, 'color:orange')
+  console.log("computeQuillPointersFromTEIPointers (insertNotes)", notes)
+
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
 
   const shadowQuillElement = document.createElement('div');
@@ -258,33 +262,40 @@ const insertSegments = (text, segments, translationOrTranscription) => {
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
-  let shadowQuill = new Quill(shadowQuillElement);
+  try {
+    let shadowQuill = new Quill(shadowQuillElement);
+    let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription);
+    segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription);
+    //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
+    let indexCorrection = 0;
+    segmentsIndices.forEach(segmentIndex => {
+      shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
+      //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+      indexCorrection++
+    })
+  }catch(e) {
+    //
+  }
 
-  let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
-  segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
-  let indexCorrection = 0;
-  segmentsIndices.forEach(segmentIndex => {
-    shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-    indexCorrection++
-  })
   return shadowQuillElement.children[0].innerHTML
 };
 const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
 
   //console.group(`%c insertNotesAndSegments ${translationOrTranscription}`, 'color:orange')
+  console.log("computeQuillPointersFromTEIPointers (insertNotesAndSegments)", notes)
+
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  //console.log("%c notePointers =>", 'color:orange', notePointers)
+  console.log("notePointers =>", notePointers)
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
   let shadowQuill = new Quill(shadowQuillElement);
 
   notePointers.forEach(note => {
-    //console.log(note, note.ptr_start, note.ptr_end, note.content, note.id)
+    console.log(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id,)
+    console.log(shadowQuillElement.children[0].innerHTML)
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(`%c # => ${shadowQuillElement.children[0].innerHTML}`, 'color:green')
+    console.log(shadowQuillElement.children[0].innerHTML)
     //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
 
@@ -295,7 +306,7 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
   let indexCorrection = 0;
   segmentsIndices.forEach(segmentIndex => {
     shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-    console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
+    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
     indexCorrection++
   })
 
@@ -363,48 +374,41 @@ Converts TEI pointers which include some markup to quill pointers
 to be able to insert notes, segments, speechpart with quill's setFormat function
  */
 const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
-  console.log("computeQuillPointersFromTEIPointers", teiPointer)
   if (!teiPointer || teiPointer.length === 0) {
     return []
   }
-
-  //console.group(`%c computeQuillPointersFromTEIPointers ${text}`, 'color:green')
-  //console.log(text)
-
-  // deals with space between beginning of the text and first note
+  //console.log("converting TEI Pointers to Quill Pointers")
+  
+  // 1) insert [¤ ¤] placeholders in TEI 
+  let TEIData =  quillToTEI(text)
+  let ptrCount = 0
+  teiPointer.sort((p1, p2) => p1.ptr_start - p2.ptr_start).map(pointer => {
+    TEIData = TEIData.substr(0, pointer.ptr_start + 4*ptrCount) + '[¤' + TEIData.substr(pointer.ptr_start+ 4*ptrCount)
+    TEIData = TEIData.substr(0, pointer.ptr_end + 4*ptrCount + 2) + '¤]' + TEIData.substr(pointer.ptr_end + 4*ptrCount + 2) // '[¤' length
+    ptrCount += 1
+  })
+  //console.log('TEIData:', TEIData)
+  // 2) Sanitize
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
-  let count = 0;
-  let delta = 0;
-  const quillPointers = teiPointer.sort((p1, p2) => p1.ptr_start - p2.ptr_start).map(pointer => {
-
-    const start = count > 0 ? teiPointer[count-1].ptr_end : 0;
-    console.log("%c ###", 'color:green', count, pointer.ptr_start, pointer.ptr_end)
-
-    const startText = text.substring(start, pointer.ptr_start);
-    const startTextSanitized = startText.replace(sanitizePattern, '')
-    const deltaStart = startText.length - startTextSanitized.length;
-
-    delta -= deltaStart;
-    let startIndex = pointer.ptr_start + delta;
-    console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
-
-    const linkedText =  text.substring(pointer.ptr_start, pointer.ptr_end);
-    const linkedTextSanitized = linkedText.replace(sanitizePattern, '')
-    const deltaLinked = linkedText.length - linkedTextSanitized.length;
-    delta -= deltaLinked;
-    let endIndex = pointer.ptr_end + delta;
-
-    console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
-
-    let quillPointer = { ...pointer, ptr_start: startIndex, ptr_end: endIndex}
-    console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
-    //console.groupEnd()
-    count++;
-    return quillPointer
-  });
-  //console.groupEnd()
-  return quillPointers
+  let QuillData = TEIData.replace(sanitizePattern, '')
+  
+  let QuillPtrs = []
+  //console.log('QuillData:', QuillData)
+  // 3) Find indices of placeholders
+  for (let index = 0; index < ptrCount; index++) {
+    const tag_start = QuillData.indexOf('[¤')
+    const tag_end = QuillData.indexOf('¤]')
+    QuillPtrs.push({
+      ...teiPointer[index],
+      ptr_start: tag_start ,
+      ptr_end: tag_end - 2 // '[¤' length
+    })
+    QuillData = QuillData.substr(0, tag_start) + QuillData.substr(tag_start + 2, (tag_end - tag_start) - 2) + QuillData.substr(tag_end + 2)
+    //console.log("Tagstart:", QuillData)
+  }
+  return QuillPtrs
 }
+
 const computeQuillIndicesFromTEIIndices = (text, teiIndices) => {
 
 
@@ -695,6 +699,6 @@ export {
   computeNotesPointers,
   computeSpeechpartsPointers,
   computeImageAlignmentsPointers,
-
+  computeQuillPointersFromTEIPointers,
   sanitizeHtmlWithNotesForSave
 };
