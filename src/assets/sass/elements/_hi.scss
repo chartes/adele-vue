@@ -20,3 +20,11 @@ hi {
 smallcaps {
     font-variant: small-caps;
 }
+
+list {
+    item {
+        list-style: disc;
+        display: list-item;
+        list-style-position: inside;
+    }
+}
