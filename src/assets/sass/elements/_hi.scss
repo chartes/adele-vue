@@ -1,0 +1,22 @@
+hi {
+    &[rend='i'] {
+        font-style: italic;
+    }
+    &[rend='b'] {
+        color: #363636;
+        font-weight: 700;
+    }
+    &[rend='u'] {
+        text-decoration-line: underline;
+    }
+    &[rend='sc'] {
+        font-variant: small-caps;
+    }
+    &[rend='sup'] {
+        vertical-align: super;
+        font-size: smaller;
+    }
+}   
+smallcaps {
+    font-variant: small-caps;
+}

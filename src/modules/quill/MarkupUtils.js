@@ -282,10 +282,11 @@ const insertSegments = (text, segments, translationOrTranscription) => {
 const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
 
   //console.group(`%c insertNotesAndSegments ${translationOrTranscription}`, 'color:orange')
-  console.log("computeQuillPointersFromTEIPointers (insertNotesAndSegments)", notes)
+  //console.log("computeQuillPointersFromTEIPointers (insertNotesAndSegments)", notes)
 
   const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  console.log("notePointers =>", notePointers)
+  //console.log("notePointers (tei format) =>", notes)
+  //console.log("notePointers =>", notePointers)
 
   const shadowQuillElement = document.createElement('div');
   shadowQuillElement.innerHTML = text;
@@ -387,13 +388,13 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
     TEIData = TEIData.substr(0, pointer.ptr_end + 4*ptrCount + 2) + '¤]' + TEIData.substr(pointer.ptr_end + 4*ptrCount + 2) // '[¤' length
     ptrCount += 1
   })
-  //console.log('TEIData:', TEIData)
+  console.log('TEIData:', TEIData)
   // 2) Sanitize
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
   let QuillData = TEIData.replace(sanitizePattern, '')
   
   let QuillPtrs = []
-  //console.log('QuillData:', QuillData)
+  console.log('QuillData:', QuillData, QuillData.indexOf('[¤'))
   // 3) Find indices of placeholders
   for (let index = 0; index < ptrCount; index++) {
     const tag_start = QuillData.indexOf('[¤')
@@ -404,7 +405,7 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
       ptr_end: tag_end - 2 // '[¤' length
     })
     QuillData = QuillData.substr(0, tag_start) + QuillData.substr(tag_start + 2, (tag_end - tag_start) - 2) + QuillData.substr(tag_end + 2)
-    //console.log("Tagstart:", QuillData)
+    console.log("Tagstart:", QuillData)
   }
   return QuillPtrs
 }

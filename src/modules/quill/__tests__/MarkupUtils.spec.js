@@ -130,9 +130,9 @@ describe('MarkupUtils', () => {
       {ptr_start: 123, ptr_end: 137} // <ex>seing</ex>
     ]
     const ExpectedQUILLPointers = [
-      {ptr_start: 48, ptr_end: 55}, // la dame
-      {ptr_start: 64, ptr_end: 77}, // <i>Urraka</i>
-      {ptr_start: 91, ptr_end: 105} // <ex>seing</ex>
+      {ptr_start: 29, ptr_end: 36}, // la dame
+      {ptr_start: 45, ptr_end: 51}, // Urraka
+      {ptr_start: 62, ptr_end: 67} // seing
     ]
     // compute
     const QuillData = TEIToQuill(TEIData)
