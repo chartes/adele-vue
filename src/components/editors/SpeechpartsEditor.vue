@@ -23,7 +23,7 @@
           spellcheck="false"
         />
         <in-editor-actions
-          v-show="selectedSpeechpartId && editor.hasFocus()"
+          v-show="selectedSpeechpartId !== null && editor.hasFocus()"
           class="speechpart-actions"
           :style="actionsPosition"
           refs="speechpartActions"
@@ -35,7 +35,7 @@
       </div>
 
       <speechpart-form
-        v-if="selectedSpeechpartId && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
+        v-if="selectedSpeechpartId !== null && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
         :speechpart="currentSpeechpart"
         :speechpart-id="selectedSpeechpartId"
         :submit="updateSpeechpart"
