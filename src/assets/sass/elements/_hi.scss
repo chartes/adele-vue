@@ -28,3 +28,17 @@ list {
         list-style-position: inside;
     }
 }
+
+blockquote, quote[rend="block"]{
+    display: block !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+    margin-left: 40px !important;
+    margin-right: 40px !important;
+}
+
+cite {
+    &:hover {
+        cursor: pointer;
+    }
+}

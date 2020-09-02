@@ -27,9 +27,9 @@ export default {
     data() {
       return {
         currentZoom: 0,
-        maxZoom: 3,
+        maxZoom: 5,
         mapOptions: {
-          zoomSnap: 0.15
+          zoomSnap: 0.20
         }
       }
     },

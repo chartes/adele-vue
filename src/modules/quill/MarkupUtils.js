@@ -31,7 +31,7 @@ const MAPPING_QUILL_TO_TEI = {
   // TODO couleur	hi[@style="$color"]	?
   'blockquote': { tag: 'quote', attr: 'rend', attrValue:'block'},
   'q': { tag: 'quote', attr: 'rend', attrValue:'inline'},
-  'cite': { tag: 'title', attr: 'ref'},
+  //'cite': { tag: 'title', attr: 'ref'},
   'persname': { tag: 'persName'},
   'placeName': { tag: 'placeName'},
 };
@@ -77,7 +77,7 @@ const MAPPING_TEI_TO_QUILL = {
       },
     }
   },
-  'title': { tag: 'cite'},
+  //'title': { tag: 'cite'},
   'persName': { tag: 'persname'},
   'placeName': { tag: 'placename'},
 };
