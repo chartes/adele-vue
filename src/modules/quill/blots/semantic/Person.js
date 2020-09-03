@@ -14,6 +14,7 @@ class PersonBlot extends Inline {
 
   static create(data) {
     let node = super.create();
+    console.log("DATA", data, node)
     node.setAttribute('ref', data);
     return node;
   }
@@ -22,7 +23,6 @@ class PersonBlot extends Inline {
     let ref = domNode.getAttribute('ref');
     return ref || true;
   }
-
 
 
   format(name, data) {

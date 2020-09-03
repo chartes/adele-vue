@@ -24,7 +24,6 @@ var EditorMixin = {
   methods: {
 
     initEditor(editorElement, initialContent) {
-
       editorElement.innerHTML = initialContent;
       this.editor = getNewQuill(editorElement);
       this.activateEvents();

@@ -13,7 +13,7 @@ import {
   stripSpeechparts
 } from '../MarkupUtils'
 
-const dom = new jsdom.JSDOM();
+const dom = new jsdom.JSDOM(); 
 global.window = dom.window;
 global.document = dom.window.document;
 console.log("getselection",  global.document)
@@ -113,8 +113,14 @@ describe('MarkupUtils', () => {
 
   })
   test('TEIToQuill', () => {
-    const TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de Dieu. Moi la dame enfante <hi rend="i">Urraka</hi>, confirme <hi rend="i"><ex>seing</ex></hi>.</p>';
-    const QUILLData = '<p><i><ex>Chrismon</ex></i> Au nom de Dieu. Moi la dame enfante <i>Urraka</i>, confirme <i><ex>seing</ex></i>.</p>'
+    //test <hi> to quill
+    let TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de Dieu. Moi la dame enfante <hi rend="i">Urraka</hi>, confirme <hi rend="i"><ex>seing</ex></hi>.</p>';
+    let QUILLData = '<p><i><ex>Chrismon</ex></i> Au nom de Dieu. Moi la dame enfante <i>Urraka</i>, confirme <i><ex>seing</ex></i>.</p>'
+    expect(TEIToQuill(TEIData)).toBe(QUILLData)
+
+    //test persname with <ex> inside
+    TEIData = '<p><hi rend="i"><ex>Chrismon</ex></hi> Au nom de <persName ref="Personne Sainte">Dieu</persName>. Moi la dame enfante <persName ref="Urraka"><hi rend="i">Urraka</hi></persName>, confirme <hi rend="i"><ex>seing</ex></hi>. <persName>Ro<ex>b</ex>ert</persName></p>';
+    QUILLData = '<p><i><ex>Chrismon</ex></i> Au nom de <persname ref="Personne Sainte">Dieu</persname>. Moi la dame enfante <persname ref="Urraka"><i>Urraka</i></persname>, confirme <i><ex>seing</ex></i>. <persname>Ro<ex>b</ex>ert</persname></p>'
     expect(TEIToQuill(TEIData)).toBe(QUILLData)
   })
   test('QuillToTEI', () => {

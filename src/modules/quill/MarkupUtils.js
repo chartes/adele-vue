@@ -32,8 +32,8 @@ const MAPPING_QUILL_TO_TEI = {
   'blockquote': { tag: 'quote', attr: 'rend', attrValue:'block'},
   'q': { tag: 'quote', attr: 'rend', attrValue:'inline'},
   //'cite': { tag: 'title', attr: 'ref'},
-  'persname': { tag: 'persName'},
-  'placeName': { tag: 'placeName'},
+  'persname': { tag: 'persName', 'attr': 'ref'},
+  'placeName': { tag: 'placeName', 'attr': 'ref'},
 };
 const MAPPING_TEI_TO_QUILL = {
   'head': {
@@ -293,10 +293,10 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
   let shadowQuill = new Quill(shadowQuillElement);
 
   notePointers.forEach(note => {
-    console.log(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id,)
-    console.log(shadowQuillElement.children[0].innerHTML)
+    //console.log(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id,)
+    //console.log(shadowQuillElement.children[0].innerHTML)
     shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(shadowQuillElement.children[0].innerHTML)
+    //console.log(shadowQuillElement.children[0].innerHTML)
     //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
   })
 
@@ -388,13 +388,13 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
     TEIData = TEIData.substr(0, pointer.ptr_end + 4*ptrCount + 2) + '¤]' + TEIData.substr(pointer.ptr_end + 4*ptrCount + 2) // '[¤' length
     ptrCount += 1
   })
-  console.log('TEIData:', TEIData)
+  //console.log('TEIData:', TEIData)
   // 2) Sanitize
   const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
   let QuillData = TEIData.replace(sanitizePattern, '')
   
   let QuillPtrs = []
-  console.log('QuillData:', QuillData, QuillData.indexOf('[¤'))
+  //console.log('QuillData:', QuillData, QuillData.indexOf('[¤'))
   // 3) Find indices of placeholders
   for (let index = 0; index < ptrCount; index++) {
     const tag_start = QuillData.indexOf('[¤')
@@ -405,7 +405,7 @@ const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
       ptr_end: tag_end - 2 // '[¤' length
     })
     QuillData = QuillData.substr(0, tag_start) + QuillData.substr(tag_start + 2, (tag_end - tag_start) - 2) + QuillData.substr(tag_end + 2)
-    console.log("Tagstart:", QuillData)
+    //console.log("Tagstart:", QuillData)
   }
   return QuillPtrs
 }

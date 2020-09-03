@@ -127,7 +127,6 @@ const mutations = {
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
-
     //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
     //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
@@ -180,8 +179,6 @@ const actions = {
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
       };
-
-      console.log(rootState.speechparts.speechparts)
 
       commit('INIT', data);
       commit('UPDATE', data);
