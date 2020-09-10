@@ -1,7 +1,7 @@
 note, .note-placeholder {
     display: inline-block;
     text-decoration: underline;
-    white-space: pre;
+    white-space: pre-wrap;
 
     &:hover {
         cursor: pointer;

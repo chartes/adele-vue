@@ -10,6 +10,7 @@ import {
   insertSegments,
   insertNotesAndSegments,
   insertNotes,
+  stripNotes,
   stripSegments,
   computeNotesPointers,
   computeAlignmentPointers,
@@ -19,7 +20,6 @@ import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
 let notesShadowQuillElements = {} 
 let notesShadowQuills = {}
-
 
 const state = {
 
@@ -41,11 +41,15 @@ const mutations = {
         const t = commentary.typeLabel
 
         notesShadowQuillElements[t] = document.createElement('div')
-        notesShadowQuillElements[t].innerHTML = commentary.withNotes || ""
+        notesShadowQuillElements[t].innerHTML = "<p></p>"
         notesShadowQuills[t] = new Quill(notesShadowQuillElements[t]);
+        notesShadowQuillElements[t].children[0].innerHTML = commentary.withNotes || ""
+        
+        console.log("commentary source", t, data)
+
         Vue.set(state.commentariesWithNotes, t, {
           ...commentary,
-          content: notesShadowQuillElements[t].children[0].innerHTML
+          withNotes: notesShadowQuillElements[t].children[0].innerHTML
         })
       })
 
@@ -89,21 +93,21 @@ const mutations = {
   */
   CHANGED (state) {
     // transcription changed and needs to be saved
-    //console.log("STORE MUTATION transcription/CHANGED")
     state.commentariesSaved = false;
   },
   SAVING_STATUS (state, payload) {
-    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
   },
   ADD_OPERATION (state, payload) {
     const t = state.selectedCommentaryLabel
+
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuills[t], payload, 'notes')
+    
     notesShadowQuills[t].updateContents(deltaFilteredForNotes)
 
     Vue.set(state.commentariesWithNotes, t, {
       ...state.commentariesWithNotes[t],
-      content: notesShadowQuillElements[t].children[0].innerHTML
+      withNotes: notesShadowQuillElements[t].children[0].innerHTML
     })
   },
 };
@@ -115,6 +119,7 @@ function parseComsFromResponse(response) {
   commentaries.forEach(comm => {
     let quillContent = TEIToQuill(comm.content);
     let withNotes = insertNotes(quillContent, comm.notes);
+    console.log("commentaries", comm, quillContent, withNotes)
     commentariesFormatted.push({
       type: comm.type.id,
       typeLabel: comm.type.label,
@@ -210,7 +215,6 @@ const actions = {
 
   /* useful */
   changed ({ commit }, deltas) {
-    console.warn('STORE ACTION commentaries/changed', deltas);
     commit('ADD_OPERATION', deltas);
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
@@ -225,10 +229,11 @@ const actions = {
       // save each commentary independently
       Object.values(state.commentariesWithNotes).forEach(async com => {
           console.log("saving", state.commentariesWithNotes, com)
-          const content = quillToTEI(com.content)
+          const contentWithNotes = quillToTEI(com.withNotes)
+          const content = stripNotes(contentWithNotes)
 
           // prepare notes
-          const teiWithNotes = quillToTEI(com.withNotes)
+          const teiWithNotes = contentWithNotes
           let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
 
           const notes = computeNotesPointers(sanitizedWithNotes)

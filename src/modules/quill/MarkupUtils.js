@@ -204,25 +204,13 @@ String.prototype.insert = function (index, string) {
 };
 
 const insertNotes = (text, notes) => {
-
-  //console.log(`%c insertNotes`, 'color:orange')
   console.log("computeQuillPointersFromTEIPointers (insertNotes)", notes)
 
-  const notePointers = computeQuillPointersFromTEIPointers(text, notes)
+  const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
 
-  const shadowQuillElement = document.createElement('div');
-  let shadowQuill = new Quill(shadowQuillElement);
-  shadowQuillElement.innerHTML = text;
-
-  notePointers.forEach(note => {
-    shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log(`%c # => ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-  })
-  return shadowQuillElement.children[0].innerHTML;
-
-  /*let result = text;
+  let result = text;
   let indexCorrection = 0;
-  notes.forEach(note => {
+  notePointers.forEach(note => {
     let opening = `<note id="${note.id}">`;
     let closing = '</note>'
     result = result.insert(note.ptr_start + indexCorrection, opening);
@@ -231,7 +219,6 @@ const insertNotes = (text, notes) => {
     indexCorrection += closing.length;
   })
   return result;
-  */
 };
 const insertFacsimileZones = (text, zones) => {
   let result = text;
@@ -271,21 +258,8 @@ const insertSegments = (text, segments, translationOrTranscription) => {
   return shadowQuillElement.children[0].innerHTML
 };
 const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
-
   const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
-  //console.log('insertNotesAndSegments', text, notes, notePointers)
-  /*
-  const shadowQuillElement = document.createElement('div');
-  shadowQuillElement.innerHTML = "<p></p>"
-  const shadowQuill = new Quill(shadowQuillElement);
 
-  //format the sanitized quill
-  /*
-  notePointers.forEach(note => {
-    d = shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    console.log("delta", d)
-  })
-  */
   let indexCorrection = 0;
   notePointers.forEach(note => {
     let opening = `<note id="${note.id}">`;
@@ -295,74 +269,8 @@ const insertNotesAndSegments  = (text, notes, segments, translationOrTranscripti
     text = text.insert(note.ptr_end + indexCorrection, closing);
     indexCorrection += closing.length;
   });
-  //shadowQuillElement.children[0].innerHTML = text;
-  /*
-  let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
-  segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  let indexCorrection = 0;
-  segmentsIndices.forEach(segmentIndex => {
-    shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-    indexCorrection++
-  })
-  */
-  //const t= shadowQuillElement.children[0].innerHTML
-  return  text // shadowQuillElement.children[0].innerHTML;
- 
-  //return text
-/*
-  const index = translationOrTranscription === 'transcription' ? 0 : 2;
-  let insertions = [];
-  segments.forEach(segment => {
-    if (segment[index]) insertions.push({index: segment[index], type: 'segment'});
-  });
-  notes.forEach(note => {
-    insertions.push({index: note.ptr_start, type: 'note_start', note: note});
-    insertions.push({index: note.ptr_end, type: 'note_end'});
-  });
-  //console.log(insertions.length, "insertions after", notes.length,"notes")
-  insertions.sort((a, b) => { return a.index - b.index; });
-
-  console.log('')
-  console.log('insertNotesAndSegments', translationOrTranscription)
-  console.log('insertNotesAndSegments', text)
-  console.log('notes', notes)
-  console.log(insertions)
-  console.log('')
-
-  let result = text;
-  let indexCorrection = 0;
-
-  insertions.forEach(ins => {
-    let insertTag = '';
-    let inserted = false;
-    switch (ins.type) {
-      case 'segment':
-        let strAtInsertPoint = result.substr(ins.index + indexCorrection, 3);
-        inserted = (ins.index + indexCorrection > 0 && strAtInsertPoint !== '<p>' && strAtInsertPoint !== '<l>' && strAtInsertPoint !== '<lb');
-        if (ins.index + indexCorrection > 0 && strAtInsertPoint !== '<p>' && strAtInsertPoint !== '<l>' && strAtInsertPoint !== '<lb') {
-          insertTag = '<segment></segment>';
-        }
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag, strAtInsertPoint, inserted ? 'OUI' : 'NON');
-        break;
-      case 'note_start':
-        insertTag = `<note id="${ins.note.id}">`;
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag);
-        inserted = true;
-        break;
-      case 'note_end':
-        insertTag = `</note>`;
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag);
-        inserted = true;
-        break;
-    }
-    result = result.insert(ins.index + indexCorrection, insertTag);
-    if (inserted) console.log(" =>", result)
-    indexCorrection += insertTag.length;
-  });
-  console.log('RES', result)
-  return result
-  */
-}
+  return  text 
+  }
 
 /*
 Converts TEI pointers which include some markup to quill pointers

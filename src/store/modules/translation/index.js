@@ -30,17 +30,17 @@ const state = {
 const mutations = {
 
   INIT(state, payload) {
-    //if (!state.shadowQuill) {
-      translationShadowQuillElement.innerHTML = payload.content;
+      translationShadowQuillElement.innerHTML = "<p></p>";
       translationShadowQuill = new Quill(translationShadowQuillElement);
+      translationShadowQuillElement.children[0].innerHTML = payload.content;
       state.translationContent = translationShadowQuillElement.children[0].innerHTML;
       console.log('STORE ACTION translation/INIT')
 
-      notesShadowQuillElement.innerHTML = payload.withNotes;
+      notesShadowQuillElement.innerHTML = "<p></p>"
       notesShadowQuill = new Quill(notesShadowQuillElement);
+      notesShadowQuillElement.children[0].innerHTML = payload.withNotes;
       state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
 
-    //}
   },
   RESET (state) {
     console.log("STORE MUTATION translation/RESET")
@@ -48,7 +48,6 @@ const mutations = {
     state.translationAlignments = [];
     state.translationContent = null;
     state.translationWithNotes = null;
-    //state.translationWithSpeechparts = null;
 
     if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
     if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";
@@ -89,8 +88,6 @@ const mutations = {
     state.savingStatus = payload;
   },
   ADD_OPERATION (state, payload) {
-
-    console.log("STORE MUTATION translation/ADD_OPERATION")
     const deltaFilteredForContent = filterDeltaOperations(translationShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
 
@@ -99,14 +96,11 @@ const mutations = {
 
     state.translationContent = translationShadowQuillElement.children[0].innerHTML;
     state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
-
   },
   SAVED (state) {
     // translation changed and needs to be saved
-    console.log("STORE MUTATION translation/SAVED");
     state.translationSaved = true;
   }
-
 };
 
 const actions = {

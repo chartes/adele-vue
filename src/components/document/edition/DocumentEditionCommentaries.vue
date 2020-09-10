@@ -107,7 +107,7 @@ export default {
       },
       getCommentaryContent(label) {
         const com = this.getCommentary(label);
-        return com ? com.content : ''
+        return com ? com.withNotes : ''
       }
     }
 }

@@ -47,7 +47,6 @@ const mutations = {
 
 
   INIT(state, payload) {
-    //if (!transcriptionShadowQuill) {
       transcriptionShadowQuillElement.innerHTML = "<p></p>" 
       transcriptionShadowQuill = new Quill(transcriptionShadowQuillElement);
       transcriptionShadowQuillElement.children[0].innerHTML = payload.content || "";
@@ -69,8 +68,6 @@ const mutations = {
       facsimileShadowQuill = new Quill(facsimileShadowQuillElement);
       facsimileShadowQuillElement.children[0].innerHTML = payload.withFacsimile || "";
       state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
-
-    //}
   },
   RESET(state) {
 
@@ -124,41 +121,29 @@ const mutations = {
   },
   ADD_OPERATION (state, payload) {
 
-    //console.log(`%c ADD_OPERATION`, 'color:red', payload);
-
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
-    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-    //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
     notesShadowQuill.updateContents(deltaFilteredForNotes);
     speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
     facsimileShadowQuill.updateContents(deltaFilteredForFacsimile);
 
-    console.log("ADD OPERATION", payload,  state.transcriptionContent, transcriptionShadowQuillElement, deltaFilteredForContent)
-
     state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
-  
-  
-    //console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
-
   },
   SAVED (state) {
     // transcription saved
-    //console.log("STORE MUTATION transcription/SAVED")
     state.transcriptionSaved = true;
   }
 
 };
 
 const actions = {
-
  
   /* useful */
   fetchTranscriptionFromUser ({dispatch, commit, state, rootState}, {docId, userId}) {
