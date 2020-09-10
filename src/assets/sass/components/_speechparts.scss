@@ -4,14 +4,6 @@ speechpart {
         cursor: pointer;
     }
     
-
-  // 36 loop iterations
-  @for $i from 1 through 36 { 
-    &:nth-of-type(#{$i}) {
-      // multiply by 10 for larger hue increments
-      background: hsl($i * 40, 70%, 50%);
-    }
-  }
 }
 
 .speech-parts.content {
@@ -41,35 +33,42 @@ speechpart {
         padding: 0 6px !important;
     }
 
-    &.type-01.active, &.type-01:hover {
-        background-color: #F2F2F2;
+}
+
+.speech-part, speechpart {
+
+    padding: 0.35em;
+    border-radius: 5px;
+
+    &.type-01.active, &.type-01:hover, &[type='1'] {
+        background-color: #f2e9d0;
     }
-    &.type-02.active, &.type-02:hover {
-        background-color: #F1EEE4;
+    &.type-02.active, &.type-02:hover, &[type='2'] {
+        background-color: #c3aed6;
     }
-    &.type-03.active, &.type-03:hover {
-        background-color: #E4F1F0;;
+    &.type-03.active, &.type-03:hover, &[type='3'] {
+        background-color: #e79e85;;
     }
-    &.type-04.active, &.type-04:hover {
-        background-color: #F1E7E4;
+    &.type-04.active, &.type-04:hover, &[type='4'] {
+        background-color: #bb5a5a;
     }
-    &.type-05.active, &.type-05:hover {
-        background-color: #F0E4F1;
+    &.type-05.active, &.type-05:hover, &[type='5'] {
+        background-color: #bad7df;
     }
-    &.type-06.active, &.type-06:hover {
-        background-color: #E4F1E6;
+    &.type-06.active, &.type-06:hover, &[type='6'] {
+        background-color: #ffe2e2;
     }
-    &.type-07.active, &.type-07:hover {
-        background-color: honeydew;
+    &.type-07.active, &.type-07:hover, &[type='7'] {
+        background-color: #99ddcc;
     }
-    &.type-08.active, &.type-08:hover {
-        background-color: indianred;
+    &.type-08.active, &.type-08:hover, &[type='8'] {
+        background-color: #8d93ab;
     }
-    &.type-09.active, &.type-09:hover {
-        background-color: yellowgreen;
+    &.type-09.active, &.type-09:hover, &[type='9'] {
+        background-color: #fddb3a;
     }
-    &.type-10.active, &.type-10:hover {
-        background-color: brown;
+    &.type-10.active, &.type-10:hover, &[type='10'] {
+        background-color: #5c8d89;
     }
 }
 

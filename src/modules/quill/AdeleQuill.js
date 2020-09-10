@@ -108,7 +108,7 @@ function getNewQuill (elt, opt = null) {
 
   let opts = opt || options;
 
-  let quill = new Quill(elt, options);
+  let quill = new Quill(elt, opts);
   var length = quill.getLength()
   var text = quill.getText(length - 2, 2)
 

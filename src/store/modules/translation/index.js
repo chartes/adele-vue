@@ -248,7 +248,7 @@ const actions = {
 
   insertNote({commit, state}, newNote) {
     /* build a new shadow content with notes */
-    const quillContent = TEIToQuill(state.translation.content);
+    const quillContent = TEIToQuill(state.translationContent);
     const textWithNotes = insertNotes(quillContent, [newNote])
     const data = {
       translation: {

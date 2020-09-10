@@ -14,7 +14,6 @@ class PersonBlot extends Inline {
 
   static create(data) {
     let node = super.create();
-    console.log("DATA", data, node)
     node.setAttribute('ref', data);
     return node;
   }

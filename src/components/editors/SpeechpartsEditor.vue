@@ -68,7 +68,7 @@
       //EditorButton,
     },
     mixins: [EditorMixins],
-    props: ['initialContent'],
+    props: { initialContent: {type: String, default: '<p></p>'}},
     data() {
       return {
         storeActions: {
@@ -84,26 +84,30 @@
         }
       }
     },
-    watch: {
-
+    computed: {
+      /*
+      isSpeechpartButtonActive () {
+        const cond = this.editorHasFocus && this.buttons.speechpart;
+        return cond;
+      },
+      */
+      ...mapState('transcription', ['transcription']),
+      ...mapState('speechparts', ['newSpeechpart']),
+      ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
     },
     mounted () {
       this.$store.dispatch('speechpartTypes/fetch')
-
       this.initEditor(this.$refs.editor, this.$props.initialContent);
       this.preventKeyboard();
       this.activateMouseOver()
-
     },
     beforeDestroy () {
       this.allowKeyboard();
       this.deactivateMouseOver();
     },
     methods: {
-
       updateContent () {
         this.delta = this.editor.getContents().ops;
-
       },
       /*
       updateButtons (formats) {
@@ -139,7 +143,7 @@
         const action = isNewSpeechpart ? 'add' : 'update';
         sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
         sp.ptr_start = this.selectedSpeechpartId;
-        this.editor.format('speechpart', sp.ptr_start.toString());
+        this.editor.format('speechpart', `${sp.ptr_start.toString()},${sp.speech_part_type.id}`);
         this.$store.dispatch(`speechparts/${action}`, sp)
         this.closeSpeechpartEdit()
       },
@@ -220,20 +224,7 @@
       },
       mouseOutHandler (e) {
         //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
-      },
-
-    },
-
-    computed: {
-      /*
-      isSpeechpartButtonActive () {
-        const cond = this.editorHasFocus && this.buttons.speechpart;
-        return cond;
-      },
-      */
-      ...mapState('transcription', ['transcription']),
-      ...mapState('speechparts', ['newSpeechpart']),
-      ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
+      }
     }
   }
 </script>

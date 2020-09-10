@@ -7,15 +7,19 @@ import {
   computeQuillPointersFromTEIPointers,
   getRelevantSegmentsIndices,
   insertSegments,
+  insertSpeechparts,
   sanitizeHtmlWithNotesForSave,
   stripNotes,
   stripSegments,
-  stripSpeechparts
+  stripSpeechparts,
+  insertNotesAndSegments,
+  computeSpeechpartsPointers
 } from '../MarkupUtils'
 
 const dom = new jsdom.JSDOM(); 
 global.window = dom.window;
 global.document = dom.window.document;
+/*
 console.log("getselection",  global.document)
 require('mutationobserver-shim');
 // spec/javascripts/helpers/jest-env.js
@@ -27,6 +31,13 @@ global.window.getSelection = global.document.getSelection = function() {
     removeAllRanges:function() {}
   };
 };
+global.window.getRangeAt = global.document.getRangeAt = function() {
+  return {
+    addRange: function() {},
+    removeAllRanges:function() {}
+  };
+};
+*/
 
 global.MutationObserver = window.MutationObserver;
 
@@ -56,7 +67,7 @@ const testNotes = [
       "label": "TERM"
     }
   }
-]
+] 
 
 
 describe('MarkupUtils', () => {
@@ -142,8 +153,59 @@ describe('MarkupUtils', () => {
     ]
     // compute
     const QuillData = TEIToQuill(TEIData)
-    const QuillPointers = computeQuillPointersFromTEIPointers(QuillData, TEIPointers)
-    expect(QuillPointers).toEqual(ExpectedQUILLPointers)
+
+    // pointers on the sanitized quill content
+    const sanitizedQuillPointers = computeQuillPointersFromTEIPointers(QuillData, TEIPointers, true)
+    expect(sanitizedQuillPointers).toEqual(ExpectedQUILLPointers)
+
+    // pointers on the quill html content
+    const QuillPointers = computeQuillPointersFromTEIPointers(QuillData, TEIPointers, false)
+    //expect(sanitizedQuillPointers).toEqual(ExpectedQUILLPointers)
+    // TODO
+  })
+  test('computeSpeechpartsPointers', () => {
+    const trWithSp = `<p><speechpart id="0" type="1">Adresse</speechpart>, <speechpart id="9" type="2">souscription</speechpart> </p><p><speechpart id="300" type="3">Salut</speechpart> et <speechpart id="400" type="4">notification</speechpart></p>`
+    const expectedSp = [
+      {index: 0, ptr_start: 3, ptr_end: 10},
+      {index: 9, ptr_start: 12, ptr_end: 24},
+      {index: 300, ptr_start: 32, ptr_end: 37},
+      {index: 400, ptr_start: 41, ptr_end: 53},
+    ]
+    const speechparts = computeSpeechpartsPointers(trWithSp)
+    //console.log(expectedSp)
+    //console.log(speechparts)
+    expect(speechparts).toEqual(expectedSp)
+  })
+  test('insertSpeechparts', () => {
+    const tr = '<p>Adresse, souscription </p><p>Salut et notification</p>'
+    const speechparts = {
+      3 : {id: 0, note: null, ptr_end: 10, ptr_start: 3, speech_part_type: {id: 1}},
+      12: {id: 9, note: null, ptr_end: 24, ptr_start: 12, speech_part_type: {id: 2}},
+      25: {id: 300, note: null, ptr_end: 37, ptr_start: 32, speech_part_type: {id: 3}},
+      34: {id: 400, note: null, ptr_end: 53, ptr_start: 41, speech_part_type: {id: 4}}
+    }
+    const expectedTr = `<p><speechpart id="0" type="1">Adresse</speechpart>, <speechpart id="9" type="2">souscription</speechpart> </p><p><speechpart id="300" type="3">Salut</speechpart> et <speechpart id="400" type="4">notification</speechpart></p>`
+    const trWithSp = insertSpeechparts(tr, speechparts)
+    expect(trWithSp).toEqual(expectedTr)
+  })
+  test('insertNotesAndSegments', () => {
+    const tr = '<p><strong>hello</strong></p><p>!</p><p><i>woooo</i></p><p><i>oorld</i></p>'
+    const notesTEI = [
+      {
+        id: 1,
+        content: "<p>whouhouou</p>",
+        note_type: {
+          id: 0,
+          label: "TERM"
+        },
+        ptr_start: 41,
+        ptr_end: 64
+      }
+    ]
+    const expectedTrWithNotes = '<p><strong>hello</strong></p><p>!</p><p><note id="1"><i>woooo</i></note></p><p><i>oorld</i></p>'
+    const trWithNotes = insertNotesAndSegments(tr, notesTEI, [], 'transcription')
+    console.log("insertNotesAndSegments", trWithNotes)
+    expect(trWithNotes).toEqual(expectedTrWithNotes)
   })
   // TODO
   /*

@@ -48,23 +48,26 @@ const mutations = {
 
   INIT(state, payload) {
     //if (!transcriptionShadowQuill) {
-
-      transcriptionShadowQuillElement.innerHTML = payload.content || "";
+      transcriptionShadowQuillElement.innerHTML = "<p></p>" 
       transcriptionShadowQuill = new Quill(transcriptionShadowQuillElement);
+      transcriptionShadowQuillElement.children[0].innerHTML = payload.content || "";
       state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with content", state.transcriptionContent);
 
-      notesShadowQuillElement.innerHTML = payload.withNotes || "";
+      notesShadowQuillElement.innerHTML = "<p></p>" 
       notesShadowQuill = new Quill(notesShadowQuillElement);
+      notesShadowQuillElement.children[0].innerHTML = payload.withNotes || "";
       state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with notes", state.transcriptionWithNotes);
 
-      speechpartsShadowQuillElement.innerHTML = payload.withSpeechparts || "";
+      speechpartsShadowQuillElement.innerHTML = "<p></p>" 
       speechpartsShadowQuill = new Quill(speechpartsShadowQuillElement);
+      speechpartsShadowQuillElement.children[0].innerHTML = payload.withSpeechparts || "";
       state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
 
-      facsimileShadowQuillElement.innerHTML = payload.withFacsimile || "";
+      facsimileShadowQuillElement.innerHTML = "<p></p>" 
       facsimileShadowQuill = new Quill(facsimileShadowQuillElement);
+      facsimileShadowQuillElement.children[0].innerHTML = payload.withFacsimile || "";
       state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
 
     //}
@@ -131,11 +134,11 @@ const mutations = {
     //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
-    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-  
     notesShadowQuill.updateContents(deltaFilteredForNotes);
     speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
     facsimileShadowQuill.updateContents(deltaFilteredForFacsimile);
+
+    console.log("ADD OPERATION", payload,  state.transcriptionContent, transcriptionShadowQuillElement, deltaFilteredForContent)
 
     state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
@@ -168,7 +171,6 @@ const actions = {
       let quillContent = TEIToQuill(transcription.content);
       let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
-
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
 
@@ -302,13 +304,19 @@ const actions = {
       commit('LOADING_STATUS', false)
     }
   },
-  insertNotes({commit, rootState, state}, notes) {
-    const quillContent = TEIToQuill(state.transcription.content)
-    const textWithNotes = insertNotes(quillContent, notes)
+  insertNote({commit, rootState, state}, newNote) {
+    const quillContent = TEIToQuill(state.transcriptionContent)
+    const textWithNotes = insertNotes(quillContent,  [newNote])
     const data = {
+      transcription: {
+        ...state.transcription,
+        notes: state.transcription.notes.concat(newNote)
+      },
       withNotes: convertLinebreakTEIToQuill(textWithNotes),
     }
+    /* save the shadow content with notes */
     commit('UPDATE', data)
+    return newNote
   },
   cloneContent: function ({dispatch, state, rootGetters, rootState}) {
     console.log('STORE ACTION transcription/cloneContent', state.transcriptionContent);

@@ -1,5 +1,5 @@
 module.exports = {
-	"testEnvironment": "jest-environment-jsdom-thirteen",
+	"testEnvironment": "jest-environment-jsdom",
 	"moduleFileExtensions": ["js", "json", "vue", "svg"],
 	"transform": {
 		"^.+\\.js$": "babel-jest",
