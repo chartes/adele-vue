@@ -173,6 +173,7 @@ const actions = {
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
+      console.log("fetchTranscriptionFromUser withNotes", withNotes)
 
       const data = {
         transcription: transcription,
@@ -260,9 +261,14 @@ const actions = {
       const tei = quillToTEI(state.transcriptionContent)
       const sanitizedContent = stripSegments(tei)
 
+      console.log("saveTranscription state.transcriptionWithNotes", state.transcriptionWithNotes)
       const teiWithNotes = quillToTEI(state.transcriptionWithNotes)
+      console.log("saveTranscription teiWithNotes", teiWithNotes)
       let sanitizedWithNotes = stripSegments(teiWithNotes)
+      console.log("saveTranscription sanitizedWithNotes", sanitizedWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+      console.log("saveTranscription sanitizedWithNotes", sanitizedWithNotes)
+
       const notes = computeNotesPointers(sanitizedWithNotes)
 
       notes.forEach(note => {

@@ -501,7 +501,7 @@ const stripSegments  = text => text.replace(/<\/?segment>/gmi, '');
 const stripSpeechparts  = text => text.replace(/<\/?speechpart( id="\d+")?( type="\d+")?>/gmi, '');
 
 const computeNotesPointers  = (htmlWithNotes) => {
-
+  
   const regexpStart = /<note id="(-?\d+)">/
   const regexpEnd = /<\/note>/
   const regexpContent = /<[^>]*>/gmi
@@ -523,7 +523,7 @@ const computeNotesPointers  = (htmlWithNotes) => {
     // tours de boucle suivants : ptr_start est trop élevé car il garde les <note> précédentes? sinon pourquoi ?
     console.log(`%c # htmlWithNotes ${resStart.index} ${resEnd.index}`, 'color:DarkOrchid')
     let noteContentWithHtml = htmlWithNotes.substring(resStart.index + resStart[0].length, resEnd.index)
-    noteContentWithHtml = noteContentWithHtml.replace(regexpContent, '')
+    //noteContentWithHtml = noteContentWithHtml.replace(regexpContent, '')
     console.log(`%c # noteContentWithHtml ${noteContentWithHtml}`, 'color:DarkOrchid')
 
     console.log(`%c # ${htmlWithNotes}`, 'color:DarkOrchid')
@@ -560,7 +560,7 @@ Replace strings like </ex></note><ex> by </note>
 and like </ex><note id="xxx"><ex> by <note id="xxx">
  */
 const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
-  //console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
+  console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
   regexpClosingToClean.forEach(re => {
     htmlWithNotes = htmlWithNotes.replace(re, '</note>')
   })
