@@ -246,13 +246,9 @@ const actions = {
       const tei = quillToTEI(state.transcriptionContent)
       const sanitizedContent = stripSegments(tei)
 
-      console.log("saveTranscription state.transcriptionWithNotes", state.transcriptionWithNotes)
       const teiWithNotes = quillToTEI(state.transcriptionWithNotes)
-      console.log("saveTranscription teiWithNotes", teiWithNotes)
       let sanitizedWithNotes = stripSegments(teiWithNotes)
-      console.log("saveTranscription sanitizedWithNotes", sanitizedWithNotes)
       sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
-      console.log("saveTranscription sanitizedWithNotes", sanitizedWithNotes)
 
       const notes = computeNotesPointers(sanitizedWithNotes)
 
@@ -283,8 +279,12 @@ const actions = {
         })
       }
       
+      // update & save the speechparts pointers before reloading the transcription
+      //await dispatch('reloadSpeechparts')
+
       // update the store content
       await dispatch('fetchTranscriptionContent')
+      //await dispatch('speechparts/saveSpeechParts', null, {root: true})
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
@@ -332,91 +332,34 @@ const actions = {
         });
     });
   },
+
+  reloadSpeechparts({commit, rootState, rootGetters, state}){
+    const userId = rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id
+    const docId = rootState.document.document.id
+    http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
+      let transcription = response.data.data;
+
+      let quillContent = TEIToQuill(transcription.content);
+      const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
+      const data = {
+        withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
+      };
+      commit('UPDATE', data);
+      commit('SET_ERROR', null)
+      commit('LOADING_STATUS', false);
+    })
+  },
+  
   updateSpeechpartsPointers({state}) {
-      //console.log("state.transcriptionWithSpeechparts", sanitizedWithSpeechparts)
-      let sanitizedWithSpeechparts = stripSegments(state.transcriptionWithSpeechparts);
+      console.log("state.transcriptionWithSpeechparts", state.transcriptionWithSpeechparts)
+      const TEIwithSpeechParts = quillToTEI(state.transcriptionWithSpeechparts)
+      console.log("state.transcriptionWithSpeechparts", TEIwithSpeechParts)
+
+      let sanitizedWithSpeechparts = stripSegments(TEIwithSpeechParts);
       //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
-  },
-  /*
-  saveNotes ({ commit, rootState, state, rootGetters }) {
-
-      console.warn('STORE ACTION transcription/saveNotes');
-
-      // compute notes pointers
-      let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes);
-
-      console.warn(sanitizedWithNotes);
-      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes);
-      console.warn(sanitizedWithNotes);
-      const notes = computeNotesPointers(sanitizedWithNotes);
-      notes.forEach(note => {
-          let found = rootState.notes.notes.find((element) => {
-              return element.id === note.note_id;
-          });
-          console.log(rootState.notes.notes, notes, found);
-          note.content = found.content;
-          note.transcription_username = rootState.user.author.username;
-          note.note_type = found.note_type.id;
-      });
-      const auth = rootGetters['user/authHeader'];
-
-      return new Promise((resolve, reject) => {
-          http.put(`documents/${rootState.document.document.id}/transcriptions/notes`, {data: notes}, auth)
-              .then(response => {
-                  if (response.data.errors) {
-                      console.error("error", response.data.errors);
-                      reject(response.data.errors);
-                  }
-                  else {
-                      resolve(response.data);
-                  }
-              });
-      })
-  },
-  */
- /*
-  saveSpeechparts ({ commit, rootState, state, rootGetters }) {
-
-
-    console.warn('STORE ACTION transcription/saveSpeechparts');
-
-    // compute notes pointers
-    //console.log("state.transcriptionWithSpeechparts", sanitizedWithSpeechparts)
-    let sanitizedWithSpeechparts = stripSegments(state.transcriptionWithSpeechparts);
-    //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
-    sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
-    const speechparts = computeSpeechpartsPointers(sanitizedWithSpeechparts);
-
-    speechparts.forEach(sp => {
-      let found = rootState.speechparts.speechparts[sp.index];
-      sp.type_id = found.speech_part_type ? found.speech_part_type.id : found.type_id;
-      if(found.note) sp.note = found.note;
-    });
-
-    const auth = rootGetters['user/authHeader'];
-    const data = {
-      username: rootState.user.author.username,
-      speech_parts: speechparts
-    };
-    //console.log("saveSpeechparts", speechparts)
-
-    return new Promise( ( resolve, reject ) => {
-      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/discours`, { data: data }, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
+  },/*
   saveImageAlignments ({ commit, rootState, state, rootGetters }) {
 
 

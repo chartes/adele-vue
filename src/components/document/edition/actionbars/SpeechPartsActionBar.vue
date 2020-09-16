@@ -3,7 +3,7 @@
     <div class="field is-grouped">
       <!-- SAVE TRANSCRIPTION --> 
       <p 
-        v-if="!isSpeechPartsReadOnly"
+        v-if="!isSpeechPartsReadOnly && false"
         class="control"
       >
         <save-speech-parts-button />

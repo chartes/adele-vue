@@ -52,7 +52,7 @@
 
 <script>
 
-  import { mapGetters, mapState } from 'vuex';
+  import { mapGetters, mapState, mapActions } from 'vuex';
   import EditorButton from './EditorButton.vue';
   import EditorMixins from '../../mixins/EditorMixins'
   import InEditorActions from './InEditorActions';
@@ -93,6 +93,7 @@
       */
       ...mapState('transcription', ['transcription']),
       ...mapState('speechparts', ['newSpeechpart']),
+      ...mapGetters('speechparts', ['getSpeechpartTypeCount', 'computeId']),
       ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
     },
     mounted () {
@@ -135,7 +136,8 @@
       },
       onSpeechpartSelected (speechpart, range) {
         if (!range.length) return;
-        this.selectedSpeechpartId = speechpart;
+        console.log("onspeechpart selected", speechpart, range)
+        this.selectedSpeechpartId = range.index;
       },
 
       updateSpeechpart(sp) {
@@ -143,19 +145,27 @@
         const action = isNewSpeechpart ? 'add' : 'update';
         sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
         sp.ptr_start = this.selectedSpeechpartId;
-        this.editor.format('speechpart', `${sp.ptr_start.toString()},${sp.speech_part_type.id}`);
+        this.editor.format('speechpart', `${this.computeId(sp)},${sp.speech_part_type.id}`);
         this.$store.dispatch(`speechparts/${action}`, sp)
+        this.$store.dispatch('speechparts/saveSpeechParts')
         this.closeSpeechpartEdit()
       },
       deleteSpeechpart() {
+        console.log("this.currentSpeechpart", this.currentSpeechpart)
+        this.$store.dispatch(`speechparts/delete`, this.selectedSpeechpartId)
         this.editor.format('speechpart', false);
+
         this.selectedSpeechpartId = null;
+        this.currentSpeechpart = { transcription_id: this.transcription.id };
+
         this.closeSpeechpartEdit();
         this.$store.dispatch(`speechparts/setToBeSaved`)
+        this.$store.dispatch('speechparts/saveSpeechParts')
       },
 
 
       setSpeechpartEditModeDelete() {
+        this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
         this.speechpartEditMode = 'delete';
       },
       setSpeechpartEditModeNew() {

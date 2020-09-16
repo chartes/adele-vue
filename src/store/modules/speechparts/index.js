@@ -1,4 +1,5 @@
 import {http} from '../../../modules/http-common';
+import Vue from 'vue';
 
 const state = {
   speechparts: {},
@@ -23,14 +24,16 @@ const mutations = {
     state.speechparts.push(speechpart);
     state.savingStatus = 'tobesaved'
   },
-  UPDATE_ONE (state, speechpart) {
+  UPDATE_ONE (state, {id, speechpart}) {
     let newEntry = {}
-    newEntry[speechpart.ptr_start] = speechpart
-    //state.speechparts = [...state.speechparts.filter(sp => sp.id !== speechpart.id), speechpart];
+    newEntry[id] = speechpart
     state.speechparts = Object.assign({}, state.speechparts, newEntry)
     state.savingStatus = 'tobesaved'
+  },
+  DELETE (state, id) {
+    Vue.delete(state.speechparts, id)
+    state.savingStatus = 'tobesaved'
   }
-
 };
 
 const actions = {
@@ -39,12 +42,14 @@ const actions = {
     commit('SET_ERROR', payload)
   },
   /* useful */
-  fetchSpeechPartsFromUser ({dispatch, commit }, {docId, userId}) { 
+  fetchSpeechPartsFromUser ({dispatch, getters, commit }, {docId, userId}) { 
     return http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then(async response => {
       //commit('RESET')
       let sps = {}
       response.data.data.map(sp => {
-        sps[sp.ptr_start] = sp
+        const spId = getters.computeId(sp);
+        console.log("SP ID", spId);
+        sps[spId] = sp
       })
       commit('UPDATE_ALL', sps)
       // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
@@ -72,16 +77,19 @@ const actions = {
       })
     }
   },
-  add({commit}, speechpart) {
-    commit('UPDATE_ONE', speechpart)
+  add({commit, getters}, speechpart) {
+    commit('UPDATE_ONE', {id: getters.computeId(speechpart), speechpart})
   },
-  update({commit}, speechpart) {
-    commit('UPDATE_ONE', speechpart)
+  update({commit, getters}, speechpart) {
+    commit('UPDATE_ONE', {id: getters.computeId(speechpart), speechpart})
+  },
+  delete({commit}, speechpartId) {
+    commit('DELETE', speechpartId)
   },
   setToBeSaved({commit}) {
     commit('SAVING_STATUS', 'tobesaved')
   },
-  async saveSpeechParts({dispatch, commit, state, rootState, rootGetters}) {
+  async saveSpeechParts({dispatch, commit, state, rootState}) {
       commit('SET_ERROR', false);
       const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
       console.log("SP in state:", state.speechparts)
@@ -106,10 +114,11 @@ const actions = {
 
       try {
         await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, {data: data})
-        await dispatch('fetchSpeechPartsContent')
+        //dispatch('transcription/reloadSpeechparts', null, {root: true})
+
         commit('SAVING_STATUS', 'uptodate')
       } catch(error) {
-        commit('SET_ERROR', error)
+        commit('SET_ERROR', `Error while saving 'parts of speech' (${error})`)
       }
   }
 };
@@ -121,7 +130,7 @@ const getters = {
 
   isSpeechPartsSaved : state => {
     return state.savingStatus === 'uptodate'
-  }
+  },
   /*
   getSpeechpartById: (state) => (id) => {
     id = parseInt(id);
@@ -130,6 +139,19 @@ const getters = {
     });
   }
   */
+  computeId: (state) => (sp) => {
+    return `${sp.transcription_id}000${sp.ptr_start}`
+  },
+  getSpeechpartTypeCount: (state) => (typeId) => {
+    const t = parseInt(typeId);
+    let count = 1;
+    Object.values(state.speechparts).forEach(sp => {
+      if (sp.speech_part_type.id == t) {
+        count += 1
+      }
+    })
+    return count;
+  }
 };
 
 const speechpartsModule = {

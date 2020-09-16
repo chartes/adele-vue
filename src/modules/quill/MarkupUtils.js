@@ -83,7 +83,7 @@ const MAPPING_TEI_TO_QUILL = {
 };
 
 const TEIToQuill = (teiString) => {
-  teiString = teiString.replace(/<br>/gi, '<br/>');
+  teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
 
   const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
   let newDoc;
@@ -97,6 +97,7 @@ const TEIToQuill = (teiString) => {
 };
 
 const quillToTEI = quillString => {
+  quillString = quillString.replace(/<p><\/?br\/?><\/p>/gi, '');
 
   quillString = quillString.replace(/&nbsp;/gi, '&#160;');
   //quillString = quillString.replace(/<p><br><\/p>/gi, '<p><br/></p>');
@@ -366,6 +367,8 @@ const getRelevantSegmentsIndices = (text, segments, translationOrTranscription) 
 
 
 const insertSpeechparts = (text, speechparts) => {
+  text = quillToTEI(text)
+
   let insertions = [];
   for (let key in speechparts){
     const sp = speechparts[key]
@@ -401,6 +404,7 @@ const insertSpeechparts = (text, speechparts) => {
       indexCorrection += insertTag.length;
   });
 
+  result = TEIToQuill(result)
   return result
 };
 
@@ -513,19 +517,18 @@ const computeAlignmentPointers  = (htmlWithSegments) => {
 }
 
 const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
-
-  //console.log("speechparts html", htmlWithSpeechparts)
-
-  const regexpStart = /<speechpart id="(\d+)" type="(\d+)">/;
+  console.log("speechparts html", htmlWithSpeechparts)
+  const regexpStart = /<speechpart .*?id="(\d+)".*?>/;
   const regexpEnd = /<\/speechpart>/;
   let resStart, resEnd;
   const speechparts = [];
   while((resStart = regexpStart.exec(htmlWithSpeechparts)) !== null) {
-   // console.log("speechparts html resStart", resStart)
+   console.log("speechparts html resStart", resStart)
 
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpStart, '');
     resEnd = regexpEnd.exec(htmlWithSpeechparts);
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
+
     speechparts.push({
       "index" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
