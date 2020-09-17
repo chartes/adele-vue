@@ -86,9 +86,9 @@ const TEIToQuill = (teiString) => {
   teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
 
   const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
-  let newDoc;
-  newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
+  let newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
   let str = xmlSerializer.serializeToString(newDoc);
+  
   str = str.replace(/<lb><\/lb>/gi, '<lb/>');
   str = str.replace(/<\/?doc([^>]*)>/gi, '');
   str = convertLinebreakTEIToQuill(str);
@@ -98,13 +98,12 @@ const TEIToQuill = (teiString) => {
 
 const quillToTEI = quillString => {
   quillString = quillString.replace(/<p><\/?br\/?><\/p>/gi, '');
-
   quillString = quillString.replace(/&nbsp;/gi, '&#160;');
-  //quillString = quillString.replace(/<p><br><\/p>/gi, '<p><br/></p>');
+
   const xmlDoc = parser.parseFromString('<doc>'+quillString+'</doc>',"text/xml");
-  let newDoc;
-  newDoc = recurChange(xmlDoc.documentElement, MAPPING_QUILL_TO_TEI);
+  let newDoc = recurChange(xmlDoc.documentElement, MAPPING_QUILL_TO_TEI);
   let str = xmlSerializer.serializeToString(newDoc);
+  
   str = convertLinebreakQuillToTEI(str);
   str = str.replace(/<(\/?)persname( ref="[^"]*")?>/gmi, '<$1persName$2>');
   str = str.replace(/<(\/?)placename( ref="[^"]*")?>/gmi, '<$1placeName$2>');

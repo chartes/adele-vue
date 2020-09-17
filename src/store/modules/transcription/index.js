@@ -99,7 +99,6 @@ const mutations = {
     state.transcriptionAlignments = payload;
   },
   UPDATE (state, payload) {
-    //console.log("STORE MUTATION transcription/UPDATE")
     if (payload.transcription) {
       state.transcription = payload.transcription;
     }
@@ -116,7 +115,6 @@ const mutations = {
   },
   CHANGED (state) {
     // transcription changed and needs to be saved
-    //console.log("STORE MUTATION transcription/CHANGED")
     state.transcriptionSaved = false;
   },
   ADD_OPERATION (state, payload) {
@@ -158,7 +156,6 @@ const actions = {
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
-      console.log("fetchTranscriptionFromUser withNotes", withNotes)
 
       const data = {
         transcription: transcription,
@@ -196,7 +193,6 @@ const actions = {
   /* useful */
   fetchAlignments ({commit}, {doc_id, user_id}) {
     return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
-      //console.log("STORE ACTION transcription/fetchAlignments", response)
       if (response.data.errors) {
         commit('ALIGNMENTS', []);
         return;
@@ -278,13 +274,12 @@ const actions = {
           data: {notes: new_notes}
         })
       }
-      
       // update & save the speechparts pointers before reloading the transcription
       //await dispatch('reloadSpeechparts')
-
+      await dispatch('speechparts/saveSpeechParts', null, {root: true})
       // update the store content
-      await dispatch('fetchTranscriptionContent')
-      //await dispatch('speechparts/saveSpeechParts', null, {root: true})
+      
+      //await dispatch('fetchTranscriptionContent')
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
