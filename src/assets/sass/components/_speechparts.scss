@@ -1,84 +1,87 @@
-speechpart {
-
-    &:hover {
-        cursor: pointer;
-    }
-    
-}
 
 .speech-parts.content {
     & > p {
-        font-family: $family-sans-serif;
         font-size: 1.25em;
-        line-height: 1.75;
+        line-height: 1.66;
     }
 }
 
-
-.speech-part {
+.speech-part, speechpart, .speech-part-item {
 
     &:hover {
         cursor: pointer;
     }
-
-    &.navbar {
-        opacity: 0.5;
-    }
-
-    &.navbar-item {
-        &:hover{
-            background: $yellow;
-        }
-        text-transform: capitalize;
-        padding: 0 6px !important;
-    }
-
-}
-
-.speech-part, speechpart {
 
     padding: 0.35em;
     border-radius: 5px;
 
-    &.type-01.active, &.type-01:hover, &[type='1'] {
+    &.type-01.active, &.type-01.nav, &.type-01:hover, &[type='1'] {
         background-color: #f2e9d0;
     }
-    &.type-02.active, &.type-02:hover, &[type='2'] {
+    &.type-02.active, &.type-02.nav, &.type-02:hover, &[type='2'] {
         background-color: #c3aed6;
     }
-    &.type-03.active, &.type-03:hover, &[type='3'] {
+    &.type-03.active, &.type-03.nav, &.type-03:hover, &[type='3'] {
         background-color: #edcfa9;;
     }
-    &.type-04.active, &.type-04:hover, &[type='4'] {
+    &.type-04.active, &.type-04.nav, &.type-04:hover, &[type='4'] {
         background-color: #bfdcae;
     }
-    &.type-05.active, &.type-05:hover, &[type='5'] {
+    &.type-05.active, &.type-05.nav, &.type-05:hover, &[type='5'] {
         background-color: #bad7df;
     }
-    &.type-06.active, &.type-06:hover, &[type='6'] {
+    &.type-06.active, &.type-06.nav, &.type-06:hover, &[type='6'] {
         background-color: #ffe2e2;
     }
-    &.type-07.active, &.type-07:hover, &[type='7'] {
+    &.type-07.active, &.type-07.nav, &.type-07:hover, &[type='7'] {
         background-color: #99ddcc;
     }
-    &.type-08.active, &.type-08:hover, &[type='8'] {
+    &.type-08.active, &.type-08.nav, &.type-08:hover, &[type='8'] {
         background-color: #f7e7bd;
     }
-    &.type-09.active, &.type-09:hover, &[type='9'] {
+    &.type-09.active, &.type-09.nav, &.type-09:hover, &[type='9'] {
         background-color: #9cada4;
     }
-    &.type-10.active, &.type-10:hover, &[type='10'] {
+    &.type-10.active, &.type-10.nav, &.type-10:hover, &[type='10'] {
         background-color: #5c8d89;
     }
 }
 
+.show-all-speechparts {
+    border-radius: 5px;
+    margin-right: 6px !important;
+    height: 42px;
+
+    font-family: "Roboto", sans-serif !important;
+    font-size: 16px  !important;
+    color: #9B9B9B  !important;
+
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    outline: none; // this one
+    /*
+      Introduced in Internet Explorer 10.
+      See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+    */
+    -ms-user-select: none;
+    user-select: none;
+    &::-moz-focus-inner {
+        border: 0;
+      }
+}
+
 .inner-navbar {
 
+    margin-top: 30px;
+    margin-bottom: 40px;
     padding: 0;
 
     .speech-part-item {
 
         display: inline-block;
+        padding: 2px !important;
+        margin-right: 6px !important;
 
         .navbar-item {
             display: inline-block;
@@ -86,11 +89,7 @@ speechpart {
             font-family: $family-secondary;
             font-weight: normal;
             font-size:16px;
-        }
-
-        &:not(:last-child)::after {
-            content:'|';
-            margin: 0 4px;
+            padding-left: 12px;
         }
 
     }

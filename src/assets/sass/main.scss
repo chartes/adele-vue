@@ -91,6 +91,7 @@
 @import "components/note";
 @import "components/message";
 @import "components/modal";
+@import "components/tooltip";
 
 //@import "objects/error-page";
 // Components – specific UI components.
@@ -122,6 +123,7 @@
 @import "components/document.iiif-viewer";
 @import "components/collection.collection-list";
 @import "components/lock";
+
 
 // Utilities / trumps – utilities and helper classes
 // with ability to override anything which goes before in the triangle, eg. hide helper class

@@ -2,9 +2,13 @@ import Vue from 'vue';
 import App from './App.vue';
 import store from './store';
 import router from './routes/index';
+import Buefy from 'buefy'
+
+import 'buefy/dist/buefy.css'
 
 import './assets/sass/main.scss'
 
+Vue.use(Buefy)
 Vue.config.productionTip = false;
 
 import { Icon }  from 'leaflet'

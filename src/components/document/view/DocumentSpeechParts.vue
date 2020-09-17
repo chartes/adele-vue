@@ -1,20 +1,27 @@
 <template>
   <div>
     <div>
-      <nav class="navbar inner-navbar m-b-md">
+      <nav class="navbar inner-navbar">
+        <span>
+          <button
+            class="button is-white show-all-speechparts"
+            @click="showAll = !showAll"
+          >
+            {{ !showAll ? "Tout montrer" : "Effacer" }}
+          </button>
+        </span>
         <span
           v-for="(spType) in spTypes"
           :key="spType.id"
+          :class="`speech-part-item type-${spType.id.toString().padStart(2, '0')} nav `"
           @mouseover="hoverId = spType.id"
-          @mouseleave="hoverId = null"
-          class="speech-part-item"
+          @mouseleave="leaveHovering"
         >
           <span
-            class="navbar-item speech-part m-xs"
+            class="navbar-item  m-xs"
           >
             {{ spType.label }}
           </span>
-
         </span>
       </nav>
     </div>
@@ -30,6 +37,8 @@
 <script>
 
 import { mapState, mapGetters } from 'vuex';
+import Vue from 'vue';
+import ToolTip from '../../ui/ToolTip';
 
 export default {
     name: "DocumentSpeechParts",
@@ -43,10 +52,11 @@ export default {
       return {
         spTypes: [],
         hoverId: null,
+        showAll: false
       }
     },
     computed: {
-      ...mapState('document', ['loading', ]),
+      ...mapState('document', ['loading', 'speechPartsView']),
       ...mapState('speechpartTypes', ['speechpartTypes', ]),
       ...mapGetters('speechpartTypes', ['getSpeechpartTypeById', ]),
       content() {
@@ -54,6 +64,9 @@ export default {
       }
     },
     watch: {
+      showAll() {
+        this.leaveHovering()
+      },
       hoverId() {
         /* when you hover the top section items, the speech parts are highligthed accordingly to their type */
         const allParts = document.querySelectorAll('.speech-part');
@@ -85,11 +98,45 @@ export default {
               }
             })
           }
+
+          // make tooltips
+          let toolTipClass =  Vue.extend(ToolTip)
+          Object.keys(this.speechPartsView.notes).forEach(noteId => {
+            console.log('NOTES', noteId)
+            let spEl = document.querySelector(`[data-note-id='${noteId}']`)
+            const spType = [...spEl.classList].find(c => c.startsWith('type-'));
+            let spt
+            if (spType) {
+              const spTypeId = spType.replace('type-', '');
+              spt = this.getSpeechpartTypeById(parseInt(spTypeId));
+            }
+
+            let noteContent = this.speechPartsView.notes[noteId]
+            let t = new toolTipClass({propsData: {
+              element: spEl.outerHTML ,
+              content: `
+                <div>
+                  <div class="tt-title">${spt.label || ""}</div>
+                  <div class="tt-content">${noteContent || ""}</div>
+                </div>
+              `
+            }})
+            t.$mount(spEl)
+          })
+
         } 
     },
     methods: {
-      hightlight(id) {
-        console.log("highlight", id)
+      leaveHovering() {
+        const allParts = document.querySelectorAll('.speech-part');
+        this.hoverId = null;
+        allParts.forEach(p => {
+          if (this.showAll) {
+            p.classList.add("active");
+          } else {
+            p.classList.remove("active");
+          }
+        });
       }
     }
 }
