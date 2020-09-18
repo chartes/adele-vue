@@ -1,7 +1,6 @@
 <template>
   <b-tooltip
     type="is-light"
-    size="is-large"
     multilined
     class="tooltip"
   >

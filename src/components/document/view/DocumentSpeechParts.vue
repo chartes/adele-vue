@@ -17,11 +17,24 @@
           @mouseover="hoverId = spType.id"
           @mouseleave="leaveHovering"
         >
-          <span
-            class="navbar-item  m-xs"
+          <b-tooltip 
+            type="is-light"
+            position="is-top"
+            class="tooltip"
+            multilined
           >
-            {{ spType.label }}
-          </span>
+            <span
+              class="navbar-item  m-xs "
+            >
+              {{ spType.label }}
+            </span>
+            <template v-slot:content>
+              <div
+                class="tt-content"
+                v-html="spType.definition"
+              />
+            </template>
+          </b-tooltip>
         </span>
       </nav>
     </div>

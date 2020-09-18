@@ -1,11 +1,12 @@
 .tooltip {
-    .tt-content {
-        text-align: left !important;
-        text-justify: auto;
-    } 
     .tt-title {
         font-weight: bold;
-        font-size: 1.25em;
-        margin-bottom: 1em;
+        font-size: 1.40em;
     }
+    .tt-content {
+        margin-top: 0.6em;
+        text-align: justify !important;
+        font-size: 1.15em;
+        margin-bottom: 0.8em;
+    } 
 }
