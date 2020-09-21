@@ -92,8 +92,7 @@
       },
       */
       ...mapState('transcription', ['transcription']),
-      ...mapState('speechparts', ['newSpeechpart']),
-      ...mapGetters('speechparts', ['getSpeechpartTypeCount', 'computeId']),
+      ...mapState('speechparts', ['newSpeechpart', 'speechparts']),
       ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
     },
     mounted () {
@@ -125,6 +124,10 @@
           //this.updateButtons(formats);
           if (formats.speechpart) {
             this.onSpeechpartSelected(formats.speechpart, range);
+            const spId = formats.speechpart.split(',')[0]
+            const sp = this.speechparts.find(e => e.id === parseInt(spId))
+            console.log("ID SP", sp)
+            this.currentSpeechpart = sp
             //this.buttons.speechpart = false;
           } else {
             this.selectedSpeechpartId = range.index;
@@ -135,24 +138,26 @@
         }
       },
       onSpeechpartSelected (speechpart, range) {
-        if (!range.length) return;
         console.log("onspeechpart selected", speechpart, range)
+        if (!range.length) return;
         this.selectedSpeechpartId = range.index;
       },
 
       updateSpeechpart(sp) {
-        const isNewSpeechpart = this.speechpartEditMode === 'new';
-        const action = isNewSpeechpart ? 'add' : 'update';
+        console.log("UPDATE SP", sp)
         sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
         sp.ptr_start = this.selectedSpeechpartId;
-        this.editor.format('speechpart', `${this.computeId(sp)},${sp.speech_part_type.id}`);
-        this.$store.dispatch(`speechparts/${action}`, sp)
+        if (sp.id === undefined) {
+          sp.id = 900000+sp.ptr_start
+        }
+        this.editor.format('speechpart', `${sp.id},${sp.speech_part_type.id}`);
+        this.$store.dispatch(`speechparts/update`, sp)
         this.$store.dispatch('speechparts/saveSpeechParts')
         this.closeSpeechpartEdit()
       },
       deleteSpeechpart() {
         console.log("this.currentSpeechpart", this.currentSpeechpart)
-        this.$store.dispatch(`speechparts/delete`, this.selectedSpeechpartId)
+        this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
         this.editor.format('speechpart', false);
 
         this.selectedSpeechpartId = null;
@@ -175,10 +180,12 @@
       },
       setSpeechpartEditModeEdit() {
         this.speechpartEditMode = 'edit';
-        this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        if (!this.currentSpeechpart) {
-                  this.currentSpeechpart = { transcription_id: this.transcription.id };
+        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
+        /*
+       if (!this.currentSpeechpart) {
+          this.currentSpeechpart = { transcription_id: this.transcription.id };
         }
+        */
       },
 
       newSpeechpartChoiceClose() {

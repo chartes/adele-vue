@@ -25,7 +25,7 @@ const getters = {
     Object.keys(coms.commentariesWithNotes).forEach(t => {
       commentariesNotes = [...commentariesNotes, ...coms.commentariesWithNotes[t].notes]
     });
-    console.log('notes:', transcriptionNotes, translationNotes, commentariesNotes)
+    //console.log('notes:', transcriptionNotes, translationNotes, commentariesNotes)
     return [...transcriptionNotes, ...translationNotes, ...commentariesNotes]
   },
   getNoteById: (state, getters) => (id) => {

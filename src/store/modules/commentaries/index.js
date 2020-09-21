@@ -119,7 +119,7 @@ function parseComsFromResponse(response) {
   commentaries.forEach(comm => {
     let quillContent = TEIToQuill(comm.content);
     let withNotes = insertNotes(quillContent, comm.notes);
-    console.log("commentaries", comm, quillContent, withNotes)
+    //console.log("commentaries", comm, quillContent, withNotes)
     commentariesFormatted.push({
       type: comm.type.id,
       typeLabel: comm.type.label,
@@ -228,7 +228,7 @@ const actions = {
     try {
       // save each commentary independently
       Object.values(state.commentariesWithNotes).forEach(async com => {
-          console.log("saving", state.commentariesWithNotes, com)
+          //console.log("saving", state.commentariesWithNotes, com)
           const contentWithNotes = quillToTEI(com.withNotes)
           const content = stripNotes(contentWithNotes)
 

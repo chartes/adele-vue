@@ -204,7 +204,7 @@ String.prototype.insert = function (index, string) {
 };
 
 const insertNotes = (text, notes) => {
-  console.log("computeQuillPointersFromTEIPointers (insertNotes)", notes)
+  //console.log("computeQuillPointersFromTEIPointers (insertNotes)", notes)
 
   const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
 
@@ -529,7 +529,7 @@ const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
 
     speechparts.push({
-      "index" : parseInt(resStart[1]),
+      "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     });

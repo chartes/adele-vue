@@ -2,7 +2,7 @@ import {http} from '../../../modules/http-common';
 import Vue from 'vue';
 
 const state = {
-  speechparts: {},
+  speechparts: [],
   newSpeechpart: false,
   savingStatus: 'uptodate',
   speechPartsError: null
@@ -19,19 +19,26 @@ const mutations = {
     state.savingStatus = payload;
   },
   /* need review */
+  /*
   NEW (state, speechpart) {
     state.newSpeechpart = speechpart;
     state.speechparts.push(speechpart);
     state.savingStatus = 'tobesaved'
   },
-  UPDATE_ONE (state, {id, speechpart}) {
-    let newEntry = {}
-    newEntry[id] = speechpart
-    state.speechparts = Object.assign({}, state.speechparts, newEntry)
+  */
+  UPDATE_ONE (state, speechpart) {
+    //delete the one one
+    state.speechparts = state.speechparts.filter(item => {
+      return item.id !== speechpart.id
+    })
+    //add the new one
+    state.speechparts.push(speechpart)
     state.savingStatus = 'tobesaved'
   },
   DELETE (state, id) {
-    Vue.delete(state.speechparts, id)
+    state.speechparts = state.speechparts.filter(item => {
+      return item.id !== id
+    })
     state.savingStatus = 'tobesaved'
   }
 };
@@ -45,13 +52,7 @@ const actions = {
   fetchSpeechPartsFromUser ({dispatch, getters, commit }, {docId, userId}) { 
     return http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then(async response => {
       //commit('RESET')
-      let sps = {}
-      response.data.data.map(sp => {
-        const spId = getters.computeId(sp);
-        console.log("SP ID", spId);
-        sps[spId] = sp
-      })
-      commit('UPDATE_ALL', sps)
+      commit('UPDATE_ALL', response.data.data)
       // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
       //await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
 
@@ -77,11 +78,11 @@ const actions = {
       })
     }
   },
-  add({commit, getters}, speechpart) {
-    commit('UPDATE_ONE', {id: getters.computeId(speechpart), speechpart})
+  add({commit}, speechpart) {
+    commit('UPDATE_ONE', speechpart)
   },
-  update({commit, getters}, speechpart) {
-    commit('UPDATE_ONE', {id: getters.computeId(speechpart), speechpart})
+  update({commit}, speechpart) {
+    commit('UPDATE_ONE', speechpart)
   },
   delete({commit}, speechpartId) {
     commit('DELETE', speechpartId)
@@ -92,25 +93,20 @@ const actions = {
   async saveSpeechParts({dispatch, commit, state, rootState}) {
       commit('SET_ERROR', false);
       const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
-      console.log("SP in state:", state.speechparts)
-      console.log("SP computed:", spWithPointers)
-
       //const sptrs = JSON.parse(JSON.stringify(state.speechparts))
-      const obj = Object.assign ({}, state.speechparts)
-      //console.log("SP obj:", obj)
-
-      const state_ptrs = Object.keys(obj).map((k) => obj[k])
-      const computed_ptrs = Array.from(spWithPointers)
-
       let data = []
-      computed_ptrs.forEach((sp, index) => {
+      
+      Array.from(spWithPointers).forEach(sp => {
+        const stateSp = state.speechparts.find(e => e.id === sp.id)
         data.push({
-          speech_part_type_id: state_ptrs[index].speech_part_type.id,
+          speech_part_type_id: stateSp.speech_part_type.id,
           ptr_start: sp.ptr_start,
           ptr_end: sp.ptr_end,
-          note: state_ptrs[index].note
+          note: stateSp.note
         })
       })
+      console.log("spWithPointers", spWithPointers)
+      console.log("spWithPointers data", data)
 
       try {
         await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, {data: data})
@@ -139,19 +135,6 @@ const getters = {
     });
   }
   */
-  computeId: (state) => (sp) => {
-    return `${sp.transcription_id}000${sp.ptr_start}`
-  },
-  getSpeechpartTypeCount: (state) => (typeId) => {
-    const t = parseInt(typeId);
-    let count = 1;
-    Object.values(state.speechparts).forEach(sp => {
-      if (sp.speech_part_type.id == t) {
-        count += 1
-      }
-    })
-    return count;
-  }
 };
 
 const speechpartsModule = {

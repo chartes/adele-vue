@@ -164,16 +164,11 @@ describe('MarkupUtils', () => {
     // TODO
   })
   test('computeSpeechpartsPointers', () => {
-    const trWithSp = `<p><speechpart id="0" type="1">Adresse</speechpart>, <speechpart id="9" type="2">souscription</speechpart> </p><p><speechpart id="300" type="3">Salut</speechpart> et <speechpart id="400" type="4">notification</speechpart></p>`
+    const trWithSp = `<p>Ceci n'e<speechpart type="1" id="900008">st pas un <hi rend="u">contenu</hi> <hi rend="b">simple</hi>. Il est vrai que cela <hi rend="b">pourra</hi></speechpart><hi rend="b">it</hi> être <hi rend="sc">intéressant</hi>.</p><p>Peut-être la <hi rend="b">gestion</hi> des <hi rend="sc">paragraphes </hi>!</p>`
     const expectedSp = [
-      {index: 0, ptr_start: 3, ptr_end: 10},
-      {index: 9, ptr_start: 12, ptr_end: 24},
-      {index: 300, ptr_start: 32, ptr_end: 37},
-      {index: 400, ptr_start: 41, ptr_end: 53},
+      {id: 900008, ptr_start: 11, ptr_end: 113}
     ]
     const speechparts = computeSpeechpartsPointers(trWithSp)
-    //console.log(expectedSp)
-    //console.log(speechparts)
     expect(speechparts).toEqual(expectedSp)
   })
   test('insertSpeechparts', () => {
