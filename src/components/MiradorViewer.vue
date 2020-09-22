@@ -27,7 +27,7 @@ export default {
   computed: {},
   watch: {},
   created() {},
-  async mounted() {
+  mounted() {
     const manifests = {};
     let url = this.manifestUrl
     // instantiate the viewer with a single manifest & window for simplicity
@@ -47,11 +47,38 @@ export default {
           defaultSideBarPanel: "info",
           sideBarOpenByDefault: false,
           hideWindowTitle: true,
-          maximizedByDefault: true
+          maximizedByDefault: true,
+          highlightAllAnnotations: false,
+          panels: { // Configure which panels are visible in WindowSideBarButtons
+            info: true,
+            attribution: true,
+            canvas: false,
+            annotations: true,
+            search: false,
+            layers: false,
+          },
         },
         workspace: {
           showZoomControls: true,
           type: "mosaic", // Which workspace type to load by default. Other possible values are "elastic"
+
+          draggingEnabled: true,
+          allowNewWindows: true,
+          isWorkspaceAddVisible: false, // Catalog/Workspace add window feature visible by default
+          exposeModeOn: false, // unused?
+          height: 5000, // height of the elastic mode's virtual canvas
+          viewportPosition: { // center coordinates for the elastic mode workspace
+            x: 0,
+            y: 0,
+          },
+          width: 5000, // width of the elastic mode's virtual canvas
+        },
+        osdConfig: { // Default config used for OpenSeadragon
+          alwaysBlend: false,
+          blendTime: 0.1,
+          preserveImageSizeOnResize: true,
+          preserveViewport: true,
+          showNavigationControl: false,
         },
         workspaceControlPanel: {
           enabled: false

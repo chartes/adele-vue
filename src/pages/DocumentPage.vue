@@ -113,7 +113,7 @@
               </div>
 
               <mirador-viewer
-                v-if="document.manifest_origin_url"
+                v-if="document.manifest_origin_url && !isLoading"
                 :manifest-url="document.manifest_origin_url"
                 :canvas-index="0"
               />
@@ -257,6 +257,7 @@ export default {
     },
     data() {
       return {
+        isLoading: false,
         imageVisibility: true,
         noticeVisibility: true,
         transcriptionVisibility: true,
@@ -266,7 +267,7 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document', 'loading',
+        ...mapState('document', ['document', 
                                  'transcriptionView', 'translationView', 'transcriptionAlignmentView', 'speechPartsView',
                                  'commentariesView']),
         ...mapGetters('user', ['loggedIn']),
@@ -297,6 +298,7 @@ export default {
         }
     },
     async created() {
+      this.isLoading = true;
       try {
         await this.fetchOne({id: this.$attrs.docId})
       }
@@ -323,13 +325,14 @@ export default {
         console.log("No commentaries", error)
       }
 
+      this.isLoading = false;
       // init notes popup
     },
     mounted() {
-       const resetZoomButton = document.querySelector("button[title='Reset zoom']")
-       if (resetZoomButton) {
+      const resetZoomButton = document.querySelector("canvas")
+      if (resetZoomButton) {
          resetZoomButton.click()
-       } 
+      } 
     },
     methods: {
       ...mapActions('document', {

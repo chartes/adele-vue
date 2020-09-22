@@ -134,7 +134,7 @@
             </div>
 
             <mirador-viewer
-              v-if="document.manifest_origin_url"
+              v-if="document.manifest_origin_url && !isLoading"
               :manifest-url="document.manifest_origin_url"
               :canvas-index="0"
             />
@@ -545,7 +545,7 @@ export default {
     },
     data() {
       return {
-        
+        isLoading: false,
         init: false,
 
         transcriptionAlignmentError: null,
@@ -611,13 +611,8 @@ export default {
         }
       }
     },
-    mounted() {
-       const resetZoomButton = document.querySelector("button[title='Reset zoom']")
-       if (resetZoomButton) {
-         resetZoomButton.click()
-       } 
-    },
     async created() {
+      this.isLoading = true;
       try {
         await this.fetchOne({id: this.$attrs.docId})
       }
@@ -631,6 +626,7 @@ export default {
       
       await this.fetchContentFromUser()
       this.init = true
+      this.isLoading = false;
     },
     methods: {
       ...mapActions('transcription', {
