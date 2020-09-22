@@ -37,6 +37,7 @@ export default {
         manifests: manifests,
         windows: [
           {
+            id: 1,
             loadedManifest: url,
             canvasIndex: this.canvasIndex
           }
@@ -61,24 +62,12 @@ export default {
         workspace: {
           showZoomControls: true,
           type: "mosaic", // Which workspace type to load by default. Other possible values are "elastic"
-
-          draggingEnabled: true,
-          allowNewWindows: true,
-          isWorkspaceAddVisible: false, // Catalog/Workspace add window feature visible by default
-          exposeModeOn: false, // unused?
           height: 5000, // height of the elastic mode's virtual canvas
           viewportPosition: { // center coordinates for the elastic mode workspace
             x: 0,
             y: 0,
           },
           width: 5000, // width of the elastic mode's virtual canvas
-        },
-        osdConfig: { // Default config used for OpenSeadragon
-          alwaysBlend: false,
-          blendTime: 0.1,
-          preserveImageSizeOnResize: true,
-          preserveViewport: true,
-          showNavigationControl: false,
         },
         workspaceControlPanel: {
           enabled: false
@@ -89,6 +78,10 @@ export default {
       },
         [...annotationPlugins]
       );
+
+      var action = Mirador.actions.minimizeWindow('1')
+      // Now we can dispatch it.
+      this.viewer.store.dispatch(action);
     } catch (e) {
       console.warn("Mirrador viewer: ", e);
     }

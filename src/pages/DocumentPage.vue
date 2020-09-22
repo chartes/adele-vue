@@ -329,10 +329,6 @@ export default {
       // init notes popup
     },
     mounted() {
-      const resetZoomButton = document.querySelector("canvas")
-      if (resetZoomButton) {
-         resetZoomButton.click()
-      } 
     },
     methods: {
       ...mapActions('document', {
