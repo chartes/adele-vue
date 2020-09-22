@@ -133,10 +133,10 @@
               </div>
             </div>
 
-            <i-i-i-f-viewer
-              v-if="canvasManifestInfo"
-              :key="`${canvasManifestInfo}${showContent}`"
-              :info="canvasManifestInfo"
+            <mirador-viewer
+              v-if="document.manifest_origin_url"
+              :manifest-url="document.manifest_origin_url"
+              :canvas-index="0"
             />
             <img
               v-else
@@ -476,7 +476,7 @@ import DocumentTranscriptionAlignment from '@/components/document/view/DocumentT
 import DocumentCommentaries from '@/components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '@/components/document/view/DocumentSpeechParts.vue'
 
-import IIIFViewer from '@/components/IIIFViewer.vue'
+import MiradorViewer from '../components/MiradorViewer.vue'
 import WorkflowRadioSteps from '@/components/WorkflowRadioSteps.vue'
 
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
@@ -514,7 +514,7 @@ export default {
         DocumentCommentaries,
         DocumentSpeechParts,
 
-        IIIFViewer,
+        MiradorViewer,
         WorkflowRadioSteps,
 
         Message,
@@ -610,6 +610,12 @@ export default {
           this.fetchContentFromUser()
         }
       }
+    },
+    mounted() {
+       const resetZoomButton = document.querySelector("button[title='Reset zoom']")
+       if (resetZoomButton) {
+         resetZoomButton.click()
+       } 
     },
     async created() {
       try {
