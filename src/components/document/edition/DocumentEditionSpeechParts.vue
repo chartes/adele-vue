@@ -1,7 +1,6 @@
 <template>
   <div>
     <speechparts-editor
-      v-if="!!transcriptionWithSpeechParts"
       :initial-content="transcriptionWithSpeechParts"
     />
   </div>
@@ -19,7 +18,7 @@ export default {
         SpeechpartsEditor
     },
     props: {
-        transcriptionWithSpeechParts: {type: String, default: null}
+        transcriptionWithSpeechParts: {type: String, default: ""}
     },
     computed: {
         ...mapState('document', ['loading']),

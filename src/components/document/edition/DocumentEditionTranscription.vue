@@ -1,7 +1,6 @@
 <template>
   <div>
     <transcription-editor
-      v-if="!!transcriptionWithNotes"
       :initial-content="transcriptionWithNotes"
     />
   </div>
@@ -19,7 +18,7 @@ export default {
         TranscriptionEditor
     },
     props: {
-      transcriptionWithNotes: {type: String, default: null}
+      transcriptionWithNotes: {type: String, default: ""}
     },
     computed: {
     },

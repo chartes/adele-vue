@@ -1,7 +1,6 @@
 <template>
   <div>
     <translation-editor
-      v-if="!!translationWithNotes"
       :initial-content="translationWithNotes"
     />
   </div>
@@ -19,7 +18,7 @@ export default {
         TranslationEditor
     },
     props: {
-      translationWithNotes: {type: String, default: null}
+      translationWithNotes: {type: String, default: ""}
     },
     computed: {
     },
