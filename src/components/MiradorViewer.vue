@@ -105,7 +105,7 @@ export default {
 .mosaic-tile {
   margin: 0 !important;
 }
-.Connect\(WithPlugins\(WindowTopBar\)\)-windowTopBarStyle-16.Connect\(WithPlugins\(WindowTopBar\)\)-focused-15 {
+.Connect\(WithPlugins\(WindowTopBar\)\)-windowTopBarStyle-16.Connect\(WithPlugins\(WindowTopBar\)\)-focused-15, .mirador16.mirador15 {
   border-top: none !important;
 }
 </style>
