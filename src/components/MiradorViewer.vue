@@ -106,6 +106,6 @@ export default {
   margin: 0 !important;
 }
 .Connect\(WithPlugins\(WindowTopBar\)\)-windowTopBarStyle-16.Connect\(WithPlugins\(WindowTopBar\)\)-focused-15, .mirador16.mirador15 {
-  border-top: none !important;
+  border-top: 1px solid lightgray !important;
 }
 </style>

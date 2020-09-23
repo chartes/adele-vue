@@ -10,3 +10,11 @@
         margin-bottom: 0.8em;
     } 
 }
+
+.b-tooltip {
+    display: initial;
+}
+
+.b-tooltip .tooltip-trigger {
+    display: inline
+}

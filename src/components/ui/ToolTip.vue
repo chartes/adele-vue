@@ -5,9 +5,9 @@
     class="tooltip"
   >
     <template v-slot:content>
-      <div v-html="content" />
+      <span v-html="content" />
     </template>
-    <div v-html="element" />
+    <span v-html="element" />
   </b-tooltip>
 </template>
 

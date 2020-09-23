@@ -200,7 +200,7 @@
             </div>
 
             <div
-              v-if="!!document"
+              v-if="!!document && init"
               class="container"
               :class="`${imageVisibility ? '' : 'is-fluid' }`"
             >
@@ -422,7 +422,7 @@
                     :readonly-data="speechPartsView"
                   />
                 </div>
-                <!-- translation edition -->
+                <!-- speechpart edition -->
                 <div v-else>
                   <speech-parts-action-bar />
                   <document-edition-speech-parts
@@ -605,9 +605,9 @@ export default {
         },
     },
     watch:{
-      selectedUserId() {
+      async selectedUserId() {
         if (this.init) {
-          this.fetchContentFromUser()
+          await this.fetchContentFromUser()
         }
       }
     },
@@ -649,16 +649,17 @@ export default {
         'fetchSpeechPartsContent': 'fetchSpeechPartsContent',
         }),
       async fetchContentFromUser(){
-        await this.fetchSpeechPartsContent()
-
         await this.fetchTranscriptionContent()
         await this.fetchTranslationContent()
+        await this.fetchSpeechPartsContent()
+
         try {
           this.transcriptionAlignmentError = null
           await this.fetchTranscriptionAlignmentView()
         } catch(error) {
           this.transcriptionAlignmentError = error
         }
+
         await this.fetchCommentariesContent()
       },
       async addNewTranscription() {

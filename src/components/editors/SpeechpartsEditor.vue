@@ -60,7 +60,7 @@
   import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
 
   export default {
-    name: "SpeechpartsEditior",
+    name: "SpeechpartsEditor",
     components: {
       ModalConfirmSpeechpartDelete,
       SpeechpartForm,
@@ -97,6 +97,7 @@
     },
     mounted () {
       this.$store.dispatch('speechpartTypes/fetch')
+      console.log("this.$props.initialContent", this.$props.initialContent)
       this.initEditor(this.$refs.editor, this.$props.initialContent);
       this.preventKeyboard();
       this.activateMouseOver()
@@ -117,6 +118,7 @@
       },
       */
       onSelection (range) {
+        this.currentSpeechpart = null
         if (range && range.length > 0) {
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);

@@ -90,7 +90,9 @@ export default {
               p.classList.add("active");
             }
           } else {
-            p.classList.remove("active");
+            if (!this.showAll) {
+              p.classList.remove("active");
+            }
           }
         });
       }
@@ -128,10 +130,10 @@ export default {
             let t = new toolTipClass({propsData: {
               element: spEl.outerHTML ,
               content: `
-                <div>
-                  <div class="tt-title">${spt.label || ""}</div>
-                  <div class="tt-content">${noteContent || ""}</div>
-                </div>
+                <span>
+                  <span class="tt-title">${spt.label || ""}</span>
+                  <span class="tt-content">${noteContent || ""}</span>
+                </span>
               `
             }})
             t.$mount(spEl)
