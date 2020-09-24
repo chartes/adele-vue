@@ -12,6 +12,7 @@ inlineTagsToClean.forEach(tag => {
   regexpClosingToClean.push(new RegExp('</'+tag+'></note><'+tag+'>', 'gi'))
 })
 
+
 const MAPPING_QUILL_TO_TEI = {
   'h1': { tag: 'head', attr: 'type', attrValue:'h1'},
   'h2': { tag: 'head', attr: 'type', attrValue:'h2'},
@@ -82,8 +83,19 @@ const MAPPING_TEI_TO_QUILL = {
   'placeName': { tag: 'placename'},
 };
 
+const trim = (s) => {
+  s = s.replace(/[\t\f\v ]{2,}/gmi, ' ')
+  s = s.replace(/\s+<\/p>/gi, '</p>');
+  s = s.replace(/<p>\s+/gmi, '<p>');
+  s = s.replace(/\s*\n\s*/gi, '\n')
+  return s
+}
+
 const TEIToQuill = (teiString) => {
   teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
+  //teiString = teiString.replace(/<p>\s+/gi, '<p>');
+  //teiString = teiString.replace(/\s+<\/p>/gi, '</p>');
+  teiString = trim(teiString)
 
   const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
   let newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
@@ -99,6 +111,7 @@ const TEIToQuill = (teiString) => {
 const quillToTEI = quillString => {
   quillString = quillString.replace(/<p><\/?br\/?><\/p>/gi, '');
   quillString = quillString.replace(/&nbsp;/gi, '&#160;');
+  quillString = trim(quillString)
 
   const xmlDoc = parser.parseFromString('<doc>'+quillString+'</doc>',"text/xml");
   let newDoc = recurChange(xmlDoc.documentElement, MAPPING_QUILL_TO_TEI);
@@ -617,5 +630,6 @@ export {
   computeSpeechpartsPointers,
   computeImageAlignmentsPointers,
   computeQuillPointersFromTEIPointers,
-  sanitizeHtmlWithNotesForSave
+  sanitizeHtmlWithNotesForSave,
+  trim
 };

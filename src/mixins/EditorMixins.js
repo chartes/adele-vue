@@ -1,6 +1,8 @@
 /* eslint-disable no-extra-boolean-cast */
 import Quill, {getNewQuill, options} from '../modules/quill/AdeleQuill';
 import { getNewDelta } from '../modules/quill/DeltaUtils';
+import { trim } from '../modules/quill/MarkupUtils';
+
 import _isEmpty from 'lodash/isEmpty';
 
 var EditorMixin = {
@@ -24,7 +26,7 @@ var EditorMixin = {
   methods: {
 
     initEditor(editorElement, initialContent) {
-      editorElement.innerHTML = initialContent;
+      editorElement.innerHTML = trim(initialContent);
       this.editor = getNewQuill(editorElement);
       this.activateEvents();
       this.editor.updateContents(getNewDelta().retain(this.editor.getLength(), 'api'))
