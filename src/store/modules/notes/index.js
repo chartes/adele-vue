@@ -23,10 +23,22 @@ const getters = {
     const translationNotes = tl !== undefined && tl.translation ? tl.translation.notes : []
     let commentariesNotes = []
     Object.keys(coms.commentariesWithNotes).forEach(t => {
-      commentariesNotes = [...commentariesNotes, ...coms.commentariesWithNotes[t].notes]
+      coms.commentariesWithNotes[t].notes.forEach(n => {
+        commentariesNotes.push(n)
+      })
     });
-    //console.log('notes:', transcriptionNotes, translationNotes, commentariesNotes)
-    return [...transcriptionNotes, ...translationNotes, ...commentariesNotes]
+    let notes = [...transcriptionNotes]
+    translationNotes.forEach(n => {
+      if (notes.findIndex((e) => { return e.id === n.id}) === -1) {
+        notes.push(n)
+      }
+    })
+    commentariesNotes.forEach(n => {
+      if (notes.findIndex((e) => { return e.id === n.id}) === -1) {
+        notes.push(n)
+      }
+    })
+    return notes
   },
   getNoteById: (state, getters) => (id) => {
     id = parseInt(id)

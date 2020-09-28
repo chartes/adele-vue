@@ -105,7 +105,8 @@
         spellcheck="false"
       />
       <note-actions
-        v-show="selectedNoteId && editor.hasFocus()"
+        v-show="noteEditMode == null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
+        :selected-note-id="selectedNoteId"
         refs="noteActions"
         :style="actionsPosition"
         :new-note="setNoteEditModeNew"
@@ -113,12 +114,6 @@
         :update-link="setNoteEditModeList"
         :unlink="unlinkNote"
         :delete="setNoteEditModeDelete"
-      />
-      <new-note-actions
-        v-if="defineNewNote"
-        :mode-new="setNoteEditModeNew"
-        :mode-link="setNoteEditModeList"
-        :cancel="newNoteChoiceClose"
       />
     </div>
 
@@ -160,7 +155,6 @@
   import EditorMixins from '../../mixins/EditorMixins'
   import EditorNotesMixins from '../../mixins/EditorNotesMixins'
   import NoteActions from './NoteActions';
-  import NewNoteActions from './NewNoteActions';
   import NoteForm from '../forms/NoteForm';
   import NotesListForm from '../forms/NotesListForm';
   import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
@@ -177,7 +171,6 @@
     name: "CommentaryEditor",
     components: {
       TextfieldForm,
-      NewNoteActions,
       EditorButton,
       ModalConfirmNoteDelete,
       NoteActions,
@@ -214,9 +207,13 @@
         }
       }
     },
-
-    computed: {
-    },
+        watch: {
+          currentSelection() {
+            if (this.currentSelection && this.currentSelection.length == 0) {
+              this.defineNewNote = false
+            }
+          }
+        },
     mounted () {
 
       this.initEditor(this.$refs.editor, this.$props.initialContent);

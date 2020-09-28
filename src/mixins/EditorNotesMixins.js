@@ -32,6 +32,7 @@ var EditorNotesMixin = {
       // set note missing data (ptrs)
       note.ptr_start = this.currentSelection.index
       note.ptr_end = note.ptr_start + this.currentSelection.length
+
       if (isNewNote) {
         // generate a temporary unique-ish id to avoid duplicates before saving
         note.id = 0 - new Date().getTime()
@@ -78,7 +79,9 @@ var EditorNotesMixin = {
      //console.log("closeNoteEdit")
       this.noteEditMode = null;
       this.currentNote = null;
-      this.editor.focus();
+      this.editor.blur();
+      this.selectedNoteId = null;
+      this.defineNewNote = false;
     },
     newNoteChoiceOpen() {
       this.defineNewNote = true;

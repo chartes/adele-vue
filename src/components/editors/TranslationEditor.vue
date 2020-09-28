@@ -6,6 +6,7 @@
     >
       <div class="editor-controls-group">
         <label>Structure éditoriale</label>
+        <!--
         <editor-button
           :selected="buttons.paragraph"
           :active="editorHasFocus"
@@ -18,6 +19,7 @@
           :callback="simpleFormat"
           :format="'verse'"
         />
+        -->
         <editor-button
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
@@ -99,7 +101,8 @@
         spellcheck="false"
       />
       <note-actions
-        v-show="selectedNoteId"
+        v-show="noteEditMode == null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
+        :selected-note-id="selectedNoteId"
         refs="noteActions"
         :style="actionsPosition"
         :new-note="setNoteEditModeNew"
@@ -107,12 +110,6 @@
         :update-link="setNoteEditModeList"
         :unlink="unlinkNote"
         :delete="setNoteEditModeDelete" 
-      />
-      <new-note-actions
-        v-if="defineNewNote"
-        :mode-new="setNoteEditModeNew"
-        :mode-link="setNoteEditModeList"
-        :cancel="newNoteChoiceClose"
       />
     </div>
 
@@ -153,7 +150,6 @@
   import EditorNotesMixins from '../../mixins/EditorNotesMixins'
   //import InEditorActions from './InEditorActions';
   import NoteActions from './NoteActions';
-  import NewNoteActions from './NewNoteActions';
   import NoteForm from '../forms/NoteForm';
   import NotesListForm from '../forms/NotesListForm';
   import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
@@ -165,7 +161,6 @@
     components: {
       TextfieldForm,
       //SaveBar,
-      NewNoteActions,
       //InEditorActions,
       EditorButton,
       ModalConfirmNoteDelete,
@@ -196,8 +191,12 @@
         }
       }
     },
-
-    computed: {
+    watch: {
+          currentSelection() {
+            if (this.currentSelection && this.currentSelection.length == 0) {
+              this.defineNewNote = false
+            }
+          }
     },
     mounted () {
 

@@ -13,6 +13,7 @@
             <label class="label">Contenu</label>
           </p>
           <div class="editor-area">
+            <!--
             <div
               ref="controls"
               class="editor-controls"
@@ -54,6 +55,7 @@
                 :format="'del'"
               />
             </div>
+            -->
             <div
               ref="editor"
               class="quill-editor"
@@ -72,12 +74,12 @@
   import EditorMixins from '../../mixins/EditorMixins'
   import { mapGetters } from 'vuex';
   import ModalForm from './ModalForm';
-  import EditorButton from '../editors/EditorButton.vue';
+  //import EditorButton from '../editors/EditorButton.vue';
 
   export default {
     name: "NoteForm",
     components: {
-      EditorButton,
+      //EditorButton,
       ModalForm
     },
     mixins: [EditorMixins],

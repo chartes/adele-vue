@@ -9,7 +9,7 @@
           <span class="icon is-small">
             <i class="fas fa-plus" />
           </span>
-          <span>Lier à une nouvelle note</span>
+          <span>Nouvelle note</span>
         </a>
       </p>
     </div>
@@ -22,11 +22,14 @@
           <span class="icon is-small">
             <i class="fas fa-link" />
           </span>
-          <span>Lier à une note existante</span>
+          <span>Note existante</span>
         </a>
       </p>
     </div>
-    <div class="field">
+    <div
+      v-show="selectedNoteId"
+      class="field"
+    >
       <p class="control">
         <a
           class="button is-link"
@@ -39,7 +42,10 @@
         </a>
       </p>
     </div>
-    <div class="field">
+    <div
+      v-show="selectedNoteId"
+      class="field"
+    >
       <p class="control">
         <a
           class="button is-warning"
@@ -52,8 +58,11 @@
         </a>
       </p>
     </div>
-    <hr>
-    <div class="field">
+    <hr v-show="selectedNoteId">
+    <div
+      v-show="selectedNoteId"
+      class="field"
+    >
       <p class="control">
         <a
           class="button is-danger"
@@ -73,6 +82,11 @@
   export default {
     name: "NoteActions",
     props: {
+      selectedNoteId: {
+        type: String,
+        required: false,
+        default: null
+      },
       edit: {
         type: Function,
         required: true

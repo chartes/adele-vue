@@ -1,25 +1,26 @@
 <template>
-
-    <modal-form
-            :title="'Choisissez une note'"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            :valid="!!selected"
-    >
-        <div class="NoteForm">
-            <a class="notes-list-item"
-               v-for="note in notes"
-               :key="note.id"
-               @click="selectItem(note.id)"
-               :class="{ selected: note.id == selected }"
-            >
-                <p class="content" v-html="note.content"></p>
-            </a>
-        </div>
-    </modal-form>
-
-
-
+  <modal-form
+    :title="'Choisissez une note'"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :valid="!!selected"
+  >
+    <div class="NoteForm">
+      <div
+        v-for="note in notes"
+        :key="note.id"
+        class="notes-list-item"
+        :class="{ selected: note.id == selected }"
+        :data-note-id="note.id"
+        @click="selectItem(note.id)"
+      >
+        <p
+          class="content"
+          v-html="note.content"
+        />
+      </div>
+    </div>
+  </modal-form>
 </template>
 
 <script>
@@ -28,11 +29,11 @@
   import ModalForm from './ModalForm';
 
   export default {
-    name: "note-form",
-    props: ['title', 'noteId', 'cancel', 'submit'],
+    name: "NoteForm",
     components: {
       ModalForm
     },
+    props: ['title', 'noteId', 'cancel', 'submit'],
     data() {
       return {
         selected: null
