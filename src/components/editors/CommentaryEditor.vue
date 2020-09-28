@@ -6,12 +6,14 @@
     >
       <div class="editor-controls-group">
         <label>Structure éditoriale</label>
+        <!--
         <editor-button
           :selected="buttons.paragraph"
           :active="editorHasFocus"
           :callback="simpleFormat"
           :format="'paragraph'"
         />
+        -->
         <editor-button
           :selected="buttons.list"
           :active="editorHasFocus"
