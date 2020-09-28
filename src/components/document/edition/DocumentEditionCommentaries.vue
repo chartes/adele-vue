@@ -6,11 +6,15 @@
           Transcription
         </div>
         <document-transcription
+          :key="transcriptionLoading"
           :readonly-data="transcriptionView"
         />
       </div>
       <div class="column is-two-thirds">
-        <div class="has-text-weight-medium subtitle m-b-xl">
+        <div
+          :key="transcriptionLoading"
+          class="has-text-weight-medium subtitle m-b-xl"
+        >
           Commentaires
         </div>
         <div
@@ -92,6 +96,7 @@ export default {
     },
     computed: {
         ...mapState('document', ['transcriptionView']),
+        ...mapState('document', ['transcriptionLoading']),
         ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel']),
         ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes'])
     },

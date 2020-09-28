@@ -1,6 +1,7 @@
 <template>
   <div>
     <transcription-editor
+      :key="transcriptionLoading"
       :initial-content="transcriptionWithNotes"
     />
   </div>
@@ -21,6 +22,7 @@ export default {
       transcriptionWithNotes: {type: String, default: ""}
     },
     computed: {
+      ...mapState('transcription', ['transcriptionLoading'])
     },
     async created() {
     },

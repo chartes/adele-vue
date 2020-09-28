@@ -264,6 +264,7 @@ const actions = {
   reset ({ commit }) {
     commit('RESET')
   },
+  /*
   create ({ commit, rootState, rootGetters }) {
     const auth = rootGetters['user/authHeader'];
     const data = { data: [{
@@ -283,8 +284,9 @@ const actions = {
         });
     } );
   },
-
+*/
 };
+
 
 const getters = {
   isTranslationSaved(state) {

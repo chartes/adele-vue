@@ -208,13 +208,10 @@
             this.deactivateEvents();
         },
         methods: {
-            
             updateContent () {
                 this.delta = this.editor.getContents().ops;
-                
             }
         },
-        
         computed: {
             ...mapState('transcription', ['transcriptionSaved']),
         }

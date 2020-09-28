@@ -1,6 +1,7 @@
 <template>
   <div>
     <translation-editor
+      :key="translationLoading"
       :initial-content="translationWithNotes"
     />
   </div>
@@ -21,6 +22,7 @@ export default {
       translationWithNotes: {type: String, default: ""}
     },
     computed: {
+      ...mapState('translation', ['translationLoading'])
     },
     async created() {
     },

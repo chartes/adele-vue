@@ -279,7 +279,7 @@ const actions = {
       await dispatch('speechparts/saveSpeechParts', null, {root: true})
       // update the store content
       
-      //await dispatch('fetchTranscriptionContent')
+      await dispatch('fetchTranscriptionContent')
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)

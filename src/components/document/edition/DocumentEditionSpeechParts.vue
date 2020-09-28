@@ -1,6 +1,7 @@
 <template>
   <div>
     <speechparts-editor
+      :key="transcriptionLoading"
       :initial-content="transcriptionWithSpeechParts"
     />
   </div>
@@ -21,7 +22,7 @@ export default {
         transcriptionWithSpeechParts: {type: String, default: ""}
     },
     computed: {
-        ...mapState('document', ['loading']),
+      ...mapState('transcription', ['transcriptionLoading']),
     },
     created() {
       

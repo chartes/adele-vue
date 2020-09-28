@@ -7,7 +7,7 @@
   >
     <div class="NoteForm">
       <div
-        v-for="note in notes"
+        v-for="note in notesExistingInBackend"
         :key="note.id"
         class="notes-list-item"
         :class="{ selected: note.id == selected }"
@@ -39,6 +39,12 @@
         selected: null
       }
     },
+    computed: {
+      ...mapGetters('notes', ['notes']),
+      notesExistingInBackend() {
+        return this.notes.filter(n => n.id >= 0)
+      }
+    },
     mounted () {
       console.log('NoteListForm mounted', this.noteId)
       this.selected = this.noteId
@@ -54,9 +60,6 @@
       cancelAction () {
         this.$props.cancel();
       }
-    },
-    computed: {
-      ...mapGetters('notes', ['notes'])
     }
   }
 </script>
