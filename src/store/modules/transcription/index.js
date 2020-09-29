@@ -275,7 +275,6 @@ const actions = {
         })
       }
       // update & save the speechparts pointers before reloading the transcription
-      //await dispatch('reloadSpeechparts')
       await dispatch('speechparts/saveSpeechParts', null, {root: true})
       // update the store content
       
@@ -304,6 +303,19 @@ const actions = {
     commit('UPDATE', data)
     return newNote
   },
+  updateNote({commit, rootState, state}, updatedNote) {
+    const currentNotes = state.transcription.notes;
+    const data = {
+      transcription: {
+        ...state.transcription,
+        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
+      }
+    }
+    /* save the note modification in the store */
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('UPDATE', data)
+    return updatedNote
+  },
   cloneContent: function ({dispatch, state, rootGetters, rootState}) {
     console.log('STORE ACTION transcription/cloneContent', state.transcriptionContent);
     const auth = rootGetters['user/authHeader'];
@@ -326,23 +338,6 @@ const actions = {
           reject(error)
         });
     });
-  },
-
-  reloadSpeechparts({commit, rootState, rootGetters, state}){
-    const userId = rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id
-    const docId = rootState.document.document.id
-    http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
-      let transcription = response.data.data;
-
-      let quillContent = TEIToQuill(transcription.content);
-      const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
-      const data = {
-        withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
-      };
-      commit('UPDATE', data);
-      commit('SET_ERROR', null)
-      commit('LOADING_STATUS', false);
-    })
   },
   
   updateSpeechpartsPointers({state}) {

@@ -110,7 +110,6 @@ const actions = {
 
       try {
         await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, {data: data})
-        //dispatch('transcription/reloadSpeechparts', null, {root: true})
 
         commit('SAVING_STATUS', 'uptodate')
       } catch(error) {

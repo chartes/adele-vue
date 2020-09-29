@@ -27,7 +27,7 @@ var EditorNotesMixin = {
     updateNote(note) {
       const isNewNote = this.noteEditMode === 'new'
       const store = this.$route.params['section'];
-      const action = isNewNote ? `${store}/insertNote` : `${store}/updateNotes`
+      const action = isNewNote ? `${store}/insertNote` : `${store}/updateNote`
 
       // set note missing data (ptrs)
       note.ptr_start = this.currentSelection.index
@@ -38,19 +38,14 @@ var EditorNotesMixin = {
         note.id = 0 - new Date().getTime()
       }
       // update the shadow quill content
-      if (this.$route.params['section'] !== 'transcription' || this.$route.params['section'] !== 'translation') {
-        this.$store.dispatch(action, note).then((response)=>{
-          if (isNewNote) {
-            // finally, format the selection in the editor
-            this.updateNoteId(response.id)
-          } else {
-            this.closeNoteEdit()
-          }
-        })
-      } else {
-        this.updateNoteId(note.id)
-        this.closeNoteEdit()
-      }
+      this.$store.dispatch(action, note).then((response)=>{
+        if (isNewNote) {
+          // finally, format the selection in the editor
+          this.updateNoteId(response.id)
+        } else {
+          this.closeNoteEdit()
+        }
+      })
     },
     unlinkNote() {
       //console.log('unlinkNote')

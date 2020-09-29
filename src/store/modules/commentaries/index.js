@@ -28,6 +28,7 @@ const state = {
 
   commentariesWithNotes: {},
   savingStatus: 'uptodate',
+  commentariesLoading: false,
   commentariesSaved: true,
   commentariesError: null,
 };
@@ -63,6 +64,9 @@ const mutations = {
   SELECT(state, label) {
     state.selectedCommentaryLabel = label
   },
+  LOADING_STATUS (state, payload) {
+    state.commentariesLoading = payload;
+  },
   /*
   ADD_COMMENTARY (state, {commentary}) {
     const comm = state.commentaries.find(c => c.type === commentary.type);
@@ -79,6 +83,14 @@ const mutations = {
     comm.content = content
   },
   */
+  UPDATE(state, payload) {
+    const t = state.selectedCommentaryLabel
+    Vue.set(state.commentariesWithNotes, t, {
+      ...state.commentariesWithNotes[t],
+      notes: payload.notes,
+      withNotes : payload.withNotes
+    })
+  },
   SET_ERROR(state, payload) {
     state.commentariesError = payload
   },
@@ -141,13 +153,15 @@ const actions = {
   },
 
   fetchCommentariesFromUser ({ commit }, {docId, userId}) {
+    commit('LOADING_STATUS', true);
     return http.get(`documents/${ docId }/commentaries/from-user/${ userId }`).then( response => {
         const formattedData = parseComsFromResponse(response)
         commit('INIT', formattedData.commentaries); 
-        //commit('UPDATE', formattedData.hasTypes)
         commit('SET_ERROR', null)
+        commit('LOADING_STATUS', false);
       }).catch((error) => {
         commit('SET_ERROR', error)
+        commit('LOADING_STATUS', false);
         //throw error
       })
   },
@@ -174,8 +188,36 @@ const actions = {
   selectCommentaryTab({commit}, label) {
     commit('SELECT', label)
   },
+
+  insertNote({commit, rootState, state}, newNote) {
+    const t = state.selectedCommentaryLabel
+    const quillContent = TEIToQuill(state.commentariesWithNotes[t].content)
+    const textWithNotes = insertNotes(quillContent,  [newNote])
+
+    const payload = {
+      notes: state.commentariesWithNotes[t].notes.concat(newNote),
+      withNotes: convertLinebreakTEIToQuill(textWithNotes)
+    }
+    /* save the shadow content with notes */
+    commit('UPDATE', payload)
+    return newNote
+  },
+  /* TODO */
+  updateNote({commit, rootState, state}, updatedNote) {
+    const t = state.selectedCommentaryLabel
+    const currentNotes = state.commentariesWithNotes[t].notes;
+    const payload = {
+        ...state.commentariesWithNotes[t],
+        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
+    }
+    /* save the note modification in the store */
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('UPDATE', payload)
+    return updatedNote
+  },
   /* useful */
   addNewCommentary({commit, state, dispatch, rootState}, {type}) {
+    commit('LOADING_STATUS', true);
     const newCommentary = {
       data: {
         doc_id : rootState.document.document.id,
@@ -191,14 +233,17 @@ const actions = {
         userId: rootState.workflow.selectedUserId
       }).then(() => {
         commit('SELECT', newLabel)
+        commit('LOADING_STATUS', false);
       })
     }).catch(error => {
       commit('SET_ERROR', error)
+      commit('LOADING_STATUS', false);
     })
   },
    /* useful */
    async deleteCommentaryFromUser({dispatch, commit, rootState}, comType) {
     try {
+      commit('LOADING_STATUS', true);
       commit('SET_ERROR', null)
       const response = await http.delete(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}/and-type/${comType}`)
      /*
@@ -210,6 +255,7 @@ const actions = {
       await dispatch('fetchCommentariesContent')
     } catch(error) {
       commit('SET_ERROR', error)
+      commit('LOADING_STATUS', false);
     }
   },
 
@@ -223,8 +269,8 @@ const actions = {
   /* useful */
   async saveCommentaries({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
-    //commit('LOADING_STATUS', true)
-    
+    commit('LOADING_STATUS', true);
+
     try {
       // save each commentary independently
       Object.values(state.commentariesWithNotes).forEach(async com => {
@@ -237,14 +283,19 @@ const actions = {
           let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
 
           const notes = computeNotesPointers(sanitizedWithNotes)
+          console.log("building notes to be saved", [...notes])
 
           notes.forEach(note => {
             const found = rootGetters['notes/getNoteById'](note.id)
+            console.log("building note found in comm for save,", note, found)
+
             note.content = found.content
             if (found.note_type) {
               note.type_id = found.note_type.id
             }
           })
+          console.log("building notes to be saved", notes.filter(n => n.id !== null && n.id >= 0))
+
     
           // put content & update notes
           await http.put(`documents/${rootState.document.document.id}/commentaries`, {
@@ -276,12 +327,11 @@ const actions = {
   
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
-      //commit('LOADING_STATUS', false)
+      commit('LOADING_STATUS', false)
     } catch(error) {
       commit('SET_ERROR', error)
       commit('SAVING_STATUS', 'error')
-      throw error
-      //commit('LOADING_STATUS', false)
+      commit('LOADING_STATUS', false)
     }
 
 

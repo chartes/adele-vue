@@ -445,17 +445,17 @@ const computeNotesPointers  = (htmlWithNotes) => {
     //trying to achieve : <note><sup>t</sup></note> -> ptr_end - len(<sup>) - len(</sup>)
     //todo: fonctionne que pour la première boucle. ptr_start (et ptr_end) pas bon ensuite ? 
     // tours de boucle suivants : ptr_start est trop élevé car il garde les <note> précédentes? sinon pourquoi ?
-    console.log(`%c # htmlWithNotes ${resStart.index} ${resEnd.index}`, 'color:DarkOrchid')
+    //console.log(`%c # htmlWithNotes ${resStart.index} ${resEnd.index}`, 'color:DarkOrchid')
     let noteContentWithHtml = htmlWithNotes.substring(resStart.index + resStart[0].length, resEnd.index)
     //noteContentWithHtml = noteContentWithHtml.replace(regexpContent, '')
-    console.log(`%c # noteContentWithHtml ${noteContentWithHtml}`, 'color:DarkOrchid')
+    //console.log(`%c # noteContentWithHtml ${noteContentWithHtml}`, 'color:DarkOrchid')
 
-    console.log(`%c # ${htmlWithNotes}`, 'color:DarkOrchid')
-    console.log(`%c # resStart`, 'color:DarkOrchid', resStart)
+    //console.log(`%c # ${htmlWithNotes}`, 'color:DarkOrchid')
+    //console.log(`%c # resStart`, 'color:DarkOrchid', resStart)
     htmlWithNotes = htmlWithNotes.replace(regexpStart, '');
     htmlWithNotes = htmlWithNotes.replace(regexpEnd, ''); 
 
-    console.log(`%c # resEnd`, 'color:DarkOrchid', resEnd)
+    //console.log(`%c # resEnd`, 'color:DarkOrchid', resEnd)
   
    
     notes.push({
@@ -464,11 +464,7 @@ const computeNotesPointers  = (htmlWithNotes) => {
       "ptr_end": resStart.index + noteContentWithHtml.length
     });
 
-    console.log('%c =>', 'color:DarkOrchid', {
-      "id" : parseInt(resStart[1]),
-      "ptr_start": resStart.index,
-      "ptr_end": resStart.index + noteContentWithHtml.length
-    })
+    console.log('%c =>', 'color:DarkOrchid', notes)
     
   }
   //console.warn('%c computeNotesPointers', 'color:DarkOrchid', notes.length, notes)

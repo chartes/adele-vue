@@ -255,6 +255,19 @@ const actions = {
     commit('UPDATE', data)
     return newNote
   },
+  updateNote({commit, rootState, state}, updatedNote) {
+    const currentNotes = state.translation.notes;
+    const data = {
+      transcription: {
+        ...state.translation,
+        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
+      }
+    }
+    /* save the note modification in the store */
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('UPDATE', data)
+    return updatedNote
+  },
   changed ({ commit, dispatch }, deltas) {
     commit('ADD_OPERATION', deltas);
     commit('CHANGED', false);

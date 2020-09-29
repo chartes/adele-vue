@@ -52,6 +52,7 @@
             <div v-show="com.label === selectedCommentaryLabel">
               <commentary-editor
                 v-if="hasCommentaryTypes(com.label)"
+                :key="commentariesLoading"
                 :initial-content="getCommentaryContent(com.label)"
                 :type="com.id"
               />
@@ -97,7 +98,7 @@ export default {
     computed: {
         ...mapState('document', ['transcriptionView']),
         ...mapState('document', ['transcriptionLoading']),
-        ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel']),
+        ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel', 'commentariesLoading']),
         ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes'])
     },
     async created() {
