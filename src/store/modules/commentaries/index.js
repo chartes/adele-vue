@@ -33,6 +33,55 @@ const state = {
   commentariesError: null,
 };
 
+async function saveCom(rootState, rootGetters, com) {
+  //console.log("saving", state.commentariesWithNotes, com)
+  const contentWithNotes = quillToTEI(com.withNotes)
+  const content = stripNotes(contentWithNotes)
+
+  // prepare notes
+  const teiWithNotes = contentWithNotes
+  let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
+
+  const notes = computeNotesPointers(sanitizedWithNotes)
+  console.log("building notes to be saved", [...notes])
+
+  notes.forEach(note => {
+    const found = rootGetters['notes/getNoteById'](note.id)
+    console.log("building note found in comm for save,", note, found)
+
+    note.content = found.content
+    if (found.note_type) {
+      note.type_id = found.note_type.id
+    }
+  })
+  console.log("building notes to be saved", notes.filter(n => n.id !== null && n.id >= 0))
+
+
+  // put content & update notes
+  await http.put(`documents/${rootState.document.document.id}/commentaries`, {
+    data: {
+      type_id: com.type,
+      content: content,
+      notes: notes.filter(n => n.id !== null && n.id >= 0)
+    }
+  })
+        
+  // and post new notes 
+  const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+    delete n.id
+    return n
+  })
+
+  if (new_notes.length > 0){
+    await http.post(`documents/${rootState.document.document.id}/commentaries`, {
+      data: {
+        type_id: com.type,
+        notes: new_notes
+      }
+    })
+  }
+}  
+
 const mutations = {
   INIT(state, data) {
       state.commentariesWithNotes = {}
@@ -272,55 +321,8 @@ const actions = {
     commit('LOADING_STATUS', true);
 
     try {
-      // save each commentary independently
-      Object.values(state.commentariesWithNotes).forEach(async com => {
-          //console.log("saving", state.commentariesWithNotes, com)
-          const contentWithNotes = quillToTEI(com.withNotes)
-          const content = stripNotes(contentWithNotes)
-
-          // prepare notes
-          const teiWithNotes = contentWithNotes
-          let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
-
-          const notes = computeNotesPointers(sanitizedWithNotes)
-          console.log("building notes to be saved", [...notes])
-
-          notes.forEach(note => {
-            const found = rootGetters['notes/getNoteById'](note.id)
-            console.log("building note found in comm for save,", note, found)
-
-            note.content = found.content
-            if (found.note_type) {
-              note.type_id = found.note_type.id
-            }
-          })
-          console.log("building notes to be saved", notes.filter(n => n.id !== null && n.id >= 0))
-
-    
-          // put content & update notes
-          await http.put(`documents/${rootState.document.document.id}/commentaries`, {
-            data: {
-              type_id: com.type,
-              content: content,
-              notes: notes.filter(n => n.id !== null && n.id >= 0)
-            }
-          })
-                
-          // and post new notes 
-          const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
-            delete n.id
-            return n
-          })
-
-          if (new_notes.length > 0){
-            await http.post(`documents/${rootState.document.document.id}/commentaries`, {
-              data: {
-                type_id: com.type,
-                notes: new_notes
-              }
-            })
-          }
-      })
+      // save each commentary independently in parallel
+      await Promise.all(Object.values(state.commentariesWithNotes).map(com => saveCom(rootState, rootGetters, com)))
 
       // update the store content
       await dispatch('fetchCommentariesContent')
