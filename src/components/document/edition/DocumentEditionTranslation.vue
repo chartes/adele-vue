@@ -1,10 +1,24 @@
 <template>
-  <div>
+  <div
+    v-if="transcriptionAlignmentMode"
+    class="columns"
+  >
+    <transcription-editor
+      :key="transcriptionLoading"
+      class="column"
+      :initial-content="transcriptionContent"
+    />
     <translation-editor
       :key="translationLoading"
-      :initial-content="translationWithNotes"
+      class="column"
+      :initial-content="translationContent"
     />
   </div>
+  <translation-editor 
+    v-else
+    :key="translationLoading"
+    :initial-content="translationWithNotes"
+  />
 </template>
 
 
@@ -12,17 +26,21 @@
 
 import { mapState, mapGetters } from 'vuex';
 import TranslationEditor from "@/components/editors/TranslationEditor.vue"
+import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
 
 export default {
     name: "DocumentEditionTranslation",
     components: {
-        TranslationEditor
+        TranslationEditor,
+        TranscriptionEditor
     },
     props: {
       translationWithNotes: {type: String, default: ""}
     },
     computed: {
-      ...mapState('translation', ['translationLoading'])
+      ...mapState('translation', ['translationLoading', 'translationContent']),
+      ...mapState('transcription', ['transcriptionLoading', 'transcriptionContent']),
+      ...mapState('workflow', ['transcriptionAlignmentMode']),
     },
     async created() {
     },

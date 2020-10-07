@@ -21,19 +21,24 @@
         />
         -->
         <editor-button
+          v-if="!transcriptionAlignmentMode"
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
           :format="'note'"
         />
-        <!--
+        
         <editor-button
+          v-if="transcriptionAlignmentMode"
           :selected="buttons.segment"
           :active="editorHasFocus"
           :callback="insertSegment"
           :format="'segment'"
-        />-->
+        />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements typographiques</label>
         <editor-button
           :selected="buttons.bold"
@@ -66,7 +71,10 @@
           :format="'underline'"
         />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements sémantiques</label>
         <editor-button
           :selected="buttons.del"
@@ -194,6 +202,10 @@
                 }
             }
         },
+        computed: {
+            ...mapState('workflow', ['transcriptionAlignmentMode']),
+            ...mapState('transcription', ['transcriptionSaved']),
+        },
         watch: {
           currentSelection() {
             if (this.currentSelection && this.currentSelection.length == 0) {
@@ -211,9 +223,6 @@
             updateContent () {
                 this.delta = this.editor.getContents().ops;
             }
-        },
-        computed: {
-            ...mapState('transcription', ['transcriptionSaved']),
         }
     }
 </script>

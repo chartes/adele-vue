@@ -3,35 +3,35 @@
     <div class="field is-grouped">
       <!-- SAVE TRANSLATION --> 
       <p 
-        v-if="!isTranslationReadOnly"
+        v-if="!isTranslationReadOnly && !transcriptionAlignmentMode"
         class="control"
       >
         <save-translation-button />
       </p>
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
       <p
-        v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
+        v-if="currentUserIsTeacher && currentUser.id === selectedUserId && !transcriptionAlignmentMode"
         class="control"
       >
         <validate-translation-button :doc-id="document.id" />
       </p>
-      <!-- TRANSCRIPTION ALIGNMENT MODE 
-      <p
-        v-if="currentUserIsTeacher && currentUser.id === selectedUserId"
-        class="control"
-      >
-        <transcription-alignment-button :doc-id="document.id" />
-      </p>
-      --> 
+   
       <!-- DELETE TRANSLATION --> 
       <p
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher && !transcriptionAlignmentMode"
         class="control"
       >
         <delete-translation-button
           :doc-id="document.id"
           :user-id="selectedUserId"
         />
+      </p>
+      <!-- ALIGNMENT TRANSLATION --> 
+      <p
+        v-if="showAlignmentButton"
+        class="control "
+      >
+        <transcription-alignment-button :doc-id="document.id" />
       </p>
     </div>
   </div>
@@ -50,15 +50,21 @@ export default {
     components: {
       ValidateTranslationButton,
       DeleteTranslationButton,
-      //TranscriptionAlignmentButton,
+      TranscriptionAlignmentButton,
       SaveTranslationButton
     },
     computed: {
         ...mapState('document', ['document']),
-        ...mapState('workflow', ['selectedUserId']),
+        ...mapState('workflow', ['selectedUserId', 'transcriptionAlignmentMode']),
         ...mapState('user', ['currentUser']),
-        ...mapGetters('user', ['currentUserIsTeacher']),
-        ...mapGetters('workflow', ['isTranslationValidated', 'isTranslationReadOnly' ])
+        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        ...mapGetters('workflow', [
+          'isTranscriptionValidated', 'selectedUserHasTranscription',
+          'isTranslationValidated', 'selectedUserHasTranslation', 'isTranslationReadOnly'
+      ]),
+      showAlignmentButton() {
+          return this.isTranslationValidated && this.currentUserIsTeacher && this.currentUser.id === this.selectedUserId
+      }
 
     },
     methods: {

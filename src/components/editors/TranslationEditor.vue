@@ -21,18 +21,23 @@
         />
         -->
         <editor-button
+          v-if="!transcriptionAlignmentMode"
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
           :format="'note'"
         />
         <editor-button
+          v-if="transcriptionAlignmentMode"
           :selected="buttons.segment"
           :active="editorHasFocus"
           :callback="insertSegment"
           :format="'segment'"
         />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements typographiques</label>
         <editor-button
           :selected="buttons.bold"
@@ -65,7 +70,10 @@
           :format="'underline'"
         />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements sémantiques</label>
         <editor-button
           :selected="buttons.del"
@@ -144,6 +152,8 @@
 
 <script>
 
+  import {mapState} from 'vuex';
+
   import Quill from '../../modules/quill/AdeleQuill';
   import EditorButton from './EditorButton.vue';
   import EditorMixins from '../../mixins/EditorMixins'
@@ -190,6 +200,9 @@
           note: false,
         }
       }
+    },
+    computed: {
+      ...mapState('workflow', ['transcriptionAlignmentMode']),
     },
     watch: {
           currentSelection() {

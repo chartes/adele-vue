@@ -1,17 +1,24 @@
 
 const state = {
   selectedUserId: null,
+  transcriptionAlignmentMode: false
 }
 
 const mutations = {
   SELECT_USER (state, userId) {
     state.selectedUserId = userId
+  },
+  SET_TRANSCRIPTION_ALIGNMENT_MODE (state, v) {
+    state.transcriptionAlignmentMode = v
   }
 }
 
 const actions = {
   changeSelectedUser ({ commit }, {userId}) { 
     commit('SELECT_USER', userId)
+  },
+  setTranscriptionAlignmentMode ({ commit }, v) { 
+    commit('SET_TRANSCRIPTION_ALIGNMENT_MODE', v)
   }
 }
 

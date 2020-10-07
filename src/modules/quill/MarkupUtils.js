@@ -85,7 +85,7 @@ const MAPPING_TEI_TO_QUILL = {
 
 const trim = (s) => {
   s = s.replace(/[\t\f\v ]{2,}/gmi, ' ')
-  s = s.replace(/\s+<\/p>/gi, '</p>');
+  s = s.replace(/\s+<\/p>/gmi, '</p>');
   s = s.replace(/<p>\s+/gmi, '<p>');
   s = s.replace(/\s*\n\s*/gi, '\n')
   return s
@@ -93,8 +93,6 @@ const trim = (s) => {
 
 const TEIToQuill = (teiString) => {
   teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
-  //teiString = teiString.replace(/<p>\s+/gi, '<p>');
-  //teiString = teiString.replace(/\s+<\/p>/gi, '</p>');
   teiString = trim(teiString)
 
   const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
@@ -233,6 +231,7 @@ const insertNotes = (text, notes) => {
   })
   return result;
 };
+
 const insertFacsimileZones = (text, zones) => {
   let result = text;
   let indexCorrection = 0;
@@ -248,6 +247,7 @@ const insertFacsimileZones = (text, zones) => {
   })
   return result;
 };
+
 const insertSegments = (text, segments, translationOrTranscription) => {
 
   const shadowQuillElement = document.createElement('div');

@@ -7,13 +7,9 @@ import {
   quillToTEI,
   convertLinebreakTEIToQuill,
   convertLinebreakQuillToTEI,
-  insertSegments,
-  insertNotesAndSegments,
   insertNotes,
   stripNotes,
-  stripSegments,
   computeNotesPointers,
-  computeAlignmentPointers,
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
