@@ -1,0 +1,35 @@
+
+segment::before {
+    color: white;
+    font-weight: bold;
+    padding: 4px;
+}
+
+.transcription-editor {
+    counter-reset: transcriptionSegment;
+    segment::before {
+        counter-increment: transcriptionSegment;
+        content: counter(transcriptionSegment)
+    }}
+
+.translation-editor {
+    counter-reset: translationSegment;
+    segment::before {
+        counter-increment: translationSegment;
+        content: counter(translationSegment)
+    }
+}
+
+segment {
+    height: 4px;
+    width: 100%;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    border-bottom: 3px dashed $yellow;
+
+    display: block;
+    cursor: pointer;
+    &:hover {
+        border-bottom: 3px dashed grey;
+    }
+}

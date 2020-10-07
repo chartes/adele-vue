@@ -31,7 +31,7 @@
         v-if="showAlignmentButton"
         class="control "
       >
-        <transcription-alignment-button :doc-id="document.id" />
+        <transcription-alignment-button />
       </p>
     </div>
   </div>

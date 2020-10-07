@@ -4,7 +4,10 @@
       ref="controls"
       class="editor-controls"
     >
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Structure éditoriale</label>
         <!-- 
         <editor-button
@@ -21,18 +24,10 @@
         />
         -->
         <editor-button
-          v-if="!transcriptionAlignmentMode"
+          
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
           :format="'note'"
-        />
-        
-        <editor-button
-          v-if="transcriptionAlignmentMode"
-          :selected="buttons.segment"
-          :active="editorHasFocus"
-          :callback="insertSegment"
-          :format="'segment'"
         />
       </div>
       <div
@@ -106,7 +101,7 @@
       <div
         id="transcription-editor"
         ref="editor"
-        class="quill-editor"
+        class="quill-editor transcription-editor"
         spellcheck="false"
       />
       <note-actions
@@ -156,6 +151,7 @@
     
     import { mapState } from 'vuex'
     import EditorButton from './EditorButton.vue';
+
     import EditorMixins from '../../mixins/EditorMixins'
     import EditorNotesMixins from '../../mixins/EditorNotesMixins'
     //import InEditorActions from './InEditorActions';
@@ -165,7 +161,9 @@
     import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
     //import SaveBar from "../ui/SaveBar";
     import TextfieldForm from "../forms/TextfieldForm";
-    
+    import SegmentBlot from '../../modules/quill/blots/semantic/Segment';
+    import Quill from '../../modules/quill/AdeleQuill';
+
     export default {
         name: "TranscriptionEditor",
         components: {
@@ -215,6 +213,16 @@
         },
         mounted () {
             this.initEditor(this.$refs.editor, this.$props.initialContent);
+
+            if (this.transcriptionAlignmentMode) {
+              this.editor.on('selection-change', this.insertSegmentOnClick);
+              this.editor.root.addEventListener('click', (ev) => {
+                let segment = Quill.find(ev.target);
+                if (segment instanceof SegmentBlot) {
+                  this.editor.deleteText(segment.offset(this.editor.scroll), 1)
+                }
+              });
+            }
         },
         beforeDestroy () {
             this.deactivateEvents();
@@ -222,6 +230,12 @@
         methods: {
             updateContent () {
                 this.delta = this.editor.getContents().ops;
+            },
+            insertSegmentOnClick() {
+              const range = this.editor.getSelection()
+              if (range.length === 0) {
+                this.insertSegment('segment')
+              }
             }
         }
     }

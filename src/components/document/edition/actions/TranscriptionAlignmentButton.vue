@@ -1,7 +1,7 @@
 <template>
   <a
     class="button  is-small is-info is-light"
-    :disabled="!isTranslationValidated || savingStatus !== 'uptodate'"
+    :disabled="disabled"
     @click="toggleTranscriptionAlignmentMode"
   >
     <span> {{ transcriptionAlignmentMode ? 'Quitter le mode Alignement' : 'Aligner la traduction avec la transcription' }} </span>
@@ -17,7 +17,7 @@ export default {
 
     },
     props: {
-        docId: {type: Number, default: null}
+       
     },
     data() {
       return {
@@ -29,10 +29,15 @@ export default {
       ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('workflow', ['isTranslationValidated']),
+      disabled() {
+        return !this.isTranslationValidated || this.savingStatus !== 'uptodate'
+      }
     },
     methods: {
       toggleTranscriptionAlignmentMode() {
-        this.$store.dispatch('workflow/setTranscriptionAlignmentMode', !this.transcriptionAlignmentMode)
+        if (!this.disabled) {
+          this.$store.dispatch('workflow/setTranscriptionAlignmentMode', !this.transcriptionAlignmentMode)
+        }
       }
     }
 }

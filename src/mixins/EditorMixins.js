@@ -90,11 +90,13 @@ var EditorMixin = {
     },
 
     insertSegment () {
-
       let range = this.editor.getSelection(true);
       this.editor.updateContents(getNewDelta().retain(range.index).delete(range.length).insert({ segment: true }), Quill.sources.USER);
       this.editor.setSelection(range.index + 1, Quill.sources.SILENT);
 
+    },
+    deleteSegment () {
+      console.log("delete segment", this.editor.getSelection())
     },
     insertColBreak () {
 

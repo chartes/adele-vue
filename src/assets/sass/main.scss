@@ -54,6 +54,7 @@
 @import 'elements/hi';
 @import 'elements/persname';
 @import 'elements/placename';
+@import 'elements/segment';
 
 
 @import "components/document.card";
@@ -99,30 +100,6 @@
 // and our UI components are often composed of Objects and Components
 /*
 //
-@import "components/main-layout";
-@import "components/field.text";
-@import "components/field.title";
-@import "components/field.multi-select";
-@import "components/field.select-autocomplete";
-@import "components/icons";
-@import "components/loading";
-@import "components/note";
-@import "components/document.document-tag-bar";
-@import "components/document.argument";
-@import "components/document.attributes";
-@import "components/document.date-attributes";
-@import "components/document.collections";
-@import "components/document.correspondents";
-@import "components/document.notes-list";
-@import "components/document.placenames";
-@import "components/document.transcription";
-@import "components/document.witness-list";
-@import "components/document.date-list";
-@import "components/document.person-form";
-@import "components/document.person-list-form";
-@import "components/document.iiif-viewer";
-@import "components/collection.collection-list";
-@import "components/lock";
 
 
 // Utilities / trumps – utilities and helper classes

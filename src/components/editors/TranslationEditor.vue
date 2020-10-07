@@ -4,7 +4,10 @@
       ref="controls"
       class="editor-controls"
     >
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Structure éditoriale</label>
         <!--
         <editor-button
@@ -21,17 +24,9 @@
         />
         -->
         <editor-button
-          v-if="!transcriptionAlignmentMode"
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
           :format="'note'"
-        />
-        <editor-button
-          v-if="transcriptionAlignmentMode"
-          :selected="buttons.segment"
-          :active="editorHasFocus"
-          :callback="insertSegment"
-          :format="'segment'"
         />
       </div>
       <div
@@ -105,7 +100,7 @@
       <div
         id="translation-editor"
         ref="editor"
-        class="quill-editor"
+        class="quill-editor translation-editor"
         spellcheck="false"
       />
       <note-actions
@@ -165,6 +160,7 @@
   import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
   //import SaveBar from "../ui/SaveBar";
   import TextfieldForm from "../forms/TextfieldForm";
+  import SegmentBlot from '../../modules/quill/blots/semantic/Segment';
 
   export default {
     name: "TranslationEditor",
@@ -212,17 +208,28 @@
           }
     },
     mounted () {
-
       this.initEditor(this.$refs.editor, this.$props.initialContent);
 
+      if (this.transcriptionAlignmentMode) {
+        this.editor.on('selection-change', this.insertSegmentOnClick);
+        this.editor.root.addEventListener('click', (ev) => {
+          let segment = Quill.find(ev.target);
+          if (segment instanceof SegmentBlot) {
+            this.editor.deleteText(segment.offset(this.editor.scroll), 1)
+          }
+        });
+      }
     },
     methods: {
-
       updateContent () {
         this.delta = this.editor.getContents().ops;
-
       },
-
+      insertSegmentOnClick() {
+        const range = this.editor.getSelection()
+        if (range.length === 0) {
+          this.insertSegment('segment')
+        }
+      }
     }
   }
 </script>

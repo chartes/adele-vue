@@ -4,19 +4,19 @@
     class="columns"
   >
     <transcription-editor
-      :key="transcriptionLoading"
+      :key="'transcriptionAlignment' + transcriptionLoading"
       class="column"
       :initial-content="transcriptionContent"
     />
     <translation-editor
-      :key="translationLoading"
+      :key="'translationAlignment' + translationLoading"
       class="column"
       :initial-content="translationContent"
     />
   </div>
   <translation-editor 
     v-else
-    :key="translationLoading"
+    :key="'translation' + translationLoading"
     :initial-content="translationWithNotes"
   />
 </template>
