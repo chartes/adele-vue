@@ -56,6 +56,7 @@ var EditorNotesMixin = {
       //console.log('deleteNote')
       // TODO delete note
       this.editor.format('note', false);
+      this.$store.dispatch('notes/deleteNote', this.selectedNoteId)
       this.selectedNoteId = null;
       this.closeNoteEdit();
     },

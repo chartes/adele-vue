@@ -251,7 +251,6 @@ const actions = {
     commit('UPDATE', payload)
     return newNote
   },
-  /* TODO */
   updateNote({commit, rootState, state}, updatedNote) {
     const t = state.selectedCommentaryLabel
     const currentNotes = state.commentariesWithNotes[t].notes;
@@ -323,7 +322,6 @@ const actions = {
     try {
       // save each commentary independently in parallel
       await Promise.all(Object.values(state.commentariesWithNotes).map(com => saveCom(rootState, rootGetters, com)))
-
       // update the store content
       await dispatch('fetchCommentariesContent')
   
@@ -335,9 +333,6 @@ const actions = {
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
-
-
-   
   },
 };
 

@@ -1,4 +1,4 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
 
@@ -10,7 +10,10 @@ const mutations = {
 
 const actions = {
 
-
+  async deleteNote({getters, rootState, rootGetters}, noteId) {
+    console.log("TODO delete note", noteId)
+    //await http.delete(`/documents/${rootState.document.document.id}/notes`)
+  }
 };
 
 const getters = {
