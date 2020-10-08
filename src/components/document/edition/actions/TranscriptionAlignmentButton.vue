@@ -1,11 +1,21 @@
 <template>
-  <a
-    class="button  is-small is-info is-light"
-    :disabled="disabled"
-    @click="toggleTranscriptionAlignmentMode"
-  >
-    <span> {{ transcriptionAlignmentMode ? 'Quitter sans sauvegarder' : 'Aligner la traduction avec la transcription' }} </span>
-  </a>
+  <span>
+    <a
+      v-if="!transcriptionAlignmentMode"
+      class="button  is-small is-info is-light"
+      :disabled="disabled"
+      @click="startAlignmentMode"
+    >
+      <span>Aligner la traduction avec la transcription</span>
+    </a>
+    <a
+      v-else
+      class="button  is-small is-info is-light"
+      @click="stopAlignmentMode"
+    >
+      <span>Quitter sans sauvegarder</span>
+    </a>
+  </span>
 </template>
 
 <script>
@@ -30,14 +40,19 @@ export default {
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('workflow', ['isTranslationValidated']),
       disabled() {
-        return !this.isTranslationValidated //|| this.savingStatus !== 'uptodate'
+        //TODO prendre en compte la transcription et le savingStatus uptodate également
+        //TODO interdire les segments au milieu d'un placename/persname
+        return this.savingStatus !== 'uptodate'
       }
     },
     methods: {
-      toggleTranscriptionAlignmentMode() {
+      startAlignmentMode() {
         if (!this.disabled) {
-          this.$store.dispatch('workflow/setTranscriptionAlignmentMode', !this.transcriptionAlignmentMode)
+          this.$store.dispatch('workflow/setTranscriptionAlignmentMode', true)
         }
+      },
+      stopAlignmentMode() {
+          this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
       }
     }
 }

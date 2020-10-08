@@ -13,7 +13,8 @@ import {
   insertFacsimileZones,
   stripSegments,
   computeNotesPointers,
-  computeSpeechpartsPointers
+  computeSpeechpartsPointers,
+  computeAlignmentPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
@@ -157,6 +158,9 @@ const mutations = {
   SAVED (state) {
     // transcription saved
     state.transcriptionSaved = true;
+  },
+  SAVING_TRANSLATION_ALIGNMENT_STATUS (state, v) {
+    state.translationAlignmentSaved = v;
   }
 
 };
@@ -370,8 +374,10 @@ const actions = {
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
   },
-  saveTranslationAlignment({dispatch, state, rootGetters, rootState}) {
+  saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
+    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
     console.log('save translation alignment')
+    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
   },
   /*
   saveImageAlignments ({ commit, rootState, state, rootGetters }) {
@@ -463,6 +469,10 @@ const actions = {
 const getters = {
   isTranscriptionSaved(state) {
     return state.savingStatus === 'uptodate'
+  },
+  transcriptionSegmentsFromQuill(state) {
+    const pointers = computeAlignmentPointers(state.transcriptionWithTextAlignment)
+    return pointers
   }
 };
 

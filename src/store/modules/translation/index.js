@@ -2,10 +2,10 @@ import axios from 'axios';
 import Quill from '../../../modules/quill/AdeleQuill';
 import {http} from '../../../modules/http-common';
 
-import TEItoQuill, {
+import {
   insertNotes, computeNotesPointers, TEIToQuill,
   insertSegments, stripSegments, quillToTEI, convertLinebreakTEIToQuill, insertNotesAndSegments,
-  convertLinebreakQuillToTEI
+  convertLinebreakQuillToTEI, computeAlignmentPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from "../../../modules/quill/DeltaUtils";
 
@@ -256,7 +256,7 @@ const actions = {
       commit('SET_ERROR', false)
       commit('LOADING_STATUS', false)
     } catch(error) {
-      // TODO: rollback to previous content and notes
+      // TODO: rollback to previous content and notes ?
       commit('SET_ERROR', error)
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
@@ -331,6 +331,10 @@ const actions = {
 const getters = {
   isTranslationSaved(state) {
     return state.savingStatus === 'uptodate'
+  },
+  translationSegmentsFromQuill(state) {
+    const pointers = computeAlignmentPointers(state.translationWithTextAlignment)
+    return pointers
   }
 };
 

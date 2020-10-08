@@ -3,15 +3,18 @@
     v-if="transcriptionAlignmentMode"
     class="columns"
   >
+    <div>segments de transcription : {{ transcriptionSegmentsFromQuill }}</div>
+    <div>segments de traduction : {{ translationSegmentsFromQuill }}</div>
+
     <transcription-editor
-      :key="'transcriptionAlignment' + transcriptionLoading"
+      v-if="isTranscriptionSaved && transcriptionWithTextAlignment"
       class="column"
       :initial-content="transcriptionWithTextAlignment"
     />
     <translation-editor
-      :key="'translationAlignment' + translationLoading"
+      v-if="isTranslationSaved && translationWithTextAlignment"
       class="column"
-      :initial-content="translationContent"
+      :initial-content="translationWithTextAlignment"
     />
   </div>
   <translation-editor 
@@ -38,10 +41,12 @@ export default {
       translationWithNotes: {type: String, default: ""}
     },
     computed: {
-      ...mapState('translation', ['translationLoading', 'translationContent']),
-      ...mapState('transcription', ['transcriptionLoading', 'transcriptionContent', 'transcriptionWithTextAlignment']),
+      ...mapState('translation', ['translationLoading', 'savingStatus', 'translationContent', 'translationWithTextAlignment']),
+      ...mapState('transcription', ['transcriptionLoading', 'savingStatus', 'transcriptionContent', 'transcriptionWithTextAlignment']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
-    },
+      ...mapGetters('transcription', ['isTranscriptionSaved', 'transcriptionSegmentsFromQuill']),
+      ...mapGetters('translation', ['isTranslationSaved', 'translationSegmentsFromQuill'])
+   },
     async created() {
     },
     methods: {

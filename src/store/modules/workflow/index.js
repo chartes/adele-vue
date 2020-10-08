@@ -17,7 +17,9 @@ const actions = {
   changeSelectedUser ({ commit }, {userId}) { 
     commit('SELECT_USER', userId)
   },
-  setTranscriptionAlignmentMode ({ commit }, v) { 
+  setTranscriptionAlignmentMode ({dispatch, commit }, v) { 
+    dispatch('transcription/fetchTranscriptionContent', null, {root: true})
+    dispatch('translation/fetchTranslationContent', null, {root: true})
     commit('SET_TRANSCRIPTION_ALIGNMENT_MODE', v)
   }
 }
