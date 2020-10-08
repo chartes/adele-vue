@@ -1,27 +1,29 @@
 <template>
-  <div
-    v-if="transcriptionAlignmentMode"
-    class="columns"
-  >
-    <div>segments de transcription : {{ transcriptionSegmentsFromQuill }}</div>
-    <div>segments de traduction : {{ translationSegmentsFromQuill }}</div>
+  <div>
+    <div
+      v-if="transcriptionAlignmentMode"
+      class="columns"
+    >
+      <div>segments de transcription : {{ transcriptionSegmentsFromQuill }}</div>
+      <div>segments de traduction : {{ translationSegmentsFromQuill }}</div>
 
-    <transcription-editor
-      v-if="isTranscriptionSaved && transcriptionWithTextAlignment"
-      class="column"
-      :initial-content="transcriptionWithTextAlignment"
-    />
-    <translation-editor
-      v-if="isTranslationSaved && translationWithTextAlignment"
-      class="column"
-      :initial-content="translationWithTextAlignment"
+      <transcription-editor
+        v-if="transcriptionWithTextAlignment"
+        class="column"
+        :initial-content="transcriptionWithTextAlignment"
+      />
+      <translation-editor
+        v-if="translationWithTextAlignment"
+        class="column"
+        :initial-content="translationWithTextAlignment"
+      />
+    </div>
+    <translation-editor 
+      v-show="!transcriptionAlignmentMode"
+      :key="'translation' + translationLoading"
+      :initial-content="translationWithNotes"
     />
   </div>
-  <translation-editor 
-    v-else
-    :key="'translation' + translationLoading"
-    :initial-content="translationWithNotes"
-  />
 </template>
 
 
