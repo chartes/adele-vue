@@ -491,8 +491,8 @@ const getters = {
     return state.savingStatus === 'uptodate'
   },
   transcriptionSegmentsFromQuill(state) {
-    const pointers = computeAlignmentPointers(state.transcriptionWithTextAlignment)
-    return pointers
+    const text =  quillToTEI(state.transcriptionWithTextAlignment)
+    return computeAlignmentPointers(text)
   }
 };
 

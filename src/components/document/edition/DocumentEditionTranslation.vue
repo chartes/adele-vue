@@ -4,9 +4,6 @@
       v-if="transcriptionAlignmentMode"
       class="columns"
     >
-      <div>segments de transcription : {{ transcriptionSegmentsFromQuill }}</div>
-      <div>segments de traduction : {{ translationSegmentsFromQuill }}</div>
-
       <transcription-editor
         v-if="transcriptionWithTextAlignment"
         class="column"
@@ -46,8 +43,8 @@ export default {
       ...mapState('translation', ['translationLoading', 'savingStatus', 'translationContent', 'translationWithTextAlignment']),
       ...mapState('transcription', ['transcriptionLoading', 'savingStatus', 'transcriptionContent', 'transcriptionWithTextAlignment']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
-      ...mapGetters('transcription', ['isTranscriptionSaved', 'transcriptionSegmentsFromQuill']),
-      ...mapGetters('translation', ['isTranslationSaved', 'translationSegmentsFromQuill'])
+      ...mapGetters('transcription', ['isTranscriptionSaved']),
+      ...mapGetters('translation', ['isTranslationSaved'])
    },
     async created() {
     },
