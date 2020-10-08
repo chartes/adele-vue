@@ -374,10 +374,29 @@ const actions = {
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
   },
-  saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
+  async saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
     commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
-    console.log('save translation alignment')
-    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
+    try {
+      commit('SET_ERROR', null)
+      let data = []
+      const transcription = rootGetters['transcription/transcriptionSegmentsFromQuill'];
+      const translation = rootGetters['translation/translationSegmentsFromQuill'];
+      
+      if (transcription.length !== translation.length) {
+        throw Error('Translation segmentation mismatches')
+      }
+
+      for(let i = 0; i < transcription.length; i++) {
+        data.push([...transcription[i], ...translation[i]])
+      }
+      console.log('save translation alignment', data)
+
+      const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.user.currentUser.id}`, { data: data })
+    } catch(error) {
+      commit('SET_ERROR', error)
+    } finally {
+      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
+    }
   },
   /*
   saveImageAlignments ({ commit, rootState, state, rootGetters }) {

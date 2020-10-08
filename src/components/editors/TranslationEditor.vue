@@ -216,7 +216,7 @@
         this.editor.on('selection-change', this.insertSegmentOnClick);
         this.editor.root.addEventListener('click', (ev) => {
           let segment = Quill.find(ev.target);
-          if (segment instanceof SegmentBlot) {
+          if (segment && segment instanceof SegmentBlot) {
             this.editor.deleteText(segment.offset(this.editor.scroll), 1)
           }
         });
@@ -228,7 +228,7 @@
       },
       insertSegmentOnClick() {
         const range = this.editor.getSelection()
-        if (range.length === 0) {
+        if (range && range.length === 0) {
           this.insertSegment('segment')
         }
       }
