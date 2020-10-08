@@ -392,11 +392,12 @@ const actions = {
       console.log('save translation alignment', data)
 
       const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.user.currentUser.id}`, { data: data })
+      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
+
     } catch(error) {
       commit('SET_ERROR', error)
-    } finally {
-      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
-    }
+      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+    } 
   },
   /*
   saveImageAlignments ({ commit, rootState, state, rootGetters }) {
