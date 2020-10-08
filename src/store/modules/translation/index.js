@@ -14,11 +14,15 @@ const notesShadowQuillElement = document.createElement('div');
 let translationShadowQuill;
 let notesShadowQuill;
 
+const translationWithTextAlignmentShadowQuillElement = document.createElement('div');
+let translationWithTextAlignmentShadowQuill;
+
 const state = {
   translationLoading: true,
   translation: null,
   translationError: null,
   translationContent: null,
+  translationWithTextAlignment: null,
   translationWithNotes: null,
   translationSaved: true,
   translationAlignments: [],
@@ -41,16 +45,23 @@ const mutations = {
       notesShadowQuillElement.children[0].innerHTML = payload.withNotes;
       state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
 
+      translationWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
+      translationWithTextAlignmentShadowQuill = new Quill(translationWithTextAlignmentShadowQuillElement);
+      translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
+      state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
   RESET (state) {
     console.log("STORE MUTATION translation/RESET")
     state.translation = null;
     state.translationAlignments = [];
     state.translationContent = null;
+    state.translationWithTextAlignment = null;
     state.translationWithNotes = null;
 
     if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
     if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";
+    if (translationWithTextAlignmentShadowQuillElement && translationWithTextAlignmentShadowQuillElement.children[0]) translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
+
   },
   SET_ERROR(state, payload) {
     state.translationError = payload
@@ -77,6 +88,9 @@ const mutations = {
     if (payload.withFacsimile) {
       state.translationWithFacsimile = payload.withFacsimile;
     }
+    if (payload.withTextAlignment) {
+      state.translationWithTextAlignment = payload.withTextAlignment;
+    }
     //state.translationSaved = true;
   },
   CHANGED (state) {
@@ -86,6 +100,14 @@ const mutations = {
   SAVING_STATUS (state, payload) {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
+  },
+  ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
+    //TODO: dans l'action filtrer sur le mode d'alignement et ajouter une mutation séparée
+    //text with alignment
+    const deltaFilteredForTextAlignment = filterDeltaOperations(translationWithTextAlignmentShadowQuill, payload, 'text-alignment');
+    console.log("filtered delta", deltaFilteredForTextAlignment)
+    translationWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
+    state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
   ADD_OPERATION (state, payload) {
     const deltaFilteredForContent = filterDeltaOperations(translationShadowQuill, payload, 'content');
@@ -121,6 +143,7 @@ const actions = {
       const data = {
         translation: translation,
         content: convertLinebreakTEIToQuill(content),
+        withTextAlignment: convertLinebreakTEIToQuill(content),
         withNotes: convertLinebreakTEIToQuill(withNotes),
       }
 
@@ -268,8 +291,12 @@ const actions = {
     commit('UPDATE', data)
     return updatedNote
   },
-  changed ({ commit, dispatch }, deltas) {
-    commit('ADD_OPERATION', deltas);
+  changed ({ commit, rootState }, deltas) {
+    if (rootState.workflow.transcriptionAlignmentMode) {
+      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
+    } else {
+      commit('ADD_OPERATION', deltas);
+    }
     commit('CHANGED', false);
     commit('SAVING_STATUS', 'tobesaved')
     //dispatch('transcription/translationChanged', null, {root:true})

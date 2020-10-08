@@ -6,7 +6,7 @@
     <transcription-editor
       :key="'transcriptionAlignment' + transcriptionLoading"
       class="column"
-      :initial-content="transcriptionContent"
+      :initial-content="transcriptionWithTextAlignment"
     />
     <translation-editor
       :key="'translationAlignment' + translationLoading"
@@ -39,7 +39,7 @@ export default {
     },
     computed: {
       ...mapState('translation', ['translationLoading', 'translationContent']),
-      ...mapState('transcription', ['transcriptionLoading', 'transcriptionContent']),
+      ...mapState('transcription', ['transcriptionLoading', 'transcriptionContent', 'transcriptionWithTextAlignment']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
     },
     async created() {

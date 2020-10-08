@@ -28,6 +28,12 @@
       </p>
       <!-- ALIGNMENT TRANSLATION --> 
       <p
+        v-if="transcriptionAlignmentMode"
+        class="control "
+      >
+        <save-translation-alignment-button />
+      </p>
+      <p
         v-if="showAlignmentButton"
         class="control "
       >
@@ -44,6 +50,7 @@ import DeleteTranslationButton from '../actions/DeleteTranslationButton.vue'
 import ValidateTranslationButton from '../actions/ValidateTranslationButton.vue'
 import TranscriptionAlignmentButton from '../actions/TranscriptionAlignmentButton.vue'
 import SaveTranslationButton from '../actions/SaveTranslationButton.vue'
+import SaveTranslationAlignmentButton from '../actions/SaveTranslationAlignmentButton.vue'
 
 export default {
     name: 'TranslationActionBar',
@@ -51,7 +58,8 @@ export default {
       ValidateTranslationButton,
       DeleteTranslationButton,
       TranscriptionAlignmentButton,
-      SaveTranslationButton
+      SaveTranslationButton,
+      SaveTranslationAlignmentButton
     },
     computed: {
         ...mapState('document', ['document']),

@@ -104,6 +104,7 @@
         spellcheck="false"
       />
       <note-actions
+        v-if="!transcriptionAlignmentMode"
         v-show="noteEditMode == null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
         :selected-note-id="selectedNoteId"
         refs="noteActions"
@@ -115,33 +116,34 @@
         :delete="setNoteEditModeDelete" 
       />
     </div>
-
-    <notes-list-form
-      v-if="noteEditMode == 'list'"
-      :note-id="selectedNoteId"
-      :submit="updateNoteId"
-      :cancel="closeNoteEdit"
-    />
-    <textfield-form
-      v-if="formTextfield"
-      :title="formTextfield.title"
-      :label="formTextfield.label"
-      :value="formTextfield.value"
-      :submit="submitTextfieldForm"
-      :cancel="cancelTextfieldForm" 
-    />
-    <note-form
-      v-if="noteEditMode == 'new' || noteEditMode == 'edit'"
-      :note="currentNote"
-      :note-id="selectedNoteId"
-      :submit="updateNote"
-      :cancel="closeNoteEdit"
-    />
-    <modal-confirm-note-delete
-      v-if="noteEditMode == 'delete'"
-      :cancel="closeNoteEdit"
-      :submit="deleteNote"
-    />
+    <div v-if="!transcriptionAlignmentMode">
+      <notes-list-form
+        v-if="noteEditMode == 'list'"
+        :note-id="selectedNoteId"
+        :submit="updateNoteId"
+        :cancel="closeNoteEdit"
+      />
+      <textfield-form
+        v-if="formTextfield"
+        :title="formTextfield.title"
+        :label="formTextfield.label"
+        :value="formTextfield.value"
+        :submit="submitTextfieldForm"
+        :cancel="cancelTextfieldForm" 
+      />
+      <note-form
+        v-if="noteEditMode == 'new' || noteEditMode == 'edit'"
+        :note="currentNote"
+        :note-id="selectedNoteId"
+        :submit="updateNote"
+        :cancel="closeNoteEdit"
+      />
+      <modal-confirm-note-delete
+        v-if="noteEditMode == 'delete'"
+        :cancel="closeNoteEdit"
+        :submit="deleteNote"
+      />
+    </div>
   </div>
 </template>
 

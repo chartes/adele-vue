@@ -4,7 +4,7 @@
     :disabled="disabled"
     @click="toggleTranscriptionAlignmentMode"
   >
-    <span> {{ transcriptionAlignmentMode ? 'Quitter le mode Alignement' : 'Aligner la traduction avec la transcription' }} </span>
+    <span> {{ transcriptionAlignmentMode ? 'Quitter sans sauvegarder' : 'Aligner la traduction avec la transcription' }} </span>
   </a>
 </template>
 
@@ -30,7 +30,7 @@ export default {
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('workflow', ['isTranslationValidated']),
       disabled() {
-        return !this.isTranslationValidated || this.savingStatus !== 'uptodate'
+        return !this.isTranslationValidated //|| this.savingStatus !== 'uptodate'
       }
     },
     methods: {

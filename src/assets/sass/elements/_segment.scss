@@ -7,14 +7,14 @@ segment::before {
 
 .transcription-editor {
     counter-reset: transcriptionSegment;
-    segment::before {
+    segment {
         counter-increment: transcriptionSegment;
         content: counter(transcriptionSegment)
     }}
 
 .translation-editor {
     counter-reset: translationSegment;
-    segment::before {
+    segment {
         counter-increment: translationSegment;
         content: counter(translationSegment)
     }

@@ -13,9 +13,7 @@ import {
   insertFacsimileZones,
   stripSegments,
   computeNotesPointers,
-  computeAlignmentPointers,
-  computeSpeechpartsPointers,
-  computeImageAlignmentsPointers
+  computeSpeechpartsPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
@@ -23,8 +21,10 @@ import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 const transcriptionShadowQuillElement = document.createElement('div');
 const notesShadowQuillElement = document.createElement('div');
 const speechpartsShadowQuillElement = document.createElement('div');
+const transcriptionWithTextAlignmentShadowQuillElement = document.createElement('div');
 const facsimileShadowQuillElement = document.createElement('div');
 let transcriptionShadowQuill;
+let transcriptionWithTextAlignmentShadowQuill;
 let notesShadowQuill;
 let speechpartsShadowQuill;
 let facsimileShadowQuill;
@@ -35,11 +35,13 @@ const state = {
   transcription: null,
   transcriptionContent: null,
   transcriptionWithNotes: null,
+  transcriptionWithTextAlignment: null,
   transcriptionWithSpeechparts: null,
   transcriptionWithFacsimile: null,
   transcriptionSaved: true,
+  translationAlignmentSaved: false,
   transcriptionError: null,
-  transcriptionAlignments: [],
+  //transcriptionAlignments: [],
   savingStatus: 'uptodate'
 };
 
@@ -64,6 +66,11 @@ const mutations = {
       speechpartsShadowQuillElement.children[0].innerHTML = payload.withSpeechparts || "";
       state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
 
+      transcriptionWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
+      transcriptionWithTextAlignmentShadowQuill = new Quill(transcriptionWithTextAlignmentShadowQuillElement);
+      transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
+      state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
+
       facsimileShadowQuillElement.innerHTML = "<p></p>" 
       facsimileShadowQuill = new Quill(facsimileShadowQuillElement);
       facsimileShadowQuillElement.children[0].innerHTML = payload.withFacsimile || "";
@@ -76,11 +83,13 @@ const mutations = {
     state.transcriptionAlignments = [];
     state.transcriptionContent = null;
     state.transcriptionWithNotes = null;
+    state.transcriptionWithTextAlignment = null;
     state.transcriptionWithSpeechparts = null;
     state.transcriptionWithFacsimile = null;
 
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
+    if (transcriptionWithTextAlignmentShadowQuillElement && transcriptionWithTextAlignmentShadowQuillElement.children[0]) transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
     if (speechpartsShadowQuillElement && speechpartsShadowQuillElement.children[0]) speechpartsShadowQuillElement.children[0].innerHTML = "";
     if (facsimileShadowQuillElement && facsimileShadowQuillElement.children[0]) facsimileShadowQuillElement.children[0].innerHTML = "";
     
@@ -108,6 +117,9 @@ const mutations = {
     if (payload.withSpeechparts) {
       state.transcriptionWithSpeechparts = payload.withSpeechparts;
     }
+    if (payload.withTextAlignment) {
+      state.transcriptionWithTextAlignment = payload.withTextAlignment;
+    }
     if (payload.withFacsimile) {
       state.transcriptionWithFacsimile = payload.withFacsimile;
     }
@@ -116,6 +128,14 @@ const mutations = {
   CHANGED (state) {
     // transcription changed and needs to be saved
     state.transcriptionSaved = false;
+  },
+  ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
+    //TODO: dans l'action filtrer sur le mode d'alignement et ajouter une mutation séparée
+    //text with alignment
+    const deltaFilteredForTextAlignment = filterDeltaOperations(transcriptionWithTextAlignmentShadowQuill, payload, 'text-alignment');
+    console.log("filtered delta", deltaFilteredForTextAlignment)
+    transcriptionWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
+    state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
   ADD_OPERATION (state, payload) {
 
@@ -160,6 +180,7 @@ const actions = {
       const data = {
         transcription: transcription,
         content: convertLinebreakTEIToQuill(content),
+        withTextAlignment: convertLinebreakTEIToQuill(content),
         withNotes: convertLinebreakTEIToQuill(withNotes),
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
@@ -339,7 +360,6 @@ const actions = {
         });
     });
   },
-  
   updateSpeechpartsPointers({state}) {
       console.log("state.transcriptionWithSpeechparts", state.transcriptionWithSpeechparts)
       const TEIwithSpeechParts = quillToTEI(state.transcriptionWithSpeechparts)
@@ -349,7 +369,11 @@ const actions = {
       //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
-  },/*
+  },
+  saveTranslationAlignment({dispatch, state, rootGetters, rootState}) {
+    console.log('save translation alignment')
+  },
+  /*
   saveImageAlignments ({ commit, rootState, state, rootGetters }) {
 
 
@@ -421,8 +445,12 @@ const actions = {
     } );
   },
   */
-  changed ({ commit }, deltas) {
-    commit('ADD_OPERATION', deltas);
+  changed ({ commit, rootState }, deltas) {
+    if (rootState.workflow.transcriptionAlignmentMode) {
+      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
+    } else {
+      commit('ADD_OPERATION', deltas);
+    }
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
   },
