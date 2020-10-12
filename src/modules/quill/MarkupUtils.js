@@ -248,28 +248,20 @@ const insertFacsimileZones = (text, zones) => {
   return result;
 };
 
-const insertSegments = (text, segments, translationOrTranscription) => {
+const insertSegments = (text, segments) => {
+  const segmentBlot = '<segment>@</segment>';
+  let textWithSegments = text
+  let indexCorrection = 0;
 
-  const shadowQuillElement = document.createElement('div');
-  let shadowQuill = new Quill(shadowQuillElement);
-  shadowQuillElement.children[0].innerHTML = text;
-
-  try {
-    let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription);
-    segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription);
-    //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
-    let indexCorrection = 0;
-    segmentsIndices.forEach(segmentIndex => {
-      shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-      //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-      indexCorrection++
-    })
-  }catch(e) {
-    //
+  segments.sort()
+  for(let i = 0; i < segments.length; ++i) {
+    textWithSegments = [textWithSegments.slice(0, segments[i] + indexCorrection), segmentBlot, textWithSegments.slice(segments[i]  + indexCorrection)].join('');
+    indexCorrection += segmentBlot.length
+    console.log(textWithSegments)
   }
-
-  return shadowQuillElement.children[0].innerHTML
+  return textWithSegments;
 };
+
 const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
   const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
 
@@ -499,7 +491,7 @@ const computeAlignmentPointers  = (htmlWithSegments) => {
   const reg = /<segment>(?:.*?)?<\/segment>/gmi;
   //console.log("to be splitted in segments:", htmlWithSegments)
   let splitted  = htmlWithSegments.split(reg).filter(e => e);
-  let positions = [0];
+  let positions = [3];
 
   ////console.log("computeAlignmentPointers");
   ////console.log(htmlWithSegments);

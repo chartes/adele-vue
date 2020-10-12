@@ -102,10 +102,7 @@ const mutations = {
     state.savingStatus = payload;
   },
   ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
-    //TODO: dans l'action filtrer sur le mode d'alignement et ajouter une mutation séparée
-    //text with alignment
     const deltaFilteredForTextAlignment = filterDeltaOperations(translationWithTextAlignmentShadowQuill, payload, 'text-alignment');
-    console.log("filtered delta", deltaFilteredForTextAlignment)
     translationWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
     state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
@@ -137,13 +134,13 @@ const actions = {
       const alignments = rootState.transcription.transcriptionAlignments;
 
       let quillContent = TEIToQuill(translation.content);
-      let content = insertSegments(quillContent, alignments, 'translation');
+      //let content = insertSegments(quillContent, alignments, 'translation');
       const withNotes = insertNotesAndSegments(quillContent, translation.notes, alignments, 'translation');
 
       const data = {
         translation: translation,
-        content: convertLinebreakTEIToQuill(content),
-        withTextAlignment: convertLinebreakTEIToQuill(content),
+        content: convertLinebreakTEIToQuill(quillContent),
+        withTextAlignment: convertLinebreakTEIToQuill(quillContent),
         withNotes: convertLinebreakTEIToQuill(withNotes),
       }
 
@@ -278,6 +275,18 @@ const actions = {
     commit('UPDATE', data)
     return newNote
   },
+
+  insertSegments({commit, state}, segments) {
+    const TEIwithSegments = insertSegments(quillToTEI(state.translationContent), segments);
+    const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
+
+    const data = {
+      withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
+    };
+
+    commit('UPDATE', data);
+  },
+
   updateNote({commit, rootState, state}, updatedNote) {
     const currentNotes = state.translation.notes;
     const data = {

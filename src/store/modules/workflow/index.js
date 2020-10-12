@@ -17,9 +17,27 @@ const actions = {
   changeSelectedUser ({ commit }, {userId}) { 
     commit('SELECT_USER', userId)
   },
-  setTranscriptionAlignmentMode ({dispatch, commit }, v) { 
-    dispatch('transcription/fetchTranscriptionContent', null, {root: true})
-    dispatch('translation/fetchTranslationContent', null, {root: true})
+  async setTranscriptionAlignmentMode ({dispatch, commit, rootState}, v) { 
+    await dispatch('transcription/fetchTranscriptionContent', null, {root: true})
+    await dispatch('translation/fetchTranslationContent', null, {root: true})
+    if (v) {
+      await dispatch('transcription/fetchTextAlignments', null, {root: true})
+
+      let transcriptionSegments = rootState.transcription.textAlignmentSegments.map(e => [e[0], e[1]]).flat()
+      transcriptionSegments = Array.from(new Set(transcriptionSegments))
+      transcriptionSegments.shift() //remove the first pointer (its the first, useless)
+      transcriptionSegments.pop() //remove the last pointer (its the closing tag, useless)
+      console.log("segments transcription flat", rootState.transcription.textAlignmentSegments,  transcriptionSegments)
+      dispatch('transcription/insertSegments', transcriptionSegments, {root: true})
+
+      let translationSegments = rootState.transcription.textAlignmentSegments.map(e => [e[2], e[3]]).flat()
+      translationSegments = Array.from(new Set(translationSegments))
+      translationSegments.shift() //remove the first pointer (its the first, useless)
+      translationSegments.pop() //remove the last pointer (its the closing tag, useless)
+      console.log("segments translation flat", rootState.transcription.textAlignmentSegments, translationSegments)
+      dispatch('translation/insertSegments', translationSegments, {root: true})
+      
+    }
     commit('SET_TRANSCRIPTION_ALIGNMENT_MODE', v)
   }
 }

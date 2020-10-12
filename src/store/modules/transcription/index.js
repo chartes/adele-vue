@@ -42,7 +42,7 @@ const state = {
   transcriptionSaved: true,
   translationAlignmentSaved: false,
   transcriptionError: null,
-  //transcriptionAlignments: [],
+  textAlignmentSegments: [],
   savingStatus: 'uptodate'
 };
 
@@ -81,7 +81,7 @@ const mutations = {
 
     console.log("STORE MUTATION transcription/RESET");
     state.transcription = null;
-    state.transcriptionAlignments = [];
+    state.textAlignmentSegments = [];
     state.transcriptionContent = null;
     state.transcriptionWithNotes = null;
     state.transcriptionWithTextAlignment = null;
@@ -105,8 +105,8 @@ const mutations = {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
   },
-  ALIGNMENTS(state, payload) {
-    state.transcriptionAlignments = payload;
+  STORE_ALIGNMENTS(state, payload) {
+    state.textAlignmentSegments = payload;
   },
   UPDATE (state, payload) {
     if (payload.transcription) {
@@ -131,10 +131,7 @@ const mutations = {
     state.transcriptionSaved = false;
   },
   ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
-    //TODO: dans l'action filtrer sur le mode d'alignement et ajouter une mutation séparée
-    //text with alignment
     const deltaFilteredForTextAlignment = filterDeltaOperations(transcriptionWithTextAlignmentShadowQuill, payload, 'text-alignment');
-    console.log("filtered delta", deltaFilteredForTextAlignment)
     transcriptionWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
     state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
@@ -168,7 +165,7 @@ const mutations = {
 const actions = {
  
   /* useful */
-  fetchTranscriptionFromUser ({dispatch, commit, state, rootState}, {docId, userId}) {
+  fetchTranscriptionFromUser ({dispatch, commit, state, getters, rootState}, {docId, userId}) {
     commit('RESET')
     commit('LOADING_STATUS', true);
     return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
@@ -176,15 +173,15 @@ const actions = {
       let transcription = response.data.data;
 
       let quillContent = TEIToQuill(transcription.content);
-      let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription')
+      //
+      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
 
       const data = {
         transcription: transcription,
-        content: convertLinebreakTEIToQuill(content),
-        withTextAlignment: convertLinebreakTEIToQuill(content),
+        content: convertLinebreakTEIToQuill(quillContent),
+        withTextAlignment: convertLinebreakTEIToQuill(quillContent),
         withNotes: convertLinebreakTEIToQuill(withNotes),
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
@@ -216,15 +213,14 @@ const actions = {
     }
   },
   /* useful */
-  fetchAlignments ({commit}, {doc_id, user_id}) {
-    return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
-      if (response.data.errors) {
-        commit('ALIGNMENTS', []);
-        return;
-      }
-      const alignments = response.data.data && Array.isArray(response.data.data[0]) ? response.data.data : [response.data.data];
-      commit('ALIGNMENTS', alignments);
-    })
+  async fetchTextAlignments ({commit, rootState}) {
+    const response = await http.get(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.user.currentUser.id}`)
+    if (response.data.errors) {
+      commit('STORE_ALIGNMENTS', []);
+      return;
+    }
+    const alignments = response.data.data && Array.isArray(response.data.data[0]) ? response.data.data : [response.data.data];
+    commit('STORE_ALIGNMENTS', alignments);
   },
   /* useful */
   addNewTranscription ({commit, dispatch, rootState}) {
@@ -327,6 +323,16 @@ const actions = {
     /* save the shadow content with notes */
     commit('UPDATE', data)
     return newNote
+  },
+  insertSegments({commit, state}, segments) {
+    const TEIwithSegments = insertSegments(quillToTEI(state.transcriptionContent), segments);
+    const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
+    console.log(withTextAlignmentSegments)
+    const data = {
+      withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
+    };
+
+    commit('UPDATE', data);
   },
   updateNote({commit, rootState, state}, updatedNote) {
     const currentNotes = state.transcription.notes;
