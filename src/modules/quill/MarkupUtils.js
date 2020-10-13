@@ -249,7 +249,7 @@ const insertFacsimileZones = (text, zones) => {
 };
 
 const insertSegments = (text, segments) => {
-  const segmentBlot = '<segment>@</segment>';
+  const segmentBlot = '<segment></segment>';
   let textWithSegments = text
   let indexCorrection = 0;
 
@@ -487,31 +487,17 @@ const computeAlignmentPointers  = (htmlWithSegments) => {
   if (htmlWithSegments === null) {
     return []
   }
-  
-  const reg = /<segment>(?:.*?)?<\/segment>/gmi;
-  //console.log("to be splitted in segments:", htmlWithSegments)
+  const reg = /<segment>(?:.*?)<\/segment>/gmi;
   let splitted  = htmlWithSegments.split(reg).filter(e => e);
-  let positions = [3];
+  //console.log(htmlWithSegments)
+  //console.log(splitted)
+  let positions = [0];
 
-  ////console.log("computeAlignmentPointers");
-  ////console.log(htmlWithSegments);
-  //console.log("   segments splitted", splitted.length, splitted);
   let acc = 0;
   for (let i = 0; i < splitted.length; ++i) {
     acc += splitted[i].length;
     positions.push(acc);
   }
-  //console.log("   segments positions", [...positions]);
-  //const htmlWithoutSegments = htmlWithSegments.replace(reg, '');
-  ////console.log('htmlWithoutSegments', htmlWithoutSegments);
-  /*
-  let regexp = /<(p|lb?)\/?>/gmi;
-  let res;
-  while ((res = regexp.exec(htmlWithoutSegments)) !== null) {
-    ////console.log("BR @", res.index)
-    positions.push(res.index);
-  }
-  */
   positions.sort((a, b) => {
     return a - b;
   });

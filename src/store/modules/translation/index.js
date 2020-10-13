@@ -25,7 +25,6 @@ const state = {
   translationWithTextAlignment: null,
   translationWithNotes: null,
   translationSaved: true,
-  translationAlignments: [],
   referenceTranslation: null,
 
   savingStatus: 'uptodate'
@@ -53,7 +52,6 @@ const mutations = {
   RESET (state) {
     console.log("STORE MUTATION translation/RESET")
     state.translation = null;
-    state.translationAlignments = [];
     state.translationContent = null;
     state.translationWithTextAlignment = null;
     state.translationWithNotes = null;
@@ -71,9 +69,6 @@ const mutations = {
   },
   LOADING_STATUS (state, payload) {
     state.translationLoading = payload;
-  },
-  ALIGNMENTS(state, payload) {
-    state.translationAlignments = payload;
   },
   UPDATE (state, payload) {
     if (payload.translation) {
@@ -277,14 +272,15 @@ const actions = {
   },
 
   insertSegments({commit, state}, segments) {
+    console.log("insert segments", segments)
     const TEIwithSegments = insertSegments(quillToTEI(state.translationContent), segments);
     const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
-
     const data = {
       withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
     };
-
     commit('UPDATE', data);
+    //translationWithTextAlignmentShadowQuill.setText(state.translationWithTextAlignment)
+    //console.log(state.translationWithTextAlignment)
   },
 
   updateNote({commit, rootState, state}, updatedNote) {
@@ -305,35 +301,14 @@ const actions = {
       commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
     } else {
       commit('ADD_OPERATION', deltas);
+      commit('CHANGED', false);
+      commit('SAVING_STATUS', 'tobesaved')
     }
-    commit('CHANGED', false);
-    commit('SAVING_STATUS', 'tobesaved')
-    //dispatch('transcription/translationChanged', null, {root:true})
   },
   reset ({ commit }) {
     commit('RESET')
   },
-  /*
-  create ({ commit, rootState, rootGetters }) {
-    const auth = rootGetters['user/authHeader'];
-    const data = { data: [{
-        "content" : '<p></p>',
-        "username": rootState.user.currentUser.username
-      }]};
-    return new Promise( ( resolve, reject ) => {
-      axios.post(`/adele/api/1.0/documents/${rootState.document.document.id}/translations`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          reject( error )
-        });
-    } );
-  },
-*/
+
 };
 
 
@@ -342,6 +317,7 @@ const getters = {
     return state.savingStatus === 'uptodate'
   },
   translationSegmentsFromQuill(state) {
+    if (!state.translationWithTextAlignment) return [];
     const text = quillToTEI(state.translationWithTextAlignment)
     return computeAlignmentPointers(text)
   }

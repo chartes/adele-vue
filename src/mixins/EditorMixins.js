@@ -91,7 +91,8 @@ var EditorMixin = {
 
     insertSegment () {
       let range = this.editor.getSelection(true);
-      this.editor.updateContents(getNewDelta().retain(range.index).delete(range.length).insert({ segment: true }), Quill.sources.USER);
+      this.editor.updateContents(getNewDelta().retain(range.index).insert({ segment: true }), Quill.sources.USER);
+      console.log('insert seg', this.editor.getContents())
       this.editor.setSelection(range.index + 1, Quill.sources.SILENT);
     },
     deleteSegment () {

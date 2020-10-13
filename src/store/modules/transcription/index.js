@@ -40,8 +40,9 @@ const state = {
   transcriptionWithSpeechparts: null,
   transcriptionWithFacsimile: null,
   transcriptionSaved: true,
-  translationAlignmentSaved: false,
+  translationAlignmentSaved: true,
   transcriptionError: null,
+  translationAlignmentError: null,
   textAlignmentSegments: [],
   savingStatus: 'uptodate'
 };
@@ -97,6 +98,9 @@ const mutations = {
   },
   SET_ERROR(state, payload) {
     state.transcriptionError = payload
+  },
+  SET_TEXT_ALIGNMENT_ERROR(state, payload) {
+    state.translationAlignmentError = payload
   },
   LOADING_STATUS (state, payload) {
     state.transcriptionLoading = payload;
@@ -327,7 +331,6 @@ const actions = {
   insertSegments({commit, state}, segments) {
     const TEIwithSegments = insertSegments(quillToTEI(state.transcriptionContent), segments);
     const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
-    console.log(withTextAlignmentSegments)
     const data = {
       withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
     };
@@ -380,16 +383,19 @@ const actions = {
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
   },
+  textAlignmentsNeedToBeSaved({commit, dispatch, state, rootGetters, rootState}) {
+    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+  },
   async saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
     commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+    commit('SET_TEXT_ALIGNMENT_ERROR', null)
     try {
-      commit('SET_ERROR', null)
       let data = []
       const transcription = rootGetters['transcription/transcriptionSegmentsFromQuill'];
       const translation = rootGetters['translation/translationSegmentsFromQuill'];
       
       if (transcription.length !== translation.length) {
-        throw Error('Translation segmentation mismatches')
+        throw Error('Le nombre de segments doit être identique entre la transcription et la traduction')
       }
 
       for(let i = 0; i < transcription.length; i++) {
@@ -401,7 +407,7 @@ const actions = {
       commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
 
     } catch(error) {
-      commit('SET_ERROR', error)
+      commit('SET_TEXT_ALIGNMENT_ERROR', error)
       commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
     } 
   },
@@ -442,49 +448,15 @@ const actions = {
         });
     } );
   },
-  saveAlignment ({rootState, rootGetters}) {
-    console.warn('STORE ACTION transcription/saveAlignment');
-    const transcriptionTEI = quillToTEI(state.transcriptionContent);
-    const translationTEI = quillToTEI(rootState.translation.translationContent);
-    const transcriptionPointers = computeAlignmentPointers(transcriptionTEI);
-    const translationPointers = computeAlignmentPointers(translationTEI);
-    let pointers = [];
-    for (let i = 0; i < Math.max(transcriptionPointers.length, translationPointers.length); ++i) {
-      pointers.push([
-        ...(transcriptionPointers[i] ? transcriptionPointers[i] : [0,0]),
-        ...(translationPointers[i] ? translationPointers[i] : [0,0])
-      ]);
-    }
-    console.log("Alignmant pointers", pointers);
-    const auth = rootGetters['user/authHeader'];
-    const data = { data: {
-        username: rootState.user.author.username,
-        ptr_list : pointers,
-      }};
-    return new Promise( ( resolve, reject ) => {
-      http.post(`documents/${rootState.document.document.id}/transcriptions/alignments`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
   */
   changed ({ commit, rootState }, deltas) {
     if (rootState.workflow.transcriptionAlignmentMode) {
       commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
     } else {
       commit('ADD_OPERATION', deltas);
+      commit('CHANGED');
+      commit('SAVING_STATUS', 'tobesaved')
     }
-    commit('CHANGED');
-    commit('SAVING_STATUS', 'tobesaved')
   },
   reset({commit}) {
     commit('RESET')
@@ -497,6 +469,8 @@ const getters = {
     return state.savingStatus === 'uptodate'
   },
   transcriptionSegmentsFromQuill(state) {
+    if (!state.transcriptionWithTextAlignment) return [];
+
     const text =  quillToTEI(state.transcriptionWithTextAlignment)
     return computeAlignmentPointers(text)
   }

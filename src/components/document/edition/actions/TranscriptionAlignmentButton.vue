@@ -13,7 +13,8 @@
       class="button  is-small is-info is-light"
       @click="stopAlignmentMode"
     >
-      <span>Quitter sans sauvegarder</span>
+      <span v-if="!translationAlignmentSaved">Quitter sans sauvegarder</span>
+      <span v-else>Quitter</span>
     </a>
   </span>
 </template>
@@ -36,6 +37,7 @@ export default {
     computed: {
       ...mapState('document', ['document', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
       ...mapState('translation', ['savingStatus']),
+      ...mapState('transcription', ['translationAlignmentSaved']),
       ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('workflow', ['isTranslationValidated']),

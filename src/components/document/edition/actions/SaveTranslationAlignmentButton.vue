@@ -2,7 +2,7 @@
   <div>
     <button
       class="button is-small is-primary"
-      :disabled="translationAlignmentSaved"
+      :disabled="translationAlignmentSaved || !conditions"
       @click="saveTranslationAlignment"
     >
       <span>Sauvegarder les alignements</span>
@@ -19,34 +19,34 @@
         <i class="fas fa-save" />
       </span>
     </button>
-    <!--
+    
     <message
-      v-if="translationError && !isTranslationSaved"
-      message-class="is-small is-warning"
+      v-if="translationAlignmentError && !translationAlignmentSaved"
+      message-class="is-small is-danger"
     >
-      <span class="icon">
-        <i class="fas fa-exclamation-triangle" /> 
-      </span>
-      {{ translationError }}
+      {{ translationAlignmentError }}
     </message>
-    -->
   </div>
 </template>
 
 <script>
 import { mapState, mapGetters } from 'vuex'
-//import Message from '@/components/Message.vue'
+import Message from '@/components/Message.vue'
 
 export default {
     name: 'SaveTranslationAlignmentButton',
     components: {
-      //Message
+      Message
     },
     computed: {
-      ...mapState('translation', ['isTranslationSaved', 'savingStatus', 'translationError']),
-      ...mapGetters('translation', ['isTranslationSaved']),
+      ...mapGetters('translation', ['translationSegmentsFromQuill']),
+      ...mapGetters('transcription', ['transcriptionSegmentsFromQuill']),
+
       ...mapState('workflow', ['transcriptionAlignmentMode']),
-      ...mapState('transcription', ['translationAlignmentSaved'])
+      ...mapState('transcription', ['translationAlignmentSaved', 'translationAlignmentError']),
+      conditions() {
+        return this.transcriptionSegmentsFromQuill.length === this.translationSegmentsFromQuill.length
+      }
     },
     methods: {
       saveTranslationAlignment() {

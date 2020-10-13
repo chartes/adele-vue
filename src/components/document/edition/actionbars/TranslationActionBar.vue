@@ -39,6 +39,15 @@
       >
         <transcription-alignment-button />
       </p>
+      <p
+        v-if="transcriptionAlignmentMode && !warningConditions"
+        class="control"
+      >
+        <message>
+          Le nombre de segments doit être identique entre la transcription et la traduction
+        </message>
+      </p>
+      {{ transcriptionSegmentsFromQuill.length }} {{ this.translationSegmentsFromQuill.length }}
     </div>
   </div>
 </template>
@@ -51,6 +60,7 @@ import ValidateTranslationButton from '../actions/ValidateTranslationButton.vue'
 import TranscriptionAlignmentButton from '../actions/TranscriptionAlignmentButton.vue'
 import SaveTranslationButton from '../actions/SaveTranslationButton.vue'
 import SaveTranslationAlignmentButton from '../actions/SaveTranslationAlignmentButton.vue'
+import Message from '@/components/Message.vue'
 
 export default {
     name: 'TranslationActionBar',
@@ -59,7 +69,8 @@ export default {
       DeleteTranslationButton,
       TranscriptionAlignmentButton,
       SaveTranslationButton,
-      SaveTranslationAlignmentButton
+      SaveTranslationAlignmentButton,
+      Message
     },
     computed: {
         ...mapState('document', ['document']),
@@ -72,8 +83,12 @@ export default {
       ]),
       showAlignmentButton() {
           return this.isTranslationValidated && this.currentUserIsTeacher && this.currentUser.id === this.selectedUserId
+      },
+      ...mapGetters('translation', ['translationSegmentsFromQuill']),
+      ...mapGetters('transcription', ['transcriptionSegmentsFromQuill']),
+      warningConditions() {
+        return this.transcriptionSegmentsFromQuill.length === this.translationSegmentsFromQuill.length
       }
-
     },
     methods: {
       

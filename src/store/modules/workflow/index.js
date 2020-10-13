@@ -27,14 +27,12 @@ const actions = {
       transcriptionSegments = Array.from(new Set(transcriptionSegments))
       transcriptionSegments.shift() //remove the first pointer (its the first, useless)
       transcriptionSegments.pop() //remove the last pointer (its the closing tag, useless)
-      console.log("segments transcription flat", rootState.transcription.textAlignmentSegments,  transcriptionSegments)
       dispatch('transcription/insertSegments', transcriptionSegments, {root: true})
 
       let translationSegments = rootState.transcription.textAlignmentSegments.map(e => [e[2], e[3]]).flat()
       translationSegments = Array.from(new Set(translationSegments))
       translationSegments.shift() //remove the first pointer (its the first, useless)
       translationSegments.pop() //remove the last pointer (its the closing tag, useless)
-      console.log("segments translation flat", rootState.transcription.textAlignmentSegments, translationSegments)
       dispatch('translation/insertSegments', translationSegments, {root: true})
       
     }

@@ -213,11 +213,17 @@
       this.initEditor(this.$refs.editor, this.$props.initialContent);
 
       if (this.transcriptionAlignmentMode) {
-        this.editor.on('selection-change', this.insertSegmentOnClick);
         this.editor.root.addEventListener('click', (ev) => {
           let segment = Quill.find(ev.target);
           if (segment && segment instanceof SegmentBlot) {
             this.editor.deleteText(segment.offset(this.editor.scroll), 1)
+            this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+          } else {
+            const range = this.editor.getSelection()
+            if (range && range.length === 0) {
+              this.insertSegment('segment')
+              this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+            }
           }
         });
       }
@@ -225,12 +231,6 @@
     methods: {
       updateContent () {
         this.delta = this.editor.getContents().ops;
-      },
-      insertSegmentOnClick() {
-        const range = this.editor.getSelection()
-        if (range && range.length === 0) {
-          this.insertSegment('segment')
-        }
       }
     }
   }
