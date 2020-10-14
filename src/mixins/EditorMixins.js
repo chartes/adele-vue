@@ -42,9 +42,11 @@ var EditorMixin = {
     },
     deactivateEvents () {
       //console.log("EditorMixins.deactivateEvents")
-      this.editor.off('selection-change', this.onSelection);
-      this.editor.off('selection-change', this.onFocus);
-      this.editor.off('text-change', this.onTextChange);
+      if (this.editor) {
+        this.editor.off('selection-change', this.onSelection);
+        this.editor.off('selection-change', this.onFocus);
+        this.editor.off('text-change', this.onTextChange);
+      }
     },
 
     getEditorHTML () {

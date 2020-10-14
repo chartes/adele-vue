@@ -1,7 +1,9 @@
 
 const state = {
   selectedUserId: null,
-  transcriptionAlignmentMode: false
+  transcriptionAlignmentMode: false,
+  currentSection: 'notice',
+  isInEditionMode: false,
 }
 
 const mutations = {
@@ -10,12 +12,24 @@ const mutations = {
   },
   SET_TRANSCRIPTION_ALIGNMENT_MODE (state, v) {
     state.transcriptionAlignmentMode = v
+  },
+  SET_CURRENT_SECTION (state, v) {
+    state.currentSection = v
+  },
+  SET_EDITION_MODE (state, v) {
+    state.isInEditionMode = v
   }
 }
 
 const actions = {
   changeSelectedUser ({ commit }, {userId}) { 
     commit('SELECT_USER', userId)
+  },
+  setCurrentSection({commit}, section) {
+    commit('SET_CURRENT_SECTION', section)
+  },
+  setEditionMode({commit}, v) {
+    commit('SET_EDITION_MODE', v)
   },
   async setTranscriptionAlignmentMode ({dispatch, commit, rootState}, v) { 
     await dispatch('transcription/fetchTranscriptionContent', null, {root: true})

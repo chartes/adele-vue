@@ -22,7 +22,7 @@
         <div v-if="loggedIn && documentCanBeModified">
           <router-link
             v-if="!isInEditionMode"
-            :to="{name: 'document-edition', params:{docId: document.id, section:'notice'}}"
+            :to="{name: 'document-edition', params:{docId: document.id, section: currentSection || 'notice'}}"
           >
             <div class="tag button is-primary">
               Editer
@@ -30,7 +30,7 @@
           </router-link> 
           <router-link
             v-else
-            :to="{name: 'document-view', params:{docId: document.id, section:'notice'}}"
+            :to="{name: 'document-view', params:{docId: document.id, section: currentSection || 'notice'}}"
           >
             <div class="tag button is-primary">
               Consulter
@@ -72,10 +72,8 @@ export default {
         ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapState('user', ['currentUser']),
         ...mapState('document', ['document']),
-
-        isInEditionMode() {
-          return this.$route.name === 'document-edition'
-        },
+        ...mapState('workflow', ['isInEditionMode', 'currentSection']),
+     
         documentCanBeModified() {
           // admin
           if (this.currentUserIsAdmin) {

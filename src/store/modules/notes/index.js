@@ -11,8 +11,7 @@ const mutations = {
 const actions = {
 
   async deleteNote({getters, rootState, rootGetters}, noteId) {
-    console.log("TODO delete note", noteId)
-    //await http.delete(`/documents/${rootState.document.document.id}/notes`)
+    await http.delete(`documents/notes/${noteId}`)
   }
 };
 

@@ -532,16 +532,29 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
+        vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
         if (!vm.loggedIn) {
+          vm.$store.dispatch('workflow/setEditionMode', false)
           if (to.name === 'document-edition') {
             next({name: 'document-view'})
           } else {
             next({name: 'login'})
           }
         } else {
+          vm.$store.dispatch('workflow/setEditionMode', true)
           next()
         }
       })
+    },
+    beforeRouteUpdate (to, from, next) {
+      this.$store.dispatch('workflow/setEditionMode', true)
+      this.$store.dispatch('workflow/setCurrentSection', to.params.section)
+      next()
+    },
+    beforeRouteLeave (to, from, next) {
+      this.$store.dispatch('workflow/setCurrentSection', null)
+      this.$store.dispatch('workflow/setEditionMode', false)
+      next()
     },
     data() {
       return {

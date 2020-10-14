@@ -297,6 +297,21 @@ export default {
           }
         }
     },
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
+        vm.$store.dispatch('workflow/setEditionMode', false)
+        vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
+      })
+    },
+    beforeRouteUpdate (to, from, next) {
+      this.$store.dispatch('workflow/setEditionMode', false)
+      this.$store.dispatch('workflow/setCurrentSection', to.params.section)
+      next()
+    },
+    beforeRouteLeave (to, from, next) {
+      this.$store.dispatch('workflow/setCurrentSection', null)
+      next()
+    },
     async created() {
       this.isLoading = true;
       try {
