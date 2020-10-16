@@ -14,6 +14,9 @@ Vue.config.productionTip = false;
 import { Icon }  from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
+import VueSplit from 'vue-split-panel'
+Vue.use(VueSplit)
+
 
 // this part resolve an issue where the markers would not appear
 delete Icon.Default.prototype._getIconUrl;
@@ -39,7 +42,6 @@ Vue.directive('click-outside', {
     document.body.removeEventListener('click', el.clickOutsideEvent)
   },
 });
-
 new Vue({
   el: '#app',
   store,
