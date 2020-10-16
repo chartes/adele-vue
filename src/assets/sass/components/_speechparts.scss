@@ -1,5 +1,7 @@
 
 .speech-parts.content {
+    margin-top: 30px;
+
     & > p {
         font-size: 1.25em;
         line-height: 1.66;
@@ -74,7 +76,8 @@
 .inner-navbar {
 
     margin-top: 30px;
-    margin-bottom: 40px;
+
+    display: inline-block;
     padding: 0;
 
     .speech-part-item {
@@ -82,6 +85,7 @@
         display: inline-block;
         padding: 2px !important;
         margin-right: 6px !important;
+        margin-bottom: 6px;
 
         .navbar-item {
             display: inline-block;

@@ -1,7 +1,10 @@
 <template>
   <div>
     <div>
-      <nav class="navbar inner-navbar">
+      <nav
+        class="navbar inner-navbar"
+        style="display: inline; margin-bottom: 20px"
+      >
         <span>
           <button
             class="button is-white show-all-speechparts"
@@ -11,8 +14,8 @@
           </button>
         </span>
         <span
-          v-for="(spType) in spTypes"
-          :key="spType.id"
+          v-for="(spType, key) in spTypes"
+          :key="`${key} ${spType.id}`"
           :class="`speech-part-item type-${spType.id.toString().padStart(2, '0')} nav `"
           @mouseover="hoverId = spType.id"
           @mouseleave="leaveHovering"
