@@ -47,7 +47,6 @@
           Le nombre de segments doit être identique entre la transcription et la traduction
         </message>
       </p>
-      {{ transcriptionSegmentsFromQuill.length }} {{ this.translationSegmentsFromQuill.length }}
     </div>
   </div>
 </template>
