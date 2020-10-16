@@ -3,7 +3,7 @@
     <div>
       <nav
         class="navbar inner-navbar"
-        style="display: inline; margin-bottom: 20px"
+        style="display: inline-block; margin-bottom: 20px"
       >
         <span>
           <button
