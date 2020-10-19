@@ -4,11 +4,16 @@ placename {
     display: inline !important;
     //height: 1.5rem !important;
     font-size: 1em !important;
-    padding-right: 0.25em !important;
-    padding-left: 0.25em !important;
+    padding-right: 0.275em !important;
+    padding-left: 0.275em !important;
+
+
+    background-color: rgba(0,0,0, 0.075) !important;
 
     &:hover {
         @extend .is-info;
         cursor: pointer;
+        background-color: rgba(0,0,0, 0.25) !important;
+        color: whitesmoke !important;
     }
 }
