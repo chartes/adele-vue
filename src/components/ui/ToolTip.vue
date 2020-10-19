@@ -1,6 +1,6 @@
 <template>
   <b-tooltip
-    type="is-light"
+    :type="type"
     multilined
     size="is-small"
     class="tooltip"
@@ -15,7 +15,11 @@
 <script>
 export default {
     name: "ToolTip",
-    props: ['element', 'content'],
+    props: {
+      element: {type: String, default: ''},
+      content: {type: String, default: ''},
+      type: {type: String, default: 'is-light'}
+    },
     mounted() {
     
     }

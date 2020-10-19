@@ -42,6 +42,7 @@ export default {
         ...mapState('document', ['loading', 'transcriptionAlignmentView']),
     },
     mounted() {
+      if (this.transcriptionAlignmentView) {
           // make tooltips
           let toolTipClass =  Vue.extend(ToolTip)
           this.transcriptionAlignmentView.notes.forEach(note => {
@@ -60,6 +61,21 @@ export default {
               t.$mount(spEl)
             }
           })
+
+          // persnames && placenames
+          Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
+              const t = new toolTipClass({propsData: {
+              element: el.outerHTML ,
+              content: `
+                <span>
+                  <span class="tt-content">${el.attributes.ref.value}</span>
+                </span>
+              `,
+              type: 'is-light'
+              }})
+              t.$mount(el)
+          })
+      }
     },
     methods: {
  

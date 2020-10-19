@@ -29,8 +29,9 @@ export default {
     mounted() {
           // make tooltips
         if (this.transcriptionView) {
-          let toolTipClass =  Vue.extend(ToolTip)
-           Object.keys(this.transcriptionView.notes).forEach(noteId => {
+            let toolTipClass =  Vue.extend(ToolTip)
+            // notes
+            Object.keys(this.transcriptionView.notes).forEach(noteId => {
               const paddedId = `${noteId}`.padStart(10, '0')
               const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
               const noteContent = this.transcriptionView.notes[noteId]
@@ -43,7 +44,20 @@ export default {
                 `
               }})
               t.$mount(spEl)
-          }) 
+            }) 
+            // persnames && placenames
+            Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
+              const t = new toolTipClass({propsData: {
+              element: el.outerHTML ,
+              content: `
+                <span>
+                  <span class="tt-content">${el.attributes.ref.value}</span>
+                </span>
+              `,
+              type: 'is-light'
+              }})
+              t.$mount(el)
+            })
         }   
     },
     methods: {
