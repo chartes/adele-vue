@@ -11,22 +11,6 @@ import './assets/sass/main.scss'
 Vue.use(Buefy)
 Vue.config.productionTip = false;
 
-import { Icon }  from 'leaflet'
-import 'leaflet/dist/leaflet.css'
-
-import VueSplit from 'vue-split-panel'
-Vue.use(VueSplit)
-
-
-// this part resolve an issue where the markers would not appear
-delete Icon.Default.prototype._getIconUrl;
-
-Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-});
-
 Vue.directive('click-outside', {
   bind: function (el, binding, vnode) {
     el.clickOutsideEvent = function (event) {

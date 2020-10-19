@@ -40,6 +40,7 @@
           >
             <div
               v-show="index === activeIdx"
+              class="com-content"
               v-html="com.content"
             />
           </div>
@@ -53,6 +54,8 @@
 <script>
 
 import { mapState, mapActions } from 'vuex';
+import Vue from 'vue';
+import ToolTip from '@/components/ui/ToolTip';
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 
@@ -72,19 +75,61 @@ export default {
     },
     computed: {
       ...mapState('document', ['loading']),
-      ...mapState('document', ['transcriptionView']),
+      ...mapState('document', ['transcriptionView', 'commentariesView']),
 
     },
     async created() {
       if (this.showTranscription) {
         await this.fetchTranscriptionView()
+        this.insertTranscriptionTooltips()
       }
+    },
+    mounted() {
+      this.insertCommentariesTooltips()
     },
     methods: {
       ...mapActions('document', ['fetchTranscriptionView']),
 
       selectItem(index) {
         this.activeIdx = index
+      },
+      insertTranscriptionTooltips() {
+          // make tooltips
+          let toolTipClass =  Vue.extend(ToolTip)
+           Object.keys(this.transcriptionView.notes).forEach(noteId => {
+              const paddedId = `${noteId}`.padStart(10, '0')
+              const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
+              const noteContent = this.transcriptionView.notes[noteId]
+              const t = new toolTipClass({propsData: {
+                element: spEl.outerHTML ,
+                content: `
+                  <span>
+                    <span class="tt-content">${noteContent}</span>
+                  </span>
+                `
+              }})
+              t.$mount(spEl)
+          }) 
+      },
+      insertCommentariesTooltips(){
+          // make tooltips
+          let toolTipClass =  Vue.extend(ToolTip)
+          this.commentariesView.forEach(com => {
+            Object.keys(com.notes).forEach(noteId => {
+                const paddedId = `${noteId}`.padStart(10, '0')
+                const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
+                const noteContent = com.notes[noteId]
+                const t = new toolTipClass({propsData: {
+                  element: spEl.outerHTML ,
+                  content: `
+                    <span>
+                      <span class="tt-content">${noteContent}</span>
+                    </span>
+                  `
+                }})
+                t.$mount(spEl)
+            }) 
+          })
       }
     }
 }

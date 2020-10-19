@@ -10,7 +10,7 @@
           <th>Traduction</th>
         </thead>
         <tbody>
-           <tr
+          <tr
             v-for="(seg, index) in readonlyData.content"
             :key="index"
           >
@@ -27,6 +27,8 @@
 <script>
 
 import { mapState } from 'vuex';
+import Vue from 'vue';
+import ToolTip from '@/components/ui/ToolTip';
 
 export default {
     name: "DocumentTranscriptionAlignment",
@@ -37,10 +39,27 @@ export default {
         readonlyData: {type: Object, default: null}
     },
     computed: {
-        ...mapState('document', ['loading']),
+        ...mapState('document', ['loading', 'transcriptionAlignmentView']),
     },
-    created() {
-      
+    mounted() {
+          // make tooltips
+          let toolTipClass =  Vue.extend(ToolTip)
+          this.transcriptionAlignmentView.notes.forEach(note => {
+            const noteId = note.id;
+            if (note.content) {
+              const paddedId = `${note.id}`.padStart(10, '0')
+              let spEl = document.querySelector(`[data-note-id='${paddedId}']`)
+              let t = new toolTipClass({propsData: {
+                element: spEl.outerHTML ,
+                content: `
+                  <span>
+                    <span class="tt-content">${note.content}</span>
+                  </span>
+                `
+              }})
+              t.$mount(spEl)
+            }
+          })
     },
     methods: {
  
