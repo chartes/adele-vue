@@ -2,7 +2,7 @@
   <b-tooltip
     type="is-light"
     multilined
-    size="is-large"
+    size="is-small"
     class="tooltip"
   >
     <template v-slot:content>

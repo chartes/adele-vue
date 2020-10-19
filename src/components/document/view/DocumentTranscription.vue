@@ -28,6 +28,7 @@ export default {
     },
     mounted() {
           // make tooltips
+        if (this.transcriptionView) {
           let toolTipClass =  Vue.extend(ToolTip)
            Object.keys(this.transcriptionView.notes).forEach(noteId => {
               const paddedId = `${noteId}`.padStart(10, '0')
@@ -42,7 +43,8 @@ export default {
                 `
               }})
               t.$mount(spEl)
-          })    
+          }) 
+        }   
     },
     methods: {
  

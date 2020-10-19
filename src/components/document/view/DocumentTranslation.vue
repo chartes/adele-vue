@@ -27,6 +27,7 @@ export default {
         ...mapState('document', ['loading', 'translationView']),
     },
     mounted() {
+      if (this.translationView) {
          // make tooltips
           let toolTipClass =  Vue.extend(ToolTip)
            Object.keys(this.translationView.notes).forEach(noteId => {
@@ -43,6 +44,7 @@ export default {
               }})
               t.$mount(spEl)
           }) 
+      }
     },
     methods: {
  

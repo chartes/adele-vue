@@ -5,16 +5,9 @@
     }
     .tt-content {
         margin-top: 0.6em;
-        text-align: justify !important;
+        text-align: left !important;
         font-size: 1.15em;
         margin-bottom: 0.8em;
     } 
 }
 
-.b-tooltip {
-    display: initial;
-}
-
-.b-tooltip .tooltip-trigger {
-    display: inline
-}
