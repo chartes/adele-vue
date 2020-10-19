@@ -4,8 +4,8 @@ persname {
     display: inline !important;
     //height: 1.5rem !important;
     font-size: 1em !important;
-    padding-right: 0.3em !important;
-    padding-left: 0.3em !important;
+    padding-right: 0.25em !important;
+    padding-left: 0.25em !important;
 
     &:hover {
         @extend .is-info;
