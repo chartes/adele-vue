@@ -121,26 +121,41 @@ export default {
           let toolTipClass =  Vue.extend(ToolTip)
           Object.keys(this.speechPartsView.notes).forEach(noteId => {
             console.log('NOTES', noteId)
-            let spEl = document.querySelector(`[data-note-id='${noteId}']`)
-            const spType = [...spEl.classList].find(c => c.startsWith('type-'));
-            let spt
-            if (spType) {
-              const spTypeId = spType.replace('type-', '');
-              spt = this.getSpeechpartTypeById(parseInt(spTypeId));
-            }
+            Array.from(document.querySelectorAll(`[data-note-id='${noteId}']`)).forEach(el => {
+              const spType = [...el.classList].find(c => c.startsWith('type-'));
+              let spt
+              if (spType) {
+                const spTypeId = spType.replace('type-', '');
+                spt = this.getSpeechpartTypeById(parseInt(spTypeId));
+              }
 
-            let noteContent = this.speechPartsView.notes[noteId]
-            let t = new toolTipClass({propsData: {
-              element: spEl.outerHTML ,
+              let noteContent = this.speechPartsView.notes[noteId]
+              let t = new toolTipClass({propsData: {
+                element: el.outerHTML ,
+                content: `
+                  <span>
+                    <span class="tt-title">${spt.label || ""}</span>
+                    <span class="tt-content">${noteContent || ""}</span>
+                  </span>
+                `
+              }})
+              t.$mount(el)
+            })
+          })
+
+          // persnames && placenames
+            Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
+              const t = new toolTipClass({propsData: {
+              element: el.outerHTML ,
               content: `
                 <span>
-                  <span class="tt-title">${spt.label || ""}</span>
-                  <span class="tt-content">${noteContent || ""}</span>
+                  <span class="tt-content">${el.attributes.ref.value}</span>
                 </span>
-              `
-            }})
-            t.$mount(spEl)
-          })
+              `,
+              type: 'is-light'
+              }})
+              t.$mount(el)
+            })
 
         } 
     },

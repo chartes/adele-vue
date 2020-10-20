@@ -32,17 +32,18 @@ export default {
           let toolTipClass =  Vue.extend(ToolTip)
            Object.keys(this.translationView.notes).forEach(noteId => {
               const paddedId = `${noteId}`.padStart(10, '0')
-              const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
+              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
               const noteContent = this.translationView.notes[noteId]
               const t = new toolTipClass({propsData: {
-                element: spEl.outerHTML ,
+                element: el.outerHTML ,
                 content: `
                   <span>
                     <span class="tt-content">${noteContent}</span>
                   </span>
                 `
               }})
-              t.$mount(spEl)
+              t.$mount(el)
+              })
           }) 
 
           // persnames && placenames

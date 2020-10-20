@@ -47,18 +47,21 @@ export default {
           let toolTipClass =  Vue.extend(ToolTip)
           this.transcriptionAlignmentView.notes.forEach(note => {
             const noteId = note.id;
+            console.log(noteId, note.content)
+
             if (note.content) {
               const paddedId = `${note.id}`.padStart(10, '0')
-              let spEl = document.querySelector(`[data-note-id='${paddedId}']`)
-              let t = new toolTipClass({propsData: {
-                element: spEl.outerHTML ,
-                content: `
-                  <span>
-                    <span class="tt-content">${note.content}</span>
-                  </span>
-                `
-              }})
-              t.$mount(spEl)
+              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
+                let t = new toolTipClass({propsData: {
+                  element: el.outerHTML ,
+                  content: `
+                    <span>
+                      <span class="tt-content">${note.content}</span>
+                    </span>
+                  `
+                }})
+                t.$mount(el)
+              })
             }
           })
 

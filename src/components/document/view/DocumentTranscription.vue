@@ -33,17 +33,18 @@ export default {
             // notes
             Object.keys(this.transcriptionView.notes).forEach(noteId => {
               const paddedId = `${noteId}`.padStart(10, '0')
-              const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
-              const noteContent = this.transcriptionView.notes[noteId]
-              const t = new toolTipClass({propsData: {
-                element: spEl.outerHTML ,
-                content: `
-                  <span>
-                    <span class="tt-content">${noteContent}</span>
-                  </span>
-                `
-              }})
-              t.$mount(spEl)
+              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
+                const noteContent = this.transcriptionView.notes[noteId]
+                const t = new toolTipClass({propsData: {
+                  element: el.outerHTML ,
+                  content: `
+                    <span>
+                      <span class="tt-content">${noteContent}</span>
+                    </span>
+                  `
+                }})
+                t.$mount(el)
+              })
             }) 
             // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
