@@ -203,7 +203,7 @@
             }
         },
         computed: {
-            ...mapState('workflow', ['transcriptionAlignmentMode']),
+            ...mapState('workflow', ['transcriptionAlignmentMode', 'currentSection']),
             ...mapState('transcription', ['transcriptionSaved']),
         },
         watch: {
@@ -211,40 +211,56 @@
             if (this.currentSelection && this.currentSelection.length == 0) {
               this.defineNewNote = false
             }
+          },
+          transcriptionAlignmentMode () {
+            this.switchTextAlignActions()
           }
-        },
-        mounted () {
-            this.initEditor(this.$refs.editor, this.$props.initialContent);
-            this.editor.on('selection-change', this.onAlignSelection);
-            this.editor.on('text-change', this.onAlignTextChange);
-
-            if (this.transcriptionAlignmentMode) {
-              this.editor.root.addEventListener('click', (ev) => {
-                let segment = Quill.find(ev.target);
-                if (segment && segment instanceof SegmentBlot) {
-                  this.editor.deleteText(segment.offset(this.editor.scroll), 1)
-                  this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
-                } else {
-                  const range = this.editor.getSelection()
-                  if (range && range.length === 0) {
-                    this.insertSegment('segment')
-                    this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
-                  }
-                }
-              });
-            }
-        },
-        beforeDestroy () {
-          this.deactivateEvents();
-          this.editor.off('selection-change', this.onAlignSelection);
-          this.editor.off('text-change', this.onAlignTextChange);
-        },
+    },
+    mounted () {
+      this.initEditor(this.$refs.editor, this.$props.initialContent);
+      this.switchTextAlignActions()
+    },
+    beforeDestroy () {
+      if (this.transcriptionAlignmentMode) {
+        this.disableTextAlignActions()
+        this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
+      }
+    },
         methods: {
             updateContent () {
                 this.delta = this.editor.getContents().ops;
             },
 
-             onAlignSelection (range) {
+        addSegmentOnClick(ev) {
+        let segment = Quill.find(ev.target);
+        if (segment && segment instanceof SegmentBlot) {
+          this.editor.deleteText(segment.offset(this.editor.scroll), 1)
+          this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+        } else {
+          const range = this.editor.getSelection()
+          if (range && range.length === 0) {
+            this.insertSegment('segment')
+            this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+          }
+        }
+      },
+      switchTextAlignActions() {
+        if (this.editor && this.transcriptionAlignmentMode && this.currentSection === 'translation') {
+          console.log("enable read only")
+          this.editor.on('selection-change', this.onAlignSelection);
+          this.editor.on('text-change', this.onAlignTextChange);
+          this.editor.root.addEventListener('click', this.addSegmentOnClick);
+        } else {
+          console.log("disable read only")
+          this.disableTextAlignActions()
+        }
+      },
+      disableTextAlignActions() {
+        this.editor.off('selection-change', this.onAlignSelection);
+        this.editor.off('text-change', this.onAlignTextChange);
+        this.editor.root.removeEventListener("click", this.addSegmentOnClick); 
+      },
+      onAlignSelection (range) {
         if (range) {
           let beforeCharDelta = this.editor.getContents(range.index - 1, 1);
           let isAfterSegment = false;
@@ -274,6 +290,6 @@
           event.preventDefault();
         //}
       }
-        }
     }
+  }
 </script>
