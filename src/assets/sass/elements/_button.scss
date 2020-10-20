@@ -7,3 +7,14 @@ button {
   font-size: 1rem;
   font-family: $family-primary;
 }
+
+
+.edition-action-bar .button {
+  border: 1px solid !important;
+  border-radius: 6px !important;
+  padding: 5px 8px !important;
+
+  &:hover {
+    @extend .is-dark;
+  }
+}

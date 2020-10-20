@@ -226,7 +226,7 @@
         this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
       }
     },
-        methods: {
+    methods: {
             updateContent () {
                 this.delta = this.editor.getContents().ops;
             },
