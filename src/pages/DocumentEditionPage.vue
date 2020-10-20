@@ -135,6 +135,7 @@
 
             <mirador-viewer
               v-if="document.manifest_origin_url && !isLoading"
+              :key="$attrs.section === 'facsimile'"
               :manifest-url="document.manifest_origin_url"
               :canvas-index="0"
             />

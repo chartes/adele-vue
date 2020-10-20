@@ -1,6 +1,6 @@
 <template>
   <div
-    v-show="viewer"
+    v-show="viewerContainer"
     id="vue-mirador-container"
   />
 </template>
@@ -17,77 +17,106 @@ export default {
   components: {},
   props: {
     manifestUrl: { type: String, required: true },
-    canvasIndex: { type: Number, default: 0 }
+    canvasIndex: { type: Number, default: 0 },
+    annotationMode: { type: Boolean, default: false},
+    showAnnotations: { type: Boolean, default: true},
+    configuration: {type: Object, default: () => {return {}}}
   },
   data() {
     return {
-      viewer: null
-    };
-  },
-  computed: {},
-  watch: {},
-  created() {},
-  mounted() {
-    const manifests = {};
-    let url = this.manifestUrl
-    // instantiate the viewer with a single manifest & window for simplicity
-    try {
-      this.viewer = Mirador.viewer({
-        id: "vue-mirador-container",
-        manifests: manifests,
-        windows: [
-          {
-            id: 1,
-            loadedManifest: url,
-            canvasIndex: this.canvasIndex
-          }
-        ],
-        window: {
-          allowClose: false,
-          allowMaximize: false,
-          defaultSideBarPanel: "info",
-          sideBarOpenByDefault: false,
-          hideWindowTitle: true,
-          maximizedByDefault: true,
-          highlightAllAnnotations: false,
-          panels: { // Configure which panels are visible in WindowSideBarButtons
-            info: true,
-            attribution: true,
-            canvas: false,
-            annotations: true,
-            search: false,
-            layers: false,
-          },
-        },
-        workspace: {
-          showZoomControls: true,
-          type: "mosaic", // Which workspace type to load by default. Other possible values are "elastic"
-          height: 5000, // height of the elastic mode's virtual canvas
-          viewportPosition: { // center coordinates for the elastic mode workspace
-            x: 0,
-            y: 0,
-          },
-          width: 5000, // width of the elastic mode's virtual canvas
-        },
-        workspaceControlPanel: {
-          enabled: false
-        },
-        annotation: {
-          adapter: (canvasId) => new LocalStorageAdapter(`localStorage://?canvasId=${canvasId}`),
-        },
-      },
-        [...annotationPlugins]
-      );
-
-      var action = Mirador.actions.minimizeWindow('1')
-      // Now we can dispatch it.
-      this.viewer.store.dispatch(action);
-    } catch (e) {
-      console.warn("Mirrador viewer: ", e);
+      viewerContainer: null,
+      resetTimeout: null
     }
   },
-  methods: {}
-};
+  computed: {
+    fullConfig() {
+      const manifests = {};
+      let url = this.manifestUrl
+      return {
+          id: "vue-mirador-container",
+          manifests: manifests,
+          windows: [
+            {
+              id: 1,
+              loadedManifest: url,
+              canvasIndex: this.canvasIndex
+            }
+          ],
+          window: {
+            allowClose: false,
+            allowMaximize: false,
+            defaultSideBarPanel: "info",
+            sideBarOpenByDefault: false,
+            hideWindowTitle: true,
+            maximizedByDefault: true,
+            highlightAllAnnotations: false,
+            panels: { // Configure which panels are visible in WindowSideBarButtons
+              info: true,
+              attribution: true,
+              canvas: false,
+              annotations: true,
+              search: false,
+              layers: false,
+            },
+          },
+          workspace: {
+            showZoomControls: true,
+            type: "mosaic", // Which workspace type to load by default. Other possible values are "elastic"
+            height: 5000, // height of the elastic mode's virtual canvas
+            viewportPosition: { // center coordinates for the elastic mode workspace
+              x: 0,
+              y: 0,
+            },
+            width: 5000, // width of the elastic mode's virtual canvas
+          },
+          workspaceControlPanel: {
+            enabled: false
+          },
+          annotation: {
+            adapter: (canvasId) => new LocalStorageAdapter(`localStorage://?canvasId=${canvasId}`),
+          },
+          ...this.configuration
+        }
+    }
+  },
+  watch: {
+    viewerContainer() {
+      if (this.viewerContainer && !this.viewer) {
+        console.log("HELLO",this.viewerContainer)
+        // instantiate the viewer with a single manifest & window for simplicity
+        const v = Mirador.viewer(this.fullConfig, [...annotationPlugins])
+        console.log("WORLD",this.viewerContainer, v)
+        try {
+          //this.viewer = Mirador.viewer(this.fullConfig,[...annotationPlugins]);
+          var action = Mirador.actions.minimizeWindow('1')
+          // Now we can dispatch it.
+          v.store.dispatch(action);
+        } catch (e) {
+          console.warn("Mirrador viewer: ", e);
+        }
+        this.viewer = v;
+
+        this.resetTimeout = setTimeout(() => {
+            const reset = document.querySelector(`button[title='Reset zoom']`);
+        if (reset) {
+          console.log("RESET ZOOM");
+          reset.click();
+        } else {
+          console.log("NO RESET ZOOM")
+        }
+        }, 2000)
+
+
+    }
+    }
+  },
+  mounted() {
+      this.viewerContainer = document.getElementById('vue-mirador-container');
+  },
+  beforeDestroy() {
+    clearTimeout(this.resetTimeout)
+  }
+}
 </script>
 
 <style>

@@ -45,7 +45,8 @@ export default {
                 }})
                 t.$mount(el)
               })
-            }) 
+            });
+
             // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
               const t = new toolTipClass({propsData: {
