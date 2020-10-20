@@ -323,12 +323,7 @@
                 </div>
               </div>
               <!-- Facsimilé -->
-              <div v-if="currentUserIsTeacher">
-                <document-edition-facsimile
-                  v-if="$attrs.section === 'facsimile'"
-                  :transcription-with-notes="transcriptionWithNotes"
-                />
-              </div>
+              <div v-if="currentUserIsTeacher" />
 
               <!-- Commentaires -->
               <div
@@ -504,7 +499,6 @@ export default {
         DocumentEditionNotice,
         DocumentEditionTranscription,
         DocumentEditionTranslation,
-        DocumentEditionFacsimile,
         DocumentEditionCommentaries,
         DocumentEditionSpeechParts,
 
@@ -596,7 +590,7 @@ export default {
             case 'translation':
               return this.translationVisibility || this.transcriptionVisibility
             case 'facsimile':
-              return this.transcriptionVisibility
+              return false
             case 'notice':
               return this.noticeVisibility
             case 'commentaries':
