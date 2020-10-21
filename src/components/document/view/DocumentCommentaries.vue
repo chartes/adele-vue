@@ -104,7 +104,7 @@ export default {
 
           // persnames && placenames
           Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName === 'persname' ? 'is-left' : 'is-right'});
+              addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName === 'persname' ? 'is-left' : 'is-bottom'});
           })
       },
       insertCommentariesTooltips(){
