@@ -4,14 +4,15 @@ import ToolTip from '@/components/ui/ToolTip';
 const toolTipClass =  Vue.extend(ToolTip)
 
 export default function addToolTip(target, content, title = null, options = {}) {
-    console.log("ADD TOOLTIP");
-
     const t = new toolTipClass({propsData: {
         element: target.outerHTML ,
         content: `
           <span>
-            ${title ? `<span class="tt-title">${title}</span>`:  ''} 
-            <span class="tt-content">${content || ""}</span>
+            <div class="tt-header">
+              <div class="tt-icon ${options.contentType || 'none'}"></div>
+            </div>
+            ${title ? `<div class="tt-title">${title}</div>`:  ''} 
+            <div class="tt-content">${content || ""}</div>
           </span>
         `,
         ...options

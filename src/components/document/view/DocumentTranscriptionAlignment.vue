@@ -46,8 +46,6 @@ export default {
           // make tooltips
           this.transcriptionAlignmentView.notes.forEach(note => {
             const noteId = note.id;
-            console.log(noteId, note.content)
-
             if (note.content) {
               const paddedId = `${note.id}`.padStart(10, '0')
               Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
@@ -58,7 +56,7 @@ export default {
 
           // persnames && placenames
           Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-            addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
+            addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName});
           })
       }
     },

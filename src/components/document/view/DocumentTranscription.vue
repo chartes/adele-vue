@@ -39,7 +39,7 @@ export default {
 
             // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
+              addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName});
             })
         }   
     },
