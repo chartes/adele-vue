@@ -4,6 +4,7 @@
     multilined
     size="is-medium"
     class="tooltip"
+    :position="position"
   >
     <template v-slot:content>
       <span v-html="content" />
@@ -19,7 +20,8 @@ export default {
       element: {type: String, default: ''},
       contentType: {type: String, default: 'note'},
       content: {type: String, default: ''},
-      type: {type: String, default: 'is-light'}
+      type: {type: String, default: 'is-light'},
+      position: {type: String, default: 'is-top'}
     },
     mounted() {
     
