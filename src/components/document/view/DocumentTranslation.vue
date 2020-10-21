@@ -13,7 +13,7 @@
 
 import { mapState } from 'vuex';
 import Vue from 'vue';
-import ToolTip from '@/components/ui/ToolTip';
+import addToolTip from '@/modules/tooltip';
 
 export default {
     name: "DocumentTranslation",
@@ -29,35 +29,16 @@ export default {
     mounted() {
       if (this.translationView) {
          // make tooltips
-          let toolTipClass =  Vue.extend(ToolTip)
-           Object.keys(this.translationView.notes).forEach(noteId => {
-              const paddedId = `${noteId}`.padStart(10, '0')
-              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-              const noteContent = this.translationView.notes[noteId]
-              const t = new toolTipClass({propsData: {
-                element: el.outerHTML ,
-                content: `
-                  <span>
-                    <span class="tt-content">${noteContent}</span>
-                  </span>
-                `
-              }})
-              t.$mount(el)
-              })
-          }) 
+          Object.keys(this.translationView.notes).forEach(noteId => {
+            const paddedId = `${noteId}`.padStart(10, '0')
+            Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
+              addToolTip(el, this.translationView.notes[noteId], null, {contentType: 'note'});
+            }) 
+          })
 
           // persnames && placenames
           Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              const t = new toolTipClass({propsData: {
-              element: el.outerHTML ,
-              content: `
-                <span>
-                  <span class="tt-content">${el.attributes.ref.value}</span>
-                </span>
-              `,
-              type: 'is-light'
-              }})
-              t.$mount(el)
+            addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
           })
       }
     },

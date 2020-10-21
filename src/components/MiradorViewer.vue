@@ -82,10 +82,8 @@ export default {
   watch: {
     viewerContainer() {
       if (this.viewerContainer && !this.viewer) {
-        console.log("HELLO",this.viewerContainer)
         // instantiate the viewer with a single manifest & window for simplicity
         const v = Mirador.viewer(this.fullConfig, [...annotationPlugins])
-        console.log("WORLD",this.viewerContainer, v)
         try {
           //this.viewer = Mirador.viewer(this.fullConfig,[...annotationPlugins]);
           var action = Mirador.actions.minimizeWindow('1')

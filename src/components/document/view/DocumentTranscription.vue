@@ -13,7 +13,7 @@
 
 import { mapState } from 'vuex';
 import Vue from 'vue';
-import ToolTip from '@/components/ui/ToolTip';
+import addToolTip from '@/modules/tooltip';
 
 export default {
     name: "DocumentTranscription",
@@ -29,36 +29,17 @@ export default {
     mounted() {
           // make tooltips
         if (this.transcriptionView) {
-            let toolTipClass =  Vue.extend(ToolTip)
             // notes
             Object.keys(this.transcriptionView.notes).forEach(noteId => {
               const paddedId = `${noteId}`.padStart(10, '0')
               Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-                const noteContent = this.transcriptionView.notes[noteId]
-                const t = new toolTipClass({propsData: {
-                  element: el.outerHTML ,
-                  content: `
-                    <span>
-                      <span class="tt-content">${noteContent}</span>
-                    </span>
-                  `
-                }})
-                t.$mount(el)
+                addToolTip(el, this.transcriptionView.notes[noteId], null, {contentType: 'note'});
               })
             });
 
             // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              const t = new toolTipClass({propsData: {
-              element: el.outerHTML ,
-              content: `
-                <span>
-                  <span class="tt-content">${el.attributes.ref.value}</span>
-                </span>
-              `,
-              type: 'is-light'
-              }})
-              t.$mount(el)
+              addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
             })
         }   
     },

@@ -54,7 +54,7 @@
 
 import { mapState, mapGetters } from 'vuex';
 import Vue from 'vue';
-import ToolTip from '../../ui/ToolTip';
+import addToolTip from '@/modules/tooltip';
 
 export default {
     name: "DocumentSpeechParts",
@@ -118,7 +118,6 @@ export default {
           }
 
           // make tooltips
-          let toolTipClass =  Vue.extend(ToolTip)
           Object.keys(this.speechPartsView.notes).forEach(noteId => {
             console.log('NOTES', noteId)
             Array.from(document.querySelectorAll(`[data-note-id='${noteId}']`)).forEach(el => {
@@ -129,32 +128,13 @@ export default {
                 spt = this.getSpeechpartTypeById(parseInt(spTypeId));
               }
 
-              let noteContent = this.speechPartsView.notes[noteId]
-              let t = new toolTipClass({propsData: {
-                element: el.outerHTML ,
-                content: `
-                  <span>
-                    <span class="tt-title">${spt.label || ""}</span>
-                    <span class="tt-content">${noteContent || ""}</span>
-                  </span>
-                `
-              }})
-              t.$mount(el)
+              addToolTip(el, this.speechPartsView.notes[noteId], spt.label, {contentType: 'speech-part'});
             })
           })
 
           // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              const t = new toolTipClass({propsData: {
-              element: el.outerHTML ,
-              content: `
-                <span>
-                  <span class="tt-content">${el.attributes.ref.value}</span>
-                </span>
-              `,
-              type: 'is-light'
-              }})
-              t.$mount(el)
+              addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
             })
 
         } 

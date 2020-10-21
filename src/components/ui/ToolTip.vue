@@ -2,7 +2,7 @@
   <b-tooltip
     :type="type"
     multilined
-    size="is-small"
+    size="is-medium"
     class="tooltip"
   >
     <template v-slot:content>
@@ -17,6 +17,7 @@ export default {
     name: "ToolTip",
     props: {
       element: {type: String, default: ''},
+      contentType: {type: String, default: 'note'},
       content: {type: String, default: ''},
       type: {type: String, default: 'is-light'}
     },

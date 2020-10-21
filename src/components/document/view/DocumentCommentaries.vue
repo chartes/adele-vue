@@ -55,7 +55,7 @@
 
 import { mapState, mapActions } from 'vuex';
 import Vue from 'vue';
-import ToolTip from '@/components/ui/ToolTip';
+import addToolTip from '@/modules/tooltip';
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 
@@ -95,54 +95,25 @@ export default {
       },
       insertTranscriptionTooltips() {
           // make tooltips
-          let toolTipClass =  Vue.extend(ToolTip)
-           Object.keys(this.transcriptionView.notes).forEach(noteId => {
-              const paddedId = `${noteId}`.padStart(10, '0')
-              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-                const noteContent = this.transcriptionView.notes[noteId]
-                const t = new toolTipClass({propsData: {
-                  element: el.outerHTML ,
-                  content: `
-                    <span>
-                      <span class="tt-content">${noteContent}</span>
-                    </span>
-                  `
-                }})
-                t.$mount(el)
-              })
+          Object.keys(this.transcriptionView.notes).forEach(noteId => {
+            const paddedId = `${noteId}`.padStart(10, '0')
+            Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
+              addToolTip(el, this.transcriptionView.notes[noteId], null, {contentType: 'note'});
+            })
           }) 
 
           // persnames && placenames
           Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              const t = new toolTipClass({propsData: {
-              element: el.outerHTML ,
-              content: `
-                <span>
-                  <span class="tt-content">${el.attributes.ref.value}</span>
-                </span>
-              `,
-              type: 'is-light'
-              }})
-              t.$mount(el)
+              addToolTip(el, el.attributes.ref.value, null, {contentType: el.name});
           })
       },
       insertCommentariesTooltips(){
           // make tooltips
-          let toolTipClass =  Vue.extend(ToolTip)
           this.commentariesView.forEach(com => {
             Object.keys(com.notes).forEach(noteId => {
                 const paddedId = `${noteId}`.padStart(10, '0')
                 const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
-                const noteContent = com.notes[noteId]
-                const t = new toolTipClass({propsData: {
-                  element: spEl.outerHTML ,
-                  content: `
-                    <span>
-                      <span class="tt-content">${noteContent}</span>
-                    </span>
-                  `
-                }})
-                t.$mount(spEl)
+                addToolTip(spEl, com.notes[noteId], null, {contentType: 'note'});
             }) 
           })
       }
