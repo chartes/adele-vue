@@ -35,9 +35,12 @@
         >
           Dossiers
         </router-link>
-        <a class="navbar-item">
+        <router-link
+          :to="{name: 'documentation'}"
+          class="navbar-item"
+        >
           Documentation
-        </a>
+        </router-link>
       </div>
 
       <div class="navbar-end">
