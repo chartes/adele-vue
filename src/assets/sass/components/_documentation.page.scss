@@ -1,0 +1,357 @@
+.documentation-page {
+
+    max-width: 1920px;
+    margin: 0 auto;
+
+    h1 {
+        font-size: 60px;
+        font-family: $family-sans-serif;
+        font-weight: $weight-light;
+    }
+    .intro {
+        font-family: $family-serif;
+        font-size:20px;
+        font-weight: 400;
+    }
+
+    .intro-cards {
+
+        margin-top: 70px;
+        border-top: 3px solid #FFD500;
+
+        display: flex;
+        flex-wrap: wrap;
+
+        .card {
+            box-shadow: none;
+            flex: 0 0 50%;
+            margin-top: 40px;
+        }
+
+        .card-image img {
+            height: 160px;
+        }
+
+        .card-title {
+            font-family: $family-sans-serif;
+            font-weight: $weight-semibold;
+            font-size: 22px;
+            line-height: 24px;
+            color: $grey-darker;
+        }
+
+        .card-subtitle {
+            font-size: 18px;
+            font-weight: $weight-normal;
+            color: #001E15;
+        }
+    }
+
+    .top {
+
+        .columns {
+            background: url(#{$image-path}/accueil_fond_header.png) top center /  auto 500px no-repeat;
+        }
+
+        .column {
+            margin-top: 250px;
+            background: #FFF;
+            position: relative;
+        }
+
+        .column ul,
+        .column > li {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .doc-tabs li {
+            margin: 6px;
+            padding: 8px;
+            border-radius: 3px;
+            &:hover, .active {
+                background-color: #EFEFEC;
+                cursor: pointer;
+            }
+            &.active {
+                background-color: #FFD500;
+            }
+        }
+
+        .column .column-title {
+            font-family: $family-sans-serif;
+            font-size: 36px;
+            line-height: 45px;
+            border-bottom: solid 12px;
+            padding: 15px 0;
+            margin-bottom: 0;
+        }
+
+        .column.themes .column-title {
+            color: $primary;
+            border-bottom-color: $primary;
+        }
+
+        .column.themes > .content {
+            padding-left: 0.75rem;
+        }
+
+        .column.themes::before {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: -270px;
+            width: 100%;
+            height: 270px;
+            background: url(#{$image-path}/accueil_header_A_blanc.svg) bottom right / contain no-repeat;
+        }
+
+        .column.documents {
+            padding-left: 0;
+        }
+
+        .column.documents > .content {
+            padding-right: 4rem;
+        }
+
+        .column.documents .column-title {
+            color: $grey-dark;
+            border-bottom-color: $grey-light;
+        }
+
+        .column.documents .content figure {
+            margin: 0;
+        }
+
+        .column.documents .document-card .card-content {
+            padding: 0.25rem 0 1.25rem;
+
+        }
+
+        .column.documents .document-card {
+            border-bottom: solid 12px;
+            border-bottom-color:$grey-light;
+        }
+
+        .column.is-half {
+            margin-top: 135px;
+            padding: 60px 6% 0;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+    }
+
+    .bottom {
+
+        margin-left: 0.75rem;
+        margin-right: 4rem;
+
+        border-top: 12px $grey-darker solid;
+        margin-top: 100px;
+        padding-top: 60px;
+
+        h2 {
+            font-family: $family-sans-serif;
+            font-size: 36px;
+
+            display: inline-block;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 12px solid #FFD500;
+        }
+
+        h2 a {
+            color:$grey-darker;
+            cursor: default;
+        }
+
+        p {
+            font-family: $family-sans-serif;
+            color:$grey-darker;
+            font-size: 20px;
+            line-height: 26px;
+            margin-bottom: 2rem;
+        }
+
+    }
+
+
+    .document-card .card-content .subtitle,
+    .document-card .card-content .title {
+        font-size:16px;
+        margin-bottom: 0;
+    }
+
+    .theme-card {
+        margin-top: 1.5rem;
+    }
+
+    .document-card {
+        margin-top: 1.25rem;
+    }
+
+    .document-card .card-content .subtitle {
+        line-height: 20px;
+    }
+
+}
+
+
+
+@media screen and (max-width:1280px) {
+
+    .documentation-page {
+
+        .top {
+
+            .column
+            {
+                &.is-half {
+                    padding: 30px 4% 0;
+                }
+
+                &.documents > .content {
+                    padding-right: 0.75rem;
+                }
+
+                .column-title {
+                    font-size: 28px;
+                    line-height: 32px;
+                }
+            }
+        }
+
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .intro {
+            font-size: 16px;
+        }
+
+        .bottom {
+            margin-right: 0.75rem;
+        }
+
+    }
+
+}
+
+@media screen and (max-width:1024px) {
+
+    .documentation-page {
+
+        .top {
+            .column.is-half {
+
+                padding: 30px 3% 0;
+
+                .inner-navbar {
+
+                    display: flex;
+
+                    .navbar-divider {
+                        display: block;
+                        border-right: 1px solid black;
+                    }
+
+                    .navbar-item {
+                        font-size: 12px;
+                        padding-right: 0.2rem;
+                        margin-right: 0.4rem;
+                    }
+
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width:768px) {
+
+    .documentation-page {
+
+        .top {
+
+            .columns {
+
+                display: flex;
+                flex-direction: column;
+
+                .column {
+                    margin-top: 0;
+                    padding: 30px 6% 0;
+                }
+
+                .column.is-half {
+                    order: 1;
+                    margin-top: 180px;
+                    border-radius: 0;
+
+                    .intro-cards {
+                        flex-direction: column;
+
+                        .card-image {
+                            margin-left: 2%;
+                        }
+
+                        .card-content {
+                            padding: 0.5rem;
+                        }
+                    }
+                }
+
+                .column.documents {
+
+                    order: 2;
+
+                    & > .content {
+                        padding-right:0;
+                    }
+
+                    .document-card {
+                        border: none;
+                        padding: 0;
+
+                        .image.is-3by1 {
+                            padding-top: 75%;
+                        }
+                    }
+                }
+
+                .column.themes {
+                    order: 3;
+
+                    &::before {
+                        display: none;
+                    }
+
+                    .content {
+                        padding-left: 0;
+                    }
+                }
+            }
+        }
+
+        .bottom {
+
+            margin: 30px 6%;
+            padding-top: 10px;
+            border-top:none;
+
+            .column {
+                padding-left: 0;
+                padding-right: 0;
+            }
+
+            p {
+                font-size:18.5px;
+                line-height: 26px;
+            }
+        }
+    }
+}
+

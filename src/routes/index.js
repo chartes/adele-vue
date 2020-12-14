@@ -54,9 +54,10 @@ const router = new VueRouter({
       props: true
     },
     {
-      path: '/documentation',
+      path: '/documentation/:section',
       component: DocumentationPage,
-      name: 'documentation'
+      name: 'documentation',
+      props: true
     },
     {
       path: '/login',

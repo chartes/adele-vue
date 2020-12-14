@@ -36,7 +36,7 @@
           Dossiers
         </router-link>
         <router-link
-          :to="{name: 'documentation'}"
+          :to="{name: 'documentation', params: {section: 'about'}}"
           class="navbar-item"
         >
           Documentation
