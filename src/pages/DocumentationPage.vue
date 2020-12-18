@@ -81,6 +81,12 @@
                         Types d'acte
                       </li>
                       <li
+                        id="tradition"
+                        @click="goTo('tradition')"
+                      >
+                        Tradition
+                      </li>
+                      <li
                         id="dates"
                         @click="goTo('dates')"
                       >
@@ -113,63 +119,185 @@
             v-if="$attrs.section === 'acte-types'"
           >
             <h1>Types d'auteurs et de documents</h1>
-            <p>Introduction explicative sur le distinguo type d’auteurs / type de documents</p>
+            <p />
+            <p>
+              Il a été choisi de distinguer la typologie des actes et des documents en deux parties distinctes, mais non excluantes. 
+              Ainsi, un même dossier peut être caractérisé par un élément « auteur » et un « document de gestion ». Tel est le cas du dossier n° 48, traitant d'un acte scellé par un notaire à titre personnel à Tarbes. <br>
+              Pour plus de clarté, la différenciation entre « auteur » et « type de documents » a été effectuée.
+
+
+              Introduction explicative sur le distinguo type d’auteurs / type de documents
+            </p>
             <h2>A – Actes, auteurs</h2>
-            <p>TODO : Introduction</p>
-            <p>Les types précis (lettre patente sur double queue, terrier…) sont précisés en titre. Les termes et le découpage sont modelés au plus près possible sur ceux de la base Bède.</p>
+            <p>
+              Introduction
+              Il est nécessaire de faire la distinction entre l'auteur de l'acte écrit et l'auteur de l'action juridique. <br>
+              L'auteur de l'acte écrit est <i>l'auctor</i>, celui qui garantit et protège l'acte. Son nom est présent en début d'acte, dans la suscription, et est parfois rappelé par le sceau ou dans les validations finales.
+            </p>
+            <p>Les types précis (lettre patente sur double queue, terrier…) sont précisés en titre. Les termes et le découpage sont modelés au plus près possible sur ceux de la base Bède (disponible <a href="http://elec.enc.sorbonne.fr/bede/">ici</a>.</p>
             <dl>
               <dt>Pape et entourage</dt>
               <dd>
-                [Définition AG]<br>
-                Inclut : Cardinaux, Légats, Conciles
+                Il s'agit de documents réalisé par la chancellerie apostolique, ou par des représantants du Pape dans les royaumes européens.
+                <br>
+                Inclut : Cardinaux, Légats, Conciles<br>
+                Bede : <br>
+                <ul>
+                  <li>« Actes pontificaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter66.php">http://elec.enc.sorbonne.fr/bede/feuilleter66.php</a></li>
+                </ul>
+                Exemple de dossiers : <ul>
+                  <li>« Lettres pontificales sur fil de chanvre. Aux origines de la Sorbonne : le pape demande à l'évêque de Paris d'autoriser l'installation d'un oratoire dans le collège » : <a href="https://dev.chartes.psl.eu/adele/documents/41/view/notice">n° 41</a></li>
+                  <li>« Lettres pontificales (copie contemporaine au registre de chancellerie). Le pape, le roi, les moniales : confirmation de dons d'églises de Brno à des cisterciennes de Moravie » : <a href="https://dev.chartes.psl.eu/adele/documents/95/view/notice">n° 95</a></li>
+                </ul>
               </dd>
 
               <dt>Évêque et entourage</dt>
               <dd>
-                [Définition AG]<br>
-                Inclut : Archevêques, Chapitre cathédral et ses dignitaires, synodes diocésains et provinciaux, vicaire, official, archidiacres, doyens de chrétienté, curés (hors juridiction gracieuse)
+                Il peut s'agit de documents relatifs à la spiritualité, et à la gestion des églises et paroisses de son évêché. On retrouvera dans cette typologie des actes concernant les impôts ecclésiastiques, des possessions de l'évêque ou de l'entourage de l'évêque (ainsi le chancelier de la cathédrale, pour le dossier n° 82). <br>
+                L'évêque peut également être un seigneur (l'évêque de Beauvais était également comte de Beauvais). Ainsi, la mention « Évêque et entourage » peut être associée à un document de gestion, ou à un autre auteur. C'est le cas pour le dossier n° 63, où il est question d'un acte notarié dans lequel l'évêque est partie prenante. L'acte est ainsi caractérisé par les éléments « Évêque et entourage » et « Notaire public ». <br>
+                Inclut : Archevêques, Chapitre cathédral et ses dignitaires, synodes diocésains et provinciaux, vicaire, official, archidiacres, doyens de chrétienté, curés (hors juridiction gracieuse) <br>
+                Bede : <br>
+                <ul>
+                  <li>« Actes pontificaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter67.php">http://elec.enc.sorbonne.fr/bede/feuilleter67.php</a></li>
+                  <li>« Actes d'autres ecclésiastiques » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter69.php">http://elec.enc.sorbonne.fr/bede/feuilleter69.php</a></li>
+                </ul>
+                Exemple de dossiers : <ul>
+                  <li>« Acte notarié scellé d’un sceau épiscopal (Dauphiné). Un hôte encombrant : l'évêque de Gap reconnaît avoir demandé gîte à la chartreuse de Durbon avant que son droit à l'exercer ait été reconnu » : <a href="https://dev.chartes.psl.eu/adele/documents/63/view/notice">n° 63</a></li>
+                  <li>« Acte de l’archevêque de Sens. L'archevêque, les moniales, la paroisse : concession d'autel à Saint-Germain-des-Prés » : <a href="https://dev.chartes.psl.eu/adele/documents/88/view/notice">n° 88</a></li>
+                </ul>
               </dd>
 
               <dt>Religieux</dt>
               <dd>
-                [Définition AG]<br>
-                Dignitaires et membres de maisons religieuses et d’ordres
+                La catégorie « Religieux » contient tout autant des actes laïcs sous le sceau ecclésiastique, des actes émanent directement d'établissement religieux, tels que les abbayes ou les prieurés. <br>
+                Inclut : Dignitaires et membres de maisons religieuses et d’ordres <br>
+                Bede : <br>
+                <ul>
+                  <li>« Actes abbatiaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter68.php">http://elec.enc.sorbonne.fr/bede/feuilleter68.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Chirographe co-scellé par l’abbé de Moissac et le comte de Toulouse (Quercy). L'hommage du comte : convention entre l'abbé de Moissac et Amaury de Montfort, comte de Toulouse » : <a href="https://dev.chartes.psl.eu/adele/documents/33/view/notice">n° 33</a></li>
+                  <li>« Acte laïc sous sceaux ecclésiastiques (Besançon, Dole et Rougemont). Le testament d'un seigneur comtois, acte laïc sous sceaux ecclésiastiques » : <a href="https://dev.chartes.psl.eu/adele/documents/60/view/notice">n° 60</a></li>
+                </ul>
               </dd>
 
               <dt>Souverain</dt>
-              <dd>[Définition AG] – faut-il vraiment maintenir ici la liste des pays ?</dd>
+              <dd>
+                La définition de souverain (roi, empereur) se complète de la localisation de l'acte (France, Iles britanniques ...). La localisation doit être renseignée dans la partie « Pays » et parfois « Région » de l'onglet « Notice ». <br>
+                Bede : <br>
+                <ul>
+                  <li>« Actes de souverains » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter70.php">http://elec.enc.sorbonne.fr/bede/feuilleter70.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Précepte du roi de France Charles le Chauve (copie de cartulaire, XIIe siècle). Alimenter les fidélités : don de terres par Charles le Chauve à un fidèle bourguignon » : <a href="https://dev.chartes.psl.eu/adele/documents/69/view/notice">n° 69</a></li>
+                  <li>« Acte d’Urraka, fille du roi de León et de Castille Alphonse VI. Un don royal à l'abbaye de Cluny : l'infante Urraka, dame de Galice, offre le monastère de Pombeiro » : <a href="https://dev.chartes.psl.eu/adele/documents/74/view/notice">n° 74</a></li>
+                </ul>
+              </dd>
 
               <dt>Du prince au baron</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Sous ces termes l'on retrouve l'intégralité des actes relatifs aux différents échelons de la noblesse : prince, duc, comte, baron, vicomte ... <br>
+                Bede : 
+                <ul>
+                  <li>« Actes princiers » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter71.php">http://elec.enc.sorbonne.fr/bede/feuilleter71.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Chirographe co-scellé par les deux auteurs et par un cardinal-légat pontifical (Narbonnais). Payer les fidélités au prix fort : Amaury de Montfort, comte de Toulouse, promet un château au vicomte de Narbonne » : <a href="https://dev.chartes.psl.eu/adele/documents/27/view/notice">n° 27</a></li>
+                  <li>« Acte de la comtesse de Boulogne. L'hommage du comte : convention entre l'abbé de Moissac et Amaury de Montfort, comte de Toulouse » : <a href="https://dev.chartes.psl.eu/adele/documents/32/view/notice">n° 32</a></li>
+                </ul>
+              </dd>
 
               <dt>Administration séculière centrale et locale</dt>
-              <dd>[Définition AG]</dd>
-
-              <dt>Seigneurs et particuliers</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Il s'agit principalement d'actes édictés par des représentants du roi ou des princes et barons dans ses terres. Les auteurs peuvent donc être des prévôts, baillis, mais aussi des instances aidant le souverain dans sa gestion du territoire, tels que les chambres des comptes ou les cours des Aides.
+                <br>
+                Bede : 
+                <ul>
+                  <li>« Actes de l'administration locale (royale et princière) » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter148.php">http://elec.enc.sorbonne.fr/bede/feuilleter148.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte du trésorier royal de la sénéchaussée de Toulouse. Solder l'armée d'occupation : certificat des versements faits à un capitaine de l'armée royale en Gascogne » : <a href="https://dev.chartes.psl.eu/adele/documents/38/view/notice">n° 38</a></li>
+                  <li>« Acte du sénéchal royal de Saintonge-Angoumois. Des travaux qui traînent : mandement de faire procéder de toute urgence aux réparations de château de La Rochelle ordonnées par le roi » : <a href="https://dev.chartes.psl.eu/adele/documents/43/view/notice">n° 43</a></li>
+                </ul>
+              </dd><dt>Seigneurs et particuliers</dt>
+              <dd>
+                Contient les actes relatifs aux seigneuries et aux particuliers. Ainsi, on pourra y inscrire les documents généraux concernant les familles (généalogie, droits, titres), les papiers particuliers, des pièces concernant la seigneurie (terriers, cartulaires, droits seigneuriaux), de fiefs et d'arrières-fiefs. Il peut également s'agir d'acte scellé sous le sceau seigneurial.<br>
+                Bede : 
+                <ul>
+                  <li>« Actes seigneuriaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter72.php">http://elec.enc.sorbonne.fr/bede/feuilleter72.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte scellé par un particulier (Normandie). Masure, courtil, prox. route royale : un acte de vente normand » : <a href="https://dev.chartes.psl.eu/adele/documents/46/view/notice">n° 46</a></li>
+                  <li>« Acte scellé par un seigneur (Dauphiné). Une concession à la chartreuse de Berthaud » : <a href="https://dev.chartes.psl.eu/adele/documents/55/view/notice">n° 55</a></li>
+                </ul>
+              </dd>
 
               <dt>Municipalité, communauté</dt>
               <dd>
-                [Définition AG]<br>
-                Inclut : juridiction gracieuse (écrits d’arche, etc.)
+                Il s'agit d'actes concernant la gestion des communes, d'établissements tels que les léproseries, aux marchandises, à la tenue d'octroi. <br>
+                Inclut : juridiction gracieuse (écrits d’arche, etc.)<br>
+                Bede : <br>
+                <ul>
+                  <li>« Actes communaux, consulaires et échevinaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter73.php">http://elec.enc.sorbonne.fr/bede/feuilleter73.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Notice sous un sceau consulaire (Limousin). Au marché de Limoges : accord sur le cens à verser pour un étal de boucher » : <a href="https://dev.chartes.psl.eu/adele/documents/36/view/notice">n° 36</a></li>
+                  <li>« Chirographe d’échevinage (Valenciennes). Entre gens de biens et devant les hommes d'honneur : la dotation des jeunes époux » : <a href="https://dev.chartes.psl.eu/adele/documents/75/view/notice">n° 75</a></li>
+                </ul> 
               </dd>
 
               <dt>Actes privés, Système traditionnels</dt>
               <dd>
-                [Définition AG]<br>
-                Vise les actes du haut Moyen Âge, toutes solutions confondues : notariat vieux style, chartes et notices du notaire villageois comme du notaire-juge, notice monastique…
+                Vise les actes du haut Moyen Âge, toutes solutions confondues : notariat vieux style, chartes et notices du notaire villageois comme du notaire-juge, notice monastique… <br>
+                Bede : 
+                <ul>
+                  <li>« Actes privés » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter74.php">http://elec.enc.sorbonne.fr/bede/feuilleter74.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Notice monastique (Poitou). Être le voisin de saint Maixent : dons à Saint-Maixent pour une entrée en religion » : <a href="https://dev.chartes.psl.eu/adele/documents/54/view/notice">n° 54</a></li> 
+                  <li>« Acte dressé par un prêtre (Roussillon). Un accensement de vignes » : <a href="https://dev.chartes.psl.eu/adele/documents/68/view/notice">n° 68</a></li>
+                </ul>
               </dd>
 
               <dt>Notaire public</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Le notaire public donne une valeur légale à un texte, le plus souvent à des transactions économiques (achat, location, prêt). Il rédige plusieurs versions successives d'un même acte sur des supports différents, sur des feuillets parfois reliés. Ainsi, celui-ci donne une force à une action réalisée entre deux personnes.
+                Bede : Absent de Bede <br>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte notarié (Gévaudan). Six ans de retard : certificat relatif au paiement d'arrérages d'une rente assignée sur un péage en Gévaudan » : <a href="https://dev.chartes.psl.eu/adele/documents/34/view/notice">n° 34</a></li>
+                  <li>« Acte scellé par un notaire à titre personnel (Tarbes). De notaire à notaire : procuration pour percevoir une somme due sur les caisses du roi en Bigorre » : <a href="https://dev.chartes.psl.eu/adele/documents/48/view/notice">n° 48</a></li>
+                </ul>                
+              </dd>
 
               <dt>Juridiction gracieuse ecclésiastique</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Contrairement à la procédure contencieuse, la procédure gracieuse est une demande portée devant une juridiction, ici ecclésiastique, en absence de litige. Il peut s'agir de documents sous le sceau de l'officialité épiscopale ou archidiaonale par exemple. 
+                Bede : Absent de Bede <br>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte sous les sceaux de l’officialité archidiaconale de Verdun et d’un seigneur (Lorraine). Un montage féodal complexe : reprises et cessions d'un fief épiscopal en cascade » : <a href="https://dev.chartes.psl.eu/adele/documents/39/view/notice">n° 39</a></li>
+                  <li>« Acte sous le sceau du doyen de chrétienté de Verberie (diocèse de Soissons). Charité bien ordonnée : don et échange de terre d'un bourgeois de Compiègne aux cisterciens de Chaalis »<a href="https://dev.chartes.psl.eu/adele/documents/78/view/notice">n° 78</a></li>
+                </ul>                 
+              </dd>
 
               <dt>Juridiction gracieuse laïque</dt>
               <dd>
-                [Définition AG]<br>
-                Exclut municipalité
+                Contrairement aux actes de l'administration séculière centrale et locale, les documents entrant dans cette typologie portent le sceau d'une juridiction laïque (comme une cour royale, un bailli), mais celle-ci n'est pas l'auteur de l'action juridique évoquée.<br>
+                Exclut municipalité <br>
+                Bede : se référer aux actes privés, qui forment une unique catégorie, sans autre subdivision.<br>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte sous le sceau de la cour royale de Salins. Constitution de rente sur une vigne proche de Salins » : <a href="https://dev.chartes.psl.eu/adele/documents/62/view/notice">n° 62</a></li>
+                  <li>« Acte co-scellé par le bailli royal du Cotentin et par un chevalier. Une rente sur un moulin : petits arrangements et grandes garanties en faveur des cisterciennes de Mortain » : <a href="https://dev.chartes.psl.eu/adele/documents/79/view/notice">n° 79</a></li>
+                </ul> 
               </dd>
             </dl>
 
@@ -178,79 +306,155 @@
 
             <dl>
               <dt>Documents de gestion domaniale</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Il s'agit principalement de documents décrivant la terre appartenant à un seigneur. Ainsi, on y retrouvera dans cette catégorie les polyptiques, les censiers et terriers, ainsi que les aveux et dénombrements. <br>
+                Bede :
+                <ul>
+                  <li>« Documents de gestion domaniale » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter91.php">http://elec.enc.sorbonne.fr/bede/feuilleter91.php</a></li>
+                </ul>
+                Exemple de dossiers : « Acte de justice seigneuriale (Normandie). Aux plaids de la seigneurie : aveu et dénombrement de tenure » :<a href="https://dev.chartes.psl.eu/adele/documents/85/view/notice">n° 85</a>.
+              </dd>
 
               <dt>Inventaires de biens</dt>
               <dd>
-                [Définition AG]<br>
-                Biens fonciers et mobiliers, trésors, archives, bibliothèques
+                Les inventaires de biens constituent un ensemble de documents très large. Il s'agit de listes, qu'elles soient autonomes ou enchâssées dans un acte ou dans un compte.<br>
+                Inclut : Biens fonciers et mobiliers, trésors, archives, bibliothèques<br>
+                Bede :
+                <ul>
+                  <li>« Inventaires de biens et trésors » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter95.php">http://elec.enc.sorbonne.fr/bede/feuilleter95.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents féodaux</dt>
-              <dd>[Définition AG]</dd>
+              <dd>
+                Dans les documents féodaux l'on retrouve tous les actes relatifs à la gestion de la seigneurie. Par exemple, cette catégorie peut contenir des livres de fiefs et d'hommages ou les chartes octroyées par le seigneur.<br>
+                Bede : 
+                <ul>
+                  <li>« Documents féodaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter96.php">http://elec.enc.sorbonne.fr/bede/feuilleter96.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Tenir le château : serment de fidélité prêté pour le château de Bernis à la vicomtesse de Nîmes » : <a href="https://dev.chartes.psl.eu/adele/documents/66/view/notice">n° 66</a></li>
+                  <li>« Attache de la Chambre des comptes et des trésoriers du roi de France. Ordres en cascade et médiations administratives : l’exécution d’une souffrance d’hommage pour un fief normand » : <a href="https://dev.chartes.psl.eu/adele/documents/92/view/notice">n° 92</a></li>
+                </ul>
+              </dd>
 
               <dt>Documents comptables, financiers et fiscaux</dt>
-              <dd>[Définition AG]</dd>
-
-              <dt>Documents propres à la production et aux échanges</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. journal de péage, statut de métier]<br>
-                Ces documents sont dits « propres » pour bien marquer qu’ils ne sont pas « relatifs » à un domaine d’activité, mais que leur production est intrinsèquement liée à celui-ci. On en donne quelques exemples entre crochets droits. Inclut : Banque, monnaie, agriculture, pêche…
+                Il s'agit des documents économiques, utile pour la levée d'impôt ou pour gérer financièrement une seigneurie. Cette catégorie peut également contenir tout acte relatif aux transactions financières, ecclésiastique et laïque. Ainsi, on y retrouvera les documents d'assiette, de levée et documents comptables.<br>
+                Exemple de documents : comptes, documents relatifs à la perception de la taille, quittances
+                Bede :
+                <ul>
+                  <li>« Documents comptables, financiers, fiscaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter99.php">http://elec.enc.sorbonne.fr/bede/feuilleter99.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                <ul>
+                  <li>« Acte notarié (Gévaudan). Six ans de retard : certificat relatif au paiement d’arrérages d’une rente assignée sur un péage en Gévaudan » : <a href="https://dev.chartes.psl.eu/adele/documents/34/view/notice">n° 34</a></li>
+                  <li>« Acte sous le sceau de l’officialité épiscopale de Thérouanne. Quittance pour paiement de gages dus au titre de la guerre de Flandre » : <a href="https://dev.chartes.psl.eu/adele/documents/35/view/notice">n° 35</a></li>
+                </ul>
+              </dd>
+
+              <dt>Documents propres à la production, aux échanges et au travail </dt>
+              <dd>
+                Ces documents sont dits « propres » pour bien marquer qu’ils ne sont pas « relatifs » à un domaine d’activité, mais que leur production est intrinsèquement liée à celui-ci. On en donne quelques exemples entre crochets droits. Inclut : Banque, monnaie, agriculture, pêche…<br>
+                Exemple : journal de péage, statut de métier.<br>
+                <br>
+                Bede : 
+                <ul>
+                  <li>« Documents propres à la production, aux échanges et au travail » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter101.php">http://elec.enc.sorbonne.fr/bede/feuilleter101.php</a></li>
+                </ul>
+                Exemple de dossiers : 
+                « Acte scellé par un bourgeois (Guyenne). Parole de Gascons : une dette contractée à Londres et remboursable à Bordeaux » : <a href="https://dev.chartes.psl.eu/adele/documents/84/view/notice">n° 84</a>.
               </dd>
 
               <dt>Documents militaires</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. montre]
+                Ces documents concernent l'organisation des forces militaires, autant sur leur plan administratif, technique, qu'en terme de personnel. <br>
+                Exemple : montre<br>
+                Bede : 
+                <ul>
+                  <li>« Documents propres à la guerre et aux armées » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter112.php">http://elec.enc.sorbonne.fr/bede/feuilleter112.php</a></li>
+                </ul>
               </dd>
 
-              <dt>Documents propres à la diplomatie et aux relations extérieures</dt>
+              <dt>Documents propres à la diplomatie</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. lettres de créance, passeport, instructions]
+                Il s'agit de documents utile aux relations extérieures.<br>
+                Exemples : lettres de créance, passeport, instructions<br>
+                Bede : 
+                <ul>
+                  <li>« Documents propres à la diplomatie » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter114.php">http://elec.enc.sorbonne.fr/bede/feuilleter114.php</a></li>
+                </ul>
               </dd>
 
-              <dt>Documents judiciaires</dt>
+              <dt>Documents propres à la justice</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. registre d’inquisition, registre d’amendes]
+                Il s'agit de documents ici des enquêtes judiciaires, liée, par exemple à l'<i>inquisitio</i>, mais aussi aux dépositions de témoins, aux registres des procès, des peines, ou aux affaires ecclésiastiques comme les canonisation.<br>
+                Exemples : registre d’inquisition, registre d’amendes<br>
+                Bede : 
+                <ul>
+                  <li>« Documents propres à la justice (hors juridiction gracieuse) » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter115.php">http://elec.enc.sorbonne.fr/bede/feuilleter115.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres à l’enseignement</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. livre de recteur]
+                Cette catégorie peut contenir des documents relatifs à l'organisation et au statuts d'une université, aux bibliothèques, aux écoles capitulaires et collèges.<br>
+                Exemple : livre de recteur<br>
+                Bede : 
+                <ul>
+                  <li>« Documents propres à l'enseignement » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter120.php">http://elec.enc.sorbonne.fr/bede/feuilleter120.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres à l’assistance</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. matricule des pauvres]
+                Il s'agit de document propre à l'aide des plus pauvres, ainsi qu'aux institutions hospitalières médiévales, comme les Hôtel-Dieu, léproseries et maladreries.<br>
+                Exemple : matricule des pauvres.<br>
+                Bede :
+                <ul>
+                  <li>« Documents propres à l'assistance » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter121.php">http://elec.enc.sorbonne.fr/bede/feuilleter121.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres aux archives ecclésiastiques</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. visite pastorale, obituaire, registre BMS…]
+                Il s'agit tout autant de documents provenant du clergé régulier que séculier. Ainsi, on y retrouve des documents servant à la gestion du temporel (comme les registres épiscopaux) qu'à la gestion du spirituel (documents nécrologiques par exemple).<br>
+                Exemples : visite pastorale, obituaire, registre BMS…<br>
+                Bede :
+                <ul>
+                  <li>« Autres documents propres aux archives ecclésiastiques » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter122.php">http://elec.enc.sorbonne.fr/bede/feuilleter122.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres aux archives royales et princières</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. enquête administrative]
+                Documents servant à l'administration centrale ou locale, relatifs à l'organisation des pouvoirs ou des dépenses.<br>
+                Exemple : enquête administrative<br>
+                Bede :
+                <ul>
+                  <li>« Autres documents propres aux archives royales et princières » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter129.php">http://elec.enc.sorbonne.fr/bede/feuilleter129.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres aux archives municipales</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. livre de bourgeoisie]
+                Il s'agit de document propre à l'administration communale par les échevins ou consuls.<br>
+                Exemples de documents : livre de bourgeoisie, délibérations et statuts<br>
+                Bede :
+                <ul>
+                  <li>« Autres documents propres aux archives municipales » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter130.php">http://elec.enc.sorbonne.fr/bede/feuilleter130.php</a></li>
+                </ul>
               </dd>
 
               <dt>Documents propres aux archives seigneuriales et de particuliers</dt>
               <dd>
-                [Définition AG]<br>
-                [ex. livre de raison]
+                Il s'agit de documents permettant au seigneur de contrôler sa seigneurie, ses comptes, ou au particulier de gérer ses propriétés.<br>
+                Exemple : livre de raison<br>
+                Bede : 
+                <ul>
+                  <li>« Autres documents propres aux archives seigneuriales et de particuliers » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter133.php">http://elec.enc.sorbonne.fr/bede/feuilleter133.php</a></li>
+                </ul>
               </dd>
             </dl>
           </div>
@@ -259,7 +463,10 @@
           >
             <h1>Parties du discours</h1>
             <p>
-              TODO – Introduction ; NB: le vocabulaire ne servira que ponctuellement pour les documents de gestion.
+              Lors de la définition des parties du discours, 14 termes ont été retenus. Chaque entrée peut ensuite être affinée par un commentaire définissant de façon plus précise le mot-clef retenu. <br>
+              Par exemple, une <i>sanctio</i> peut être caractérisé par une clause ensuite définie dans le commentaire de la partie du discours. 
+              <br>
+              Il est important de signaler que le vocabulaire ici défini ne pourra servir que ponctuellement pour les documents de gestion. En effet, ceux-ci ne sont pas autant structurés que les actes. Aussi, il est nécessaire de rappeler que, contrairement aux actes, les documents de gestion peuvent contenir plusieurs feuillets, et qu'ils en sont pas tous décrits. Ainsi, toutes les parties du discours ne sont pas nécessairement présentes dans l'intégralité des dossiers. 
             </p>
             <dl>
               <dt>Invocation</dt>
@@ -272,6 +479,7 @@
                   <li>Verbale</li>
                   <li>En forme de chrisme : <a href="https://www.cei.lmu.de/VID/#147">https://www.cei.lmu.de/VID/#147</a></li>
                 </ul>
+                Exemples : «<i>In nomine sanctae et individuae Trinitatis</i>» ; « <i>In nomine Patris et Filii et Spiritus sancti</i> ».
               </dd>
 
               <dt>Suscription</dt>
@@ -280,8 +488,12 @@
                 VID, n° 187 : <a href="https://www.cei.lmu.de/VID/#187">https://www.cei.lmu.de/VID/#187</a><br>
                 La suscription peut être complétée :
                 <ul>
-                  <li>d’une formule de dévotion : <a href="https://www.cei.lmu.de/VID/#190">https://www.cei.lmu.de/VID/#190</a></li>
-                  <li>d’une formule d’humilité : <a href="https://www.cei.lmu.de/VID/#191">https://www.cei.lmu.de/VID/#191</a></li>
+                  <li>d’une formule de dévotion : <a href="https://www.cei.lmu.de/VID/#190">https://www.cei.lmu.de/VID/#190</a></li><br>
+                  Exemple : « <i>Par la grâce de Dieu</i> »
+                  <li>
+                    d’une formule d’humilité : <a href="https://www.cei.lmu.de/VID/#191">https://www.cei.lmu.de/VID/#191</a><br>
+                    Exemple : « <i>Servus servorum Dei</i> »
+                  </li>
                 </ul>
               </dd>
 
@@ -291,9 +503,18 @@
                 VID, n° 192: <a href="https://www.cei.lmu.de/VID/#192">https://www.cei.lmu.de/VID/#192</a><br>
                 L’adresse peut être :
                 <ul>
-                  <li>Universelle : <a href="https://www.cei.lmu.de/VID/#193a">https://www.cei.lmu.de/VID/#193a</a></li>
-                  <li>Collective : <a href="https://www.cei.lmu.de/VID/#193b">https://www.cei.lmu.de/VID/#193b</a></li>
-                  <li>Personnelle : <a href="https://www.cei.lmu.de/VID/#193c">https://www.cei.lmu.de/VID/#193c</a></li>
+                  <li>
+                    Universelle : <a href="https://www.cei.lmu.de/VID/#193a">https://www.cei.lmu.de/VID/#193a</a><br>
+                    Exemple :  « <i>Universis presentes litteras inspecturis</i> »
+                  </li>
+                  <li>
+                    Collective : <a href="https://www.cei.lmu.de/VID/#193b">https://www.cei.lmu.de/VID/#193b</a><br>
+                    Exemple : « <i>Omnibus ballivis ac praepositis nostris</i> »
+                  </li>
+                  <li>
+                    Personnelle : <a href="https://www.cei.lmu.de/VID/#193c">https://www.cei.lmu.de/VID/#193c</a><br>
+                    Exemple : « <i>dilecto ac fideli cancellario nostro ...</i> »
+                  </li>
                 </ul>
               </dd>
 
@@ -310,7 +531,8 @@
               <dt>Formule de perpétuité</dt>
               <dd>
                 La formule de perpétuité peut venir remplacer le salut. Elle déclare que les droits créés par le document ne sont pas circonscrits dans le temps.<br>
-                VID n° 195: <a href="https://www.cei.lmu.de/VID/#195">https://www.cei.lmu.de/VID/#195</a>
+                VID n° 195: <a href="https://www.cei.lmu.de/VID/#195">https://www.cei.lmu.de/VID/#195</a><br>
+                Exemple : « <i>In perpetuum</i> »
               </dd>
 
               <dt>Préambule</dt>
@@ -329,8 +551,14 @@
                 VID n° 196: <a href="https://www.cei.lmu.de/VID/#196">https://www.cei.lmu.de/VID/#196</a>
                 La notification peut-être :
                 <ul>
-                  <li>Universelle</li>
-                  <li>Collective</li>
+                  <li>
+                    Universelle<br>
+                    Exemple : « <i>Savoir faisons à tous présents et à venir que</i> »
+                  </li>
+                  <li>
+                    Collective<br>
+                    Exemple : « <i>Savoir faisons aux prélats de ladite ville</i> »
+                  </li>
                   <li>Personnelle</li>
                 </ul>
               </dd>
@@ -351,12 +579,21 @@
                     Clauses additionnelles : <a href="https://www.cei.lmu.de/VID/#207">https://www.cei.lmu.de/VID/#207</a>
                     <ul>
                       <li>Description de la cérémonie de tradition : <a href="https://www.cei.lmu.de/VID/#248">https://www.cei.lmu.de/VID/#248</a></li>
-                      <li>Formule de spontanéité [<i>motu proprio</i>, <i>spontanea voluntate</i>…] : <a href="https://www.cei.lmu.de/VID/#201">https://www.cei.lmu.de/VID/#201</a></li>
-                      <li>Formule de motivation [<i>pro remedio anime</i>…] : <a href="https://www.cei.lmu.de/VID/#202">https://www.cei.lmu.de/VID/#202</a></li>
+                      <li>
+                        Formule de spontanéité : <a href="https://www.cei.lmu.de/VID/#201">https://www.cei.lmu.de/VID/#201</a><br>
+                        Exemples : « <i>motu proprio, spontanea voluntate ...</i> »
+                      </li>
+                      <li>
+                        Formule de motivation : <a href="https://www.cei.lmu.de/VID/#202">https://www.cei.lmu.de/VID/#202</a><br>
+                        Exemples : « <i>pro remedio anime ...</i> »
+                      </li>
                       <li>Clause de demande de prières : <a href="https://www.cei.lmu.de/VID/#212">https://www.cei.lmu.de/VID/#212</a></li>
-                      <li>Formule explicative [<i>ut nunc habeatis</i>, <i>teneatis</i>…] : <a href="https://www.cei.lmu.de/VID/#203">https://www.cei.lmu.de/VID/#203</a></li>
+                      <li>
+                        Formule explicative : <a href="https://www.cei.lmu.de/VID/#203">https://www.cei.lmu.de/VID/#203</a><br>
+                        Exemple : « <i>ut nunc habeatis, teneatis ...</i> »
+                      </li>
                       <li>Formule de pertinence : <a href="https://www.cei.lmu.de/VID/#204">https://www.cei.lmu.de/VID/#204</a></li>
-                      <li>Formule d’amortissement</li>
+                      <li>Formule d'amortissement</li>
                     </ul>
                   </li>
                   <li>
@@ -519,10 +756,24 @@
           >
             <h1>Région [Pays & lieux identifiés]</h1>
             <p>
+              Pour l'identification des lieux, nous employons, quand elle existe, la forme moderne usuelle en français, y compris pour les noms de lieux étrangers (Rome, Londres, Augsbourg), laissant la forme ancienne quand elle n'est par identifiée. 
+            </p>
+            <p>
+              Les identifications sont par convention faites d'après le système administratif des départements et cantons (avec le Dictionnaire des communes de 1997). <br>
+              Bientôt, des liens seront créés entre le <a href="https://dicotopo.cths.fr/">Dictionnaire Topographique</a> et les différents référentiels de lieux, pour permettre l'interopérabilité des données géographiques. 
+            </p>
+            <p>
               Il s’agit du pays contemporain, voire de la région contemporaine qui abrite le(s) lieu(x) concerné(s) par
               le document, plutôt que par l’origine de l’auteur. Pour la France, on a gardé les régions…, les « grandes
               régions » donnant des localisations par trop grossières (p.ex. Auvergne-Rhône) et des appellations parfois
               opaques pour le lecteur étranger (p.ex. Hauts-de-France).
+            </p>
+            <p>
+              Pour les identifications des noms de lieux, il peut être utile de consulter les ressources suivantes : 
+              <ul>
+                <li>Le Dictionnaire Topographique de la France : <a href="https://dicotopo.cths.fr/">DicoTopo</a></li>
+                <li>La base "Nominatim" d'OpenStreetMap : <a href="https://nominatim.openstreetmap.org/ui/search.html">Nominatim</a></li>
+              </ul>
             </p>
           </div>
           <div
@@ -530,8 +781,7 @@
           >
             <h1>Personnes identifiées</h1>
             <p>
-              Développée par l’École nationale des chartes avec le soutien de Scripta et du DIM Ile-de-France, l’application ADELE entend
-              proposer à un public d’étudiants...
+              Pour l'identification des noms de personnes, on suit dans les dossiers rédigés en français les usages des éditeurs français d'actes. Sauf forme consacrée par l'usage (Louis le Pieux, Saint Louis), on donne le plus possible la forme contemporaine traduite, tout en tenant compte des formes régionales si possible (Gautier, Wautier, Walter), et des formes étrangères pour l'étranger (Stephen, Stepan, Stefano ...).
             </p>
           </div>
           <div
@@ -543,6 +793,177 @@
               attendu pour tous les dossiers : commentaires historique, juridique, philologique, paléographique,
               sigillographique.
             </p>
+            <p>
+              <ul>
+                <li>
+                  Commentaire diplomatique
+                  <p>
+                    Le commentaire diplomatique est le principal commentaire à fournir. Il contient notamment des éléments relatifs aux caractères externes, aux dimensions du manuscrit, à son écriture. Ce commentaire permet de replacer le document parmi les autres documents de la même typologie. Ainsi, s'il s'agit un mandement royal, on pourra le comparer aux autres mandements de la même époque, dans les formules utilisés, dans ses dimensions et son écriture. 
+                  </p>
+                  <p>
+                    Ce commentaire peut également servir de commentaire général sur le manuscrit, en l'absence d'éléments suffisant pour créer un autre commentaire. 
+                  </p>
+                  <p>
+                    Pour les dossiers présentés et provenant de l'ancienne base « Theleme », il est souvent indiqué un unique commentaire diplomatique. Celui-ci peut être composé d'une étude des caractères externes, d'une étude de la langue et du style, et parfois d'une interprétation, faisant la synthèse de ces éléments pour en tirer une conclusion générale.
+                  </p>
+                </li>
+                <li>
+                  Commentaire historique<br>
+                  Le commentaire historique explique le contexte de rédaction de l'acte. Il peut permettre ou non de faire une critique de l'exposé indiqué en début d'acte, et motivant la décision qui a été prise. <br>
+                  Il peut faire le rappel des précédents actes relatifs au même sujet.<br>
+                  Egalement, il peut faire un rappel de l'historique de document de la même typologie, si cela est pertinent. <br>
+                  Par exemple, un document tel qu'un censier peut faire l'objet d'un commentaire historique, en l'étudiant par rapport aux autres censiers plus anciens de la même province.
+                </li>
+                <li>
+                  Commentaire juridique<br>
+                  Le commentaire juridique s'appuie sur les caractères externes qui se trouvent en le document. Par exemple, l'étude peut porter sur les éléments de validation de l'acte, qui donnent la force juridique au document. <br>
+                  Aussi, le commentaire juridique peut s'appuyer sur le contenu textuel du document en question. 
+                </li>
+                <li>
+                  Commentaire philologique<br>
+                  Le commentaire philologique étudie la langue et les expressions utilisées. Celui-ci peut reprendre et étudier de façon plus précise certains passages du contenu textuel du document, en faisant par exemple le repérage d'éléments d'accentuation, parmi les termes utilisés, le rythme du texte (en repérant par exemple le <i>cursus velox</i>). 
+                </li>
+                <li>
+                  Commentaire paléographique
+                  Ce commentaire s'appuie essentiellement sur l'écriture du document. On peut y décrire les longueur des hastes et des hampes, des caractères se distinguant plus nettement du corps du texte. <br>
+                  Aussi on pourra également y commenter les abréviations et les signes de ponctuation utilisés ou non dans le texte. Les formes et les lettres qui sont abrégés pourront être décrites, pour montrer une certaine singularité ou au contraire, une homongénéité des caractères. 
+                </li>
+                <li>
+                  Commentaire sigillographique
+                  Le commentaire sigillographique porte sur l'étude du sceau. 
+                  Il est autant intéressant d'étudier l'iconographie, les éléments représentés dans le sceau (le vêtement, l'armement, la symbolique), la couleur et la matière du sceau. <br>
+                  Aussi, le sceau peut contenir des éléments textuels, pouvant reprendre la suscription en début d'acte. <br>
+                  Autre élément pouvant être décrit dans ce commentaire : la façon dont est scellé l'acte. Il peut parfois être fait sur simple queue, sur double queue, et peuvent être représentatifs ou non d'un type d'acte. <br>
+                  La base de données <a href="www.sigilla.org">Sigilla</a> peut être riche en informations sur les sceaux, et donne des éléments utiles à leur description. 
+                </li>
+              </ul>
+            </p>
+            <p>
+              Pour les dossiers présentés et complets sur la plateforme, il est souvent indiqué un unique commentaire diplomatique. Celui-ci peut se composé d'une étude des caractères externes, d'une interprétation, d'une étude sur la langue et le style. 
+            </p>
+          </div>
+          <div
+            v-if="$attrs.section === 'tradition'"
+          >
+            <h1>Tradition</h1>
+            <p>
+              La tradition d'un acte est l'état de rédaction dans lequel cet acte nous a été transmis, en déterminant s'il s'agit d'un original ou d'une copie, de qualifier le document de faux. L'étude de la tradition permet ainsi de porter un jugement sur la sincérité ou la fausseté du document. <br>
+              Pour chaque terme ici retenu, une définition est donnée, ainsi qu'un lien vers le Vocabulaire International de la diplomatique.
+            </p><dt>Original</dt>
+            <dd> 
+              Document primitif, où est consignée pour la première fois sous sa forme définitive la volonté de l’auteur de l’acte et qui est destiné à faire foi. <br>
+              VID n° 42 : <a href="https://www.cei.lmu.de/VID/#42">https://www.cei.lmu.de/VID/#42</a>
+            </dd>
+
+            <dt>Original multiple </dt>
+            <dd>
+              Exemplaires d’un même acte dressés simultanément, pour être remis aux diverses parties intéressées ou pour en assurer la conservation. <br>
+              VID n° 43 [à l’exception des chirographes] : <a href="https://www.cei.lmu.de/VID/#43">https://www.cei.lmu.de/VID/#43</a>
+            </dd>
+
+
+            <dt>Chirographe</dt>
+            <dd>
+              Acte établi en deux exemplaires, sur une même feuille de parchemin, coupée par le milieu, pour que chacun des contractants ait un original de la pièce.<br>
+              VID n° 44 : <a href="https://www.cei.lmu.de/VID/#44">https://www.cei.lmu.de/VID/#44</a> 
+            </dd>
+
+            <dt>Pancarte</dt>
+            <dd>
+              Acte destiné à confirmer des droits et des biens dont les titres ont été perdus. Se dit par extension d’un cartulaire contenant les titres d’un établissement ecclésiastique.<br>
+              VID n° 50 : <a href="https://www.cei.lmu.de/VID/#50">https://www.cei.lmu.de/VID/#50 </a>
+            </dd>
+
+            <dt>Copie informe</dt>
+            <dd>
+              Copie d’un acte ne comprtant pas de marque d’authenticité juridique apposé par une autorité. 
+              VID n° 55 : <a href="https://www.cei.lmu.de/VID/#55">https://www.cei.lmu.de/VID/#55</a><br>
+              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+            </dd>
+
+            <dt>Copie figurée</dt>
+            <dd>
+              Copie dont l’auteur s’efforce de reproduire matériellement l’écriture, ou/et, en tout ou en partie, la disposition de l’original antérieur. <br>
+              VID n° 56 : <a href="https://www.cei.lmu.de/VID/#56">https://www.cei.lmu.de/VID/#56</a><br>
+              Indication complémentaire du mode de tradition principal (informe, authentique, cartulaire…) et signalant que le copiste reproduit non seulement le texte, mais encore tels éléments figurés, par exemple un chrismon ou un monogramme. <br>
+              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+            </dd>
+
+            <dt>Copie authentique</dt>
+            <dd>
+              VID n° 54 : <a href="https://www.cei.lmu.de/VID/#54">https://www.cei.lmu.de/VID/#54</a><br>
+              Cette notion recouvre : 
+              <ul>
+                <li>Vidimus. VID n° 67 : <a href="https://www.cei.lmu.de/VID/#67">https://www.cei.lmu.de/VID/#67</a></li>
+                <li>Copie sous le sceau. VID n° 61 : <a href="https://www.cei.lmu.de/VID/#61">https://www.cei.lmu.de/VID/#61</a></li>
+                <li>Copie notariée. VID n° 59 : <a href="https://www.cei.lmu.de/VID/#59">https://www.cei.lmu.de/VID/#59</a></li>
+                <li>Copie certifiée. VID n° 62 : <a href="https://www.cei.lmu.de/VID/#62">https://www.cei.lmu.de/VID/#62</a></li>
+              </ul>
+              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+            </dd>
+
+            <dt>Transfixe</dt>
+            <dd>
+              Groupe de document formé par la superposition de deux ou plusieurs actes, dont l’un est la justification de l’autre.<br>
+              VID n° 71 : <a href="https://www.cei.lmu.de/VID/#71">https://www.cei.lmu.de/VID/#71</a>
+            </dd>
+
+            <dt>Traduction</dt>
+            <dd>Absent du VID</dd>
+
+            <dt>Cartulaire</dt> 
+            <dd>
+              Un cartulaire (lat.: c(h)artularium) est un recueil de copies de ses propres documents, établi par une personne physique ou morale, qui, dans un volume ou plus rarement dans un rouleau, transcrit ou fait transcrire intégralement ou parfois en extraits, des titres relatifs à ses biens et à ses droits et des documents concernant son histoire ou son administration, pour en assurer la conservation et en faciliter la consultation.<br>
+              VID n° 74 : <a href="https://www.cei.lmu.de/VID/#74">https://www.cei.lmu.de/VID/#74</a><br>
+              Contient : 
+              <ul>
+                <li>Liber traditionum. VID n° 80 : <a href="https://www.cei.lmu.de/VID/#80">https://www.cei.lmu.de/VID/#80</a></li>
+              </ul>
+            </dd>
+
+            <dt>Inventaire d’archives</dt>
+            <dd>
+              Description plus ou moins détaillée du contenu des séries, fonds ou documents destinée à retrouver les documents.
+              VID n° 84 : <a href="https://www.cei.lmu.de/VID/#84">https://www.cei.lmu.de/VID/#84</a>
+            </dd>
+
+            <dt>Supplique et pétition </dt>
+            <dd>
+              La supplique est une requête en matière de grâce ou de justice. La pétition (lat. : petitio) est une requête, une demande motivée, écrite ou orale, résentée à une autorité par le futur bénéficiaire d’un acte.<br>
+              VID n° 319 [requête] : <a href="https://www.cei.lmu.de/VID/#319">https://www.cei.lmu.de/VID/#319</a><br>
+              VID n° 320 [pétitions] : <a href="https://www.cei.lmu.de/VID/#320">https://www.cei.lmu.de/VID/#320</a><br>
+              VID n° 322 [supplique, s.v. « requête »] : <a href="https://www.cei.lmu.de/VID/#322">https://www.cei.lmu.de/VID/#322</a>
+            </dd>
+
+            <dt>Formulaire</dt> 
+            <dd>
+              Recueil de formules destinées à servir de modèles aux rédacteurs des actes. <br>
+              VID n° 82 : <a href="https://www.cei.lmu.de/VID/#82" />
+            </dd>
+
+            <dt>Minute et brouillon </dt>
+            <dd>
+              La minute est la première rédaction d’un acte, pouvant servir de matrice à l’expédition de l’acte ou à d’éventuelles réexpéditions. Le brouillon est un projet informel de rédaction d’un texte, pouvant ensuite subir des corrections. <br>
+              VID n° 353 [minute] : <a href="https://www.cei.lmu.de/VID/#353">https://www.cei.lmu.de/VID/#353</a>
+              VID n° 349 [brouillon] : <a href="https://www.cei.lmu.de/VID/#349">https://www.cei.lmu.de/VID/#349</a>
+            </dd>
+
+            <dt>Registre de notaire et de tabellion</dt>
+            <dd> 
+              Un registre est un volume dans lequel on procède à un enregistrement successif d’actes, de lettres ou de comptes. <br>
+              <b>NB</b> : un registre est pris dans son acception diplomatique et non codicologique. Il peut ainsi inclure des rouleaux.<br>
+              VID n°91 : <a href="https://www.cei.lmu.de/VID/#91">https://www.cei.lmu.de/VID/#91</a><br>
+              Peut se présenter sous la forme de :
+              <ul>
+                <li>Registre de chancellerie. VID n° 94 : <a href="https://www.cei.lmu.de/VID/#94">https://www.cei.lmu.de/VID/#94</a></li>
+              </ul>
+            </dd>
+
+            <dt>Faux</dt>
+            <dd>
+              Un faux est un acte qui n’est pas sincère, ne présentant pas le caractères de l’authenticité diplomatique.<br> 
+              VID n° 111 [acte faux] : <a href="https://www.cei.lmu.de/VID/#111">https://www.cei.lmu.de/VID/#111</a>
+            </dd>
           </div>
           <div
             v-if="$attrs.section === 'dates'"
@@ -569,9 +990,7 @@
 </template>
 
 <script>
-
 import { mapState } from 'vuex';
-
 export default {
     name: "DocumentationPage",
     components: {
