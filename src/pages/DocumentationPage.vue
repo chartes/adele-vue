@@ -1,8 +1,8 @@
 <template>
   <div class="container documentation-page">
     <div class="top">
-      <div class="columns">
-        <div class="column is-3 themes">
+      <div class="columns main-columns">
+        <div class="column main-column is-3 themes">
           <div class="content">
             <p class="column-title">
               Documentation
@@ -105,7 +105,7 @@
             </ul>
           </div>
         </div>
-        <div class="column">
+        <div class="column content-column">
           <div
             v-if="$attrs.section === 'about' || $attrs.section === null"
           >
@@ -119,181 +119,293 @@
             v-if="$attrs.section === 'acte-types'"
           >
             <h1>Types d'auteurs et de documents</h1>
-            <p />
+          
             <p>
               Il a été choisi de distinguer la typologie des actes et des documents en deux parties distinctes, mais non excluantes. 
               Ainsi, un même dossier peut être caractérisé par un élément « auteur » et un « document de gestion ». Tel est le cas du dossier n° 48, traitant d'un acte scellé par un notaire à titre personnel à Tarbes. <br>
               Pour plus de clarté, la différenciation entre « auteur » et « type de documents » a été effectuée.
-
-
-              Introduction explicative sur le distinguo type d’auteurs / type de documents
             </p>
-            <h2>A – Actes, auteurs</h2>
+
+            <div class="columns toc">
+              <div class="column">
+                <a href="#ac-A"><h2>A – Actes, auteurs</h2></a>
+                <ul>
+                  <li><a href="#ac-pape">Pape et entourage</a></li>
+                  <li><a href="#ac-eveque">Évêque et entourage</a></li>
+                  <li><a href="#ac-religieux">Religieux</a></li>
+                  <li><a href="#ac-souverain">Souverain</a></li>
+                  <li><a href="#ac-prince">Du prince au baron</a></li>
+                  <li><a href="#ac-administration">Administration séculière centrale et locale</a></li>
+                  <li><a href="#ac-seigneurs">Seigneurs et particuliers</a></li>
+                  <li><a href="#ac-municipalite">Municipalité, communauté</a></li>
+                  <li><a href="#ac-actes">Actes privés, Système traditionnels</a></li>
+                  <li><a href="#ac-notaire">Notaire public</a></li>
+                  <li><a href="#ac-jur-ecc">Juridiction gracieuse ecclésiastique</a></li>
+                  <li><a href="#ac-jur-gra">Juridiction gracieuse laïque</a></li>
+                </ul>
+              </div>
+              <div class="column">
+                <a href="#ac-B"><h2>B – Documents de gestion, type</h2></a>
+                <ul>
+                  <li><a href="#ac-domaniale">Documents de gestion domaniale</a></li>
+                  <li><a href="#ac-inventaire">Inventaires de biens</a></li>
+                  <li><a href="#ac-feodaux">Documents féodaux</a></li>
+                  <li><a href="#ac-comptables">Documents comptables, financiers et fiscaux</a></li>
+                  <li><a href="#ac-production">Documents propres à la production, aux échanges et au travail</a></li>
+                  <li><a href="#ac-militaires">Documents militaires</a></li>
+                  <li><a href="#ac-diplomatie">Documents propres à la diplomatie</a></li>
+                  <li><a href="#ac-justice">Documents propres à la justice</a></li>
+                  <li><a href="#ac-enseignement">Documents propres à l’enseignement</a></li>
+                  <li><a href="#ac-assistance">Documents propres à l’assistance</a></li>
+                  <li><a href="#ac-ecc">Documents propres aux archives ecclésiastiques</a></li>
+                  <li><a href="#ac-princ">Documents propres aux archives royales et princières</a></li>
+                  <li><a href="#ac-arch-muni">Documents propres aux archives municipales</a></li>
+                  <li><a href="#ac-arch-seign">Documents propres aux archives seigneuriales et de particuliers</a></li>
+                </ul>
+              </div>
+            </div>
+
+            <h2 id="ac-A">
+              A – Actes, auteurs
+            </h2>
             <p>
-              Introduction
               Il est nécessaire de faire la distinction entre l'auteur de l'acte écrit et l'auteur de l'action juridique. <br>
               L'auteur de l'acte écrit est <i>l'auctor</i>, celui qui garantit et protège l'acte. Son nom est présent en début d'acte, dans la suscription, et est parfois rappelé par le sceau ou dans les validations finales.
             </p>
-            <p>Les types précis (lettre patente sur double queue, terrier…) sont précisés en titre. Les termes et le découpage sont modelés au plus près possible sur ceux de la base Bède (disponible <a href="http://elec.enc.sorbonne.fr/bede/">ici</a>.</p>
+            <p>Les types précis (lettre patente sur double queue, terrier…) sont précisés en titre. Les termes et le découpage sont modelés au plus près possible sur ceux de la base <a href="http://elec.enc.sorbonne.fr/bede/">Bède</a>.</p>
             <dl>
-              <dt>Pape et entourage</dt>
+              <dt id="ac-pape">
+                Pape et entourage
+              </dt>
               <dd>
                 Il s'agit de documents réalisé par la chancellerie apostolique, ou par des représantants du Pape dans les royaumes européens.
                 <br>
                 Inclut : Cardinaux, Légats, Conciles<br>
-                Bede : <br>
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Actes pontificaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter66.php">http://elec.enc.sorbonne.fr/bede/feuilleter66.php</a></li>
                 </ul>
-                Exemple de dossiers : <ul>
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div><ul>
                   <li>« Lettres pontificales sur fil de chanvre. Aux origines de la Sorbonne : le pape demande à l'évêque de Paris d'autoriser l'installation d'un oratoire dans le collège » : <a href="https://dev.chartes.psl.eu/adele/documents/41/view/notice">n° 41</a></li>
                   <li>« Lettres pontificales (copie contemporaine au registre de chancellerie). Le pape, le roi, les moniales : confirmation de dons d'églises de Brno à des cisterciennes de Moravie » : <a href="https://dev.chartes.psl.eu/adele/documents/95/view/notice">n° 95</a></li>
                 </ul>
               </dd>
 
-              <dt>Évêque et entourage</dt>
+              <dt id="ac-eveque">
+                Évêque et entourage
+              </dt>
               <dd>
                 Il peut s'agit de documents relatifs à la spiritualité, et à la gestion des églises et paroisses de son évêché. On retrouvera dans cette typologie des actes concernant les impôts ecclésiastiques, des possessions de l'évêque ou de l'entourage de l'évêque (ainsi le chancelier de la cathédrale, pour le dossier n° 82). <br>
                 L'évêque peut également être un seigneur (l'évêque de Beauvais était également comte de Beauvais). Ainsi, la mention « Évêque et entourage » peut être associée à un document de gestion, ou à un autre auteur. C'est le cas pour le dossier n° 63, où il est question d'un acte notarié dans lequel l'évêque est partie prenante. L'acte est ainsi caractérisé par les éléments « Évêque et entourage » et « Notaire public ». <br>
                 Inclut : Archevêques, Chapitre cathédral et ses dignitaires, synodes diocésains et provinciaux, vicaire, official, archidiacres, doyens de chrétienté, curés (hors juridiction gracieuse) <br>
-                Bede : <br>
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Actes pontificaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter67.php">http://elec.enc.sorbonne.fr/bede/feuilleter67.php</a></li>
                   <li>« Actes d'autres ecclésiastiques » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter69.php">http://elec.enc.sorbonne.fr/bede/feuilleter69.php</a></li>
                 </ul>
-                Exemple de dossiers : <ul>
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div><ul>
                   <li>« Acte notarié scellé d’un sceau épiscopal (Dauphiné). Un hôte encombrant : l'évêque de Gap reconnaît avoir demandé gîte à la chartreuse de Durbon avant que son droit à l'exercer ait été reconnu » : <a href="https://dev.chartes.psl.eu/adele/documents/63/view/notice">n° 63</a></li>
                   <li>« Acte de l’archevêque de Sens. L'archevêque, les moniales, la paroisse : concession d'autel à Saint-Germain-des-Prés » : <a href="https://dev.chartes.psl.eu/adele/documents/88/view/notice">n° 88</a></li>
                 </ul>
               </dd>
 
-              <dt>Religieux</dt>
+              <dt id="ac-religieux">
+                Religieux
+              </dt>
               <dd>
                 La catégorie « Religieux » contient tout autant des actes laïcs sous le sceau ecclésiastique, des actes émanent directement d'établissement religieux, tels que les abbayes ou les prieurés. <br>
                 Inclut : Dignitaires et membres de maisons religieuses et d’ordres <br>
-                Bede : <br>
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Actes abbatiaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter68.php">http://elec.enc.sorbonne.fr/bede/feuilleter68.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Chirographe co-scellé par l’abbé de Moissac et le comte de Toulouse (Quercy). L'hommage du comte : convention entre l'abbé de Moissac et Amaury de Montfort, comte de Toulouse » : <a href="https://dev.chartes.psl.eu/adele/documents/33/view/notice">n° 33</a></li>
                   <li>« Acte laïc sous sceaux ecclésiastiques (Besançon, Dole et Rougemont). Le testament d'un seigneur comtois, acte laïc sous sceaux ecclésiastiques » : <a href="https://dev.chartes.psl.eu/adele/documents/60/view/notice">n° 60</a></li>
                 </ul>
               </dd>
 
-              <dt>Souverain</dt>
+              <dt id="ac-souverain">
+                Souverain
+              </dt>
               <dd>
                 La définition de souverain (roi, empereur) se complète de la localisation de l'acte (France, Iles britanniques ...). La localisation doit être renseignée dans la partie « Pays » et parfois « Région » de l'onglet « Notice ». <br>
-                Bede : <br>
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Actes de souverains » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter70.php">http://elec.enc.sorbonne.fr/bede/feuilleter70.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Précepte du roi de France Charles le Chauve (copie de cartulaire, XIIe siècle). Alimenter les fidélités : don de terres par Charles le Chauve à un fidèle bourguignon » : <a href="https://dev.chartes.psl.eu/adele/documents/69/view/notice">n° 69</a></li>
                   <li>« Acte d’Urraka, fille du roi de León et de Castille Alphonse VI. Un don royal à l'abbaye de Cluny : l'infante Urraka, dame de Galice, offre le monastère de Pombeiro » : <a href="https://dev.chartes.psl.eu/adele/documents/74/view/notice">n° 74</a></li>
                 </ul>
               </dd>
 
-              <dt>Du prince au baron</dt>
+              <dt id="ac-prince">
+                Du prince au baron
+              </dt>
               <dd>
                 Sous ces termes l'on retrouve l'intégralité des actes relatifs aux différents échelons de la noblesse : prince, duc, comte, baron, vicomte ... <br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Actes princiers » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter71.php">http://elec.enc.sorbonne.fr/bede/feuilleter71.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Chirographe co-scellé par les deux auteurs et par un cardinal-légat pontifical (Narbonnais). Payer les fidélités au prix fort : Amaury de Montfort, comte de Toulouse, promet un château au vicomte de Narbonne » : <a href="https://dev.chartes.psl.eu/adele/documents/27/view/notice">n° 27</a></li>
                   <li>« Acte de la comtesse de Boulogne. L'hommage du comte : convention entre l'abbé de Moissac et Amaury de Montfort, comte de Toulouse » : <a href="https://dev.chartes.psl.eu/adele/documents/32/view/notice">n° 32</a></li>
                 </ul>
               </dd>
 
-              <dt>Administration séculière centrale et locale</dt>
+              <dt id="ac-administration">
+                Administration séculière centrale et locale
+              </dt>
               <dd>
                 Il s'agit principalement d'actes édictés par des représentants du roi ou des princes et barons dans ses terres. Les auteurs peuvent donc être des prévôts, baillis, mais aussi des instances aidant le souverain dans sa gestion du territoire, tels que les chambres des comptes ou les cours des Aides.
                 <br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Actes de l'administration locale (royale et princière) » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter148.php">http://elec.enc.sorbonne.fr/bede/feuilleter148.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte du trésorier royal de la sénéchaussée de Toulouse. Solder l'armée d'occupation : certificat des versements faits à un capitaine de l'armée royale en Gascogne » : <a href="https://dev.chartes.psl.eu/adele/documents/38/view/notice">n° 38</a></li>
                   <li>« Acte du sénéchal royal de Saintonge-Angoumois. Des travaux qui traînent : mandement de faire procéder de toute urgence aux réparations de château de La Rochelle ordonnées par le roi » : <a href="https://dev.chartes.psl.eu/adele/documents/43/view/notice">n° 43</a></li>
                 </ul>
-              </dd><dt>Seigneurs et particuliers</dt>
+              </dd>
+              
+              <dt id="ac-seigneurs">
+                Seigneurs et particuliers
+              </dt>
               <dd>
                 Contient les actes relatifs aux seigneuries et aux particuliers. Ainsi, on pourra y inscrire les documents généraux concernant les familles (généalogie, droits, titres), les papiers particuliers, des pièces concernant la seigneurie (terriers, cartulaires, droits seigneuriaux), de fiefs et d'arrières-fiefs. Il peut également s'agir d'acte scellé sous le sceau seigneurial.<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Actes seigneuriaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter72.php">http://elec.enc.sorbonne.fr/bede/feuilleter72.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte scellé par un particulier (Normandie). Masure, courtil, prox. route royale : un acte de vente normand » : <a href="https://dev.chartes.psl.eu/adele/documents/46/view/notice">n° 46</a></li>
                   <li>« Acte scellé par un seigneur (Dauphiné). Une concession à la chartreuse de Berthaud » : <a href="https://dev.chartes.psl.eu/adele/documents/55/view/notice">n° 55</a></li>
                 </ul>
               </dd>
 
-              <dt>Municipalité, communauté</dt>
+              <dt id="ac-municipalite">
+                Municipalité, communauté
+              </dt>
               <dd>
                 Il s'agit d'actes concernant la gestion des communes, d'établissements tels que les léproseries, aux marchandises, à la tenue d'octroi. <br>
                 Inclut : juridiction gracieuse (écrits d’arche, etc.)<br>
-                Bede : <br>
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Actes communaux, consulaires et échevinaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter73.php">http://elec.enc.sorbonne.fr/bede/feuilleter73.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Notice sous un sceau consulaire (Limousin). Au marché de Limoges : accord sur le cens à verser pour un étal de boucher » : <a href="https://dev.chartes.psl.eu/adele/documents/36/view/notice">n° 36</a></li>
                   <li>« Chirographe d’échevinage (Valenciennes). Entre gens de biens et devant les hommes d'honneur : la dotation des jeunes époux » : <a href="https://dev.chartes.psl.eu/adele/documents/75/view/notice">n° 75</a></li>
                 </ul> 
               </dd>
 
-              <dt>Actes privés, Système traditionnels</dt>
+              <dt id="ac-actes">
+                Actes privés, Système traditionnels
+              </dt>
               <dd>
                 Vise les actes du haut Moyen Âge, toutes solutions confondues : notariat vieux style, chartes et notices du notaire villageois comme du notaire-juge, notice monastique… <br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Actes privés » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter74.php">http://elec.enc.sorbonne.fr/bede/feuilleter74.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Notice monastique (Poitou). Être le voisin de saint Maixent : dons à Saint-Maixent pour une entrée en religion » : <a href="https://dev.chartes.psl.eu/adele/documents/54/view/notice">n° 54</a></li> 
                   <li>« Acte dressé par un prêtre (Roussillon). Un accensement de vignes » : <a href="https://dev.chartes.psl.eu/adele/documents/68/view/notice">n° 68</a></li>
                 </ul>
               </dd>
 
-              <dt>Notaire public</dt>
+              <dt id="ac-notaire">
+                Notaire public
+              </dt>
               <dd>
                 Le notaire public donne une valeur légale à un texte, le plus souvent à des transactions économiques (achat, location, prêt). Il rédige plusieurs versions successives d'un même acte sur des supports différents, sur des feuillets parfois reliés. Ainsi, celui-ci donne une force à une action réalisée entre deux personnes.
-                Bede : Absent de Bede <br>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Bede :
+                </div> Absent de Bede <br>
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte notarié (Gévaudan). Six ans de retard : certificat relatif au paiement d'arrérages d'une rente assignée sur un péage en Gévaudan » : <a href="https://dev.chartes.psl.eu/adele/documents/34/view/notice">n° 34</a></li>
                   <li>« Acte scellé par un notaire à titre personnel (Tarbes). De notaire à notaire : procuration pour percevoir une somme due sur les caisses du roi en Bigorre » : <a href="https://dev.chartes.psl.eu/adele/documents/48/view/notice">n° 48</a></li>
                 </ul>                
               </dd>
 
-              <dt>Juridiction gracieuse ecclésiastique</dt>
+              <dt id="ac-jur-ecc">
+                Juridiction gracieuse ecclésiastique
+              </dt>
               <dd>
                 Contrairement à la procédure contencieuse, la procédure gracieuse est une demande portée devant une juridiction, ici ecclésiastique, en absence de litige. Il peut s'agir de documents sous le sceau de l'officialité épiscopale ou archidiaonale par exemple. 
-                Bede : Absent de Bede <br>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Bede :
+                </div> Absent de Bede <br>
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte sous les sceaux de l’officialité archidiaconale de Verdun et d’un seigneur (Lorraine). Un montage féodal complexe : reprises et cessions d'un fief épiscopal en cascade » : <a href="https://dev.chartes.psl.eu/adele/documents/39/view/notice">n° 39</a></li>
                   <li>« Acte sous le sceau du doyen de chrétienté de Verberie (diocèse de Soissons). Charité bien ordonnée : don et échange de terre d'un bourgeois de Compiègne aux cisterciens de Chaalis »<a href="https://dev.chartes.psl.eu/adele/documents/78/view/notice">n° 78</a></li>
                 </ul>                 
               </dd>
 
-              <dt>Juridiction gracieuse laïque</dt>
+              <dt id="ac-jur-gra">
+                Juridiction gracieuse laïque
+              </dt>
               <dd>
                 Contrairement aux actes de l'administration séculière centrale et locale, les documents entrant dans cette typologie portent le sceau d'une juridiction laïque (comme une cour royale, un bailli), mais celle-ci n'est pas l'auteur de l'action juridique évoquée.<br>
                 Exclut municipalité <br>
-                Bede : se référer aux actes privés, qui forment une unique catégorie, sans autre subdivision.<br>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Bede :
+                </div> se référer aux actes privés, qui forment une unique catégorie, sans autre subdivision.<br>
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte sous le sceau de la cour royale de Salins. Constitution de rente sur une vigne proche de Salins » : <a href="https://dev.chartes.psl.eu/adele/documents/62/view/notice">n° 62</a></li>
                   <li>« Acte co-scellé par le bailli royal du Cotentin et par un chevalier. Une rente sur un moulin : petits arrangements et grandes garanties en faveur des cisterciennes de Mortain » : <a href="https://dev.chartes.psl.eu/adele/documents/79/view/notice">n° 79</a></li>
@@ -301,157 +413,221 @@
               </dd>
             </dl>
 
-            <h2>B – Documents de gestion, type</h2>
-            <p>Introduction</p>
-
+            <h2 id="ac-B">
+              B – Documents de gestion, type
+            </h2>
             <dl>
-              <dt>Documents de gestion domaniale</dt>
+              <dt id="ac-domaniale">
+                Documents de gestion domaniale
+              </dt>
               <dd>
                 Il s'agit principalement de documents décrivant la terre appartenant à un seigneur. Ainsi, on y retrouvera dans cette catégorie les polyptiques, les censiers et terriers, ainsi que les aveux et dénombrements. <br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Documents de gestion domaniale » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter91.php">http://elec.enc.sorbonne.fr/bede/feuilleter91.php</a></li>
                 </ul>
-                Exemple de dossiers : « Acte de justice seigneuriale (Normandie). Aux plaids de la seigneurie : aveu et dénombrement de tenure » :<a href="https://dev.chartes.psl.eu/adele/documents/85/view/notice">n° 85</a>.
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>« Acte de justice seigneuriale (Normandie). Aux plaids de la seigneurie : aveu et dénombrement de tenure » :<a href="https://dev.chartes.psl.eu/adele/documents/85/view/notice">n° 85</a>.
               </dd>
 
-              <dt>Inventaires de biens</dt>
+              <dt id="ac-inventaire">
+                Inventaires de biens
+              </dt>
               <dd>
                 Les inventaires de biens constituent un ensemble de documents très large. Il s'agit de listes, qu'elles soient autonomes ou enchâssées dans un acte ou dans un compte.<br>
                 Inclut : Biens fonciers et mobiliers, trésors, archives, bibliothèques<br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Inventaires de biens et trésors » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter95.php">http://elec.enc.sorbonne.fr/bede/feuilleter95.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents féodaux</dt>
+              <dt id="ac-feodaux">
+                Documents féodaux
+              </dt>
               <dd>
                 Dans les documents féodaux l'on retrouve tous les actes relatifs à la gestion de la seigneurie. Par exemple, cette catégorie peut contenir des livres de fiefs et d'hommages ou les chartes octroyées par le seigneur.<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents féodaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter96.php">http://elec.enc.sorbonne.fr/bede/feuilleter96.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Tenir le château : serment de fidélité prêté pour le château de Bernis à la vicomtesse de Nîmes » : <a href="https://dev.chartes.psl.eu/adele/documents/66/view/notice">n° 66</a></li>
                   <li>« Attache de la Chambre des comptes et des trésoriers du roi de France. Ordres en cascade et médiations administratives : l’exécution d’une souffrance d’hommage pour un fief normand » : <a href="https://dev.chartes.psl.eu/adele/documents/92/view/notice">n° 92</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents comptables, financiers et fiscaux</dt>
+              <dt id="ac-comptables">
+                Documents comptables, financiers et fiscaux
+              </dt>
               <dd>
                 Il s'agit des documents économiques, utile pour la levée d'impôt ou pour gérer financièrement une seigneurie. Cette catégorie peut également contenir tout acte relatif aux transactions financières, ecclésiastique et laïque. Ainsi, on y retrouvera les documents d'assiette, de levée et documents comptables.<br>
                 Exemple de documents : comptes, documents relatifs à la perception de la taille, quittances
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Documents comptables, financiers, fiscaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter99.php">http://elec.enc.sorbonne.fr/bede/feuilleter99.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 <ul>
                   <li>« Acte notarié (Gévaudan). Six ans de retard : certificat relatif au paiement d’arrérages d’une rente assignée sur un péage en Gévaudan » : <a href="https://dev.chartes.psl.eu/adele/documents/34/view/notice">n° 34</a></li>
                   <li>« Acte sous le sceau de l’officialité épiscopale de Thérouanne. Quittance pour paiement de gages dus au titre de la guerre de Flandre » : <a href="https://dev.chartes.psl.eu/adele/documents/35/view/notice">n° 35</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres à la production, aux échanges et au travail </dt>
+              <dt id="ac-production">
+                Documents propres à la production, aux échanges et au travail
+              </dt>
               <dd>
                 Ces documents sont dits « propres » pour bien marquer qu’ils ne sont pas « relatifs » à un domaine d’activité, mais que leur production est intrinsèquement liée à celui-ci. On en donne quelques exemples entre crochets droits. Inclut : Banque, monnaie, agriculture, pêche…<br>
                 Exemple : journal de péage, statut de métier.<br>
                 <br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents propres à la production, aux échanges et au travail » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter101.php">http://elec.enc.sorbonne.fr/bede/feuilleter101.php</a></li>
                 </ul>
-                Exemple de dossiers : 
+                <div class="related-docs">
+                  Exemple de dossiers :
+                </div>
                 « Acte scellé par un bourgeois (Guyenne). Parole de Gascons : une dette contractée à Londres et remboursable à Bordeaux » : <a href="https://dev.chartes.psl.eu/adele/documents/84/view/notice">n° 84</a>.
               </dd>
 
-              <dt>Documents militaires</dt>
+              <dt id="ac-militaires">
+                Documents militaires
+              </dt>
               <dd>
                 Ces documents concernent l'organisation des forces militaires, autant sur leur plan administratif, technique, qu'en terme de personnel. <br>
                 Exemple : montre<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents propres à la guerre et aux armées » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter112.php">http://elec.enc.sorbonne.fr/bede/feuilleter112.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres à la diplomatie</dt>
+              <dt id="ac-diplomatie">
+                Documents propres à la diplomatie
+              </dt>
               <dd>
                 Il s'agit de documents utile aux relations extérieures.<br>
                 Exemples : lettres de créance, passeport, instructions<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents propres à la diplomatie » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter114.php">http://elec.enc.sorbonne.fr/bede/feuilleter114.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres à la justice</dt>
+              <dt id="ac-justice">
+                Documents propres à la justice
+              </dt>
               <dd>
                 Il s'agit de documents ici des enquêtes judiciaires, liée, par exemple à l'<i>inquisitio</i>, mais aussi aux dépositions de témoins, aux registres des procès, des peines, ou aux affaires ecclésiastiques comme les canonisation.<br>
                 Exemples : registre d’inquisition, registre d’amendes<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents propres à la justice (hors juridiction gracieuse) » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter115.php">http://elec.enc.sorbonne.fr/bede/feuilleter115.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres à l’enseignement</dt>
+              <dt id="ac-enseignement">
+                Documents propres à l’enseignement
+              </dt>
               <dd>
                 Cette catégorie peut contenir des documents relatifs à l'organisation et au statuts d'une université, aux bibliothèques, aux écoles capitulaires et collèges.<br>
                 Exemple : livre de recteur<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Documents propres à l'enseignement » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter120.php">http://elec.enc.sorbonne.fr/bede/feuilleter120.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres à l’assistance</dt>
+              <dt id="ac-assistance">
+                Documents propres à l’assistance
+              </dt>
               <dd>
                 Il s'agit de document propre à l'aide des plus pauvres, ainsi qu'aux institutions hospitalières médiévales, comme les Hôtel-Dieu, léproseries et maladreries.<br>
                 Exemple : matricule des pauvres.<br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Documents propres à l'assistance » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter121.php">http://elec.enc.sorbonne.fr/bede/feuilleter121.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres aux archives ecclésiastiques</dt>
+              <dt id="ac-ecc">
+                Documents propres aux archives ecclésiastiques
+              </dt>
               <dd>
                 Il s'agit tout autant de documents provenant du clergé régulier que séculier. Ainsi, on y retrouve des documents servant à la gestion du temporel (comme les registres épiscopaux) qu'à la gestion du spirituel (documents nécrologiques par exemple).<br>
                 Exemples : visite pastorale, obituaire, registre BMS…<br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Autres documents propres aux archives ecclésiastiques » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter122.php">http://elec.enc.sorbonne.fr/bede/feuilleter122.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres aux archives royales et princières</dt>
+              <dt id="ac-princ">
+                Documents propres aux archives royales et princières
+              </dt>
               <dd>
                 Documents servant à l'administration centrale ou locale, relatifs à l'organisation des pouvoirs ou des dépenses.<br>
                 Exemple : enquête administrative<br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Autres documents propres aux archives royales et princières » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter129.php">http://elec.enc.sorbonne.fr/bede/feuilleter129.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres aux archives municipales</dt>
+              <dt id="ac-arch-muni">
+                Documents propres aux archives municipales
+              </dt>
               <dd>
                 Il s'agit de document propre à l'administration communale par les échevins ou consuls.<br>
                 Exemples de documents : livre de bourgeoisie, délibérations et statuts<br>
-                Bede :
+                <div class="related-docs">
+                  Bede :
+                </div>
                 <ul>
                   <li>« Autres documents propres aux archives municipales » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter130.php">http://elec.enc.sorbonne.fr/bede/feuilleter130.php</a></li>
                 </ul>
               </dd>
 
-              <dt>Documents propres aux archives seigneuriales et de particuliers</dt>
+              <dt id="ac-arch-seign">
+                Documents propres aux archives seigneuriales et de particuliers
+              </dt>
               <dd>
                 Il s'agit de documents permettant au seigneur de contrôler sa seigneurie, ses comptes, ou au particulier de gérer ses propriétés.<br>
                 Exemple : livre de raison<br>
-                Bede : 
+                <div class="related-docs">
+                  Bede :
+                </div> 
                 <ul>
                   <li>« Autres documents propres aux archives seigneuriales et de particuliers » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter133.php">http://elec.enc.sorbonne.fr/bede/feuilleter133.php</a></li>
                 </ul>

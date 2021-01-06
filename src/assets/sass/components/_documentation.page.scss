@@ -1,4 +1,54 @@
+
+dl {
+
+    dt {
+        font-weight: bold;
+        font-size: 1.15em;
+        margin-top: 12px;
+        margin-bottom: 8px;
+    }
+
+    dd {
+        margin-bottom: 30px;
+        text-align: justify;
+
+        ul {
+            li:before {
+                content: "•"; /* Insert content that looks like bullets */
+                padding-right: 8px;
+                padding-left: 8px;
+              }
+              
+        }
+    }
+}
+
+
 .documentation-page {
+    text-align: justify;
+
+    .columns.toc {
+        
+        list-style-type: none;
+        h2 {
+            font-size: 20px !important;
+            font-weight: bold;
+        }
+
+        ul > li {
+            padding-left: 16px;
+        }
+
+        .column {
+            margin-top: 20px !important;
+        }
+    }
+
+    .related-docs {
+        text-decoration: underline;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
 
     max-width: 1920px;
     margin: 0 auto;
@@ -7,7 +57,18 @@
         font-size: 60px;
         font-family: $family-sans-serif;
         font-weight: $weight-light;
+        margin-bottom: 30px;
     }
+
+    h2 {
+        font-size: 40px;
+        font-family: $family-sans-serif;
+        font-weight: $weight-light;
+        margin-top: 8px;
+        margin-bottom: 8px;
+
+    }
+
     .intro {
         font-family: $family-serif;
         font-size:20px;
@@ -48,12 +109,12 @@
     }
 
     .top {
-
-        .columns {
+        
+        .main-columns {
             background: url(#{$image-path}/accueil_fond_header.png) top center /  auto 500px no-repeat;
         }
 
-        .column {
+        .main-column, .content-column {
             margin-top: 250px;
             background: #FFF;
             position: relative;
@@ -198,8 +259,6 @@
 
 }
 
-
-
 @media screen and (max-width:1280px) {
 
     .documentation-page {
@@ -226,6 +285,12 @@
         h1 {
             font-size: 48px;
             margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-top: 6px;
+            margin-bottom: 6px;
         }
 
         .intro {
