@@ -39,22 +39,36 @@
                   <div class="card-content">
                     <ul class="doc-tabs">
                       <li
-                        id="speech-parts"
-                        @click="goTo('speech-parts')"
+                        id="dates"
+                        @click="goTo('dates')"
                       >
-                        Parties du discours
+                        Dates
                       </li>
+                      <li
+                        id="facsimile"
+                        @click="goTo('facsimile')"
+                      >
+                        Images & facsimilés
+                      </li>
+
                       <li
                         id="institutions"
                         @click="goTo('institutions')"
                       >
                         Institutions
                       </li>
+
                       <li
                         id="langs"
                         @click="goTo('langs')"
                       >
                         Langues des documents
+                      </li>
+                      <li
+                        id="speech-parts"
+                        @click="goTo('speech-parts')"
+                      >
+                        Parties du discours
                       </li>
                       <li
                         id="places"
@@ -69,10 +83,10 @@
                         Personnes identifiées
                       </li>
                       <li
-                        id="commentaries"
-                        @click="goTo('commentaries')"
+                        id="tradition"
+                        @click="goTo('tradition')"
                       >
-                        Types de commentaires
+                        Tradition
                       </li>
                       <li
                         id="acte-types"
@@ -81,22 +95,10 @@
                         Types d'acte
                       </li>
                       <li
-                        id="tradition"
-                        @click="goTo('tradition')"
+                        id="commentaries"
+                        @click="goTo('commentaries')"
                       >
-                        Tradition
-                      </li>
-                      <li
-                        id="dates"
-                        @click="goTo('dates')"
-                      >
-                        Dates
-                      </li>
-                      <li
-                        id="facsimile"
-                        @click="goTo('facsimile')"
-                      >
-                        Images & facsimilés
+                        Types de commentaires
                       </li>
                     </ul>
                   </div>
@@ -644,8 +646,41 @@
               <br>
               Il est important de signaler que le vocabulaire ici défini ne pourra servir que ponctuellement pour les documents de gestion. En effet, ceux-ci ne sont pas autant structurés que les actes. Aussi, il est nécessaire de rappeler que, contrairement aux actes, les documents de gestion peuvent contenir plusieurs feuillets, et qu'ils en sont pas tous décrits. Ainsi, toutes les parties du discours ne sont pas nécessairement présentes dans l'intégralité des dossiers. 
             </p>
+
+            <div class="toc">
+              <h2>
+                Liste des parties
+              </h2>
+              <div class="columns">
+                <div class="column">
+                  <ul>
+                    <li><a href="#sp-invocation">Invocation</a></li>
+                    <li><a href="#sp-suscription">Suscription</a></li>
+                    <li><a href="#sp-adresse">Adresse</a></li>
+                    <li><a href="#sp-salut">Salut</a></li>
+                    <li><a href="#sp-perpet">Formule de perpétuité</a></li>
+                    <li><a href="#sp-preambule">Préambule</a></li>
+                    <li><a href="#sp-notification">Notification</a></li>
+                    <li><a href="#sp-expose">Exposé</a></li>
+                  </ul>
+                </div>
+                <div class="column">
+                  <ul>
+                    <li><a href="#sp-dispositif">Dispositif</a></li>
+                    <li><a href="#sp-sanctio">Sanctio</a></li>
+                    <li><a href="#sp-form">Mentions de formalités</a></li>
+                    <li><a href="#sp-valid">Validations finales</a></li>
+                    <li><a href="#sp-date">Date</a></li>
+                    <li><a href="#sp-hors">Mentions hors teneurs</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
             <dl>
-              <dt>Invocation</dt>
+              <dt id="sp-invocation">
+                Invocation
+              </dt>
               <dd>
                 L’invocation est une formule plaçant l’acte sous le patronage d’une personne divine.<br>
                 VID n° 185 : <a href="https://www.cei.lmu.de/VID/#185">https://www.cei.lmu.de/VID/#185</a><br>
@@ -658,7 +693,9 @@
                 Exemples : «<i>In nomine sanctae et individuae Trinitatis</i>» ; « <i>In nomine Patris et Filii et Spiritus sancti</i> ».
               </dd>
 
-              <dt>Suscription</dt>
+              <dt id="sp-suscription">
+                Suscription
+              </dt>
               <dd>
                 La suscription (lat : <i>persona salutans</i>, <i>intitulatio</i>, <i>superscriptio</i>) décline l’identité de l’auteur de l’acte. Elle contient le nom personnel de l’auteur, souvent ses titres et/ou qualités, parfois son pronom personnel.<br>
                 VID, n° 187 : <a href="https://www.cei.lmu.de/VID/#187">https://www.cei.lmu.de/VID/#187</a><br>
@@ -673,7 +710,9 @@
                 </ul>
               </dd>
 
-              <dt>Adresse</dt>
+              <dt id="sp-adresse">
+                Adresse
+              </dt>
               <dd>
                 L’adresse (lat. : <i>inscriptio</i>, <i>superscriptio</i>, <i>inscription</i>) décline l’identité du destinataire (et non forcément le bénéficiaire) de l’acte ou de la lettre.<br>
                 VID, n° 192: <a href="https://www.cei.lmu.de/VID/#192">https://www.cei.lmu.de/VID/#192</a><br>
@@ -694,7 +733,9 @@
                 </ul>
               </dd>
 
-              <dt>Salut</dt>
+              <dt id="sp-salut">
+                Salut
+              </dt>
               <dd>
                 L’auteur de l’acte y exprime au destinataire son salut (lat. : <i>salutatio</i>, <i>modus salutandi</i>). Celui-ci est de règle quand il y a une adresse.<br>
                 VID, n° 194: <a href="https://www.cei.lmu.de/VID/#194">https://www.cei.lmu.de/VID/#194</a><br>
@@ -704,14 +745,18 @@
                 </ul>
               </dd>
 
-              <dt>Formule de perpétuité</dt>
+              <dt id="sp-perpet">
+                Formule de perpétuité
+              </dt>
               <dd>
                 La formule de perpétuité peut venir remplacer le salut. Elle déclare que les droits créés par le document ne sont pas circonscrits dans le temps.<br>
                 VID n° 195: <a href="https://www.cei.lmu.de/VID/#195">https://www.cei.lmu.de/VID/#195</a><br>
                 Exemple : « <i>In perpetuum</i> »
               </dd>
 
-              <dt>Préambule</dt>
+              <dt id="sp-preambule">
+                Préambule
+              </dt>
               <dd>
                 Le préambule (lat. : <i>exordium</i>, <i>arenga</i>, <i>proemium</i>) est l’ensemble de considérations générales, à valeur universelle, détachées du contexte particulier, qui motivent et légitiment l’acte.<br>
                 VID n° 196bis : <a href="https://www.cei.lmu.de/VID/#196bis">https://www.cei.lmu.de/VID/#196bis</a><br>
@@ -721,7 +766,9 @@
                 </ul>
               </dd>
 
-              <dt>Notification</dt>
+              <dt id="sp-notification">
+                Notification
+              </dt>
               <dd>
                 La notification (lat. : <i>notificatio</i>, <i>publicatio</i>, <i>promulgatio</i>) est une formule-outil qui déclare la volonté de porter à la connaissance des lecteurs ou auditeurs de l’acte.<br>
                 VID n° 196: <a href="https://www.cei.lmu.de/VID/#196">https://www.cei.lmu.de/VID/#196</a>
@@ -739,13 +786,17 @@
                 </ul>
               </dd>
 
-              <dt>Exposé</dt>
+              <dt id="sp-expose">
+                Exposé
+              </dt>
               <dd>
                 Il s’agit de l’exposé (lat. : <i>narratio</i>) logico-chronologique des circonstances qui ont amené la prise de décision.<br>
                 VID n° 197: <a href="https://www.cei.lmu.de/VID/#197">https://www.cei.lmu.de/VID/#197</a>
               </dd>
 
-              <dt>Dispositif</dt>
+              <dt id="sp-dispositif">
+                Dispositif
+              </dt>
               <dd>
                 Au sens étroit, le dispositif (lat. : <i>dispositio</i>) énonce la volonté de l’auteur de l’action et qualifie sa nature juridique (<i>donamus</i> > donation). Au sens large, il décrit l’action juridique, dans la forme d’un exposé, quand l’acte est en forme de procès-verbal (pour un acte notarié, de juridiction gracieuse…).<br>
                 VID n° 198: <a href="https://www.cei.lmu.de/VID/#198">https://www.cei.lmu.de/VID/#198</a><br>
@@ -783,7 +834,9 @@
                 </ul>
               </dd>
 
-              <dt>Sanctio</dt>
+              <dt id="sp-sanctio">
+                Sanctio
+              </dt>
               <dd>
                 Groupe de clauses souvent très développées, destinées à garantir et protéger l’action juridique rapportée dans l’acte.<br>
                 VID : Absent du VID sous cette dénomination<br>
@@ -837,7 +890,9 @@
                 </ul>
               </dd>
 
-              <dt>Mentions de formalités</dt>
+              <dt id="sp-form">
+                Mentions de formalités
+              </dt>
               <dd>
                 Parallèlement aux précédentes, les mentions de formalités visent la protection de l’acte écrit, en déclarant que les formalités requises ont été effectuées.<br>
                 VID : Absent du VID
@@ -857,7 +912,9 @@
                 </ul>
               </dd>
 
-              <dt>Validations finales</dt>
+              <dt id="sp-valid">
+                Validations finales
+              </dt>
               <dd>
                 VID : Absent du VID
                 <ul>
@@ -871,7 +928,9 @@
                 </ul>
               </dd>
 
-              <dt>Date</dt>
+              <dt id="sp-date">
+                Date
+              </dt>
               <dd>
                 VID n° 561: <a href="https://www.cei.lmu.de/VID/#561">https://www.cei.lmu.de/VID/#561</a><br>
                 Peut se distinguer en :
@@ -882,7 +941,9 @@
                 </ul>
               </dd>
 
-              <dt>Mentions hors teneurs</dt>
+              <dt id="sp-hors">
+                Mentions hors teneurs
+              </dt>
               <dd>
                 Elles sont internes à la chancellerie ou au bureau d’écriture. Elles indiquent qui a écrit et / ou composé l’acte, qui l’a commandé, les étapes qu’il a suivies.<br>
                 VID n° 180 : <a href="https://www.cei.lmu.de/VID/#180">https://www.cei.lmu.de/VID/#180</a><br>
@@ -944,9 +1005,10 @@
               régions » donnant des localisations par trop grossières (p.ex. Auvergne-Rhône) et des appellations parfois
               opaques pour le lecteur étranger (p.ex. Hauts-de-France).
             </p>
+            <br>
             <p>
               Pour les identifications des noms de lieux, il peut être utile de consulter les ressources suivantes : 
-              <ul>
+              <ul class="bullet-list">
                 <li>Le Dictionnaire Topographique de la France : <a href="https://dicotopo.cths.fr/">DicoTopo</a></li>
                 <li>La base "Nominatim" d'OpenStreetMap : <a href="https://nominatim.openstreetmap.org/ui/search.html">Nominatim</a></li>
               </ul>
@@ -969,54 +1031,88 @@
               attendu pour tous les dossiers : commentaires historique, juridique, philologique, paléographique,
               sigillographique.
             </p>
-            <p>
-              <ul>
-                <li>
-                  Commentaire diplomatique
-                  <p>
-                    Le commentaire diplomatique est le principal commentaire à fournir. Il contient notamment des éléments relatifs aux caractères externes, aux dimensions du manuscrit, à son écriture. Ce commentaire permet de replacer le document parmi les autres documents de la même typologie. Ainsi, s'il s'agit un mandement royal, on pourra le comparer aux autres mandements de la même époque, dans les formules utilisés, dans ses dimensions et son écriture. 
-                  </p>
-                  <p>
-                    Ce commentaire peut également servir de commentaire général sur le manuscrit, en l'absence d'éléments suffisant pour créer un autre commentaire. 
-                  </p>
-                  <p>
-                    Pour les dossiers présentés et provenant de l'ancienne base « Theleme », il est souvent indiqué un unique commentaire diplomatique. Celui-ci peut être composé d'une étude des caractères externes, d'une étude de la langue et du style, et parfois d'une interprétation, faisant la synthèse de ces éléments pour en tirer une conclusion générale.
-                  </p>
-                </li>
-                <li>
-                  Commentaire historique<br>
-                  Le commentaire historique explique le contexte de rédaction de l'acte. Il peut permettre ou non de faire une critique de l'exposé indiqué en début d'acte, et motivant la décision qui a été prise. <br>
-                  Il peut faire le rappel des précédents actes relatifs au même sujet.<br>
-                  Egalement, il peut faire un rappel de l'historique de document de la même typologie, si cela est pertinent. <br>
-                  Par exemple, un document tel qu'un censier peut faire l'objet d'un commentaire historique, en l'étudiant par rapport aux autres censiers plus anciens de la même province.
-                </li>
-                <li>
-                  Commentaire juridique<br>
-                  Le commentaire juridique s'appuie sur les caractères externes qui se trouvent en le document. Par exemple, l'étude peut porter sur les éléments de validation de l'acte, qui donnent la force juridique au document. <br>
-                  Aussi, le commentaire juridique peut s'appuyer sur le contenu textuel du document en question. 
-                </li>
-                <li>
-                  Commentaire philologique<br>
-                  Le commentaire philologique étudie la langue et les expressions utilisées. Celui-ci peut reprendre et étudier de façon plus précise certains passages du contenu textuel du document, en faisant par exemple le repérage d'éléments d'accentuation, parmi les termes utilisés, le rythme du texte (en repérant par exemple le <i>cursus velox</i>). 
-                </li>
-                <li>
-                  Commentaire paléographique
-                  Ce commentaire s'appuie essentiellement sur l'écriture du document. On peut y décrire les longueur des hastes et des hampes, des caractères se distinguant plus nettement du corps du texte. <br>
-                  Aussi on pourra également y commenter les abréviations et les signes de ponctuation utilisés ou non dans le texte. Les formes et les lettres qui sont abrégés pourront être décrites, pour montrer une certaine singularité ou au contraire, une homongénéité des caractères. 
-                </li>
-                <li>
-                  Commentaire sigillographique
-                  Le commentaire sigillographique porte sur l'étude du sceau. 
-                  Il est autant intéressant d'étudier l'iconographie, les éléments représentés dans le sceau (le vêtement, l'armement, la symbolique), la couleur et la matière du sceau. <br>
-                  Aussi, le sceau peut contenir des éléments textuels, pouvant reprendre la suscription en début d'acte. <br>
-                  Autre élément pouvant être décrit dans ce commentaire : la façon dont est scellé l'acte. Il peut parfois être fait sur simple queue, sur double queue, et peuvent être représentatifs ou non d'un type d'acte. <br>
-                  La base de données <a href="www.sigilla.org">Sigilla</a> peut être riche en informations sur les sceaux, et donne des éléments utiles à leur description. 
-                </li>
-              </ul>
-            </p>
+
             <p>
               Pour les dossiers présentés et complets sur la plateforme, il est souvent indiqué un unique commentaire diplomatique. Celui-ci peut se composé d'une étude des caractères externes, d'une interprétation, d'une étude sur la langue et le style. 
             </p>
+
+            <div class="toc">
+              <h2>
+                Liste des types de commentaire
+              </h2>
+              <div class="columns">
+                <div class="column">
+                  <ul>
+                    <li><a href="#co-diplomatique">Diplomatique</a></li>
+                    <li><a href="#co-historique">Historique</a></li>
+                    <li><a href="#co-juridique">Juridique</a></li>
+                  </ul>
+                </div>
+                <div class="column">
+                  <ul>
+                    <li><a href="#co-philolo">Philologique</a></li>
+                    <li><a href="#co-paleo">Paléographique</a></li>
+                    <li><a href="#co-sigillo">Sigillographique</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <dl>
+              <dt id="co-diplomatique">
+                Commentaire diplomatique
+              </dt>
+              <dd>
+                <p>
+                  Le commentaire diplomatique est le principal commentaire à fournir. Il contient notamment des éléments relatifs aux caractères externes, aux dimensions du manuscrit, à son écriture. Ce commentaire permet de replacer le document parmi les autres documents de la même typologie. Ainsi, s'il s'agit un mandement royal, on pourra le comparer aux autres mandements de la même époque, dans les formules utilisés, dans ses dimensions et son écriture. 
+                </p>
+                <p>
+                  Ce commentaire peut également servir de commentaire général sur le manuscrit, en l'absence d'éléments suffisant pour créer un autre commentaire. 
+                </p>
+                <p>
+                  Pour les dossiers présentés et provenant de l'ancienne base « Theleme », il est souvent indiqué un unique commentaire diplomatique. Celui-ci peut être composé d'une étude des caractères externes, d'une étude de la langue et du style, et parfois d'une interprétation, faisant la synthèse de ces éléments pour en tirer une conclusion générale.
+                </p>
+              </dd>
+              <dt id="co-historique">
+                Commentaire historique
+              </dt>
+              <dd>
+                Le commentaire historique explique le contexte de rédaction de l'acte. Il peut permettre ou non de faire une critique de l'exposé indiqué en début d'acte, et motivant la décision qui a été prise. <br>
+                Il peut faire le rappel des précédents actes relatifs au même sujet.<br>
+                Egalement, il peut faire un rappel de l'historique de document de la même typologie, si cela est pertinent. <br>
+                Par exemple, un document tel qu'un censier peut faire l'objet d'un commentaire historique, en l'étudiant par rapport aux autres censiers plus anciens de la même province.
+              </dd>
+              <dt id="co-juridique">
+                Commentaire juridique
+              </dt>
+              <dd>
+                Le commentaire juridique s'appuie sur les caractères externes qui se trouvent en le document. Par exemple, l'étude peut porter sur les éléments de validation de l'acte, qui donnent la force juridique au document. <br>
+                Aussi, le commentaire juridique peut s'appuyer sur le contenu textuel du document en question. 
+              </dd>
+              <dt id="co-philolo">
+                Commentaire philologique
+              </dt>
+              <dd>
+                Le commentaire philologique étudie la langue et les expressions utilisées. Celui-ci peut reprendre et étudier de façon plus précise certains passages du contenu textuel du document, en faisant par exemple le repérage d'éléments d'accentuation, parmi les termes utilisés, le rythme du texte (en repérant par exemple le <i>cursus velox</i>). 
+              </dd>
+              <dt id="co-paleo">
+                Commentaire paléographique
+              </dt>
+              <dd>
+                Ce commentaire s'appuie essentiellement sur l'écriture du document. On peut y décrire les longueur des hastes et des hampes, des caractères se distinguant plus nettement du corps du texte. <br>
+                Aussi on pourra également y commenter les abréviations et les signes de ponctuation utilisés ou non dans le texte. Les formes et les lettres qui sont abrégés pourront être décrites, pour montrer une certaine singularité ou au contraire, une homongénéité des caractères. 
+              </dd>
+              <dt id="co-sigillo">
+                Commentaire sigillographique
+              </dt>
+              <dd>
+                Le commentaire sigillographique porte sur l'étude du sceau. 
+                Il est autant intéressant d'étudier l'iconographie, les éléments représentés dans le sceau (le vêtement, l'armement, la symbolique), la couleur et la matière du sceau. <br>
+                Aussi, le sceau peut contenir des éléments textuels, pouvant reprendre la suscription en début d'acte. <br>
+                Autre élément pouvant être décrit dans ce commentaire : la façon dont est scellé l'acte. Il peut parfois être fait sur simple queue, sur double queue, et peuvent être représentatifs ou non d'un type d'acte. <br>
+                La base de données <a href="www.sigilla.org">Sigilla</a> peut être riche en informations sur les sceaux, et donne des éléments utiles à leur description. 
+              </dd>
+            </dl>
           </div>
           <div
             v-if="$attrs.section === 'tradition'"
@@ -1025,121 +1121,189 @@
             <p>
               La tradition d'un acte est l'état de rédaction dans lequel cet acte nous a été transmis, en déterminant s'il s'agit d'un original ou d'une copie, de qualifier le document de faux. L'étude de la tradition permet ainsi de porter un jugement sur la sincérité ou la fausseté du document. <br>
               Pour chaque terme ici retenu, une définition est donnée, ainsi qu'un lien vers le Vocabulaire International de la diplomatique.
-            </p><dt>Original</dt>
-            <dd> 
-              Document primitif, où est consignée pour la première fois sous sa forme définitive la volonté de l’auteur de l’acte et qui est destiné à faire foi. <br>
-              VID n° 42 : <a href="https://www.cei.lmu.de/VID/#42">https://www.cei.lmu.de/VID/#42</a>
-            </dd>
+            </p>
+            
+            <div class="toc">
+              <h2>
+                Liste des traditions
+              </h2>
+              <div class="columns">
+                <div class="column">
+                  <ul>
+                    <li><a href="#tra-orig">Original</a></li>
+                    <li><a href="#tra-orig-mul">Original multiple</a></li>
+                    <li><a href="#tra-chirographe">Chirographe</a></li>
+                    <li><a href="#tra-pancarte">Pancarte</a></li>
+                    <li><a href="#tra-copie-inf">Copie informe</a></li>
+                    <li><a href="#tra-copie-fig">Copie figurée</a></li>
+                    <li><a href="#tra-copie-auth">Copie authentique</a></li>
+                    <li><a href="#tra-trans">Transfixe</a></li>
+                  </ul>
+                </div>
+                <div class="column">
+                  <ul>
+                    <li><a href="#tra-trad">Traduction</a></li>
+                    <li><a href="#tra-cart">Cartulaire</a></li>
+                    <li><a href="#tra-inv">Inventaire d’archives</a></li>
+                    <li><a href="#tra-supp">Supplique et pétition</a></li>
+                    <li><a href="#tra-form">Formulaire</a></li>
+                    <li><a href="#tra-min">Minute et brouillon</a></li>
+                    <li><a href="#tra-reg-not">Registre de notaire et de tabellion</a></li>
+                    <li><a href="#tra-faux">Faux</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-            <dt>Original multiple </dt>
-            <dd>
-              Exemplaires d’un même acte dressés simultanément, pour être remis aux diverses parties intéressées ou pour en assurer la conservation. <br>
-              VID n° 43 [à l’exception des chirographes] : <a href="https://www.cei.lmu.de/VID/#43">https://www.cei.lmu.de/VID/#43</a>
-            </dd>
+            <dl>
+              <dt id="tra-orig">
+                Original
+              </dt>
+              <dd> 
+                Document primitif, où est consignée pour la première fois sous sa forme définitive la volonté de l’auteur de l’acte et qui est destiné à faire foi. <br>
+                VID n° 42 : <a href="https://www.cei.lmu.de/VID/#42">https://www.cei.lmu.de/VID/#42</a>
+              </dd>
+
+              <dt id="tra-orig-mul">
+                Original multiple
+              </dt>
+              <dd>
+                Exemplaires d’un même acte dressés simultanément, pour être remis aux diverses parties intéressées ou pour en assurer la conservation. <br>
+                VID n° 43 [à l’exception des chirographes] : <a href="https://www.cei.lmu.de/VID/#43">https://www.cei.lmu.de/VID/#43</a>
+              </dd>
 
 
-            <dt>Chirographe</dt>
-            <dd>
-              Acte établi en deux exemplaires, sur une même feuille de parchemin, coupée par le milieu, pour que chacun des contractants ait un original de la pièce.<br>
-              VID n° 44 : <a href="https://www.cei.lmu.de/VID/#44">https://www.cei.lmu.de/VID/#44</a> 
-            </dd>
+              <dt id="tra-chiro">
+                Chirographe
+              </dt>
+              <dd>
+                Acte établi en deux exemplaires, sur une même feuille de parchemin, coupée par le milieu, pour que chacun des contractants ait un original de la pièce.<br>
+                VID n° 44 : <a href="https://www.cei.lmu.de/VID/#44">https://www.cei.lmu.de/VID/#44</a> 
+              </dd>
 
-            <dt>Pancarte</dt>
-            <dd>
-              Acte destiné à confirmer des droits et des biens dont les titres ont été perdus. Se dit par extension d’un cartulaire contenant les titres d’un établissement ecclésiastique.<br>
-              VID n° 50 : <a href="https://www.cei.lmu.de/VID/#50">https://www.cei.lmu.de/VID/#50 </a>
-            </dd>
+              <dt id="tra-pancarte">
+                Pancarte
+              </dt>
+              <dd>
+                Acte destiné à confirmer des droits et des biens dont les titres ont été perdus. Se dit par extension d’un cartulaire contenant les titres d’un établissement ecclésiastique.<br>
+                VID n° 50 : <a href="https://www.cei.lmu.de/VID/#50">https://www.cei.lmu.de/VID/#50 </a>
+              </dd>
 
-            <dt>Copie informe</dt>
-            <dd>
-              Copie d’un acte ne comprtant pas de marque d’authenticité juridique apposé par une autorité. 
-              VID n° 55 : <a href="https://www.cei.lmu.de/VID/#55">https://www.cei.lmu.de/VID/#55</a><br>
-              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
-            </dd>
+              <dt id="tra-copie-inf">
+                Copie informe
+              </dt>
+              <dd>
+                Copie d’un acte ne comprtant pas de marque d’authenticité juridique apposé par une autorité. 
+                VID n° 55 : <a href="https://www.cei.lmu.de/VID/#55">https://www.cei.lmu.de/VID/#55</a><br>
+                <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+              </dd>
 
-            <dt>Copie figurée</dt>
-            <dd>
-              Copie dont l’auteur s’efforce de reproduire matériellement l’écriture, ou/et, en tout ou en partie, la disposition de l’original antérieur. <br>
-              VID n° 56 : <a href="https://www.cei.lmu.de/VID/#56">https://www.cei.lmu.de/VID/#56</a><br>
-              Indication complémentaire du mode de tradition principal (informe, authentique, cartulaire…) et signalant que le copiste reproduit non seulement le texte, mais encore tels éléments figurés, par exemple un chrismon ou un monogramme. <br>
-              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
-            </dd>
+              <dt id="tra-copie-fig">
+                Copie figurée
+              </dt>
+              <dd>
+                Copie dont l’auteur s’efforce de reproduire matériellement l’écriture, ou/et, en tout ou en partie, la disposition de l’original antérieur. <br>
+                VID n° 56 : <a href="https://www.cei.lmu.de/VID/#56">https://www.cei.lmu.de/VID/#56</a><br>
+                Indication complémentaire du mode de tradition principal (informe, authentique, cartulaire…) et signalant que le copiste reproduit non seulement le texte, mais encore tels éléments figurés, par exemple un chrismon ou un monogramme. <br>
+                <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+              </dd>
 
-            <dt>Copie authentique</dt>
-            <dd>
-              VID n° 54 : <a href="https://www.cei.lmu.de/VID/#54">https://www.cei.lmu.de/VID/#54</a><br>
-              Cette notion recouvre : 
-              <ul>
-                <li>Vidimus. VID n° 67 : <a href="https://www.cei.lmu.de/VID/#67">https://www.cei.lmu.de/VID/#67</a></li>
-                <li>Copie sous le sceau. VID n° 61 : <a href="https://www.cei.lmu.de/VID/#61">https://www.cei.lmu.de/VID/#61</a></li>
-                <li>Copie notariée. VID n° 59 : <a href="https://www.cei.lmu.de/VID/#59">https://www.cei.lmu.de/VID/#59</a></li>
-                <li>Copie certifiée. VID n° 62 : <a href="https://www.cei.lmu.de/VID/#62">https://www.cei.lmu.de/VID/#62</a></li>
-              </ul>
-              <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
-            </dd>
+              <dt id="tra-copie-auth">
+                Copie authentique
+              </dt>
+              <dd>
+                VID n° 54 : <a href="https://www.cei.lmu.de/VID/#54">https://www.cei.lmu.de/VID/#54</a><br>
+                Cette notion recouvre : 
+                <ul>
+                  <li>Vidimus. VID n° 67 : <a href="https://www.cei.lmu.de/VID/#67">https://www.cei.lmu.de/VID/#67</a></li>
+                  <li>Copie sous le sceau. VID n° 61 : <a href="https://www.cei.lmu.de/VID/#61">https://www.cei.lmu.de/VID/#61</a></li>
+                  <li>Copie notariée. VID n° 59 : <a href="https://www.cei.lmu.de/VID/#59">https://www.cei.lmu.de/VID/#59</a></li>
+                  <li>Copie certifiée. VID n° 62 : <a href="https://www.cei.lmu.de/VID/#62">https://www.cei.lmu.de/VID/#62</a></li>
+                </ul>
+                <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
+              </dd>
 
-            <dt>Transfixe</dt>
-            <dd>
-              Groupe de document formé par la superposition de deux ou plusieurs actes, dont l’un est la justification de l’autre.<br>
-              VID n° 71 : <a href="https://www.cei.lmu.de/VID/#71">https://www.cei.lmu.de/VID/#71</a>
-            </dd>
+              <dt id="tra-trans">
+                Transfixe
+              </dt>
+              <dd>
+                Groupe de document formé par la superposition de deux ou plusieurs actes, dont l’un est la justification de l’autre.<br>
+                VID n° 71 : <a href="https://www.cei.lmu.de/VID/#71">https://www.cei.lmu.de/VID/#71</a>
+              </dd>
 
-            <dt>Traduction</dt>
-            <dd>Absent du VID</dd>
+              <dt id="tra-trad">
+                Traduction
+              </dt>
+              <dd>Absent du VID</dd>
 
-            <dt>Cartulaire</dt> 
-            <dd>
-              Un cartulaire (lat.: c(h)artularium) est un recueil de copies de ses propres documents, établi par une personne physique ou morale, qui, dans un volume ou plus rarement dans un rouleau, transcrit ou fait transcrire intégralement ou parfois en extraits, des titres relatifs à ses biens et à ses droits et des documents concernant son histoire ou son administration, pour en assurer la conservation et en faciliter la consultation.<br>
-              VID n° 74 : <a href="https://www.cei.lmu.de/VID/#74">https://www.cei.lmu.de/VID/#74</a><br>
-              Contient : 
-              <ul>
-                <li>Liber traditionum. VID n° 80 : <a href="https://www.cei.lmu.de/VID/#80">https://www.cei.lmu.de/VID/#80</a></li>
-              </ul>
-            </dd>
+              <dt id="tra-cart">
+                Cartulaire
+              </dt> 
+              <dd>
+                Un cartulaire (lat.: c(h)artularium) est un recueil de copies de ses propres documents, établi par une personne physique ou morale, qui, dans un volume ou plus rarement dans un rouleau, transcrit ou fait transcrire intégralement ou parfois en extraits, des titres relatifs à ses biens et à ses droits et des documents concernant son histoire ou son administration, pour en assurer la conservation et en faciliter la consultation.<br>
+                VID n° 74 : <a href="https://www.cei.lmu.de/VID/#74">https://www.cei.lmu.de/VID/#74</a><br>
+                Contient : 
+                <ul>
+                  <li>Liber traditionum. VID n° 80 : <a href="https://www.cei.lmu.de/VID/#80">https://www.cei.lmu.de/VID/#80</a></li>
+                </ul>
+              </dd>
 
-            <dt>Inventaire d’archives</dt>
-            <dd>
-              Description plus ou moins détaillée du contenu des séries, fonds ou documents destinée à retrouver les documents.
-              VID n° 84 : <a href="https://www.cei.lmu.de/VID/#84">https://www.cei.lmu.de/VID/#84</a>
-            </dd>
+              <dt id="tra-inv">
+                Inventaire d’archives
+              </dt>
+              <dd>
+                Description plus ou moins détaillée du contenu des séries, fonds ou documents destinée à retrouver les documents.
+                VID n° 84 : <a href="https://www.cei.lmu.de/VID/#84">https://www.cei.lmu.de/VID/#84</a>
+              </dd>
 
-            <dt>Supplique et pétition </dt>
-            <dd>
-              La supplique est une requête en matière de grâce ou de justice. La pétition (lat. : petitio) est une requête, une demande motivée, écrite ou orale, résentée à une autorité par le futur bénéficiaire d’un acte.<br>
-              VID n° 319 [requête] : <a href="https://www.cei.lmu.de/VID/#319">https://www.cei.lmu.de/VID/#319</a><br>
-              VID n° 320 [pétitions] : <a href="https://www.cei.lmu.de/VID/#320">https://www.cei.lmu.de/VID/#320</a><br>
-              VID n° 322 [supplique, s.v. « requête »] : <a href="https://www.cei.lmu.de/VID/#322">https://www.cei.lmu.de/VID/#322</a>
-            </dd>
+              <dt id="tra-supp">
+                Supplique et pétition
+              </dt>
+              <dd>
+                La supplique est une requête en matière de grâce ou de justice. La pétition (lat. : petitio) est une requête, une demande motivée, écrite ou orale, résentée à une autorité par le futur bénéficiaire d’un acte.<br>
+                VID n° 319 [requête] : <a href="https://www.cei.lmu.de/VID/#319">https://www.cei.lmu.de/VID/#319</a><br>
+                VID n° 320 [pétitions] : <a href="https://www.cei.lmu.de/VID/#320">https://www.cei.lmu.de/VID/#320</a><br>
+                VID n° 322 [supplique, s.v. « requête »] : <a href="https://www.cei.lmu.de/VID/#322">https://www.cei.lmu.de/VID/#322</a>
+              </dd>
 
-            <dt>Formulaire</dt> 
-            <dd>
-              Recueil de formules destinées à servir de modèles aux rédacteurs des actes. <br>
-              VID n° 82 : <a href="https://www.cei.lmu.de/VID/#82" />
-            </dd>
+              <dt id="tra-form">
+                Formulaire
+              </dt> 
+              <dd>
+                Recueil de formules destinées à servir de modèles aux rédacteurs des actes. <br>
+                VID n° 82 : <a href="https://www.cei.lmu.de/VID/#82" />
+              </dd>
 
-            <dt>Minute et brouillon </dt>
-            <dd>
-              La minute est la première rédaction d’un acte, pouvant servir de matrice à l’expédition de l’acte ou à d’éventuelles réexpéditions. Le brouillon est un projet informel de rédaction d’un texte, pouvant ensuite subir des corrections. <br>
-              VID n° 353 [minute] : <a href="https://www.cei.lmu.de/VID/#353">https://www.cei.lmu.de/VID/#353</a>
-              VID n° 349 [brouillon] : <a href="https://www.cei.lmu.de/VID/#349">https://www.cei.lmu.de/VID/#349</a>
-            </dd>
+              <dt id="tra-min">
+                Minute et brouillon
+              </dt>
+              <dd>
+                La minute est la première rédaction d’un acte, pouvant servir de matrice à l’expédition de l’acte ou à d’éventuelles réexpéditions. Le brouillon est un projet informel de rédaction d’un texte, pouvant ensuite subir des corrections. <br>
+                VID n° 353 [minute] : <a href="https://www.cei.lmu.de/VID/#353">https://www.cei.lmu.de/VID/#353</a>
+                VID n° 349 [brouillon] : <a href="https://www.cei.lmu.de/VID/#349">https://www.cei.lmu.de/VID/#349</a>
+              </dd>
 
-            <dt>Registre de notaire et de tabellion</dt>
-            <dd> 
-              Un registre est un volume dans lequel on procède à un enregistrement successif d’actes, de lettres ou de comptes. <br>
-              <b>NB</b> : un registre est pris dans son acception diplomatique et non codicologique. Il peut ainsi inclure des rouleaux.<br>
-              VID n°91 : <a href="https://www.cei.lmu.de/VID/#91">https://www.cei.lmu.de/VID/#91</a><br>
-              Peut se présenter sous la forme de :
-              <ul>
-                <li>Registre de chancellerie. VID n° 94 : <a href="https://www.cei.lmu.de/VID/#94">https://www.cei.lmu.de/VID/#94</a></li>
-              </ul>
-            </dd>
+              <dt id="tra-reg-not">
+                Registre de notaire et de tabellion
+              </dt>
+              <dd> 
+                Un registre est un volume dans lequel on procède à un enregistrement successif d’actes, de lettres ou de comptes. <br>
+                <b>NB</b> : un registre est pris dans son acception diplomatique et non codicologique. Il peut ainsi inclure des rouleaux.<br>
+                VID n°91 : <a href="https://www.cei.lmu.de/VID/#91">https://www.cei.lmu.de/VID/#91</a><br>
+                Peut se présenter sous la forme de :
+                <ul>
+                  <li>Registre de chancellerie. VID n° 94 : <a href="https://www.cei.lmu.de/VID/#94">https://www.cei.lmu.de/VID/#94</a></li>
+                </ul>
+              </dd>
 
-            <dt>Faux</dt>
-            <dd>
-              Un faux est un acte qui n’est pas sincère, ne présentant pas le caractères de l’authenticité diplomatique.<br> 
-              VID n° 111 [acte faux] : <a href="https://www.cei.lmu.de/VID/#111">https://www.cei.lmu.de/VID/#111</a>
-            </dd>
+              <dt id="tra-faux">
+                Faux
+              </dt>
+              <dd>
+                Un faux est un acte qui n’est pas sincère, ne présentant pas le caractères de l’authenticité diplomatique.<br> 
+                VID n° 111 [acte faux] : <a href="https://www.cei.lmu.de/VID/#111">https://www.cei.lmu.de/VID/#111</a>
+              </dd>
+            </dl>
           </div>
           <div
             v-if="$attrs.section === 'dates'"
