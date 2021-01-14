@@ -27,6 +27,7 @@ dl {
 .documentation-page {
     text-align: justify;
 
+
     ul.bullet-list{
         li:before {
             content: "•"; /* Insert content that looks like bullets */
@@ -124,11 +125,19 @@ dl {
             background: url(#{$image-path}/accueil_fond_header.png) top center /  auto 500px no-repeat;
         }
 
+
+        .content-column {
+            padding-right: 100px;
+        }
+
         .main-column, .content-column {
             margin-top: 250px;
+            padding-top: 20px;
             background: #FFF;
             position: relative;
         }
+
+
 
         .column ul,
         .column > li {
