@@ -303,9 +303,14 @@ export default {
         vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
       })
     },
-    beforeRouteUpdate (to, from, next) {
+    async beforeRouteUpdate (to, from, next) {
       this.$store.dispatch('workflow/setEditionMode', false)
       this.$store.dispatch('workflow/setCurrentSection', to.params.section)
+
+      console.log('before route update', to.params.docId, from.params.docId)
+      if (to.params.docId !== from.params.docId) {
+        await this.loadDocument(to.params.docId);
+      }
       next()
     },
     beforeRouteLeave (to, from, next) {
@@ -313,37 +318,7 @@ export default {
       next()
     },
     async created() {
-      this.isLoading = true;
-      try {
-        await this.fetchOne({id: this.$attrs.docId})
-      }
-      catch (error) {
-        this.$router.push({name: 'error', params: {error: error}})
-      }
-
-      await this.fetchSpeechPartsView()
-      await this.fetchTranscriptionView()
-      await this.fetchTranslationView()
-
-      this.transcriptionVisibility = this.transcriptionView !== null
-      this.translationVisibility = this.translationView !== null
-
-      try {
-        await this.fetchTranscriptionAlignmentView()
-      } catch(error) {
-        console.log("No tr/tl alignment", error)
-      }
-
-      try {
-        this.fetchCommentariesView()
-      } catch(error) {
-        console.log("No commentaries", error)
-      }
-
-      this.isLoading = false;
-      // init notes popup
-    },
-    mounted() {
+      await this.loadDocument(this.$attrs.docId)
     },
     methods: {
       ...mapActions('document', {
@@ -354,6 +329,37 @@ export default {
         'fetchSpeechPartsView': 'fetchSpeechPartsView',
         'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
         }),
+      async loadDocument(docId) {
+        this.isLoading = true;
+        try {
+          await this.fetchOne({id: docId})
+        }
+        catch (error) {
+          this.$router.push({name: 'error', params: {error: error}})
+        }
+
+        await this.fetchSpeechPartsView()
+        await this.fetchTranscriptionView()
+        await this.fetchTranslationView()
+
+        this.transcriptionVisibility = this.transcriptionView !== null
+        this.translationVisibility = this.translationView !== null
+
+        try {
+          await this.fetchTranscriptionAlignmentView()
+        } catch(error) {
+          console.log("No tr/tl alignment", error)
+        }
+
+        try {
+          this.fetchCommentariesView()
+        } catch(error) {
+          console.log("No commentaries", error)
+        }
+
+        this.isLoading = false;
+        // init notes popup
+      },
       toggleImageVisibility() {
         // forbid hidding everything
         if (this.showContent) {

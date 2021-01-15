@@ -5,14 +5,20 @@
       :class="isInEditionMode?'is-edition-mode':''"
     >
       <div class="navbar inner-navbar">
-        <a
-          href="#"
+        <router-link
+          v-show="document.prev_doc_id"
           class="navbar-item"
-        >Dossier 34</a>
-        <a
-          href="#"
+          :to="{name: 'document-view', params: {docId:document.prev_doc_id, section: 'notice'}}"
+        >
+          Dossier {{ document.prev_doc_id }}
+        </router-link>
+        <router-link
+          v-show="document.next_doc_id"
           class="navbar-item"
-        >Dossier 35</a>
+          :to="{name: 'document-view', params: {docId: document.next_doc_id, section: 'notice'}}"
+        >
+          Dossier {{ document.next_doc_id }}
+        </router-link>
       </div>
       <div class="tags tile has-text-uppercase">
         <span class="tag">
