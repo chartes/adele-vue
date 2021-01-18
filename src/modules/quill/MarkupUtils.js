@@ -253,11 +253,16 @@ const insertSegments = (text, segments) => {
   let textWithSegments = text
   let indexCorrection = 0;
 
-  segments.sort()
+
+  segments = Array.from(new Set(segments))
+  segments.sort((a, b) => a - b)
+
+  console.log(segments)
+
   for(let i = 0; i < segments.length; ++i) {
     textWithSegments = [textWithSegments.slice(0, segments[i] + indexCorrection), segmentBlot, textWithSegments.slice(segments[i]  + indexCorrection)].join('');
     indexCorrection += segmentBlot.length
-    console.log(textWithSegments)
+    console.warn('@WARN', i, segments[i], textWithSegments)
   }
   return textWithSegments;
 };

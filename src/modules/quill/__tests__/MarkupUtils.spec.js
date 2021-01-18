@@ -103,10 +103,10 @@ describe('MarkupUtils', () => {
 
   })
 
-  test.skip('insertSegments', () => {
+  test('insertSegments', () => {
     const transcription = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis, . . offic<ex>ialis</ex> Belvacen<ex>sis</ex>, sal<ex>u</ex>t<ex>em</ex> in D<ex>om</ex>in<ex>o</ex>.<lb/>Nov<ex>er</ex>int univ<ex>er</ex>si q<ex>uo</ex>d i<ex>n</ex> n<ex>ost</ex>ra constituti p<ex>re</ex>sentia Ricardus d<ex>i</ex>c<ex>t</ex>us de Gres de S<ex>an</ex>c<ex>t</ex>o Felice <ex>et</ex> Aya ejus uxor</p><p><ex>et</ex> Eufemia eor<ex>um</ex> filia recognov<ex>er</ex>unt se imp<ex>er</ex>petuum vendidisse p<ex>ro</ex> co<ex>m</ex>muni eor<ex>um</ex> utilitate ac necessitate</p><p>abbati <ex>et</ex> conventui S<ex>an</ex>c<ex>t</ex>i G<ex>er</ex>emari Flaviacen<ex>sis</ex> q<ex>u</ex>amdam peciam t<ex>er</ex>re s<ex>em</ex>entis q<ex>u</ex>am h<ex>ab</ex>ebant ex caduco Asceline de Amuchi, matertere dicti Ricardi</p>';
     const translation = '<p>A tous ceux qui verront les présentes lettres, . . l’official de Beauvais, salut dans le Seigneur. <lb/>Sachent tous que constitués en notre présence Richard dit de Grez, de Saint-Félix, Aye son épouse</p><p>et Euphémie leur fille ont reconnu qu’ils ont vendu à perpétuité pour leur commune utilité et leur commun</p><p>besoin à l’abbé et au convent de Saint-Germer de Fly une pièce de terre arable qu’ils avaient de l’héritage d’Asceline d’Amuchy, tante maternelle dudit Richard</p>';
-    const incoming = [
+    const ptrs = [
       [0, 88, 0, 50],
       [88, 188, 50, 102],
       [188, 301, 102, 153],
@@ -117,10 +117,21 @@ describe('MarkupUtils', () => {
       [679, 771, 376, 431],
       [771, 825, 431, 486],
     ]
+    //TODO : réaligner les données de test correctement
     const transcriptionOk = '<p>Om<ex>n</ex>ib<ex>us</ex> p<ex>re</ex>sentes litt<ex>er</ex>as insp<ex>e</ex>cturis, <segment></segment>. . offic<ex>ialis</ex> Belvacen<ex>sis</ex>, sal<ex>u</ex>t<ex>em</ex> in D<ex>om</ex>in<ex>o</ex>.<lb/>Nov<ex>er</ex>int univ<ex>er</ex>si q<ex>uo</ex>d i<ex>n</ex> n<ex>ost</ex>ra constituti p<ex>re</ex>sentia <segment></segment>Ricardus d<ex>i</ex>c<ex>t</ex>us de Gres de S<ex>an</ex>c<ex>t</ex>o Felice <ex>et</ex> Aya ejus uxor</p><p><ex>et</ex> Eufemia eor<ex>um</ex> filia recognov<ex>er</ex>unt se imp<ex>er</ex>petuum <segment></segment>vendidisse p<ex>ro</ex> co<ex>m</ex>muni eor<ex>um</ex> utilitate ac necessitate</p><p>abbati <ex>et</ex> conventui S<ex>an</ex>c<ex>t</ex>i G<ex>er</ex>emari Flaviacen<ex>sis</ex> <segment></segment>q<ex>u</ex>amdam peciam t<ex>er</ex>re s<ex>em</ex>entis q<ex>u</ex>am h<ex>ab</ex>ebant ex <segment></segment>caduco Asceline de Amuchi, matertere dicti Ricardi</p>'
     const translationOk = '<p>A tous ceux qui verront les présentes lettres, <segment></segment>. . l’official de Beauvais, salut dans le Seigneur. <lb/>Sachent tous que constitués en notre présence <segment></segment>Richard dit de Grez, de Saint-Félix, Aye son épouse</p><p>et Euphémie leur fille ont reconnu qu’ils ont vendu à <segment></segment>perpétuité pour leur commune utilité et leur commun</p><p>besoin à l’abbé et au convent de Saint-Germer de Fly <segment></segment>une pièce de terre arable qu’ils avaient de l’héritage <segment></segment>d’Asceline d’Amuchy, tante maternelle dudit Richard</p>'
-    expect(insertSegments(transcription, incoming, 'transcription')).toEqual(transcriptionOk)
-    expect(insertSegments(translation, incoming, 'translation')).toEqual(translationOk)
+
+    let transcriptionPtrs = ptrs.map(e => [e[0], e[1]]).flat()
+    transcriptionPtrs.shift()
+    transcriptionPtrs.pop()
+    transcriptionPtrs = Array.from(new Set(transcriptionPtrs))
+
+    let translationPtrs = ptrs.map(e => [e[2], e[3]]).flat()
+    translationPtrs.shift()
+    translationPtrs.pop()
+
+    expect(insertSegments(transcription, transcriptionPtrs)).toEqual(transcriptionOk)
+    expect(insertSegments(translation, translationPtrs)).toEqual(translationOk)
 
   })
   test('TEIToQuill', () => {
