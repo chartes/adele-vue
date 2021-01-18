@@ -31,7 +31,7 @@ new Vue({
   store,
   router,
   created () {
-    const userString = localStorage.getItem('user') // grab user data from local storage
+    const userString = localStorage.getItem('user-adele') // grab user data from local storage
 
     if (userString) { // check to see if there is indeed a user
       let userData = JSON.parse(userString) // parse user data into JSON

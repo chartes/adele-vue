@@ -15,11 +15,11 @@ const mutations = {
       ...userData,
       isAdmin: userData.roles.indexOf("admin") > -1
     }
-    localStorage.setItem('user', JSON.stringify(state.currentUser))
+    localStorage.setItem('user-adele', JSON.stringify(state.currentUser))
   },
 
   CLEAR_USER_DATA(state) {
-    localStorage.removeItem('user')
+    localStorage.removeItem('user-adele')
     deleteCookie('csrf_access_token')
     deleteCookie('csrf_refresh_token')
     location.reload()
