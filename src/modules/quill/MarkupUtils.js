@@ -257,12 +257,12 @@ const insertSegments = (text, segments) => {
   segments = Array.from(new Set(segments))
   segments.sort((a, b) => a - b)
 
-  console.log(segments)
+  console.log("@WARN insert segments", segments)
 
   for(let i = 0; i < segments.length; ++i) {
     textWithSegments = [textWithSegments.slice(0, segments[i] + indexCorrection), segmentBlot, textWithSegments.slice(segments[i]  + indexCorrection)].join('');
     indexCorrection += segmentBlot.length
-    console.warn('@WARN', i, segments[i], textWithSegments)
+    //console.warn('@WARN', i, segments[i], textWithSegments)
   }
   return textWithSegments;
 };

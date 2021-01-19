@@ -278,6 +278,8 @@ const actions = {
     const data = {
       withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
     };
+    translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = data.withTextAlignment;
+
     commit('UPDATE', data);
     //translationWithTextAlignmentShadowQuill.setText(state.translationWithTextAlignment)
     //console.log(state.translationWithTextAlignment)

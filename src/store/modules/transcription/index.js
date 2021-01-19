@@ -72,7 +72,7 @@ const mutations = {
       transcriptionWithTextAlignmentShadowQuill = new Quill(transcriptionWithTextAlignmentShadowQuillElement);
       transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
       state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
-
+      
       facsimileShadowQuillElement.innerHTML = "<p></p>" 
       facsimileShadowQuill = new Quill(facsimileShadowQuillElement);
       facsimileShadowQuillElement.children[0].innerHTML = payload.withFacsimile || "";
@@ -181,11 +181,12 @@ const actions = {
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
+      const withTextAlignment = TEIToQuill(insertSegments(transcription.content, state.textAlignmentSegments));
 
       const data = {
         transcription: transcription,
         content: convertLinebreakTEIToQuill(quillContent),
-        withTextAlignment: convertLinebreakTEIToQuill(quillContent),
+        withTextAlignment: convertLinebreakTEIToQuill(withTextAlignment),
         withNotes: convertLinebreakTEIToQuill(withNotes),
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
@@ -334,6 +335,8 @@ const actions = {
     const data = {
       withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
     };
+
+   transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = data.withTextAlignment;
 
     commit('UPDATE', data);
   },
