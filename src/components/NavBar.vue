@@ -44,30 +44,11 @@
       </div>
 
       <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            <span
-              v-if="loggedIn"
-              class="button is-light is-uppercase is-info m-r-sm"
-            >
-              {{ currentUser.username }}
-            </span>
-            <router-link
-              v-if="!loggedIn"
-              :to="{name: 'login'}"
-            >
-              <a class="button is-primary">
-                Connexion
-              </a>
-            </router-link>
-            <span
-              v-else
-              class="button is-light"
-              @click="logout"
-            >
-              Se déconnecter
-            </span>
-          </div>
+        <div
+          class="navbar-item"
+          style="margin-right: 10px"
+        >
+          <user-menu />
         </div>
       </div>
     </div>
@@ -77,9 +58,11 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex';
+import UserMenu from '@/components/UserMenu';
 
 export default {
     name: "NavBar",
+    components: {UserMenu},
     computed: {
         ...mapState('user', ['currentUser']),
         ...mapGetters('user', ['loggedIn'])

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueRouter, {Location, Route, RouteConfig} from 'vue-router'
+import VueRouter from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
@@ -9,6 +9,10 @@ import DocumentationPage from "@/pages/DocumentationPage.vue"
 import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
 import LoginPage from "@/pages/LoginPage.vue"
 import ErrorPage from "@/pages/ErrorPage.vue"
+
+import UserDashboardPage from "@/pages/UserDashboardPage.vue"
+import UserProfilePage from "@/pages/UserProfilePage.vue"
+
 
 /*
 import RegisterPage from "@/pages/RegisterPage.vue"
@@ -31,6 +35,17 @@ const router = new VueRouter({
       path: '/documents',
       component: SearchPage,
       name: 'search'
+    },
+    {
+      path: '/profile',
+      component: UserProfilePage,
+      name: 'user-profile'
+    },
+    {
+      path: '/dashboard/:section',
+      component: UserDashboardPage,
+      name: 'user-dashboard',
+      props: true
     },
     {
       path: '/documents/add',
