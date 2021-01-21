@@ -298,6 +298,20 @@ const actions = {
     commit('UPDATE', data)
     return updatedNote
   },
+
+  async cloneContent({dispatch, rootState}) {
+    console.log('STORE ACTION translation/cloneContent');
+    const doc_id = rootState.document.document.id;
+    const user_id = rootState.user.author.id;
+    try {
+      const response = await http.get(`documents/${doc_id}/translations/clone/from-user/${user_id}`)
+      await dispatch('document/unsetValidationFlag', {docId: doc_id, flagName: 'translation'}, {root: true})
+      return response.data;
+    } catch (e) {
+      console.log(`%c error while cloning translation ${e}`, 'color:red');
+    }
+  },
+
   changed ({ commit, rootState }, deltas) {
     if (rootState.workflow.transcriptionAlignmentMode) {
       commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);

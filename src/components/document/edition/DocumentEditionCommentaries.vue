@@ -1,16 +1,55 @@
 <template>
   <div class="">
     <div class="columns">
-      <div class="column">
+      <div
+        class="column"
+        :class="imageVisibility ? 'is-half' : 'is-two-fifths'"
+      >
         <div class="has-text-weight-medium subtitle m-b-xl">
-          Transcription
+          <!-- visibility widget -->
+          <div
+            class="visibility-controls"
+          >
+            <div class="field is-grouped">
+              <div class="control">
+                <span>AFFICHAGE</span>
+              </div>
+              <visibility-toggle
+                class="control"
+                :action="toggleImageVisibility"
+                :visible="imageVisibility"
+              >
+                image
+              </visibility-toggle>
+              <visibility-toggle
+                class="control"
+                :action="toggleImageVisibility"
+                :visible="!imageVisibility"
+              >
+                transcription
+              </visibility-toggle>
+            </div>
+          </div>
         </div>
         <document-transcription
+          v-show="!imageVisibility"
           :key="transcriptionLoading"
           :readonly-data="transcriptionView"
         />
+        <div v-show="imageVisibility">
+          <mirador-viewer
+            v-if="document.manifest_origin_url"
+            :manifest-url="document.manifest_origin_url"
+            :canvas-index="0"
+          />
+          <img
+            v-else
+            :src="require('@/assets/images/document_placeholder.svg')"
+            class="iiif-viewer-placeholder"
+          >
+        </div>
       </div>
-      <div class="column is-two-thirds">
+      <div class="column">
         <div
           :key="transcriptionLoading"
           class="has-text-weight-medium subtitle m-b-xl"
@@ -78,7 +117,9 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 import CommentaryEditor from '../../editors/CommentaryEditor.vue'
 import CommentariesActionBar from './actionbars/CommentariesActionBar.vue'
+import VisibilityToggle from '@/components/ui/VisibilityToggle.vue'
 import Message from '../../Message'
+import MiradorViewer from '@/components/MiradorViewer.vue'
 
 export default {
     name: "DocumentEditionCommentaries",
@@ -86,22 +127,26 @@ export default {
         DocumentTranscription,
         CommentaryEditor,
         CommentariesActionBar,
-        Message
+        Message,
+        MiradorViewer,
+        VisibilityToggle
     },
     props: {
         
     },
     data() {
       return {
+        imageVisibility: false,
       }
     },
     computed: {
-        ...mapState('document', ['transcriptionView']),
+        ...mapState('document', ['transcriptionView', 'document']),
         ...mapState('document', ['transcriptionLoading']),
         ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel', 'commentariesLoading']),
-        ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes'])
+        ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes']),
     },
     async created() {
+      this.imageVisibility = false
       await this.fetchTypes()
       await this.fetchTranscriptionView()
     },
@@ -114,6 +159,9 @@ export default {
       getCommentaryContent(label) {
         const com = this.getCommentary(label);
         return com ? com.withNotes : ''
+      },
+      toggleImageVisibility() {
+        this.imageVisibility = !this.imageVisibility
       }
     }
 }

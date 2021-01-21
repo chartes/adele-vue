@@ -353,28 +353,17 @@ const actions = {
     commit('UPDATE', data)
     return updatedNote
   },
-  cloneContent: function ({dispatch, state, rootGetters, rootState}) {
-    console.log('STORE ACTION transcription/cloneContent', state.transcriptionContent);
-    const auth = rootGetters['user/authHeader'];
-    console.log(`%c clone transcription`, 'color:red');
+  async cloneContent({dispatch, rootState}) {
+    console.log('STORE ACTION transcription/cloneContent');
     const doc_id = rootState.document.document.id;
     const user_id = rootState.user.author.id;
-    return new Promise((resolve, reject) => {
-      http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`, auth)
-        .then(response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          } else resolve(response.data)
-        })
-        .then(response => {
-          dispatch("unvalidate");
-        })
-        .catch(error => {
-          console.error("error", error);
-          reject(error)
-        });
-    });
+    try {
+      const response = await http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`)
+      await dispatch('document/unsetValidationFlag', {docId: doc_id, flagName: 'transcription'}, {root: true})
+      return response.data;
+    } catch (e) {
+      console.log(`%c error while cloning transcription ${e}`, 'color:red');
+    }
   },
   updateSpeechpartsPointers({state}) {
       console.log("state.transcriptionWithSpeechparts", state.transcriptionWithSpeechparts)
@@ -386,7 +375,7 @@ const actions = {
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
   },
-  textAlignmentsNeedToBeSaved({commit, dispatch, state, rootGetters, rootState}) {
+  textAlignmentsNeedToBeSaved({commit}) {
     commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
   },
   async saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {

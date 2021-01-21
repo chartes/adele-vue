@@ -1,5 +1,4 @@
 import {http} from '../../../modules/http-common';
-import axios from 'axios';
 
 const state = {
 

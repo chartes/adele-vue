@@ -15,7 +15,13 @@
       >
         <validate-translation-button :doc-id="document.id" />
       </p>
-   
+      <!-- CLONE TRANSCRIPTION --> 
+      <p
+        v-if="currentUserIsTeacher && currentUser.id !== selectedUserId"
+        class="control"
+      >
+        <clone-translation-button />
+      </p>
       <!-- DELETE TRANSLATION --> 
       <p
         v-if="currentUserIsTeacher && !transcriptionAlignmentMode"
@@ -60,6 +66,7 @@ import TranscriptionAlignmentButton from '../actions/TranscriptionAlignmentButto
 import SaveTranslationButton from '../actions/SaveTranslationButton.vue'
 import SaveTranslationAlignmentButton from '../actions/SaveTranslationAlignmentButton.vue'
 import Message from '@/components/Message.vue'
+import CloneTranslationButton from '../actions/CloneTranslationButton.vue'
 
 export default {
     name: 'TranslationActionBar',
@@ -69,6 +76,7 @@ export default {
       TranscriptionAlignmentButton,
       SaveTranslationButton,
       SaveTranslationAlignmentButton,
+      CloneTranslationButton,
       Message
     },
     computed: {

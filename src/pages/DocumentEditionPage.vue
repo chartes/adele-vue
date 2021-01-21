@@ -134,7 +134,7 @@
             </div>
 
             <mirador-viewer
-              v-if="document.manifest_origin_url && !isLoading"
+              v-if="$attrs.section !== 'commentaries' && document.manifest_origin_url && !isLoading"
               :key="$attrs.section === 'facsimile'"
               :manifest-url="document.manifest_origin_url"
               :canvas-index="0"
@@ -438,6 +438,12 @@
 
     <!-- modals -->
     <div v-if="!loading">
+      <clone-transcription-modal 
+        v-if="$attrs.section === 'transcription'"
+      />
+      <clone-translation-modal 
+        v-if="$attrs.section === 'translation'"
+      />
       <delete-transcription-modal 
         v-if="$attrs.section === 'transcription'"
         :doc-id="parseInt($attrs.docId)"
@@ -487,6 +493,9 @@ import DeleteTranscriptionModal from '@/components/document/edition/modals/Delet
 import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
 import DeleteCommentaryModal from '@/components/document/edition/modals/DeleteCommentaryModal.vue'
 
+import CloneTranscriptionModal from '@/components/document/edition/modals/CloneTranscriptionModal.vue'
+import CloneTranslationModal from '@/components/document/edition/modals/CloneTranslationModal.vue'
+
 
 export default {
     name: "DocumentEditionPage",
@@ -518,6 +527,9 @@ export default {
         DeleteTranscriptionModal,
         DeleteTranslationModal,
         DeleteCommentaryModal,
+
+        CloneTranscriptionModal,
+        CloneTranslationModal
 
         /*
 

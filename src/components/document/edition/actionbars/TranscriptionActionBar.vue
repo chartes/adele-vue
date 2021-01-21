@@ -15,6 +15,13 @@
       >
         <validate-transcription-button :doc-id="document.id" />
       </p>
+      <!-- CLONE TRANSCRIPTION --> 
+      <p
+        v-if="currentUserIsTeacher && currentUser.id !== selectedUserId"
+        class="control"
+      >
+        <clone-transcription-button />
+      </p>
       <!-- DELETE TRANSCRIPTION --> 
       <p
         v-if="currentUserIsTeacher || !isTranscriptionReadOnly"
@@ -35,13 +42,15 @@ import { mapState, mapGetters } from 'vuex'
 import SaveTranscriptionButton from '../actions/SaveTranscriptionButton.vue'
 import ValidateTranscriptionButton from '../actions/ValidateTranscriptionButton.vue'
 import DeleteTranscriptionButton from '../actions/DeleteTranscriptionButton.vue'
+import CloneTranscriptionButton from '../actions/CloneTranscriptionButton.vue'
 
 export default {
     name: 'TranscriptionActionBar',
     components: {
       SaveTranscriptionButton,
       ValidateTranscriptionButton,
-      DeleteTranscriptionButton
+      DeleteTranscriptionButton,
+      CloneTranscriptionButton
     },
     computed: {
         ...mapState('document', ['document']),

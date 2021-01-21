@@ -41,7 +41,6 @@ const actions = {
       //transcriptionSegments = Array.from(new Set(transcriptionSegments))
       transcriptionSegments.shift() //remove the first pointer (its the first, useless)
       transcriptionSegments.pop() //remove the last pointer (its the closing tag, useless)
-      console.warn('@WARN worklow/index segments', transcriptionSegments);
       dispatch('transcription/insertSegments', transcriptionSegments, {root: true})
 
       let translationSegments = rootState.transcription.textAlignmentSegments.map(e => [e[2], e[3]]).flat()

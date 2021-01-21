@@ -54,7 +54,8 @@ const router = new VueRouter({
     },
     {
       path: '/documents/:docId/view/',
-      redirect:  '/documents/:docId/notice'
+      redirect:  '/documents/:docId/notice',
+      props: true
     },
     {
       path: '/documents/:docId/view/:section',
