@@ -27,7 +27,7 @@
           class="button is-danger"
           @click="cloneTranscription"
         >
-          Confirmer la suppression
+          Valider
         </button>
         <button
           class="button"
@@ -45,28 +45,17 @@ import { mapActions, mapGetters } from 'vuex'
 import Message from '@/components/Message.vue'
 
 export default {
-    name: "DeleteTranscriptionModal",
-    components: {
-        
-    },
-    props: {
-    },
-    computed: {
-        ...mapGetters('workflow', [])
-    },
+    name: "CloneTranscriptionModal",
     methods: {
-        //...mapActions('commentaries', ['cloneCommentaryFromUser']),
+        ...mapActions('transcription', ['cloneContent']),
         
         closeModal() {
             document.querySelector('#clone-transcription-modal').classList.remove('is-active')
             document.querySelector('html').classList.remove('is-clipped')
         },
         
-        async cloneTranscription() {
-          /*
-            const activeItem = document.querySelector('.commentaries-tabs li.is-active')
-            await this.cloneCommentaryFromUser(activeItem.dataset.comType)
-          */
+        cloneTranscription() {
+          this.cloneContent()
           this.closeModal()
       }
     }

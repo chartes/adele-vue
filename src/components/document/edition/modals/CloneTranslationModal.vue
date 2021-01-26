@@ -45,7 +45,7 @@ import { mapActions, mapGetters } from 'vuex'
 import Message from '@/components/Message.vue'
 
 export default {
-    name: "DeleteTranslationModal",
+    name: "CloneTranslationModal",
     components: {
         
     },
@@ -55,7 +55,7 @@ export default {
         ...mapGetters('workflow', [])
     },
     methods: {
-        //...mapActions('commentaries', ['cloneCommentaryFromUser']),
+        ...mapActions('commentaries', ['cloneContent']),
         
         closeModal() {
             document.querySelector('#clone-translation-modal').classList.remove('is-active')
@@ -63,10 +63,7 @@ export default {
         },
         
         async cloneTranslation() {
-          /*
-            const activeItem = document.querySelector('.commentaries-tabs li.is-active')
-            await this.cloneCommentaryFromUser(activeItem.dataset.comType)
-          */
+          await this.cloneContent()
           this.closeModal()
       }
     }
