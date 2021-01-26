@@ -18,9 +18,17 @@
         />
       </header>
       <section class="modal-card-body">
-        <p>
-          TBD
-        </p>
+        <p>Vous allez copier le contenu et les notes liées à la traduction de <b>{{ selectedUsername }}</b>.</p>
+        <br>
+        <article class="message is-info">
+          <div class="message-body">
+            <div class="has-text-danger">
+              Cette opération écrasera votre propre version de la traduction et la remplacera par celle de  <b>{{ selectedUsername }}</b>.
+            </div>
+            <br>
+            Votre nouvelle traduction devra être de nouveau validée manuellement.
+          </div>
+        </article>
       </section>
       <footer class="modal-card-foot">
         <button
@@ -46,13 +54,8 @@ import Message from '@/components/Message.vue'
 
 export default {
     name: "CloneTranslationModal",
-    components: {
-        
-    },
-    props: {
-    },
     computed: {
-        ...mapGetters('workflow', [])
+        ...mapGetters('workflow', ['selectedUsername'])
     },
     methods: {
         ...mapActions('commentaries', ['cloneContent']),
@@ -62,8 +65,8 @@ export default {
             document.querySelector('html').classList.remove('is-clipped')
         },
         
-        async cloneTranslation() {
-          await this.cloneContent()
+        cloneTranslation() {
+          this.cloneContent()
           this.closeModal()
       }
     }

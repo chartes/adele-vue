@@ -99,6 +99,16 @@ const getters = {
   isSpeechPartsReadOnly: (state, getters)  => {
     return getters.isStepReadOnly('speech-parts')
   },
+  selectedUsername(state, getters, rootState) {
+    const whitelist = rootState.document.document.whitelist
+    if (whitelist) {
+      const user = rootState.document.document.whitelist.users.find(u => u.id == state.selectedUserId)
+      if (user) {
+        return `${user.first_name} ${user.last_name}`
+      }
+    }
+    return null
+  },
   selectedUserHasTranscription: (state, getters, rootState,) => {
     if (getters.isTranscriptionReadOnly) {
       return rootState.document.transcriptionView !== null

@@ -18,9 +18,17 @@
         />
       </header>
       <section class="modal-card-body">
-        <p>
-          TBD
-        </p>
+        <p>Vous allez copier le contenu et les notes liées à la transcription de <b>{{ selectedUsername }}</b>.</p>
+        <br>
+        <article class="message is-info">
+          <div class="message-body">
+            <div class="has-text-danger">
+              Cette opération écrasera votre propre version de la transcription et la remplacera par celle de  <b>{{ selectedUsername }}</b>.
+            </div>
+            <br>
+            Votre nouvelle transcription devra être de nouveau validée manuellement.
+          </div>
+        </article>
       </section>
       <footer class="modal-card-foot">
         <button
@@ -41,14 +49,17 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 import Message from '@/components/Message.vue'
 
 export default {
     name: "CloneTranscriptionModal",
+    computed: {
+      ...mapGetters('workflow', ['selectedUsername'])
+    },
     methods: {
         ...mapActions('transcription', ['cloneContent']),
-        
+
         closeModal() {
             document.querySelector('#clone-transcription-modal').classList.remove('is-active')
             document.querySelector('html').classList.remove('is-clipped')
