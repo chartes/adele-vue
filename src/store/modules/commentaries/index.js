@@ -139,7 +139,6 @@ const mutations = {
   SET_ERROR(state, payload) {
     state.commentariesError = payload
   },
-  /*
   RESET(state) { 
     state.commentariesWithNotes = {}
     state.selectedCommentaryLabel = null
@@ -147,7 +146,6 @@ const mutations = {
     //if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     //if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
   },
-  */
   CHANGED (state) {
     // transcription changed and needs to be saved
     state.commentariesSaved = false;
@@ -206,6 +204,7 @@ const actions = {
         commit('LOADING_STATUS', false);
       }).catch((error) => {
         commit('SET_ERROR', error)
+        commit('RESET')
         commit('LOADING_STATUS', false);
         //throw error
       })
