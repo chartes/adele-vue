@@ -1,3 +1,4 @@
+/* eslint-disable vue/max-attributes-per-line */
 <template>
   <div class="documentation-page">
     <div class="top">
@@ -106,7 +107,6 @@
           </div>
         </div>
         <div class="column content-column">
-
           <!--
           <div
             v-if="$attrs.section === 'facsimile'"
@@ -173,14 +173,20 @@
           >
             <h1>Crédits</h1>
             <p>
-              Projet soutenu par <a href="https://scripta.psl.eu/" target="_blank">Scripta</a> et par le DIM STCN, placé sous le patronage de la <a href="https://cidipl.org/" target="_blank">Commission internationale de diplomatique</a>.
+              Projet soutenu par <a
+                href="https://scripta.psl.eu/"
+                target="_blank"
+              >Scripta</a> et par le DIM STCN, placé sous le patronage de la <a
+                href="https://cidipl.org/"
+                target="_blank"
+              >Commission internationale de diplomatique</a>.
             </p>
             <ul>
-              <li>Conception scientifique : Olivier Guyotjeannin</li>
-              <li>Conception informatique : École des chartes, missions projets nuémriques</li>
-              <li>Saisies et conversions, tests : Pierre Pocart, Alexandre Gaudin, Sarah Rigaudeau</li>
-              <li>Conseils : Jean-Baptiste Camps, Olivier Canteaut</li>
-              <li>Collaborateurs extérieurs : Pilar Ostos (Séville), Cristina Cunha (Porto)</li>
+              <li>Conception scientifique : Olivier Guyotjeannin</li>
+              <li>Conception informatique : École des chartes, missions projets nuémriques</li>
+              <li>Saisies et conversions, tests : Pierre Pocart, Alexandre Gaudin, Sarah Rigaudeau</li>
+              <li>Conseils : Jean-Baptiste Camps, Olivier Canteaut</li>
+              <li>Collaborateurs extérieurs : Pilar Ostos (Séville), Cristina Cunha (Porto)</li>
             </ul>
           </div>
           <div
@@ -195,7 +201,10 @@
               Pour les actes, on a surtout procédé en recensant et en classant les types d’auteurs d’actes écrits, selon un point de vue éminemment diplomatique. Les types diplomatique précis, élaborés surtout au sein des chancelleries souveraines, sont pour leur part explicités dans la page de titre du dossier. Les documents de gestion sont organisés selon leur fonction et/ou leur type de producteur.
             </p>
             <p>
-              Après les définitions ou précisions concernant chacun des types, un lien est disposé vers la base bibliographique <a href="http://el.enc.sorbonne.fr/bede/" target="_blank">Bède</a>, qui recense les éditions et études d’actes et documents de la France médiévale (essentiellement à l’heure actuelle pour les années 1965-2000), et dont la typologie a été largement reprise.
+              Après les définitions ou précisions concernant chacun des types, un lien est disposé vers la base bibliographique <a
+                href="http://el.enc.sorbonne.fr/bede/"
+                target="_blank"
+              >Bède</a>, qui recense les éditions et études d’actes et documents de la France médiévale (essentiellement à l’heure actuelle pour les années 1965-2000), et dont la typologie a été largement reprise.
             </p>
 
             <div class="columns toc">
@@ -312,7 +321,7 @@
                 Souverain
               </dt>
               <dd>
-                Inclut : épouse, héritier… Complété d’un deuxième niveau, esquissant une grossière répartition par entité géographique (noms des pays actuels) (à compléter pour l’Est) :
+                Inclut : épouse, héritier… Complété d’un deuxième niveau, esquissant une grossière répartition par entité géographique (noms des pays actuels) (à compléter pour l’Est) :
                 <ul>
                   <li>Empereur d’Orient</li>
                   <li>Empereur d’Occident</li>
@@ -451,7 +460,7 @@
                   Bede :
                 </div>
                 <ul>
-                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
+                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
                 </ul>
 
                 <div class="related-docs">
@@ -472,7 +481,7 @@
                   Bede :
                 </div>
                 <ul>
-                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
+                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
                 </ul>
                 <div class="related-docs">
                   Exemple de dossiers :
@@ -492,7 +501,7 @@
                   Bede :
                 </div>
                 <ul>
-                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
+                  <li>« Actes privés nouveaux » : <a href="http://elec.enc.sorbonne.fr/bede/feuilleter77.php">http://elec.enc.sorbonne.fr/bede/feuilleter77.php</a></li>
                 </ul>
                 <div class="related-docs">
                   Exemple de dossiers :
@@ -542,7 +551,7 @@
                 Documents féodaux
               </dt>
               <dd>
-                Regroupe tous les actes et documents relatifs à la gestion des fiefs au sens courant, et des relations qu’ils nourrissent : hommages, fidélités, aveux et dénombrements, livres de fiefs…<br>
+                Regroupe tous les actes et documents relatifs à la gestion des fiefs au sens courant, et des relations qu’ils nourrissent : hommages, fidélités, aveux et dénombrements, livres de fiefs…<br>
                 <div class="related-docs">
                   Bede :
                 </div>
@@ -729,10 +738,10 @@
             <h1>Parties du discours</h1>
             <p>
               Depuis Mabillon au moins, le découpage et la comparaison des parties du discours, atomes de la construction textuelle des actes, sont reconnus comme des outils essentiels de la critique diplomatique, mais aussi de l’étude de l’alchimie rédactionnelle des actes, et des relations entre rédacteurs. Par la suite, les diplomatistes ont appris à les constituer en séries et à les exploiter pour elles-mêmes, ainsi pour le préambule, la suscription (<i>intitulatio</i>), les clauses comminatoires ou de renonciation…
-Pour appuyer le commentaire diplomatique, que l’on opère sur des documents isolés, sur des groupes ou sur de larges ensembles, nos dossiers visualisent souvent, sous forme d’un schéma coloré, la structure de l’acte étudié. Parce qu’ils sont moins formalisés dans leur rédaction, les documents de gestion ne se prêtent guère à ce jeu.
+              Pour appuyer le commentaire diplomatique, que l’on opère sur des documents isolés, sur des groupes ou sur de larges ensembles, nos dossiers visualisent souvent, sous forme d’un schéma coloré, la structure de l’acte étudié. Parce qu’ils sont moins formalisés dans leur rédaction, les documents de gestion ne se prêtent guère à ce jeu.
             </p>
             <p>
-              De l’une à l’autre, les parties du discours sont très variables dans leur extension spatiale, temporelle et typologique ; certaines sont ignorées des manuels, et même, à l’occasion, du Vocabulaire international… Notre recensement en a certainement laissé échapper ; et notre propos était avant tout pédagogique. Pour toutes ces raisons, nous nous sommes arrêtés à un haut niveau de généralisation, englobant l’ensemble du discours, distribuant les fonctions essentielles (identifier l’auteur, décrire et garantir l’action juridique, valider l’acte écrit….), non sans quelque anachronisme (la date est parfois proche d’une validation), entre 14 ensembles dont le détail est précisé ci-après.
+              De l’une à l’autre, les parties du discours sont très variables dans leur extension spatiale, temporelle et typologique ; certaines sont ignorées des manuels, et même, à l’occasion, du Vocabulaire international… Notre recensement en a certainement laissé échapper ; et notre propos était avant tout pédagogique. Pour toutes ces raisons, nous nous sommes arrêtés à un haut niveau de généralisation, englobant l’ensemble du discours, distribuant les fonctions essentielles (identifier l’auteur, décrire et garantir l’action juridique, valider l’acte écrit….), non sans quelque anachronisme (la date est parfois proche d’une validation), entre 14 ensembles dont le détail est précisé ci-après.
             </p>
             <div class="toc">
               <h2>
@@ -1058,7 +1067,7 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
           <div
             v-if="$attrs.section === 'conservation'"
           >
-            <h1>Lieu de conservation : institution, cote</h1>
+            <h1>Lieu de conservation : institution, cote</h1>
             <p>
               Les fac-similés de l’École utilisés dans Theleme (et donc dans la première partie d’ADELE) n’indiquent que très irrégulièrement la provenance des documents, et quasi jamais leur cote précise. L’interrogation de cette zone est donc à réserver essentiellement à des fins de gestion. – Le nom officiel développé de l’institution est complété, entre parenthèses, du nom du pays s’il n’est pas intégré au titre et, pour les institutions locales, du nom de la ville, aux mêmes conditions. Ces indications complémentaires sont données dans la forme française usuelle.
             </p>
@@ -1066,7 +1075,7 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
               Ex. Bibliothèque nationale de France, Archives nationales (France), British Library, Archives générales du Royaume (Belgique), Archivio di Stato Arezzo (Italie), Archives départementales Cher (France), Archivo de la Corona de Aragon (Espagne), etc.
             </p>
             <p>
-              Le cas échéant, est donnée la cote (dans l’une des deux séries, dites Ancien fonds, AF, ou Nouveau fonds, NF) du fac-similé de l’École des chartes qui fait l’objet du dossier. La plupart de ces fac-similés ont été réalisés par l’École, d’abord en lithographie (cotes AF 1-632), puis selon divers procédés photographiques, dont l’héliogravure (cotes NF 1-, mais aussi AF 633-). Il convient d’être prévenu contre le mauvais rendu de certaines lithographies, dessinées par des artisans ignorant tout de la paléographie, quand d’autres sont de véritables chefs-d’œuvre.
+              Le cas échéant, est donnée la cote (dans l’une des deux séries, dites Ancien fonds, AF, ou Nouveau fonds, NF) du fac-similé de l’École des chartes qui fait l’objet du dossier. La plupart de ces fac-similés ont été réalisés par l’École, d’abord en lithographie (cotes AF 1-632), puis selon divers procédés photographiques, dont l’héliogravure (cotes NF 1-, mais aussi AF 633-). Il convient d’être prévenu contre le mauvais rendu de certaines lithographies, dessinées par des artisans ignorant tout de la paléographie, quand d’autres sont de véritables chefs-d’œuvre.
             </p>
             <p>
               Les clichés numérisés, reproduits avec la libérale autorisation des institutions chargées de leur conservation, sont tantôt le fruit de commandes spéciales, tantôt le fait de prospections sur des sites internet.
@@ -1077,10 +1086,10 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
           >
             <h1>Région [Pays & lieux identifiés]</h1>
             <p>
-              Pour l'identification des lieux, nous employons, quand elle existe, la forme moderne usuelle en français, y compris pour les noms de lieux étrangers (Rome, Londres, Augsbourg), laissant « telle quelle » la forme ancienne quand elle n'est pas identifiée.
+              Pour l'identification des lieux, nous employons, quand elle existe, la forme moderne usuelle en français, y compris pour les noms de lieux étrangers (Rome, Londres, Augsbourg), laissant « telle quelle » la forme ancienne quand elle n'est pas identifiée.
             </p>
             <p>
-              Pour la France, les identifications sont par convention faites d'après le système administratif des départements et cantons (en suivant le Dictionnaire des communes de 1997). <br>
+              Pour la France, les identifications sont par convention faites d'après le système administratif des départements et cantons (en suivant le Dictionnaire des communes de 1997). <br>
               Bientôt, des liens seront créés entre le <a href="https://dicotopo.cths.fr/">Dictionnaire Topographique</a> et les différents référentiels de lieux, pour permettre l'interopérabilité des données géographiques.
             </p>
             <p>
@@ -1091,20 +1100,20 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
               <li>La base "Nominatim" d'OpenStreetMap : <a href="https://nominatim.openstreetmap.org/ui/search.html">Nominatim</a></li>
             </ul>
             <p>
-              L’ancrage spatial des documents est donné par les titulatures, mais celles-ci sont souvent larges, ou décalées : on a donc choisi de retenir la ou les zones impliquées dans l’action ou la description notifiée et sanctionnée par l’acte ou le document  – micro-région gouvernée par des coutumes (juridiques, judiciaires, agraires, familiales…), par des usages diplomatiques qui n’ont rien d’isolats, mais livrent le souvenir morcelé de pratiques entretenues ou négligées, reformées ou disqualifiées au fil d’un puissant brassage documentaire ; rapportant ensuite ces briques à un ensemble plus vaste, autorisant une identification immédiate et parlante.
+              L’ancrage spatial des documents est donné par les titulatures, mais celles-ci sont souvent larges, ou décalées : on a donc choisi de retenir la ou les zones impliquées dans l’action ou la description notifiée et sanctionnée par l’acte ou le document  – micro-région gouvernée par des coutumes (juridiques, judiciaires, agraires, familiales…), par des usages diplomatiques qui n’ont rien d’isolats, mais livrent le souvenir morcelé de pratiques entretenues ou négligées, reformées ou disqualifiées au fil d’un puissant brassage documentaire ; rapportant ensuite ces briques à un ensemble plus vaste, autorisant une identification immédiate et parlante.
             </p>
             <p>
-              Recourir aux anciennes circonscriptions laïques ou ecclésiastiques anciennes, sous couvert d’authenticité, laissait subsister trop d’incertitudes, qui auraient fait manquer le projet initial. On s’est donc résolu à une solution rustique, évidente et sûre : rapporter les lieux retenus aux pays actuels et, sous ces derniers, à des circonscriptions contemporaines d’une taille qui permît de rapprocher assez aisément les localités, à une échelle relativement proche de celle des anciennes provinces et principautés – bref, des entités souvent bien représentées par les régions françaises ou italiennes (voir les listes ci-dessous).
+              Recourir aux anciennes circonscriptions laïques ou ecclésiastiques anciennes, sous couvert d’authenticité, laissait subsister trop d’incertitudes, qui auraient fait manquer le projet initial. On s’est donc résolu à une solution rustique, évidente et sûre : rapporter les lieux retenus aux pays actuels et, sous ces derniers, à des circonscriptions contemporaines d’une taille qui permît de rapprocher assez aisément les localités, à une échelle relativement proche de celle des anciennes provinces et principautés – bref, des entités souvent bien représentées par les régions françaises ou italiennes (voir les listes ci-dessous).
             </p>
 
             <!-- structure ? div ? section ? lien ? -->
-            <h2>Angleterre : v. Royaume-Uni</h2>
+            <h2>Angleterre : v. Royaume-Uni</h2>
 
             <h2>Belgique</h2>
             <p>
-              Le territoire belge est réparti en deux régions, Flandre et Wallonie (outre la région de Bruxelles-capitale), comprenant chacune cinq provinces – niveau auquel nous nous arrêtons :
+              Le territoire belge est réparti en deux régions, Flandre et Wallonie (outre la région de Bruxelles-capitale), comprenant chacune cinq provinces – niveau auquel nous nous arrêtons :
             </p>
-            <p>Vlaams Gewest (Flandre) :</p>
+            <p>Vlaams Gewest (Flandre) :</p>
             <ul>
               <li>Antwerpen (Anvers)</li>
               <li>Limburg (Limbourg)</li>
@@ -1112,7 +1121,7 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
               <li>Vlaams-Brabant (Brabant flamand)</li>
               <li>West-Vlaanderen (Flandre-Occidentale)</li>
             </ul>
-            <p>Wallonie :</p>
+            <p>Wallonie :</p>
             <ul>
               <li>Brabant wallon</li>
               <li>Hainaut</li>
@@ -1120,15 +1129,21 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
               <li>Luxembourg</li>
               <li>Namur</li>
             </ul>
-            <img :src="require('@/assets/map_belgique.png')" alt="carte de la belgique" />
+            <img
+              :src="require('@/assets/images/map_belgique.png')"
+              alt="carte de la belgique"
+            >
 
             <h2>Espagne</h2>
             <p>
-              Les provinces espagnoles, suivant en partie le modèle des départements français, remontent à 1833 et respectent les limites des anciens royaumes ibériques, mais leur nombre (55) et leur taille les disqualifient pour notre entreprise (source de la carte : Imago mundi).
+              Les provinces espagnoles, suivant en partie le modèle des départements français, remontent à 1833 et respectent les limites des anciens royaumes ibériques, mais leur nombre (55) et leur taille les disqualifient pour notre entreprise (source de la carte : Imago mundi).
             </p>
-            <img :src="require('@/assets/map_espagne.png')" alt="carte de l’espagne" />
+            <img
+              :src="require('@/assets/images/map_espagne.png')"
+              alt="carte de l’espagne"
+            >
             <p>
-              Nous nous rabattons donc sur les « Autonomies » (ou « Communautés autonomes »), annoncées dans la constitution de 1978 et progressivement mises en place, avec un mélange de critères historiques et de considérations politiques. Le découpage en 17 communautés (correspondant à une ou plusieurs provinces) a été sanctionné en 1983, et complété en 1995 des deux villes, autonomes, de Ceuta et Melilla :
+              Nous nous rabattons donc sur les « Autonomies » (ou « Communautés autonomes »), annoncées dans la constitution de 1978 et progressivement mises en place, avec un mélange de critères historiques et de considérations politiques. Le découpage en 17 communautés (correspondant à une ou plusieurs provinces) a été sanctionné en 1983, et complété en 1995 des deux villes, autonomes, de Ceuta et Melilla :
             </p>
             <ul>
               <li>Galicia</li>
@@ -1149,15 +1164,21 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
               <li>Andalucia</li>
               <li>Islas Canarias</li>
             </ul>
-            <img :src="require('@/assets/map_espagne_2.png')" alt="carte de l’espagne" />
+            <img
+              :src="require('@/assets/images/map_espagne_2.png')"
+              alt="carte de l’espagne"
+            >
 
             <h2>France</h2>
             <p>
-              Les régions, préfigurées en 1960 dans les « Circonscriptions d’action régionale » entre lesquelles sont répartis les départements, s’imposent d’elles-mêmes par leur taille et leur cohérence historique (évidemment imparfaite), avec quelques exceptions où les regroupements se font plus arbitraires, ou dénoncent d’autres critères, économiques ou démographiques, comme la région Centre, étirée du Berry au Chartrain ; Rhône-Alpes menant de la Bresse au Dauphiné et de la Savoie au Vivarais ; ou encore cet hétéroclite Pays de la Loire, qui s’entend des terres riveraines du cours inférieur de la Loire, juxtaposant le Nantais arraché à la Bretagne, le Maine, le Bas-Poitou, l’Anjou…
+              Les régions, préfigurées en 1960 dans les « Circonscriptions d’action régionale » entre lesquelles sont répartis les départements, s’imposent d’elles-mêmes par leur taille et leur cohérence historique (évidemment imparfaite), avec quelques exceptions où les regroupements se font plus arbitraires, ou dénoncent d’autres critères, économiques ou démographiques, comme la région Centre, étirée du Berry au Chartrain ; Rhône-Alpes menant de la Bresse au Dauphiné et de la Savoie au Vivarais ; ou encore cet hétéroclite Pays de la Loire, qui s’entend des terres riveraines du cours inférieur de la Loire, juxtaposant le Nantais arraché à la Bretagne, le Maine, le Bas-Poitou, l’Anjou…
             </p>
-            <img :src="require('@/assets/map_france.png')" alt="carte de la france" />
+            <img
+              :src="require('@/assets/images/map_france.png')"
+              alt="carte de la france"
+            >
             <p>
-              À l’attention des lecteurs peu familiers avec ces découpages, nous indiquons ci-après, en italique et entre parenthèses, la concordance très grossière entre ces régions ou portions de région et les principales provinces ou « pays » historiques de France (essentiellement d’après J. Moreau, <i>Dictionnaire de géographie historique de la Gaule et de la France</i>, Paris, 1972, carte n° 3, h.-t.). – Un regroupement des régions a été introduit le 1<sup>er</sup> janvier 2016, qui aboutit à des ensembles trop larges pour nos besoins.
+              À l’attention des lecteurs peu familiers avec ces découpages, nous indiquons ci-après, en italique et entre parenthèses, la concordance très grossière entre ces régions ou portions de région et les principales provinces ou « pays » historiques de France (essentiellement d’après J. Moreau, <i>Dictionnaire de géographie historique de la Gaule et de la France</i>, Paris, 1972, carte n° 3, h.-t.). – Un regroupement des régions a été introduit le 1<sup>er</sup> janvier 2016, qui aboutit à des ensembles trop larges pour nos besoins.
             </p>
             <ul>
               <li>Alsace (<i>Alsace</i>)</li>
@@ -1186,9 +1207,12 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
 
             <h2>Italie</h2>
             <p>
-              Comme en France, les vingt régions, regroupant ici des « provinces » au fort substrat historique, offrent un cadre commode :
+              Comme en France, les vingt régions, regroupant ici des « provinces » au fort substrat historique, offrent un cadre commode :
             </p>
-            <img :src="require('@/assets/map_italie.png')" alt="carte de l’Italie" />
+            <img
+              :src="require('@/assets/images/map_italie.png')"
+              alt="carte de l’Italie"
+            >
             <ul>
               <li>Piemonte</li>
               <li>Valle d’Aosta</li>
@@ -1214,26 +1238,77 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
 
             <h2>Royaume-Uni /Angleterre</h2>
             <p>
-              La diversité est ici de mise, et pas seulement parce que les entités progressivement agrégées à l’Angleterre, Pays de Galles, Écosse, Irlande du nord, ont gardé leur organisation propre (qui ne sera pas retenue ici), mais encore parce que, en Angleterre même, le découpage des diverses circonscriptions est plus d’une fois discontinu et leur ancrage historique inégal. Nous nous sommes donc arrêtés aux neuf régions statistiques dans leur état antérieur à 2015 :
+              La diversité est ici de mise, et pas seulement parce que les entités progressivement agrégées à l’Angleterre, Pays de Galles, Écosse, Irlande du nord, ont gardé leur organisation propre (qui ne sera pas retenue ici), mais encore parce que, en Angleterre même, le découpage des diverses circonscriptions est plus d’une fois discontinu et leur ancrage historique inégal. Nous nous sommes donc arrêtés aux neuf régions statistiques dans leur état antérieur à 2015 :
             </p>
-            <img :src="require('@/assets/map_angleterre.png')" alt="carte du Royaume-Uni" />
+            <img
+              :src="require('@/assets/images/map_angleterre.png')"
+              alt="carte du Royaume-Uni"
+            >
             <ul>
-              <li>North West England (<a href="https://fr.wikipedia.org/wiki/Angleterre_du_Nord-Ouest" target="_blank">Angleterre du Nord-Ouest</a>)</li>
-              <li>North East England  (<a href="https://fr.wikipedia.org/wiki/Angleterre_du_Nord-Est" target="_blank">Angleterre du Nord-Est </a>)</li>
-              <li>South East England (<a href="https://fr.wikipedia.org/wiki/Angleterre_du_Sud-Est" target="_blank">Angleterre du Sud-Est</a>)</li>
-              <li>South West England  (<a href="https://fr.wikipedia.org/wiki/Angleterre_du_Sud-Ouest" target="_blank">Angleterre du Sud-Ouest</a>)</li>
-              <li>East of England (<a href="https://fr.wikipedia.org/wiki/Angleterre_de_l%27Est" target="_blank">Angleterre de l'Est</a>)</li>
-              <li>Greater London (<a href="https://fr.wikipedia.org/wiki/Grand_Londres" target="_blank">Grand Londres</a>)</li>
-              <li>East Midlands (<a href="https://fr.wikipedia.org/wiki/Midlands_de_l%27Est" target="_blank">Midlands de l'Est</a>)</li>
-              <li>West Midlands (<a href="https://fr.wikipedia.org/wiki/Midlands_de_l%27Ouest" target="_blank">Midlands de l'Ouest</a>)</li>
-              <li>Yorkshire and the Humbe (<a href="https://fr.wikipedia.org/wiki/Yorkshire-et-Humber" target="_blank">Yorkshire et Humber</a>)</li>
+              <li>
+                North West England (<a
+                  href="https://fr.wikipedia.org/wiki/Angleterre_du_Nord-Ouest"
+                  target="_blank"
+                >Angleterre du Nord-Ouest</a>)
+              </li>
+              <li>
+                North East England  (<a
+                  href="https://fr.wikipedia.org/wiki/Angleterre_du_Nord-Est"
+                  target="_blank"
+                >Angleterre du Nord-Est </a>)
+              </li>
+              <li>
+                South East England (<a
+                  href="https://fr.wikipedia.org/wiki/Angleterre_du_Sud-Est"
+                  target="_blank"
+                >Angleterre du Sud-Est</a>)
+              </li>
+              <li>
+                South West England  (<a
+                  href="https://fr.wikipedia.org/wiki/Angleterre_du_Sud-Ouest"
+                  target="_blank"
+                >Angleterre du Sud-Ouest</a>)
+              </li>
+              <li>
+                East of England (<a
+                  href="https://fr.wikipedia.org/wiki/Angleterre_de_l%27Est"
+                  target="_blank"
+                >Angleterre de l'Est</a>)
+              </li>
+              <li>
+                Greater London (<a
+                  href="https://fr.wikipedia.org/wiki/Grand_Londres"
+                  target="_blank"
+                >Grand Londres</a>)
+              </li>
+              <li>
+                East Midlands (<a
+                  href="https://fr.wikipedia.org/wiki/Midlands_de_l%27Est"
+                  target="_blank"
+                >Midlands de l'Est</a>)
+              </li>
+              <li>
+                West Midlands (<a
+                  href="https://fr.wikipedia.org/wiki/Midlands_de_l%27Ouest"
+                  target="_blank"
+                >Midlands de l'Ouest</a>)
+              </li>
+              <li>
+                Yorkshire and the Humbe (<a
+                  href="https://fr.wikipedia.org/wiki/Yorkshire-et-Humber"
+                  target="_blank"
+                >Yorkshire et Humber</a>)
+              </li>
             </ul>
 
             <h2>Portugal</h2>
             <p>
-              Prévues dans la constitution de 1976, cinq « régions administratives » couvrent le Portugal continental (Madère et les Açores n’ont plus la qualité de régions autonomes), et regroupent, en les partageant parfois, un total de 18 districts :
+              Prévues dans la constitution de 1976, cinq « régions administratives » couvrent le Portugal continental (Madère et les Açores n’ont plus la qualité de régions autonomes), et regroupent, en les partageant parfois, un total de 18 districts :
             </p>
-            <img :src="require('@/assets/map_portugal.png')" alt="carte du Portugal" />
+            <img
+              :src="require('@/assets/images/map_portugal.png')"
+              alt="carte du Portugal"
+            >
             <ul>
               <li>Norte</li>
               <li>Centro</li>
@@ -1244,36 +1319,102 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
 
             <h2>République tchèque</h2>
             <p>
-              La Bohème et la Moravie sont réparties entre onze provinces administratives (<i>kraj</i>), à la filiation historique peu affirmée :
+              La Bohème et la Moravie sont réparties entre onze provinces administratives (<i>kraj</i>), à la filiation historique peu affirmée :
             </p>
-            <img :src="require('@/assets/map_republique_tcheque.png')" alt="carte de la République tchèque" />
-            <p>[en Bohême :]</p>
+            <img
+              :src="require('@/assets/images/map_republique_tcheque.png')"
+              alt="carte de la République tchèque"
+            >
+            <p>[en Bohême :]</p>
             <ul>
-              <li><a href="https://fr.wikipedia.org/wiki/Boh%C3%AAme-Centrale" target="_blank">Bohême centrale</a> (<i>Středočeský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Karlovy_Vary" target="_blank">Région de Karlovy Vary</a> (<i>Karlovarský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Hradec_Kr%C3%A1lov%C3%A9" target="_blank">Région de Hradec Králové</a> (<i>Královéhradecký kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Liberec" target="_blank">Région de Liberec</a> (<i>Liberecký kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Plze%C5%88" target="_blank">Région de Plzeň</a> (<i>Plzeňský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_d'%C3%9Ast%C3%AD_nad_Labem" target="_blank">Région d’Ústí nad Labem</a> (<i>Ústecký kraj</i>)</li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/Boh%C3%AAme-Centrale"
+                  target="_blank"
+                >Bohême centrale</a> (<i>Středočeský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Karlovy_Vary"
+                  target="_blank"
+                >Région de Karlovy Vary</a> (<i>Karlovarský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Hradec_Kr%C3%A1lov%C3%A9"
+                  target="_blank"
+                >Région de Hradec Králové</a> (<i>Královéhradecký kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Liberec"
+                  target="_blank"
+                >Région de Liberec</a> (<i>Liberecký kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Plze%C5%88"
+                  target="_blank"
+                >Région de Plzeň</a> (<i>Plzeňský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_d'%C3%9Ast%C3%AD_nad_Labem"
+                  target="_blank"
+                >Région d’Ústí nad Labem</a> (<i>Ústecký kraj</i>)
+              </li>
             </ul>
-            <p>[À cheval entre Bohême et Moravie :]</p>
+            <p>[À cheval entre Bohême et Moravie :]</p>
             <ul>
-              <li><a href="https://fr.wikipedia.org/wiki/Boh%C3%AAme-du-Sud" target="_blank">Bohême-du-Sud</a> (<i>Jihočeský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Pardubice" target="_blank">Région de Pardubice</a> (<i>Pardubický kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Vyso%C4%8Dina" target="_blank">Région de Vysočina</a> (<i>Kraj Vysočina ou Vysočina</i>).</li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/Boh%C3%AAme-du-Sud"
+                  target="_blank"
+                >Bohême-du-Sud</a> (<i>Jihočeský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Pardubice"
+                  target="_blank"
+                >Région de Pardubice</a> (<i>Pardubický kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Vyso%C4%8Dina"
+                  target="_blank"
+                >Région de Vysočina</a> (<i>Kraj Vysočina ou Vysočina</i>).
+              </li>
             </ul>
-            <p>[en Moravie :]</p>
+            <p>[en Moravie :]</p>
             <ul>
-              <li><a href="https://fr.wikipedia.org/wiki/Moravie-du-Sud" target="_blank">Moravie-du-Sud</a> (<i>Jihomoravský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Zl%C3%ADn" target="_blank">Région de Zlín</a> (<i>Zlínský kraj</i>).</li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/Moravie-du-Sud"
+                  target="_blank"
+                >Moravie-du-Sud</a> (<i>Jihomoravský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Zl%C3%ADn"
+                  target="_blank"
+                >Région de Zlín</a> (<i>Zlínský kraj</i>).
+              </li>
             </ul>
-            <p>[à cheval entre Moravie et Silésie :]</p>
+            <p>[à cheval entre Moravie et Silésie :]</p>
             <ul>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Moravie-Sil%C3%A9sie" target="_blank">Moravie-Silésie</a> (<i>Moravskoslezský kraj</i>)</li>
-              <li><a href="https://fr.wikipedia.org/wiki/R%C3%A9gion_d'Olomouc" target="_blank">Région d’Olomouc</a> (<i>Olomoucký kraj</i>).</li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_de_Moravie-Sil%C3%A9sie"
+                  target="_blank"
+                >Moravie-Silésie</a> (<i>Moravskoslezský kraj</i>)
+              </li>
+              <li>
+                <a
+                  href="https://fr.wikipedia.org/wiki/R%C3%A9gion_d'Olomouc"
+                  target="_blank"
+                >Région d’Olomouc</a> (<i>Olomoucký kraj</i>).
+              </li>
             </ul>
-
-
           </div>
           <div
             v-if="$attrs.section === 'persons'"
@@ -1374,7 +1515,7 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
           >
             <h1>Tradition</h1>
             <p>
-              La tradition d’un acte a pu être définie comme la chaîne des états successifs de l’acte, depuis le moment de sa création jusqu’à l’état que nous avons sous les yeux. Ces états sont, sans exhaustivité, la copie intégrale ou partielle, l’extrait, la simple mention, ou encore la falsification, la reproduction dessinée ou photographiée, la traduction. D’abord conçue sous l’empire de la philologie comme méthode permettant de débusquer les faiblesses des copies et d’appuyer la reconstitution du « bon » texte, l’étude de la tradition a inscrit à son programme l’analyse de l’attention portée à l’acte au fil des siècles, de ses lectures et, en un mot, de sa réception.
+              La tradition d’un acte a pu être définie comme la chaîne des états successifs de l’acte, depuis le moment de sa création jusqu’à l’état que nous avons sous les yeux. Ces états sont, sans exhaustivité, la copie intégrale ou partielle, l’extrait, la simple mention, ou encore la falsification, la reproduction dessinée ou photographiée, la traduction. D’abord conçue sous l’empire de la philologie comme méthode permettant de débusquer les faiblesses des copies et d’appuyer la reconstitution du « bon » texte, l’étude de la tradition a inscrit à son programme l’analyse de l’attention portée à l’acte au fil des siècles, de ses lectures et, en un mot, de sa réception.
             </p>
             <p>
               Pour chaque terme ici retenu, une définition est donnée, ainsi qu'un lien vers le Vocabulaire International de la diplomatique.
@@ -1568,7 +1709,7 @@ Pour appuyer le commentaire diplomatique, que l’on opère sur des documents is
           >
             <h1>Dates</h1>
             <p>
-              Dans la page de titre des dossiers, la « date de l’original » est la date de rédaction ou compilation originelle de l’acte/document présenté dans le dossier, même si l’état retenu et reproduit remonte à une autre date – par exemple la copie d’un diplôme de 849 dans un cartulaire du <span class="sc">xii</span><sup>e</sup> siècle sera classée et indexée à 849, quand bien même une partie du commentaire serait consacrée au cartulaire.
+              Dans la page de titre des dossiers, la « date de l’original » est la date de rédaction ou compilation originelle de l’acte/document présenté dans le dossier, même si l’état retenu et reproduit remonte à une autre date – par exemple la copie d’un diplôme de 849 dans un cartulaire du <span class="sc">xii</span><sup>e</sup> siècle sera classée et indexée à 849, quand bien même une partie du commentaire serait consacrée au cartulaire.
             </p>
             <p>
               Les listes de dossiers (liste générale, listes particulières obtenues après tri) sont classées par date, plus exactement par année, autant que possible ramenée au style du 1<sup>er</sup> janvier.

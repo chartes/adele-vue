@@ -34,6 +34,13 @@
       >
         <validate-commentaries-button :doc-id="document.id" />
       </div>
+      <!-- CLONE TRANSCRIPTION --> 
+      <p
+        v-if="currentUserIsTeacher && currentUser.id !== selectedUserId"
+        class="control"
+      >
+        <clone-commentary-button />
+      </p>
       <div class="control">
         <delete-commentary-button />
       </div>
@@ -47,6 +54,7 @@ import AddCommentaryButton from '../actions/AddCommentaryButton.vue'
 import DeleteCommentaryButton from '../actions/DeleteCommentaryButton.vue'
 import ValidateCommentariesButton from '../actions/ValidateCommentariesButton.vue'
 import SaveCommentariesButton from '../actions/SaveCommentariesButton.vue'
+import CloneCommentaryButton from '../actions/CloneCommentaryButton.vue'
 
 export default {
     name: 'CommentariesActionBar',
@@ -54,7 +62,8 @@ export default {
       AddCommentaryButton,
       DeleteCommentaryButton,
       ValidateCommentariesButton,
-      SaveCommentariesButton
+      SaveCommentariesButton,
+      CloneCommentaryButton
     },
     props: {
       type: {type: Number, required: true},
@@ -64,6 +73,7 @@ export default {
     computed: {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId', 'isCommentariesReadOnly']),
+        ...mapState('user', ['currentUser']),
         ...mapGetters('user', ['currentUserIsTeacher']),
         ...mapGetters('commentaries', ['hasCommentaryTypes']),
     },

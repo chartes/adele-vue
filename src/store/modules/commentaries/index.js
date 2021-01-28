@@ -225,6 +225,19 @@ const actions = {
       })
     }
   },
+  async cloneContent({dispatch, rootState}) {
+    console.log('STORE ACTION commentaries/cloneContent');
+    const doc_id = rootState.document.document.id;
+    const user_id = rootState.workflow.selectedUserId;
+    const type_id = 1 // TODO
+    try {
+      const response = await http.get(`documents/${doc_id}/commentaries/clone/from-user/${user_id}/and-type/${type_id}`)
+      await dispatch('document/unsetValidationFlag', {docId: doc_id, flagName: 'commentaries'}, {root: true})
+      return response.data;
+    } catch (e) {
+      console.log(`%c error while cloning commentaries ${e}`, 'color:red');
+    }
+  },
   /* useful */
   setError({commit}, payload) {
     commit('SET_ERROR', payload)

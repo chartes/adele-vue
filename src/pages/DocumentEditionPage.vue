@@ -2,11 +2,11 @@
   <div class="section">
     <div
       v-if="!!document"
-      class="container is-fluid "
-    > 
+      class="container is-fluid"
+    >
       <!-- header (title, workflow steps, switch) -->
       <div class="columns">
-        <div class="column  is-half">
+        <div class="column is-half">
           <document-title-bar />
         </div>
         <div class="is-divider-vertical p-t-xl p-b-xl" />
@@ -19,57 +19,91 @@
         <!-- section tabs (notice, transcription, commentaires, etc) -->
         <div class="section-tabs tabs">
           <ul>
-            <li 
-              :class="$attrs.section === 'notice' || $attrs.section === undefined ? `is-active`: ''"
+            <li
+              :class="
+                $attrs.section === 'notice' || $attrs.section === undefined
+                  ? `is-active`
+                  : ''
+              "
               @click="hideImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'notice'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'notice' },
+                }"
+              >
                 Notice
               </router-link>
             </li>
             <li
-              :class="$attrs.section === 'transcription' ? `is-active`: ''"
+              :class="$attrs.section === 'transcription' ? `is-active` : ''"
               @click="showImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'transcription'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'transcription' },
+                }"
+              >
                 Transcription
               </router-link>
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'translation' ? `is-active`: ''"
+              :class="$attrs.section === 'translation' ? `is-active` : ''"
               @click="hideImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'translation'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'translation' },
+                }"
+              >
                 <span v-if="currentUserIsTeacher">Traduction</span>
                 <span v-else>Traduction</span>
               </router-link>
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'commentaries' ? `is-active`: ''"
+              :class="$attrs.section === 'commentaries' ? `is-active` : ''"
               @click="hideImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'commentaries'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'commentaries' },
+                }"
+              >
                 Commentaires
               </router-link>
             </li>
             <!-- students don't get to deal with facsimile alignment -->
             <li
               v-if="currentUserIsTeacher && selectedUserId === documentOwner.id"
-              :class="$attrs.section === 'facsimile' ? `is-active`: ''"
+              :class="$attrs.section === 'facsimile' ? `is-active` : ''"
               @click="showImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'facsimile'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'facsimile' },
+                }"
+              >
                 Facsimilé
               </router-link>
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
+              :class="$attrs.section === 'speech-parts' ? `is-active` : ''"
               @click="showImage"
             >
-              <router-link :to="{name: 'document-edition', params: {docId: $attrs.docId, section:'speech-parts'}}">
+              <router-link
+                :to="{
+                  name: 'document-edition',
+                  params: { docId: $attrs.docId, section: 'speech-parts' },
+                }"
+              >
                 Parties du discours
               </router-link>
             </li>
@@ -80,10 +114,10 @@
           <div
             v-show="imageVisibility"
             class="column m-t-sm"
-            :class="`${imageVisibility && showContent ? 'is-two-fifths': ''}`"
+            :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
           >
             <!-- Visibility widget-->
-            <div 
+            <div
               v-if="!showContent && $attrs.section !== 'commentaries'"
               class="visibility-controls m-b-md"
             >
@@ -107,7 +141,11 @@
                   notice
                 </visibility-toggle>
                 <visibility-toggle
-                  v-if="$attrs.section === 'translation' || $attrs.section === 'transcription' || $attrs.section === 'facsimile'"
+                  v-if="
+                    $attrs.section === 'translation' ||
+                      $attrs.section === 'transcription' ||
+                      $attrs.section === 'facsimile'
+                  "
                   class="control"
                   :action="toggleTranscriptionVisibility"
                   :visible="transcriptionVisibility"
@@ -134,7 +172,11 @@
             </div>
 
             <mirador-viewer
-              v-if="$attrs.section !== 'commentaries' && document.manifest_origin_url && !isLoading"
+              v-if="
+                $attrs.section !== 'commentaries' &&
+                  document.manifest_origin_url &&
+                  !isLoading
+              "
               :key="$attrs.section === 'facsimile'"
               :manifest-url="document.manifest_origin_url"
               :canvas-index="0"
@@ -174,7 +216,11 @@
                   notice
                 </visibility-toggle>
                 <visibility-toggle
-                  v-if="$attrs.section === 'translation' || $attrs.section === 'transcription' || $attrs.section === 'facsimile'"
+                  v-if="
+                    $attrs.section === 'translation' ||
+                      $attrs.section === 'transcription' ||
+                      $attrs.section === 'facsimile'
+                  "
                   class="control"
                   :action="toggleTranscriptionVisibility"
                   :visible="transcriptionVisibility"
@@ -203,12 +249,10 @@
             <div
               v-if="!!document && init"
               class="container"
-              :class="`${imageVisibility ? '' : 'is-fluid' }`"
+              :class="`${imageVisibility ? '' : 'is-fluid'}`"
             >
               <!-- Notice -->
-              <document-edition-notice
-                v-if="$attrs.section === 'notice'"
-              />
+              <document-edition-notice v-if="$attrs.section === 'notice'" />
               <!-- Transcription -->
               <div v-if="$attrs.section === 'transcription'">
                 <!-- transcription error -->
@@ -219,7 +263,10 @@
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                      <span
+                        v-else
+                      >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span>
                       pas encore commencé à transcrire ce document.
                     </p>
                     <div
@@ -245,13 +292,17 @@
                     message-class=""
                   >
                     <span v-if="currentUser.id == documentOwner.id">
-                      <p class="m-b-sm">Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.</p>
+                      <p class="m-b-sm">
+                        Ce contenu a été soumis par {{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }}.
+                      </p>
                     </span>
-                    <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span
+                      v-else
+                    >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                   </message>
-                  <document-transcription
-                    :readonly-data="transcriptionView"
-                  />
+                  <document-transcription :readonly-data="transcriptionView" />
                 </div>
                 <!-- transcription edition -->
                 <div v-else>
@@ -264,7 +315,12 @@
               <!-- Translation -->
               <div v-if="$attrs.section === 'translation'">
                 <!-- translation error -->
-                <div v-if="translationError && !selectedUserHasTranslation || !isTranscriptionValidated">
+                <div
+                  v-if="
+                    (translationError && !selectedUserHasTranslation) ||
+                      !isTranscriptionValidated
+                  "
+                >
                   <message
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
@@ -277,10 +333,13 @@
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                      <span
+                        v-else
+                      >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span>
                       pas encore commencé à traduire ce document.
                     </p>
-                    <div 
+                    <div
                       v-if="currentUser.id === selectedUser.id"
                       class="button is-info"
                       @click="addNewTranslation"
@@ -302,16 +361,26 @@
                     message-class=""
                   >
                     <span v-if="currentUser.id == documentOwner.id">
-                      Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
+                      Ce contenu a été soumis par {{ selectedUser.first_name }}
+                      {{ selectedUser.last_name }}.
                     </span>
-                    <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span
+                      v-else
+                    >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                   </message>
-                  <document-translation 
+                  <document-translation
                     v-if="!transcriptionVisibility || currentUser.id !== selectedUserId"
                     :readonly-data="translationView"
                   />
                   <document-transcription-alignment
-                    v-if="isTranslationValidated && transcriptionView && translationView && transcriptionVisibility && currentUser.id === selectedUserId"
+                    v-if="
+                      isTranslationValidated &&
+                        transcriptionView &&
+                        translationView &&
+                        transcriptionVisibility &&
+                        currentUser.id === selectedUserId
+                    "
                     :readonly-data="transcriptionAlignmentView"
                   />
                 </div>
@@ -332,20 +401,32 @@
                 class="m-t-md"
               >
                 <!-- commentaries error -->
-                <div v-if="commentariesError && !selectedUserHasCommentaries || !isTranscriptionValidated">
+                <div
+                  v-if="
+                    (commentariesError && !selectedUserHasCommentaries) ||
+                      !isTranscriptionValidated
+                  "
+                >
                   <message
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
                   >
-                    Vous devez valider la transcription avant d'entammer la rédaction de commentaires
+                    Vous devez valider la transcription avant d'entammer la rédaction de
+                    commentaires
                   </message>
                   <message
-                    v-else-if="commentariesError.response && commentariesError.response.status === 404"
+                    v-else-if="
+                      commentariesError.response &&
+                        commentariesError.response.status === 404
+                    "
                     message-class="is-info "
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span v-else>{{ selectedUser.first_name }} {{ selectedUser.last_name }} n'a</span>
+                      <span
+                        v-else
+                      >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span>
                       pas encore ajouté de commentaire pour ce document
                     </p>
                     <div
@@ -370,9 +451,15 @@
                     message-class=""
                   >
                     <span v-if="currentUser.id == documentOwner.id">
-                      <p class="m-b-sm">Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.</p>
+                      <p class="m-b-sm">
+                        Ce contenu a été soumis par {{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }}.
+                      </p>
                     </span>
-                    <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span
+                      v-else
+                    >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                   </message>
                   <document-commentaries
                     :readonly-data="commentariesView"
@@ -393,7 +480,8 @@
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
                   >
-                    Vous devez valider la transcription avant d'entammer l'identification des parties de discours
+                    Vous devez valider la transcription avant d'entammer l'identification
+                    des parties de discours
                   </message>
                   <message
                     v-else-if="speechPartsError.response.status !== 404"
@@ -409,11 +497,15 @@
                     message-class=""
                   >
                     <span v-if="currentUser.id == documentOwner.id">
-                      Ce contenu a été soumis par {{ selectedUser.first_name }} {{ selectedUser.last_name }}.
+                      Ce contenu a été soumis par {{ selectedUser.first_name }}
+                      {{ selectedUser.last_name }}.
                     </span>
-                    <span v-else>Ce contenu a été validé par {{ documentOwner.first_name }} {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span
+                      v-else
+                    >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                   </message>
-                  <document-speech-parts 
+                  <document-speech-parts
                     v-if="!speechpartsVisibility || currentUser.id !== selectedUserId"
                     :readonly-data="speechPartsView"
                   />
@@ -427,7 +519,7 @@
                 </div>
               </div>
             </div>
-            <div 
+            <div
               v-show="!imageVisibility"
               class="column is-one-quarter"
             />
@@ -438,13 +530,11 @@
 
     <!-- modals -->
     <div v-if="!loading">
-      <clone-transcription-modal 
-        v-if="$attrs.section === 'transcription'"
-      />
-      <clone-translation-modal 
-        v-if="$attrs.section === 'translation'"
-      />
-      <delete-transcription-modal 
+      <clone-transcription-modal v-if="$attrs.section === 'transcription'" />
+      <clone-translation-modal v-if="$attrs.section === 'translation'" />
+      <clone-commentary-modal v-if="$attrs.section === 'commentaries'" />
+
+      <delete-transcription-modal
         v-if="$attrs.section === 'transcription'"
         :doc-id="parseInt($attrs.docId)"
         :user-id="selectedUserId"
@@ -460,283 +550,304 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions } from "vuex";
 
-import { mapState, mapGetters, mapActions } from 'vuex'
+import DocumentEditionNotice from "../components/document/edition/DocumentEditionNotice.vue";
+import DocumentEditionTranscription from "../components/document/edition/DocumentEditionTranscription.vue";
+import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
+import DocumentEditionFacsimile from "../components/document/edition/DocumentEditionFacsimile.vue";
 
-import DocumentEditionNotice from '../components/document/edition/DocumentEditionNotice.vue'
-import DocumentEditionTranscription from '../components/document/edition/DocumentEditionTranscription.vue'
-import DocumentEditionTranslation from '../components/document/edition/DocumentEditionTranslation.vue'
-import DocumentEditionFacsimile from '../components/document/edition/DocumentEditionFacsimile.vue'
+import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
+import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
 
-import DocumentEditionCommentaries from '../components/document/edition/DocumentEditionCommentaries.vue'
-import DocumentEditionSpeechParts from '../components/document/edition/DocumentEditionSpeechParts.vue'
+import DocumentNotice from "../components/document/view/DocumentNotice.vue";
+import DocumentTranscription from "../components/document/view/DocumentTranscription.vue";
+import DocumentTranslation from "@/components/document/view/DocumentTranslation.vue";
+import DocumentTranscriptionAlignment from "@/components/document/view/DocumentTranscriptionAlignment.vue";
+import DocumentCommentaries from "@/components/document/view/DocumentCommentaries.vue";
+import DocumentSpeechParts from "@/components/document/view/DocumentSpeechParts.vue";
 
-import DocumentNotice from '../components/document/view/DocumentNotice.vue'
-import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
-import DocumentTranslation from '@/components/document/view/DocumentTranslation.vue'
-import DocumentTranscriptionAlignment from '@/components/document/view/DocumentTranscriptionAlignment.vue'
-import DocumentCommentaries from '@/components/document/view/DocumentCommentaries.vue'
-import DocumentSpeechParts from '@/components/document/view/DocumentSpeechParts.vue'
+import MiradorViewer from "../components/MiradorViewer.vue";
+import WorkflowRadioSteps from "@/components/WorkflowRadioSteps.vue";
 
-import MiradorViewer from '../components/MiradorViewer.vue'
-import WorkflowRadioSteps from '@/components/WorkflowRadioSteps.vue'
+import DocumentTitleBar from "../components/document/DocumentTitleBar.vue";
+import TranscriptionActionBar from "@/components/document/edition/actionbars/TranscriptionActionBar.vue";
+import TranslationActionBar from "@/components/document/edition/actionbars/TranslationActionBar.vue";
+import SpeechPartsActionBar from "@/components/document/edition/actionbars/SpeechPartsActionBar.vue";
 
-import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
-import TranscriptionActionBar from '@/components/document/edition/actionbars/TranscriptionActionBar.vue'
-import TranslationActionBar from '@/components/document/edition/actionbars/TranslationActionBar.vue'
-import SpeechPartsActionBar from '@/components/document/edition/actionbars/SpeechPartsActionBar.vue'
+import Message from "@/components/Message.vue";
+import VisibilityToggle from "@/components/ui/VisibilityToggle.vue";
 
-import Message from '@/components/Message.vue'
-import VisibilityToggle from '@/components/ui/VisibilityToggle.vue'
+import DeleteTranscriptionModal from "@/components/document/edition/modals/DeleteTranscriptionModal.vue";
+import DeleteTranslationModal from "@/components/document/edition/modals/DeleteTranslationModal.vue";
+import DeleteCommentaryModal from "@/components/document/edition/modals/DeleteCommentaryModal.vue";
 
-import DeleteTranscriptionModal from '@/components/document/edition/modals/DeleteTranscriptionModal.vue'
-import DeleteTranslationModal from '@/components/document/edition/modals/DeleteTranslationModal.vue'
-import DeleteCommentaryModal from '@/components/document/edition/modals/DeleteCommentaryModal.vue'
-
-import CloneTranscriptionModal from '@/components/document/edition/modals/CloneTranscriptionModal.vue'
-import CloneTranslationModal from '@/components/document/edition/modals/CloneTranslationModal.vue'
-
+import CloneTranscriptionModal from "@/components/document/edition/modals/CloneTranscriptionModal.vue";
+import CloneTranslationModal from "@/components/document/edition/modals/CloneTranslationModal.vue";
+import CloneCommentaryModal from "@/components/document/edition/modals/CloneCommentaryModal.vue";
 
 export default {
-    name: "DocumentEditionPage",
-    components: {
+  name: "DocumentEditionPage",
+  components: {
+    DocumentTitleBar,
+    TranscriptionActionBar,
+    TranslationActionBar,
+    SpeechPartsActionBar,
 
-        DocumentTitleBar,
-        TranscriptionActionBar,
-        TranslationActionBar,
-        SpeechPartsActionBar,
+    DocumentEditionNotice,
+    DocumentEditionTranscription,
+    DocumentEditionTranslation,
+    DocumentEditionCommentaries,
+    DocumentEditionSpeechParts,
 
-        DocumentEditionNotice,
-        DocumentEditionTranscription,
-        DocumentEditionTranslation,
-        DocumentEditionCommentaries,
-        DocumentEditionSpeechParts,
+    DocumentTranscription,
+    DocumentTranslation,
+    DocumentTranscriptionAlignment,
+    DocumentCommentaries,
+    DocumentSpeechParts,
 
-        DocumentTranscription,
-        DocumentTranslation,
-        DocumentTranscriptionAlignment,
-        DocumentCommentaries,
-        DocumentSpeechParts,
+    MiradorViewer,
+    WorkflowRadioSteps,
 
-        MiradorViewer,
-        WorkflowRadioSteps,
+    Message,
+    VisibilityToggle,
 
-        Message,
-        VisibilityToggle,
+    DeleteTranscriptionModal,
+    DeleteTranslationModal,
+    DeleteCommentaryModal,
 
-        DeleteTranscriptionModal,
-        DeleteTranslationModal,
-        DeleteCommentaryModal,
-
-        CloneTranscriptionModal,
-        CloneTranslationModal
-
-        /*
+    CloneTranscriptionModal,
+    CloneTranslationModal,
+    CloneCommentaryModal
+    /*
 
         */
-    },
-    props: {
-    },
-    beforeRouteEnter (to, from, next) {
-      next(vm => {
-        vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
-        if (!vm.loggedIn) {
-          vm.$store.dispatch('workflow/setEditionMode', false)
-          if (to.name === 'document-edition') {
-            next({name: 'document-view'})
-          } else {
-            next({name: 'login'})
-          }
+  },
+  props: {},
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
+      if (!vm.loggedIn) {
+        vm.$store.dispatch("workflow/setEditionMode", false);
+        if (to.name === "document-edition") {
+          next({ name: "document-view" });
         } else {
-          vm.$store.dispatch('workflow/setEditionMode', true)
-          next()
+          next({ name: "login" });
         }
-      })
-    },
-    beforeRouteUpdate (to, from, next) {
-      this.$store.dispatch('workflow/setEditionMode', true)
-      this.$store.dispatch('workflow/setCurrentSection', to.params.section)
-      next()
-    },
-    beforeRouteLeave (to, from, next) {
-      this.$store.dispatch('workflow/setCurrentSection', null)
-      this.$store.dispatch('workflow/setEditionMode', false)
-      next()
-    },
-    data() {
-      return {
-        isLoading: false,
-        init: false,
+      } else {
+        vm.$store.dispatch("workflow/setEditionMode", true);
+        next();
+      }
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    this.$store.dispatch("workflow/setEditionMode", true);
+    this.$store.dispatch("workflow/setCurrentSection", to.params.section);
+    next();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.$store.dispatch("workflow/setCurrentSection", null);
+    this.$store.dispatch("workflow/setEditionMode", false);
+    next();
+  },
+  data() {
+    return {
+      isLoading: false,
+      init: false,
 
-        transcriptionAlignmentError: null,
+      transcriptionAlignmentError: null,
 
-        imageVisibility: this.$attrs.section !== 'commentaries' && this.$attrs.section !== 'notice',
-        noticeVisibility: true,
-        transcriptionVisibility: true,
-        translationVisibility: true,
-        speechpartsVisibility: true,
+      imageVisibility:
+        this.$attrs.section !== "commentaries" && this.$attrs.section !== "notice",
+      noticeVisibility: true,
+      transcriptionVisibility: true,
+      translationVisibility: true,
+      speechpartsVisibility: true,
+    };
+  },
+  computed: {
+    ...mapState("document", [
+      "document",
+      "loading",
+      "transcriptionView",
+      "translationView",
+      "transcriptionAlignmentView",
+      "commentariesView",
+      "speechPartsView",
+    ]),
+    ...mapState("workflow", ["selectedUserId"]),
+    ...mapState("transcription", [
+      "transcriptionWithNotes",
+      "transcriptionWithSpeechparts",
+      "transcriptionError",
+    ]),
+    ...mapState("translation", ["translationWithNotes", "translationError"]),
+    ...mapState("commentaries", ["commentaries", "commentariesError"]),
+    ...mapState("speechparts", ["speechPartsError"]),
+
+    ...mapState("user", ["currentUser"]),
+
+    ...mapGetters("user", [
+      "loggedIn",
+      "currentUserIsAdmin",
+      "currentUserIsTeacher",
+      "currentUserIsStudent",
+      "userFromWhitelist",
+    ]),
+    ...mapGetters("workflow", [
+      "isTranscriptionValidated",
+      "isTranslationValidated",
+      "isTranscriptionReadOnly",
+      "isTranslationReadOnly",
+      "isSpeechPartsReadOnly",
+      "isSpeechPartsValidated",
+      "isCommentariesReadOnly",
+      "isCommentariesValidated",
+      "selectedUserHasTranscription",
+      "selectedUserHasTranslation",
+      "selectedUserHasFacsimile",
+      "selectedUserHasCommentaries",
+      "selectedUserHasSpeechParts",
+    ]),
+    ...mapGetters("document", ["documentOwner", "getManifestInfoUrl"]),
+
+    showContent() {
+      switch (this.$attrs.section) {
+        case "transcription":
+          return this.transcriptionVisibility;
+        case "translation":
+          return this.translationVisibility || this.transcriptionVisibility;
+        case "facsimile":
+          return false;
+        case "notice":
+          return this.noticeVisibility;
+        case "commentaries":
+          return true;
+        case "speech-parts":
+          return this.speechpartsVisibility;
+        default:
+          return true;
       }
     },
-    computed: {
-        ...mapState('document', ['document', 'loading', 'transcriptionView', 
-        'translationView', 'transcriptionAlignmentView', 'commentariesView', 'speechPartsView']),
-        ...mapState('workflow', ['selectedUserId']),
-        ...mapState('transcription', ['transcriptionWithNotes', 'transcriptionWithSpeechparts', 'transcriptionError']),
-        ...mapState('translation', ['translationWithNotes', 'translationError']),
-        ...mapState('commentaries', ['commentaries', 'commentariesError']),
-        ...mapState('speechparts', ['speechPartsError']),
-
-        ...mapState('user', ['currentUser']),
-
-        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent', 'userFromWhitelist']),
-        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
-        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated',
-        'isCommentariesReadOnly', 'isCommentariesValidated',
-        'selectedUserHasTranscription', 'selectedUserHasTranslation', 
-        'selectedUserHasFacsimile', 'selectedUserHasCommentaries', 'selectedUserHasSpeechParts']),
-        ...mapGetters('document', ['documentOwner', 'getManifestInfoUrl']),
-
-        showContent() {
-          switch(this.$attrs.section){
-            case 'transcription':
-              return this.transcriptionVisibility
-            case 'translation':
-              return this.translationVisibility || this.transcriptionVisibility
-            case 'facsimile':
-              return false
-            case 'notice':
-              return this.noticeVisibility
-            case 'commentaries':
-              return true
-            case 'speech-parts':
-              return this.speechpartsVisibility
-            default:
-              return true
-          }
-          
-        },
-        selectedUser() {
-          const u = this.userFromWhitelist(this.document.whitelist, this.selectedUserId)
-          return u ? u : this.currentUser
-        },
-
-        canvasManifestInfo() {
-          return this.getManifestInfoUrl(0)
-        },
+    selectedUser() {
+      const u = this.userFromWhitelist(this.document.whitelist, this.selectedUserId);
+      return u ? u : this.currentUser;
     },
-    watch:{
-      async selectedUserId() {
-        if (this.init) {
-          await this.fetchContentFromUser()
-        }
+
+    canvasManifestInfo() {
+      return this.getManifestInfoUrl(0);
+    },
+  },
+  watch: {
+    async selectedUserId() {
+      if (this.init) {
+        await this.fetchContentFromUser();
       }
     },
-    async created() {
-      this.isLoading = true;
-      try {
-        await this.fetchOne({id: this.$attrs.docId})
-      }
-      catch (error) {
-        this.$router.push({name: 'error', params: {error: error}})
-      }
-
-      if (this.$attrs.section === 'translation') {
-        this.hideImage()
-      }
-      
-      await this.fetchContentFromUser()
-      this.init = true
-      this.isLoading = false;
-    },
-    methods: {
-      ...mapActions('transcription', {
-        'fetchTranscriptionContent': 'fetchTranscriptionContent',
-        'createTranscription': 'addNewTranscription'
-        }),
-      ...mapActions('translation', {
-        'fetchTranslationContent': 'fetchTranslationContent',
-        'createTranslation': 'addNewTranslation'
-        }),
-      ...mapActions('document', {
-        'fetchOne': 'fetch',
-        'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView'
-        }),
-      ...mapActions('commentaries', {
-        'fetchCommentariesContent': 'fetchCommentariesContent',
-        'setCommentariesError' : 'setError'
-        }),
-      ...mapActions('speechparts', {
-        'fetchSpeechPartsContent': 'fetchSpeechPartsContent',
-        }),
-      async fetchContentFromUser(){
-        await this.fetchTranscriptionContent()
-        await this.fetchTranslationContent()
-        await this.fetchSpeechPartsContent()
-
-        try {
-          this.transcriptionAlignmentError = null
-          await this.fetchTranscriptionAlignmentView()
-        } catch(error) {
-          this.transcriptionAlignmentError = error
-        }
-
-        await this.fetchCommentariesContent()
-      },
-      async addNewTranscription() {
-        await this.createTranscription()
-        if (!this.transcriptionError) {
-          await this.fetchTranscriptionContent()
-        }
-      },
-      async addNewTranslation() {
-        await this.createTranslation()
-        if (!this.translationError){
-          await this.fetchTranslationContent()
-        }
-      },
-      async addNewCommentaries() {
-        this.setCommentariesError(null)
-      },
-      hideImage() {
-        this.imageVisibility = false
-      },
-      showImage() {
-        this.imageVisibility = true
-      },
-      toggleImageVisibility() {
-        // forbid hidding everything
-        if (this.showContent) {
-          this.imageVisibility = !this.imageVisibility
-        }
-      },
-      toggleNoticeVisibility() {
-        // forbid hidding everything
-        if (this.imageVisibility) {
-          this.noticeVisibility = !this.noticeVisibility
-        }
-      },
-      toggleTranscriptionVisibility() {
-        // forbid hidding everything
-        if (this.imageVisibility || this.translationVisibility) {
-          this.transcriptionVisibility = !this.transcriptionVisibility
-        }
-      },
-      toggleTranslationVisibility() {
-        // forbid hidding everything
-        if (this.imageVisibility || this.transcriptionVisibility) {
-          this.translationVisibility = !this.translationVisibility
-        }
-      },
-      toggleSpeechPartsVisibility() {
-        // forbid hidding everything
-        if (this.imageVisibility) {
-          this.speechpartsVisibility = !this.speechpartsVisibility
-        }
-      },
+  },
+  async created() {
+    this.isLoading = true;
+    try {
+      await this.fetchOne({ id: this.$attrs.docId });
+    } catch (error) {
+      this.$router.push({ name: "error", params: { error: error } });
     }
-}
+
+    if (this.$attrs.section === "translation") {
+      this.hideImage();
+    }
+
+    await this.fetchContentFromUser();
+    this.init = true;
+    this.isLoading = false;
+  },
+  methods: {
+    ...mapActions("transcription", {
+      fetchTranscriptionContent: "fetchTranscriptionContent",
+      createTranscription: "addNewTranscription",
+    }),
+    ...mapActions("translation", {
+      fetchTranslationContent: "fetchTranslationContent",
+      createTranslation: "addNewTranslation",
+    }),
+    ...mapActions("document", {
+      fetchOne: "fetch",
+      fetchTranscriptionAlignmentView: "fetchTranscriptionAlignmentView",
+    }),
+    ...mapActions("commentaries", {
+      fetchCommentariesContent: "fetchCommentariesContent",
+      setCommentariesError: "setError",
+    }),
+    ...mapActions("speechparts", {
+      fetchSpeechPartsContent: "fetchSpeechPartsContent",
+    }),
+    async fetchContentFromUser() {
+      await this.fetchTranscriptionContent();
+      await this.fetchTranslationContent();
+      await this.fetchSpeechPartsContent();
+
+      try {
+        this.transcriptionAlignmentError = null;
+        await this.fetchTranscriptionAlignmentView();
+      } catch (error) {
+        this.transcriptionAlignmentError = error;
+      }
+
+      await this.fetchCommentariesContent();
+    },
+    async addNewTranscription() {
+      await this.createTranscription();
+      if (!this.transcriptionError) {
+        await this.fetchTranscriptionContent();
+      }
+    },
+    async addNewTranslation() {
+      await this.createTranslation();
+      if (!this.translationError) {
+        await this.fetchTranslationContent();
+      }
+    },
+    async addNewCommentaries() {
+      this.setCommentariesError(null);
+    },
+    hideImage() {
+      this.imageVisibility = false;
+    },
+    showImage() {
+      this.imageVisibility = true;
+    },
+    toggleImageVisibility() {
+      // forbid hidding everything
+      if (this.showContent) {
+        this.imageVisibility = !this.imageVisibility;
+      }
+    },
+    toggleNoticeVisibility() {
+      // forbid hidding everything
+      if (this.imageVisibility) {
+        this.noticeVisibility = !this.noticeVisibility;
+      }
+    },
+    toggleTranscriptionVisibility() {
+      // forbid hidding everything
+      if (this.imageVisibility || this.translationVisibility) {
+        this.transcriptionVisibility = !this.transcriptionVisibility;
+      }
+    },
+    toggleTranslationVisibility() {
+      // forbid hidding everything
+      if (this.imageVisibility || this.transcriptionVisibility) {
+        this.translationVisibility = !this.translationVisibility;
+      }
+    },
+    toggleSpeechPartsVisibility() {
+      // forbid hidding everything
+      if (this.imageVisibility) {
+        this.speechpartsVisibility = !this.speechpartsVisibility;
+      }
+    },
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
