@@ -59,7 +59,7 @@
 
 <script>
 
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
     name: "LoginPage",
@@ -74,10 +74,22 @@ export default {
         }
     },
     computed: {
-      ...mapState("user", ["currentUser"])
+      ...mapState("user", ["currentUser"]),
+      ...mapGetters("user", [
+      "loggedIn"
+    ]),
     },
     mounted() {
       this.error = false
+    },
+     beforeRouteEnter(to, from, next) {
+      next((vm) => {
+        if (vm.loggedIn) {
+          next({ name: "home" });
+        } else {
+          next();
+        }
+      })
     },
     methods: {
         login () {
@@ -90,7 +102,11 @@ export default {
             .then((response) => { 
               console.log(this.currentUser)
               if (this.currentUser) {
-                this.$router.go(-1)
+                if (this.$route.name === 'login' || location.pathname.indexOf('adele') === -1) {
+                  this.$router.go('home')
+                } else {
+                  this.$router.go(-1)
+                }
               } else {
                 this.error = true
               }
