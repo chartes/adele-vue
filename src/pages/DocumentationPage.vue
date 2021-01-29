@@ -38,7 +38,7 @@
                         id="credits"
                         @click="goTo('credits')"
                       >
-                        Contact
+                        Crédits
                       </li>
                     </ul>
                   </div>
