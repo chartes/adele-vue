@@ -33,6 +33,7 @@ const actions = {
       .then(({ data }) => {
         console.log("LOGIN user data is:", data)
         commit('SET_USER_DATA', data)
+        return data
       }).catch(({error}) => {
         console.log("LOGIN ERROR", error)
         return error
@@ -47,6 +48,28 @@ const actions = {
     console.log("Register: not yet implemented")
   },
 
+  async save({dispatch}, userData) {
+    try {
+      const newData = await http.post('update-user', userData)
+      const loginResponse = await dispatch('login', {
+        email: newData.data.email,
+        password: userData.password
+      })
+      if (loginResponse.errors) {
+        return {
+          error: loginResponse.errors.details
+        }
+      } else {
+        return {
+          error : null,
+        } 
+      }
+    } catch (e) {
+      return {
+        error : e,
+      } 
+    }
+  }
  
 };
 
