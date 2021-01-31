@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 
 import InviteUser from '@/components/dashboard/InviteUser';
 
@@ -111,6 +111,17 @@ export default {
       InviteUser
     },
     computed: {
+            ...mapGetters("user", ["loggedIn"]),
+    },
+
+    beforeRouteEnter(to, from, next) {
+      next((vm) => {
+        if (!vm.loggedIn) {
+          next({ name: "login" });
+        } else {
+          next();
+        }
+      })
     },
     mounted() {
         document.querySelectorAll('.active').forEach(element => {
