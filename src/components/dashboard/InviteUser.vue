@@ -68,14 +68,15 @@ export default {
     watch: {
     },
     created() {
+        this.invite = debounce(this._invite, 1000)
     },
     methods: {
       ...mapActions('user', ['inviteUser']),
-      invite: debounce(() => {
+      _invite() {
         if (this.emailIsValid) {
             this.inviteUser(this.email)
         }
-      })
+      },
     }
 
 }
