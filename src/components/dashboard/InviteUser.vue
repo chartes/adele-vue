@@ -28,7 +28,10 @@
       </p>
 
       <div class="control">
-        <button class="button is-primary">
+        <button
+          class="button is-primary"
+          @click="invite"
+        >
           Inviter
         </button>
       </div>
@@ -65,11 +68,12 @@ export default {
     created() {
     },
     methods: {
-      ...mapActions('user', ['save']),
-      async saveUserProfile() {
-        
-        
-        
+      ...mapActions('user', ['inviteUser']),
+      async invite() {
+        if (this.emailIsValid) {
+            this.inviteUser(this.email)
+
+        }
       }
     }
 
