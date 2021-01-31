@@ -5,8 +5,8 @@
       <div class="control has-icons-left has-icons-right">
         <input
           v-model="email"
-          class="input"
-          :class="!emailIsValid && email.length > 0 ? 'is-danger' : ''"
+          class="input email"
+          :class="!emailIsValid && email.length > 4 ? 'is-danger' : ''"
           type="email"
           placeholder="elizabeth2@chartes.psl.eu"
         >
@@ -14,28 +14,29 @@
           <i class="fas fa-envelope" />
         </span>
         <span
-          v-if="!emailIsValid && email.length > 0"
+          v-if="!emailIsValid && email.length > 4"
           class="icon is-small is-right"
         >
           <i class="fas fa-exclamation-triangle" />
         </span>
       </div>
-      <p
-        v-if="!emailIsValid && email.length > 0"
-        class="help is-danger"
-      >
-        This email is invalid
-      </p>
 
       <div class="control">
         <button
           class="button is-primary"
+          :disabled="!emailIsValid || email.length < 4"
           @click="invite"
         >
           Inviter
         </button>
       </div>
     </div>
+    <p
+      v-if="!emailIsValid && email.length > 4"
+      class="help is-danger"
+    >
+      This email is invalid
+    </p>
   </div>
 </template>
 
@@ -45,6 +46,7 @@
 <script>
 
 import {mapState, mapGetters, mapActions} from 'vuex'
+import {debounce} from 'lodash'
 
 export default {
     name: "InviteUser",
@@ -69,12 +71,11 @@ export default {
     },
     methods: {
       ...mapActions('user', ['inviteUser']),
-      async invite() {
+      invite: debounce(() => {
         if (this.emailIsValid) {
             this.inviteUser(this.email)
-
         }
-      }
+      })
     }
 
 }
