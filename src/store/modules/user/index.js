@@ -1,5 +1,4 @@
 import {http} from '../../../modules/http-common';
-import {getUserRoles} from '../../../modules/user-helpers';
 import { deleteCookie } from '../../../modules/cookies-helpers';
 
 const state = {
@@ -31,7 +30,6 @@ const actions = {
     return http
       .post('login', credentials)
       .then(({ data }) => {
-        console.log("LOGIN user data is:", data)
         commit('SET_USER_DATA', data)
         return data
       }).catch(({error}) => {
@@ -68,6 +66,19 @@ const actions = {
       return {
         error : e,
       } 
+    }
+  },
+
+  async inviteUser({state}, email) {
+    try {
+      const response = await http.post('invite-user', {email: email})  
+      return {
+        error: response.error
+      }
+    } catch (e) {
+      return {
+        error: e
+      }
     }
   }
  

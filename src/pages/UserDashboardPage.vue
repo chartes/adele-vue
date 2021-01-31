@@ -83,6 +83,7 @@
               Invitation, suppression des comptes?
               Gestion des listes ?
             </p>
+            <invite-user />
           </div>
           <div
             v-if="$attrs.section === 'whitelists'"
@@ -100,9 +101,14 @@
 
 <script>
 import { mapState } from 'vuex';
+
+import InviteUser from '@/components/dashboard/InviteUser';
+
+
 export default {
     name: "UserDashboardPage",
     components: {
+      InviteUser
     },
     computed: {
     },
