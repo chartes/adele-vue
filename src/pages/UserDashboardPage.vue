@@ -83,7 +83,7 @@
               Invitation, suppression des comptes?
               Gestion des listes ?
             </p>
-            <invite-user />
+            <invite-user v-if="currentUserIsTeacher" />
           </div>
           <div
             v-if="$attrs.section === 'whitelists'"
@@ -111,7 +111,7 @@ export default {
       InviteUser
     },
     computed: {
-            ...mapGetters("user", ["loggedIn"]),
+        ...mapGetters("user", ["loggedIn", "currentUserIsTeacher"]),
     },
 
     beforeRouteEnter(to, from, next) {
