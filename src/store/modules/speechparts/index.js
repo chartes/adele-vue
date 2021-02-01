@@ -109,7 +109,7 @@ const actions = {
       console.log("spWithPointers data", data)
 
       try {
-        await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.user.currentUser.id}`, {data: data})
+        await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.workflow.selectedUserId}`, {data: data})
 
         commit('SAVING_STATUS', 'uptodate')
       } catch(error) {

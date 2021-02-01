@@ -283,7 +283,7 @@ const actions = {
       })
 
       // put content && update notes
-      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
         data: {
           content: sanitizedContent,
           notes: notes.filter(n => n.id !== null && n.id >= 0)
@@ -296,7 +296,7 @@ const actions = {
         return n
        })
       if (new_notes.length > 0){
-        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, {
+        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
           data: {notes: new_notes}
         })
       }

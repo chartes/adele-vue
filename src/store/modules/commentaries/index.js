@@ -54,7 +54,7 @@ async function saveCom(rootState, rootGetters, com) {
 
 
   // put content & update notes
-  await http.put(`documents/${rootState.document.document.id}/commentaries`, {
+  await http.put(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, {
     data: {
       type_id: com.type,
       content: content,
@@ -69,7 +69,7 @@ async function saveCom(rootState, rootGetters, com) {
   })
 
   if (new_notes.length > 0){
-    await http.post(`documents/${rootState.document.document.id}/commentaries`, {
+    await http.post(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, {
       data: {
         type_id: com.type,
         notes: new_notes
@@ -277,7 +277,7 @@ const actions = {
     const newCommentary = {
       data: {
         doc_id : rootState.document.document.id,
-        user_id : rootState.user.currentUser.id,
+        user_id : rootState.workflow.selectedUserId,
         type_id: type,
         content : '<p></p>'
       }

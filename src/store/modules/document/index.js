@@ -103,8 +103,8 @@ const actions = {
       doc = await http.post('documents/add', {
         data: {
           title, 
-          subtitle, user_id: 
-          rootState.user.currentUser.id
+          subtitle,
+          user_id: rootState.user.currentUser.id
         }
       })
     } catch (e) {
