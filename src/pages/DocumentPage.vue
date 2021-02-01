@@ -113,8 +113,8 @@
               </div>
 
               <mirador-viewer
-                v-if="document.manifest_origin_url && !isLoading"
-                :manifest-url="document.manifest_origin_url"
+                v-if="document.manifest_url && !isLoading"
+                :manifest-url="document.manifest_url"
                 :canvas-index="0"
               />
               <img

@@ -11,6 +11,7 @@ import Mirador from "mirador";
 import axios from "axios";
 import annotationPlugins from 'mirador-annotations';
 import LocalStorageAdapter from 'mirador-annotations/lib/LocalStorageAdapter';
+import MyPlugin from './mirador-plugin'
 
 export default {
   name: "MiradorViewer",
@@ -83,7 +84,7 @@ export default {
     viewerContainer() {
       if (this.viewerContainer && !this.viewer) {
         // instantiate the viewer with a single manifest & window for simplicity
-        const v = Mirador.viewer(this.fullConfig, [...annotationPlugins])
+        const v = Mirador.viewer(this.fullConfig, [...annotationPlugins, MyPlugin])
         try {
           //this.viewer = Mirador.viewer(this.fullConfig,[...annotationPlugins]);
           var action = Mirador.actions.minimizeWindow('1')
