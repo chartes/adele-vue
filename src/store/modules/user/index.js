@@ -69,9 +69,9 @@ const actions = {
     }
   },
 
-  async inviteUser({state}, email) {
+  async inviteUser({state}, {email, role}) {
     try {
-      const response = await http.post('invite-user', {email: email})  
+      const response = await http.post('invite-user', {email, role})  
       return {
         error: response.error
       }

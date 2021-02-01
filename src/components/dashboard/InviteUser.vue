@@ -1,7 +1,7 @@
 <template>
   <div class="invite-user">
     <label class="label">Email</label>
-    <div class="field has-addons">
+    <div class="field">
       <div class="control has-icons-left has-icons-right">
         <input
           v-model="email"
@@ -20,10 +20,40 @@
           <i class="fas fa-exclamation-triangle" />
         </span>
       </div>
+      <div class="control teacher">
+        <div class="control">
+          <label class="radio">
+            <input
+              id="student"
+              v-model="role"
+              type="radio"
+              value="student"
+            >
+            Étudiant
+          </label>
+          <label class="radio">
+            <input
+              id="teacher"
+              v-model="role"
+              type="radio"
+              value="teacher"
+            >
+            Enseignant
+          </label>
+        </div>
+      </div>
+    </div> 
+    <p
+      v-if="!emailIsValid && email.length > 4"
+      class="help is-danger"
+    >
+      This email is invalid
+    </p>
 
+    <div class="submit">
       <div class="control">
         <button
-          class="button is-primary"
+          class="button is-primary is-right"
           :disabled="!emailIsValid || email.length < 4"
           @click="invite"
         >
@@ -31,12 +61,6 @@
         </button>
       </div>
     </div>
-    <p
-      v-if="!emailIsValid && email.length > 4"
-      class="help is-danger"
-    >
-      This email is invalid
-    </p>
   </div>
 </template>
 
@@ -55,7 +79,8 @@ export default {
     },
     data () {
         return {
-            email: ''
+            email: '',
+            role: 'student'
         }
     },
     computed: {
@@ -74,7 +99,7 @@ export default {
       ...mapActions('user', ['inviteUser']),
       _invite() {
         if (this.emailIsValid) {
-            this.inviteUser(this.email)
+            this.inviteUser(this.email, this.role)
         }
       },
     }
