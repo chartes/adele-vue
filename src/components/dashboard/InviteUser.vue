@@ -99,7 +99,10 @@ export default {
       ...mapActions('user', ['inviteUser']),
       _invite() {
         if (this.emailIsValid) {
-            this.inviteUser(this.email, this.role)
+            this.inviteUser({
+                email: this.email,
+                role: this.role
+            })
         }
       },
     }

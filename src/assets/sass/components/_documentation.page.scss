@@ -15,18 +15,20 @@ dl {
     }
 }
 
-ul {
-    list-style: initial;
-    padding-left: 24px;
-
-    ul {
-        list-style-type: circle;
-    }
-}
 
 
 .documentation-page {
     text-align: justify;
+
+    ul {
+        list-style: initial;
+        padding-left: 24px;
+    
+        ul {
+            list-style-type: circle;
+        }
+    }
+    
 
     img {
         margin: 20px auto;
