@@ -40,13 +40,13 @@ export default {
             {
               id: 1,
               loadedManifest: url,
-              canvasIndex: this.canvasIndex
+              canvasIndex: this.canvasIndex,
             }
           ],
           window: {
             allowClose: false,
             allowMaximize: false,
-            defaultSideBarPanel: "info",
+            defaultSideBarPanel: "annotations",
             sideBarOpenByDefault: false,
             hideWindowTitle: true,
             maximizedByDefault: true,
