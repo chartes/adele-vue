@@ -268,10 +268,10 @@
               </div>
               <div class="select-with-tags">
                 <p class="subtitle">
-                  Type(s) d'acte
+                  Type(s) d'auteurs et de documents
                 </p>
                 <select-with-tags-input
-                  default-text="Ajouter un type d'acte"
+                  default-text="Ajouter un type d'auteur ou de document"
                   :choices="allActeTypesChoices"
                   :selection="selectedActeTypes"
                   :on-change="onActeTypesChange"

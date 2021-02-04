@@ -41,7 +41,7 @@
           v-if="document.acte_types.length > 0"
         >
           <div class="tags has-addons">
-            <span class="tag is-dark">Type d'acte</span>
+            <span class="tag is-dark">Types d'auteurs et de documents</span>
             <span
               v-for="(acte_type, i) in document.acte_types"
               :key="acte_type.id"
@@ -76,7 +76,16 @@
             <span class="tag">inconnue</span>
           </div>
         </li>
-        <li v-if="document.argument ">
+        <li v-if="document.pressmark">
+          <div class="tags has-addons">
+            <span class="tag is-dark">Côte de conservation</span>
+            <span class="tag">{{ document.pressmark ? document.pressmark : 'inconnue' }}</span>
+          </div>
+        </li>
+        <li
+          v-if="document.argument"
+          style="margin-top: 20px"
+        >
           <span class="tag is-dark">Argument</span>
           <div v-html="document.argument" />
         </li>
