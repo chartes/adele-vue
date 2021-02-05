@@ -3,7 +3,7 @@
   <div class="documentation-page">
     <div class="top">
       <div class="columns main-columns">
-        <div class="column main-column is-3 themes">
+        <div class="column main-column is-2 themes">
           <div class="content">
             <p class="column-title">
               Documentation
