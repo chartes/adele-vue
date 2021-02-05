@@ -337,7 +337,7 @@
                 <ul>
                   <li>Empereur d’Orient</li>
                   <li>Empereur d’Occident</li>
-                  <li>Rois jusque Xe siècle</li>
+                  <li>Rois jusqu'au Xe siècle</li>
                   <li>Roi/France</li>
                   <li>Roi/Iles britanniques (inclut Angleterre, Ecosse, Irlande, Galles)</li>
                   <li>Roi/Espagne  (inclut Léon, Castille, Aragon)</li>
@@ -500,7 +500,7 @@
                 </div>
                 <ul>
                   <li>« Acte sous les sceaux de l’officialité archidiaconale de Verdun et d’un seigneur (Lorraine). Un montage féodal complexe : reprises et cessions d'un fief épiscopal en cascade » : <a href="https://dev.chartes.psl.eu/adele/documents/39/view/notice">n° 39</a></li>
-                  <li>« Acte sous le sceau du doyen de chrétienté de Verberie (diocèse de Soissons). Charité bien ordonnée : don et échange de terre d'un bourgeois de Compiègne aux cisterciens de Chaalis »<a href="https://dev.chartes.psl.eu/adele/documents/78/view/notice">n° 78</a></li>
+                  <li>« Acte sous le sceau du doyen de chrétienté de Verberie (diocèse de Soissons). Charité bien ordonnée : don et échange de terre d'un bourgeois de Compiègne aux cisterciens de Chaalis » : <a href="https://dev.chartes.psl.eu/adele/documents/78/view/notice">n° 78</a></li>
                 </ul>
               </dd>
 
@@ -542,7 +542,7 @@
                 </ul>
                 <div class="related-docs">
                   Exemple de dossiers :
-                </div>« Acte de justice seigneuriale (Normandie). Aux plaids de la seigneurie : aveu et dénombrement de tenure » :<a href="https://dev.chartes.psl.eu/adele/documents/85/view/notice">n° 85</a>.
+                </div>« Acte de justice seigneuriale (Normandie). Aux plaids de la seigneurie : aveu et dénombrement de tenure » : <a href="https://dev.chartes.psl.eu/adele/documents/85/view/notice">n° 85</a>.
               </dd>
 
               <dt id="ac-inventaire">
@@ -1211,7 +1211,7 @@
               <li>Basse-Normandie (<i>Normandie</i>)</li>
               <li>Haute-Normandie (<i>Normandie</i>)</li>
               <li>Pays de la Loire (<i>Bretagne</i> [<i>Nantais</i>], <i>Bas-Poitou</i> [<i>future Vendée</i>], <i>Anjou</i>, <i>Maine</i>)</li>
-              <li>Picardie (<i>Picardie</i>, <i>Soissonnais</i>, <i>Laonnois</i></li>
+              <li>Picardie (<i>Picardie</i>, <i>Soissonnais</i>, <i>Laonnois</i>)</li>
               <li>Poitou-Charentes (<i>Poitou</i>, <i>Aunis</i>, <i>Saintonge</i>, <i>Angoumois</i>)</li>
               <li>Provence-Alpes-Côte d’Azur [PACA] (<i>Provence</i>, <i>Comtat-Venaissin</i>, <i>Niçois</i>)</li>
               <li>Rhône-Alpes (<i>Bresse</i>, <i>Bugey</i>, <i>Dombes</i>, <i>Savoie</i>, <i>Lyonnais</i>, <i>Vivarais</i>, <i>Dauphiné</i>)</li>
@@ -1508,7 +1508,7 @@
               </dt>
               <dd>
                 Ce commentaire s'appuie essentiellement sur l'écriture du document. On peut y décrire les longueur des hastes et des hampes, des caractères se distinguant plus nettement du corps du texte. <br>
-                Aussi on pourra également y commenter les abréviations et les signes de ponctuation utilisés ou non dans le texte. Les formes et les lettres qui sont abrégés pourront être décrites, pour montrer une certaine singularité ou au contraire, une homongénéité des caractères.
+                Aussi on pourra également y commenter les abréviations et les signes de ponctuation utilisés ou non dans le texte. Les formes et les lettres qui sont abrégés pourront être décrites, pour montrer une certaine singularité ou au contraire, une homogénéité des caractères.
               </dd>
               <dt id="co-sigillo">
                 Commentaire sigillographique
@@ -1603,7 +1603,7 @@
                 Copie informe
               </dt>
               <dd>
-                Copie d’un acte ne comprtant pas de marque d’authenticité juridique apposé par une autorité.
+                Copie d’un acte ne comportant pas de marque d’authenticité juridique apposé par une autorité.
                 VID n° 55 : <a href="https://www.cei.lmu.de/VID/#55">https://www.cei.lmu.de/VID/#55</a><br>
                 <b>NB</b> : La « copie » peut être aussi bien manuscrite qu’imprimée.
               </dd>

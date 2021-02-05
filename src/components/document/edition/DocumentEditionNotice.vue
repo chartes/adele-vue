@@ -40,7 +40,7 @@
           <div class="columns">
             <div class="column is-half">
               <div class="field">
-                <label class="label">Année de création (pour le tri)</label>
+                <label class="label">Date de l’original (ISO 8601)</label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">
@@ -55,7 +55,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label">Année de la copie (formatée)</label>
+                <label class="label">Date de l’état présenté (formatée)</label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">
@@ -97,7 +97,7 @@
             </div>
             <div class="column">
               <div class="field">
-                <label class="label">Année de création (formatée)</label>
+                <label class="label">Date de l’original (formatée)</label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">

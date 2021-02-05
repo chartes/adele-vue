@@ -54,26 +54,23 @@
         </li>
         <li>
           <div class="tags has-addons">
-            <span class="tag is-dark">Date de l'acte</span>
+            <span class="tag is-dark">Date de l’original</span>
             <span class="tag">{{ document.creation_lab ? document.creation_lab : 'inconnue' }}</span>
           </div>
         </li>
         <li>
-          <div class="tags has-addons">
-            <span class="tag is-dark">Date du document</span>
-            <span class="tag">{{ document.copy_year ? document.copy_year : 'inconnue' }}</span>
+          <div
+            v-if="document.copy_year"
+            class="tags has-addons"
+          >
+            <span class="tag is-dark">Date de l’état présenté</span>
+            <span class="tag">{{ document.copy_year }}</span>
           </div>
         </li>
         <li v-if="document.institution">
           <div class="tags has-addons">
             <span class="tag is-dark">Institution de conservation</span>
             <span class="tag"><a :href="document.institution.ref">{{ document.institution.name }}</a></span>
-          </div>
-        </li>
-        <li v-else>
-          <div class="tags has-addons">
-            <span class="tag is-dark">Institution de conservation</span>
-            <span class="tag">inconnue</span>
           </div>
         </li>
         <li v-if="document.pressmark">

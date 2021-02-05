@@ -45,7 +45,7 @@
               :to="{name: 'documentation', params: {section: 'projet'}}"
               class="navbar-item"
             >
-              En savoir plus sur le projet
+              En savoir plus
             </router-link>
             <router-link
               :to="{name: 'search'}"
@@ -65,7 +65,9 @@
               </div>
               <div class="card-content">
                 <div class="card-title">
-                  Un album européen de diplomatique en construction<span class="card-subtitle">conçu pour favoriser les apprentissages et le comparatisme</span>
+                  Un album européen de diplomatique en construction<div class="card-subtitle">
+                    conçu pour favoriser les apprentissages et le comparatisme
+                  </div>
                 </div>
               </div>
             </div>
@@ -78,7 +80,9 @@
               </div>
               <div class="card-content">
                 <div class="card-title">
-                  Un outil collaboratif de saisie et d'analyse pour l'enseignement <span class="card-subtitle">accompagnant les nouvelles curiosités de la diplomatique</span>
+                  Un outil collaboratif de saisie et d'analyse pour l'enseignement <div class="card-subtitle">
+                    accompagnant les nouvelles curiosités de la diplomatique
+                  </div>
                 </div>
               </div>
             </div>
@@ -91,7 +95,9 @@
               </div>
               <div class="card-content">
                 <div class="card-title">
-                  De multiples capacités de tri permettant de créer des sous-corpus à volonté<span class="card-subtitle">permettant de créer des sous-corpus à volonté</span>
+                  De multiples capacités de tri permettant de créer des sous-corpus à volonté<div class="card-subtitle">
+                    permettant de créer des sous-corpus à volonté
+                  </div>
                 </div>
               </div>
             </div>
