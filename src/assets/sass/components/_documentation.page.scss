@@ -125,7 +125,11 @@ dl {
 
 
         .content-column {
-            padding-right: 100px;
+            padding-right: 15%;
+            padding-left: 40px;
+            p {
+                text-indent: 2em;
+            }
         }
 
         .main-column, .content-column {
