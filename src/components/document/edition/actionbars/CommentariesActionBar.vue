@@ -34,7 +34,7 @@
       >
         <validate-commentaries-button :doc-id="document.id" />
       </div>
-      <!-- CLONE TRANSCRIPTION --> 
+      <!-- CLONE COMMENTARY --> 
       <p
         v-if="currentUserIsTeacher && currentUser.id !== selectedUserId"
         class="control"

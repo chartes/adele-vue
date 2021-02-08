@@ -219,7 +219,7 @@ const actions = {
   },
   /* useful */
   async fetchTextAlignments ({commit, rootState}) {
-    const response = await http.get(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.user.currentUser.id}`)
+    const response = await http.get(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`)
     if (response.data.errors) {
       commit('STORE_ALIGNMENTS', []);
       return;
@@ -235,7 +235,7 @@ const actions = {
         content: ""
       }
     }
-    return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.user.currentUser.id}`, emptyTranscription).then(response => {
+    return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, emptyTranscription).then(response => {
       commit('SET_ERROR', null)
     }).catch(error => {
       commit('SET_ERROR', error)
@@ -395,7 +395,7 @@ const actions = {
       }
       console.log('save translation alignment', data)
 
-      const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.user.currentUser.id}`, { data: data })
+      const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`, { data: data })
       commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
 
     } catch(error) {

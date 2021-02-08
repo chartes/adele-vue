@@ -174,7 +174,7 @@ const actions = {
         content: ""
       }
     }
-    return http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.user.currentUser.id}`, emptyTranslation).then(response => {
+    return http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, emptyTranslation).then(response => {
       commit('SET_ERROR', null)
     }).catch(error => {
       commit('SET_ERROR', error)

@@ -89,7 +89,7 @@ export default {
           'isTranslationValidated', 'selectedUserHasTranslation', 'isTranslationReadOnly'
       ]),
       showAlignmentButton() {
-          return this.isTranslationValidated && this.currentUserIsTeacher && this.currentUser.id === this.selectedUserId
+          return this.isTranslationValidated && this.currentUserIsTeacher
       },
       ...mapGetters('translation', ['translationSegmentsFromQuill']),
       ...mapGetters('transcription', ['transcriptionSegmentsFromQuill']),
