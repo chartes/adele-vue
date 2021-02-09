@@ -283,7 +283,7 @@ const actions = {
       }
     }
     const newLabel = state.selectedCommentaryLabel
-    return http.post(`documents/${rootState.document.document.id}/commentaries`, newCommentary).then(response => {
+    return http.post(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, newCommentary).then(response => {
       return dispatch('fetchCommentariesFromUser', {
         docId: rootState.document.document.id,
         userId: rootState.workflow.selectedUserId
