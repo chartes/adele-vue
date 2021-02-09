@@ -782,9 +782,9 @@ export default {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
     }),
     async fetchContentFromUser() {
+      await this.fetchSpeechPartsContent();
       await this.fetchTranscriptionContent();
       await this.fetchTranslationContent();
-      await this.fetchSpeechPartsContent();
 
       try {
         this.transcriptionAlignmentError = null;

@@ -177,7 +177,7 @@ const actions = {
       let transcription = response.data.data;
 
       let quillContent = TEIToQuill(transcription.content);
-      //
+      
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);

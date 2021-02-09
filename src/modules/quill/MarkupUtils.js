@@ -95,7 +95,10 @@ const TEIToQuill = (teiString) => {
   teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
   teiString = trim(teiString)
 
-  const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
+  teiString = `<doc>${teiString}</doc>`
+  //console.log('teistring', teiString);
+
+  const xmlDoc = parser.parseFromString(teiString,"text/xml");
   let newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
   let str = xmlSerializer.serializeToString(newDoc);
   
@@ -409,8 +412,8 @@ const insertSpeechparts = (text, speechparts) => {
         break;
     }
     result = result.insert(ins.index + indexCorrection, insertTag);
-    if (inserted) //console.log(" =>", result)
-      indexCorrection += insertTag.length;
+    console.log('teistring', insertions, result)
+    indexCorrection += insertTag.length
   });
 
   result = TEIToQuill(result)
