@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import LandingPage from "@/pages/LandingPage.vue"
 import SearchPage from "@/pages/SearchPage.vue"
 import DocumentPage from "@/pages/DocumentPage.vue"
-import AddDocumentPage from "@/pages/AddDocumentPage.vue"
 import DocumentationPage from "@/pages/DocumentationPage.vue"
 
 import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
@@ -46,11 +45,6 @@ const router = new VueRouter({
       component: UserDashboardPage,
       name: 'user-dashboard',
       props: true
-    },
-    {
-      path: '/documents/add',
-      component: AddDocumentPage,
-      name: 'document-add'
     },
     {
       path: '/documents/:docId/view/',

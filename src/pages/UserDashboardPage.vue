@@ -25,7 +25,7 @@
                         id="documents"
                         @click="goTo('documents')"
                       >
-                        Gestion des documents
+                        Gestion des dossiers
                       </li>
                     </ul>
                   </div>
@@ -70,10 +70,8 @@
           <div
             v-if="$attrs.section === 'documents'"
           >
-            <h1>Gestion des documents</h1>
-            <p>
-              Création, suppression, état d'avancement du dossier
-            </p>
+            <add-document />
+            <manage-document-table />
           </div>
           <div
             v-if="$attrs.section === 'users'"
@@ -103,12 +101,15 @@
 import { mapState, mapGetters } from 'vuex';
 
 import InviteUser from '@/components/dashboard/InviteUser';
-
+import AddDocument from '@/components/dashboard/AddDocument';
+import ManageDocumentTable from '@/components/dashboard/ManageDocumentTable';
 
 export default {
     name: "UserDashboardPage",
     components: {
-      InviteUser
+      InviteUser,
+      AddDocument,
+      ManageDocumentTable
     },
     computed: {
         ...mapGetters("user", ["loggedIn", "currentUserIsTeacher"]),
