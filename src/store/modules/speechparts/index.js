@@ -18,6 +18,9 @@ const mutations = {
   SAVING_STATUS (state, payload) {
     state.savingStatus = payload;
   },
+  CLEAR(state) {
+    state.speechparts = []
+  },
   /* need review */
   /*
   NEW (state, speechpart) {
@@ -55,10 +58,11 @@ const actions = {
       commit('UPDATE_ALL', response.data.data)
       // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
       //await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
-
+      
       commit('SET_ERROR', null)
     }).catch((error) => {
       commit('SET_ERROR', error)
+      commit('CLEAR')
       //throw error
     })
   },

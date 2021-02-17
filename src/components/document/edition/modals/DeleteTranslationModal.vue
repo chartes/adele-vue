@@ -54,8 +54,7 @@ export default {
         docId: {type: Number, default: null}
     },
     computed: {
-        ...mapGetters('workflow', ['selectedUserHasTranslation',
-        'selectedUserHasFacsimile', 'selectedUserHasCommentaries', 'selectedUserHasSpeechParts']),
+        ...mapGetters('workflow', ['selectedUserHasTranslation', 'selectedUserHasCommentaries', 'selectedUserHasSpeechParts']),
 
         dependencies() {
             let deps = []

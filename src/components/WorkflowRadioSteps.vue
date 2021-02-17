@@ -64,7 +64,7 @@
               @mouseleave="stepDoc = $route.params.section"
             >
               <validation-radio-icon
-                :is-validated="isTranscriptionValidated"
+                :is-validated="isTranscriptionValidated && selectedUserHasTranscription"
                 :is-content-empty="!selectedUserHasTranscription"
               />
               <span
@@ -80,7 +80,7 @@
                   @mouseleave="stepDoc = $route.params.section"
                 >
                   <validation-radio-icon
-                    :is-validated="isTranslationValidated"
+                    :is-validated="isTranslationValidated && selectedUserHasTranslation"
                     :is-content-empty="!selectedUserHasTranslation"
                   />
                   <span
@@ -94,7 +94,7 @@
                   @mouseleave="stepDoc = $route.params.section"
                 >
                   <validation-radio-icon
-                    :is-validated="isCommentariesValidated"
+                    :is-validated="isCommentariesValidated && selectedUserHasCommentaries"
                     :is-content-empty="!selectedUserHasCommentaries"
                   />
                   <span
@@ -109,7 +109,7 @@
                   @mouseleave="stepDoc = $route.params.section"
                 >
                   <validation-radio-icon
-                    :is-validated="isFacsimileValidated"
+                    :is-validated="isFacsimileValidated && selectedUserHasFacsimile"
                     :is-content-empty="!selectedUserHasFacsimile"
                   />
                   <span
@@ -122,7 +122,7 @@
                   @mouseleave="stepDoc = $route.params.section"
                 >
                   <validation-radio-icon
-                    :is-validated="isSpeechPartsValidated"
+                    :is-validated="isSpeechPartsValidated && selectedUserHasSpeechParts"
                     :is-content-empty="!selectedUserHasSpeechParts"
                   />
                   <span

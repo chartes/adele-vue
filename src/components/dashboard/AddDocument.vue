@@ -4,8 +4,17 @@
       Création d'un nouveau dossier
     </h2>
     <div class="buttons">
+      <span class="control">
+        <input
+          v-model="newTitle"
+          class="input"
+          type="text"
+          placeholder="Titre du nouveau document"
+        >
+ 
+      </span>
       <button
-        class="button"
+        class="button is-info"
         @click="makeNewDoc"
       >
         Ajouter
@@ -40,7 +49,7 @@ export default {
     },
     data() {
       return {
-        title: 'Titre du document',
+        newTitle: 'Titre du nouveau document',
         subtitle: 'Sous-titre',
         status: -1
       }
@@ -56,7 +65,7 @@ export default {
       async makeNewDoc() {
         this.status = null
         this.status = await this.addDocument({
-          title: this.title,
+          title: this.newTitle || 'Titre du nouveau document',
           subtitle: this.subtitle
         })
       }
@@ -65,11 +74,16 @@ export default {
 </script>
 
 <style scoped>
+.input {
+  min-width: 300px;
+}
 .add-document { 
   padding-bottom: 20px;
 }
 .button {
-  background-color: #FFD500;
+  margin-bottom: 0px !important;
+  margin-left: 12px;
+  width:100px;
 }
 .buttons {
   margin-top: 20px;

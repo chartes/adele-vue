@@ -74,7 +74,7 @@ export default {
                 deps.push('Ce document possède une traduction.')
             }
             if (this.selectedUserHasFacsimile) {
-                deps.push('Ce document possède un des alignements de facsimilé.')
+                deps.push('Ce document possède des alignements de facsimilé.')
             }
             if (this.selectedUserHasCommentaries) {
                 deps.push('Ce document possède un ou plusieurs commentaires')

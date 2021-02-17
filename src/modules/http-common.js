@@ -17,11 +17,6 @@ export const http = axios.create({
   withCredentials: true
 });
 
-function http_with_csrf_token() {
-  return http; 
-}
-
-
 // Function that will be called to refresh authorization
 const refreshAuthLogic = failedRequest => http.post('refresh', {}, {
   headers: {
@@ -38,6 +33,6 @@ const refreshAuthLogic = failedRequest => http.post('refresh', {}, {
 createAuthRefreshInterceptor(http, refreshAuthLogic);
 
 
-export default http_with_csrf_token;
+export default http;
 
 

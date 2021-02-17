@@ -44,7 +44,7 @@
             </a>
           </router-link>
           <router-link
-            :to="{name: 'user-dashboard', params: {section: 'work'}}"
+            :to="{name: 'user-dashboard', params: {section: 'documents'}}"
           >
             <a
               href="#"

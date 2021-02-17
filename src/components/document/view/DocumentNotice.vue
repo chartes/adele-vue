@@ -75,7 +75,7 @@
         </li>
         <li v-if="document.pressmark">
           <div class="tags has-addons">
-            <span class="tag is-dark">Côte de conservation</span>
+            <span class="tag is-dark">Cote de conservation</span>
             <span class="tag">{{ document.pressmark ? document.pressmark : 'inconnue' }}</span>
           </div>
         </li>

@@ -99,6 +99,9 @@ const getters = {
   isSpeechPartsReadOnly: (state, getters)  => {
     return getters.isStepReadOnly('speech-parts')
   },
+  isFacsimileReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly('facsimile')
+  },
   selectedUsername(state, getters, rootState) {
     const whitelist = rootState.document.document.whitelist
     if (whitelist) {
@@ -131,8 +134,7 @@ const getters = {
     }
   },
   selectedUserHasFacsimile: (state, getters, rootState) => {
-    console.warn('not implemented')
-    return false
+    return rootState.document.user_id == state.selectedUserId && rootState.document.document.exist_flags.facsimile
   },
   selectedUserHasSpeechParts: (state, getters, rootState) => {
     if (getters.isSpeechPartsReadOnly) {

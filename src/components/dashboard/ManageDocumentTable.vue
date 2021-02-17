@@ -11,69 +11,88 @@
 
         paginated
         backend-pagination
+        pagination-position="both"
         :total="total"
         :per-page="perPage"
-        aria-next-label="Next page"
-        aria-previous-label="Previous page"
+        aria-next-label="Page suivante"
+        aria-previous-label="Page précédente"
         aria-page-label="Page"
-        aria-current-label="Current page"
+        aria-current-label="Page courante"
         backend-sorting
 
         :default-sort-direction="defaultSortOrder"
         :default-sort="[sortField, sortOrder]"
+        narrowed
+
         @page-change="onPageChange"
-        @sort="onSort"
+        @sort="onSort" 
       >
         <b-table-column
           v-slot="props"
-          field="original_title"
-          label="Numéro du dossier"
+          field="id"
+          label="Dossier"
           sortable
-        >
-          {{ props.row.original_title }}
-        </b-table-column>
-
-        <b-table-column
-          v-slot="props"
-          field="vote_average"
-          label="Titre"
-          numeric
-          sortable
+          width="160"
         >
           <span
-            class="tag"
-            :class="type(props.row.vote_average)"
+            class="gotodoc"
+            @click="$router.push({name: 'document-view', params: {docId: props.row.id, section: 'notice'}})"
           >
-            {{ props.row.vote_average }}
+            {{ props.row.id }}
+            <img
+              :src="getThumbnailUrl(props.row['thumbnail-url'])"
+              width="150"
+            >
           </span>
         </b-table-column>
 
         <b-table-column
           v-slot="props"
-          field="vote_count"
-          label="Propriétaire"
-          numeric
+          field="title"
+          label="Titre"
+          width="400"
           sortable
         >
-          {{ props.row.vote_count }}
+          <span
+            class="gotodoc"
+            @click="$router.push({name: 'document-view', params: {docId: props.row.id, section: 'notice'}})"
+          >
+            <div class="doc-title">
+              {{ props.row.title }}
+            </div>
+            <div>{{ props.row.pressmark }}</div>
+          </span>
         </b-table-column>
-
         <b-table-column
           v-slot="props"
-          field="release_date"
+          field="whitelist-id"
           label="Liste d'accès"
+          width="120"
           sortable
           centered
         >
-          {{ props.row.release_date ? new Date(props.row.release_date).toLocaleDateString() : 'unknown' }}
+          {{ props.row['whitelist-id'] }}
         </b-table-column>
 
         <b-table-column
           v-slot="props"
-          label="Statut"
-          width="500"
+          field="user-id"
+          label="Propriétaire"
+          width="120"
+          sortable
+          centered
         >
-          {{ props.row.overview | truncate(80) }}
+          {{ props.row['user-id'] }}
+        </b-table-column>
+        <b-table-column
+          v-slot="props"
+          label="Avancement"
+          width="180"
+        >
+          <workflow-radio-steps-light
+            :validation="props.row.validation"
+            :exist="props.row.exist"
+          /> 
         </b-table-column>
       </b-table>
     </section>
@@ -83,11 +102,13 @@
 <script>
 
 import { mapState, mapActions } from 'vuex';
-import {http} from '@/modules/http-common.js';
+import http from '@/modules/http-common.js';
+import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLight.vue";
 
 export default {
     name: "ManageDocumentTable",
     components: {
+      WorkflowRadioStepsLight
     },
         filters: {
             /**
@@ -99,77 +120,81 @@ export default {
                     : value
             }
         },
-   data() {
-            return {
+     data() {
+        return {
                 data: [],
                 total: 0,
                 loading: false,
-                sortField: 'vote_count',
+                sortField: 'id',
                 sortOrder: 'desc',
                 defaultSortOrder: 'desc',
                 page: 1,
-                perPage: 20
-            }
+                perPage: 25
+        }
         },
         mounted() {
             this.loadAsyncData()
         },
         methods: {
-            /*
-        * Load async data
-        */
-            loadAsyncData() {
+          getThumbnailUrl(url) {
+            return url ? url.replace('/full/full', '/full/200,') : require('@/assets/images/document_placeholder.svg')
+          },
+          /*
+          * Load async data
+          */
+          async loadAsyncData() {
                 const params = [
-                    'api_key=bb6f51bef07465653c3e553d6ab161a8',
-                    'language=en-US',
-                    'include_adult=false',
-                    'include_video=false',
-                    `sort_by=${this.sortField}.${this.sortOrder}`,
-                    `page=${this.page}`
+                    `sort-by=${this.sortField}.${this.sortOrder}`,
+                    `num-page=${this.page}`,
+                    `page-size=${this.perPage}`
                 ].join('&')
 
                 this.loading = true
-                http.get(`dashboard/document-management?${params}`)
-                    .then(async (response) => {
-                        const data = response.data//await response.json()
-                        // api.themoviedb.org manage max 1000 pages
-                        this.data = []
-                        let currentTotal = data.total_results
-                        if (data.total_results / this.perPage > 1000) {
-                            currentTotal = this.perPage * 1000
-                        }
-                        this.total = currentTotal
-                        data.results.forEach((item) => {
-                            item.release_date = item.release_date ? item.release_date.replace(/-/g, '/') : null
-                            this.data.push(item)
-                        })
-                        this.loading = false
-                    })
-                    .catch((error) => {
-                        this.data = []
-                        this.total = 0
-                        this.loading = false
-                        throw error
-                    })
-            },
+
+                try {
+                  const response = await http.get(`dashboard/document-management?${params}`)
+                  const data = response.data.data
+                  
+                  this.data = []
+                  /*
+                  let currentTotal = data.documents.length
+                  if (data.total / this.perPage > 1000) {
+                    currentTotal = this.perPage * 1000
+                  }
+                  */
+                  
+                  this.total = data.total
+
+                  data.documents.forEach((item) => {
+                    this.data.push(item)
+                  })
+                  this.loading = false
+                } catch (error) {
+                  console.log(http)
+                  console.warn(error)
+                  this.data = []
+                  this.total = 0
+                  this.loading = false
+                }
+          },
             /*
-        * Handle page-change event
-        */
+          * Handle page-change event
+          */
             onPageChange(page) {
                 this.page = page
                 this.loadAsyncData()
             },
             /*
-        * Handle sort event
-        */
+          * Handle sort event
+          */
             onSort(field, order) {
                 this.sortField = field
                 this.sortOrder = order
                 this.loadAsyncData()
             },
             /*
-        * Type style in relation to the value
-        */
+          * Type style in relation to the value
+          */
             type(value) {
                 const number = parseFloat(value)
                 if (number < 6) {
@@ -184,11 +209,32 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.doc-title {
+    font-size: 18px;
+    line-height: 18px;
+    text-transform: none;
+  }
+.dashboard, ul {
+  list-style-type: none !important;
+  padding: 0 important;
+}
+img {
+  margin: 0px !important;
+  margin-right: 20px;
+  position: relative;
+  float: right;
+}
 .add-document { 
   padding-bottom: 20px;
 }
 .buttons {
   margin-top: 20px;
+}
+.gotodoc {
+  &:hover {
+    color: #FFD500 !important;
+    cursor: pointer;
+  }
 }
 </style>

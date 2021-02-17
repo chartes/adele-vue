@@ -705,7 +705,6 @@ export default {
       "isCommentariesValidated",
       "selectedUserHasTranscription",
       "selectedUserHasTranslation",
-      "selectedUserHasFacsimile",
       "selectedUserHasCommentaries",
       "selectedUserHasSpeechParts",
     ]),

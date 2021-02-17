@@ -2,7 +2,7 @@
   <div class="documentation-page">
     <div class="top">
       <div class="columns main-columns">
-        <div class="column main-column is-3 themes">
+        <div class="column main-column is-2 themes">
           <div class="content">
             <p class="column-title">
               Tableau de bord
@@ -11,16 +11,10 @@
               <li>
                 <div class="theme-card card">
                   <div class="card-header">
-                    <p>Documents</p>
+                    <p>Dossiers</p>
                   </div>
                   <div class="card-content">
                     <ul class="doc-tabs">
-                      <li
-                        id="work"
-                        @click="goTo('work')"
-                      >
-                        Mon travail
-                      </li>
                       <li
                         id="documents"
                         @click="goTo('documents')"
@@ -48,7 +42,7 @@
                         id="whitelists"
                         @click="goTo('whitelists')"
                       >
-                        Gestion des listes
+                        Gestion des listes d'accès
                       </li>
                     </ul>
                   </div>
@@ -57,20 +51,12 @@
             </ul>
           </div>
         </div>
-        <div class="column content-column">
+        <div class="column content-column dashboard">
           <div
-            v-if="$attrs.section === 'work' || $attrs.section === null"
-          >
-            <h1>Mon travail</h1>
-            <p>
-              Pour les prof : documents créés
-              Pour les étudiants : documents pour lesquelles  est associée une liste d'accès nous contenant
-            </p>
-          </div>
-          <div
-            v-if="$attrs.section === 'documents'"
+            v-if="$attrs.section === 'documents' || $attrs.section === null"
           >
             <add-document />
+            <div style="height:50px; width: auto" />
             <manage-document-table />
           </div>
           <div

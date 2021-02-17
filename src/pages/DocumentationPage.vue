@@ -61,7 +61,7 @@
                         id="conservation"
                         @click="goTo('conservation')"
                       >
-                        Lieu de conservation : institution, cote
+                        Lieux de conservation
                       </li>
                       <li
                         id="speech-parts"
@@ -106,7 +106,7 @@
             </ul>
           </div>
         </div>
-        <div class="column content-column">
+        <div class="column content-column documentation">
           <!--
           <div
             v-if="$attrs.section === 'facsimile'"
