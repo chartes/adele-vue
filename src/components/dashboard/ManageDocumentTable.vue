@@ -65,29 +65,39 @@
         </b-table-column>
         <b-table-column
           v-slot="props"
-          field="whitelist-id"
+          field="whitelist"
           label="Liste d'accès"
-          width="120"
+          width="150"
           sortable
           centered
         >
-          {{ props.row['whitelist-id'] }}
+          {{ props.row['whitelist'].id }} - {{ props.row['whitelist'].label }}
         </b-table-column>
 
         <b-table-column
           v-slot="props"
-          field="user-id"
+          field="user"
           label="Propriétaire"
           width="120"
           sortable
           centered
         >
-          {{ props.row['user-id'] }}
+          {{ props.row.owner['username'] }}
         </b-table-column>
         <b-table-column
           v-slot="props"
           label="Avancement"
-          width="180"
+          width="150"
+        >
+          <workflow-radio-steps-light
+            :validation="props.row.validation"
+            :exist="props.row.exist"
+          /> 
+        </b-table-column>
+        <b-table-column
+          v-slot="props"
+          label="Actions"
+          width="150"
         >
           <workflow-radio-steps-light
             :validation="props.row.validation"
@@ -101,7 +111,7 @@
 
 <script>
 
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import http from '@/modules/http-common.js';
 import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLight.vue";
 
@@ -131,11 +141,14 @@ export default {
                 page: 1,
                 perPage: 25
         }
-        },
-        mounted() {
+      },
+      computed: {
+        ...mapGetters('user', ['getUser'])
+      },
+      mounted() {
             this.loadAsyncData()
-        },
-        methods: {
+      },
+      methods: {
           getThumbnailUrl(url) {
             return url ? url.replace('/full/full', '/full/200,') : require('@/assets/images/document_placeholder.svg')
           },
@@ -165,7 +178,7 @@ export default {
                   
                   this.total = data.total
 
-                  data.documents.forEach((item) => {
+                  data.documents.forEach(async (item) => {
                     this.data.push(item)
                   })
                   this.loading = false

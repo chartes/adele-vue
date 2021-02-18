@@ -101,6 +101,10 @@ const getters = {
     return whitelist.users.find(u => {
         return u.id === userId
     })
+  },
+  getUser: (state) => async (userId) => {
+    const response = await http.get(`users/${userId}`)
+    return response.data
   }
 };
 
