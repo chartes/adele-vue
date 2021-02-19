@@ -22,7 +22,6 @@
 
         :default-sort-direction="defaultSortOrder"
         :default-sort="[sortField, sortOrder]"
-        narrowed
 
         @page-change="onPageChange"
         @sort="onSort" 
@@ -32,7 +31,7 @@
           field="id"
           label="Dossier"
           sortable
-          width="160"
+          width="200"
         >
           <span
             class="gotodoc"
@@ -87,7 +86,7 @@
         <b-table-column
           v-slot="props"
           label="Avancement"
-          width="150"
+          width="190"
         >
           <workflow-radio-steps-light
             :validation="props.row.validation"
@@ -97,12 +96,30 @@
         <b-table-column
           v-slot="props"
           label="Actions"
-          width="150"
+          width="110"
         >
-          <workflow-radio-steps-light
-            :validation="props.row.validation"
-            :exist="props.row.exist"
-          /> 
+          <div class="action-buttons">
+            <button class="button is-danger is-outlined">
+              <span>
+                Supprimer
+              </span>
+              <span class="icon">
+                <i class="fas fa-times" />
+              </span>
+            </button>
+            <button class="button is-primary is-outlined">
+              <span>
+                Fermer
+              </span>
+              <span class="icon">
+                <i class="fas fa-times" />
+              </span>
+            </button>
+            <publish-button
+              :doc-id="props.row.id"
+              :initial-status="props.row['is-published']"
+            />
+          </div>
         </b-table-column>
       </b-table>
     </section>
@@ -114,11 +131,13 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import http from '@/modules/http-common.js';
 import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLight.vue";
+import PublishButton from "./actions/PublishButton.vue";
 
 export default {
     name: "ManageDocumentTable",
     components: {
-      WorkflowRadioStepsLight
+      WorkflowRadioStepsLight,
+      PublishButton
     },
         filters: {
             /**
@@ -243,6 +262,13 @@ img {
 }
 .buttons {
   margin-top: 20px;
+}
+.action-buttons {
+  margin-top: 6px;
+  button {
+    margin-top: 6px;
+    width: 100%;
+  }
 }
 .gotodoc {
   &:hover {
