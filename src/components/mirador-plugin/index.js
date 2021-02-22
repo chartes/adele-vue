@@ -18,12 +18,19 @@ function MyComponent(props) {
   React.useEffect(() => {
     if (viewer && annotation) {
       const draw = () => {
-        if (annotation) {
-          if (!annotation.svgSelector && annotation.chars) {
-            const [x, y, w, h] = annotation.fragmentSelector;
-            const point = viewer.viewport.pixelFromPoint(new Point(x, y + h));
-            setAnnotationStyle({left: point.x, top: point.y});
+        if (annotation && annotation.chars) {
+          let x, y, width, height;
+          if (annotation.svgSelector) {
+            const divSvg = document.createElement("div");
+            divSvg.innerHTML = annotation.svgSelector.value;
+            document.body.appendChild(divSvg);
+            ({x, y, height, width} = divSvg.children[0].getBBox());
+            divSvg.remove();
+          } else {
+            [x, y, width, height] = annotation.fragmentSelector;
           }
+          const point = viewer.viewport.pixelFromPoint(new Point(x, y + height));
+          setAnnotationStyle({left: point.x, top: point.y});
         }
       };
       draw();
