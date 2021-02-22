@@ -11,14 +11,17 @@ import Mirador from "mirador";
 import axios from "axios";
 import annotationPlugins from 'mirador-annotations';
 import LocalStorageAdapter from 'mirador-annotations/lib/LocalStorageAdapter';
-import MyPlugin from './mirador-plugin'
+import MyPlugin from './mirador-plugin';
+import AdeleStorageAdapter from './mirador-plugin/adapter';
 
 export default {
   name: "MiradorViewer",
   components: {},
   props: {
     manifestUrl: { type: String, required: true },
+    manifestOriginUrl: { type: String, required: true },
     canvasIndex: { type: Number, default: 0 },
+    documentId: { type: Number, default: 0 },
     annotationMode: { type: Boolean, default: false},
     showAnnotations: { type: Boolean, default: true},
     configuration: {type: Object, default: () => {return {}}}
@@ -74,7 +77,7 @@ export default {
             enabled: false
           },
           annotation: {
-            adapter: (canvasId) => new LocalStorageAdapter(`localStorage://?canvasId=${canvasId}`),
+            adapter: (canvasId) => new AdeleStorageAdapter(this.manifestOriginUrl, this.documentId),
           },
           ...this.configuration
         }

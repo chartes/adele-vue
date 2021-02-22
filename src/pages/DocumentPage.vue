@@ -115,7 +115,9 @@
               <mirador-viewer
                 v-if="document.manifest_url && !isLoading"
                 :manifest-url="document.manifest_url"
+                :manifest-origin-url="document.manifest_origin_url"
                 :canvas-index="0"
+                :document-id="document.id"
               />
               <img
                 v-else
