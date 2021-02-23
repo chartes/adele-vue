@@ -64,7 +64,7 @@
         </b-table-column>
         <b-table-column
           v-slot="props"
-          field="whitelist"
+          field="whitelist_id"
           label="Liste d'accès"
           width="150"
           sortable
@@ -75,7 +75,7 @@
 
         <b-table-column
           v-slot="props"
-          field="user"
+          field="user_id"
           label="Propriétaire"
           width="120"
           sortable
@@ -99,25 +99,17 @@
           width="110"
         >
           <div class="action-buttons">
-            <button class="button is-danger is-outlined">
-              <span>
-                Supprimer
-              </span>
-              <span class="icon">
-                <i class="fas fa-times" />
-              </span>
-            </button>
-            <button class="button is-primary is-outlined">
-              <span>
-                Fermer
-              </span>
-              <span class="icon">
-                <i class="fas fa-times" />
-              </span>
-            </button>
             <publish-button
               :doc-id="props.row.id"
               :initial-status="props.row['is-published']"
+            />
+            <close-button
+              :doc-id="props.row.id"
+              :initial-status="props.row['is-closed']"
+            />
+            <delete-button
+              :doc-id="props.row.id"
+              @document-deleted="refreshTable"
             />
           </div>
         </b-table-column>
@@ -131,24 +123,18 @@
 import { mapState, mapActions, mapGetters } from 'vuex';
 import http from '@/modules/http-common.js';
 import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLight.vue";
+
 import PublishButton from "./actions/PublishButton.vue";
+import DeleteButton from "./actions/DeleteButton.vue";
+import CloseButton from "./actions/CloseButton.vue";
 
 export default {
     name: "ManageDocumentTable",
     components: {
       WorkflowRadioStepsLight,
-      PublishButton
+      PublishButton, DeleteButton, CloseButton,
     },
-        filters: {
-            /**
-        * Filter to truncate string, accepts a length parameter
-        */
-            truncate(value, length) {
-                return value.length > length
-                    ? value.substr(0, length) + '...'
-                    : value
-            }
-        },
+
      data() {
         return {
                 data: [],
@@ -164,6 +150,11 @@ export default {
       computed: {
         ...mapGetters('user', ['getUser'])
       },
+      created() {
+        this.$on('document-created:show', (event) => {
+          this.refreshTable()
+        });
+      },
       mounted() {
             this.loadAsyncData()
       },
@@ -174,7 +165,12 @@ export default {
           /*
           * Load async data
           */
+          refreshTable() {
+            this.loadAsyncData()
+          },
           async loadAsyncData() {
+                this.$root.$emit('document-created:hide')
+
                 const params = [
                     `sort-by=${this.sortField}.${this.sortOrder}`,
                     `num-page=${this.page}`,
@@ -182,19 +178,13 @@ export default {
                 ].join('&')
 
                 this.loading = true
+                this.data = []
 
                 try {
                   const response = await http.get(`dashboard/document-management?${params}`)
                   const data = response.data.data
-                  
-                  this.data = []
-                  /*
-                  let currentTotal = data.documents.length
-                  if (data.total / this.perPage > 1000) {
-                    currentTotal = this.perPage * 1000
-                  }
-                  */
-                  
+                  console.log('REFRESH TABLE')
+
                   this.total = data.total
 
                   data.documents.forEach(async (item) => {
@@ -224,19 +214,7 @@ export default {
                 this.sortOrder = order
                 this.loadAsyncData()
             },
-            /*
-          * Type style in relation to the value
-          */
-            type(value) {
-                const number = parseFloat(value)
-                if (number < 6) {
-                    return 'is-danger'
-                } else if (number >= 6 && number < 8) {
-                    return 'is-warning'
-                } else if (number >= 8) {
-                    return 'is-success'
-                }
-            }
+         
         }
 }
 </script>
@@ -265,9 +243,9 @@ img {
 }
 .action-buttons {
   margin-top: 6px;
-  button {
+  .action {
     margin-top: 6px;
-    width: 100%;
+    width: 120px;
   }
 }
 .gotodoc {

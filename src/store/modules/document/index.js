@@ -275,6 +275,9 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
+  deleteDocument ({commit }, docId) {
+    return http.delete(`documents/${docId}`);
+  }
 };
 
 const getters = {

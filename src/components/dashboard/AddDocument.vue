@@ -19,21 +19,7 @@
       >
         Ajouter
       </button>
-    </div>
-
-    <message v-if="status !== -1">
-      Document <b>{{ status.data.data.id }}</b> ajouté ! <router-link
-        :to="{name:'document-edition', params:{docId: status.data.data.id, section: 'notice'}}"
-      >
-        Modifier le nouveau document
-      </router-link>.
-    </message>
-    <message
-      v-if="error && status !== -1"
-      message-class="is-danger"
-    >
-      {{ error }}
-    </message>
+    </div>   
   </div>
 </template>
 
@@ -45,14 +31,12 @@ import Message from '@/components/Message';
 export default {
     name: "AddDocument",
     components: {
-      Message
+      
     },
     data() {
       return {
         newTitle: 'Titre du nouveau document',
-        subtitle: 'Sous-titre',
-        status: -1
-      }
+        subtitle: 'Sous-titre'      }
     },
     computed: {
       ...mapState('document', ['error'])
@@ -63,11 +47,11 @@ export default {
     methods: {
       ...mapActions('document', ['addDocument']),
       async makeNewDoc() {
-        this.status = null
-        this.status = await this.addDocument({
+        const doc = await this.addDocument({
           title: this.newTitle || 'Titre du nouveau document',
           subtitle: this.subtitle
         })
+        this.$root.$emit('document-created:show', {doc})
       }
     }
 }

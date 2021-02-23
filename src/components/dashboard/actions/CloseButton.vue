@@ -5,16 +5,16 @@
     @click="togglePublication"
   >
     <span v-if="status">
-      Publié
+      Fermé
     </span>
     <span v-else>
-      Publier
+      Ouvert
     </span>
     <span
       v-show="status"
       class="icon"
     >
-      <i class="fas fa-check" />
+      <i class="fas fa-lock" />
     </span>
   </button>
 </template>
@@ -25,7 +25,7 @@ import {mapState, mapActions, mapGetters} from 'vuex'
 import http from '@/modules/http-common.js';
 
 export default {
-    name: "PublishButton",
+    name: "CloseButton",
     components: {
       
     },
@@ -45,21 +45,21 @@ export default {
         this.status = this.initialStatus
     },
     methods: {
-        async publish() {
-            const response = await http.get(`documents/${this.docId}/publish`)
+        async open() {
+            const response = await http.get(`documents/${this.docId}/open`)
             const data = await response.data;
-            this.status = data.data['is-published']
+            this.status = data.data['is-closed']
         },
-        async unpublish() {
-            const response = await http.get(`documents/${this.docId}/unpublish`)
+        async close() {
+            const response = await http.post(`documents/${this.docId}/close`, {data: {'closing_date' : '01/01/2021'}})
             const data = await response.data;
-            this.status = data.data['is-published']
+            this.status = data.data['is-closed']
         },
         togglePublication() {
             if (this.status) {
-                this.unpublish()
+                this.open()
             } else {
-                this.publish()
+                this.close()
             }
         }
     }

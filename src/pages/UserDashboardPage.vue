@@ -56,6 +56,15 @@
             v-if="$attrs.section === 'documents' || $attrs.section === null"
           >
             <add-document />
+
+            <message v-if="newDocMessage">
+              Document <b>{{ newDocMessage }}</b> ajouté ! <router-link
+                :to="{name:'document-edition', params:{docId: newDocMessage, section: 'notice'}}"
+              >
+                Modifier le nouveau document
+              </router-link>.
+            </message>
+
             <div style="height:50px; width: auto" />
             <manage-document-table />
           </div>
@@ -89,13 +98,20 @@ import { mapState, mapGetters } from 'vuex';
 import InviteUser from '@/components/dashboard/InviteUser';
 import AddDocument from '@/components/dashboard/AddDocument';
 import ManageDocumentTable from '@/components/dashboard/ManageDocumentTable';
+import Message from '@/components/Message.vue'
 
 export default {
     name: "UserDashboardPage",
     components: {
       InviteUser,
       AddDocument,
-      ManageDocumentTable
+      ManageDocumentTable,
+      Message
+    },
+    data() {
+      return {
+        newDocMessage: null
+      }
     },
     computed: {
         ...mapGetters("user", ["loggedIn", "currentUserIsTeacher"]),
@@ -109,6 +125,14 @@ export default {
           next();
         }
       })
+    },
+    created() {
+      this.$root.$on('document-created:show', (event) => {
+        this.newDocMessage = event.doc.data.data.id
+      });
+      this.$root.$on('document-created:hide', (event) => {
+        this.newDocMessage = null
+      });
     },
     mounted() {
         document.querySelectorAll('.active').forEach(element => {

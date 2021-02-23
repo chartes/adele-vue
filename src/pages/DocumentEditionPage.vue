@@ -80,7 +80,7 @@
             </li>
             <!-- students don't get to deal with facsimile alignment -->
             <li
-              v-if="currentUserIsTeacher && selectedUserId === documentOwner.id"
+              v-if="currentUserIsTeacher"
               :class="$attrs.section === 'facsimile' ? `is-active` : ''"
               @click="showImage"
             >
@@ -619,9 +619,6 @@ export default {
     CloneTranscriptionModal,
     CloneTranslationModal,
     CloneCommentaryModal
-    /*
-
-        */
   },
   props: {},
   beforeRouteEnter(to, from, next) {

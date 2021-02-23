@@ -412,7 +412,7 @@ const insertSpeechparts = (text, speechparts) => {
         break;
     }
     result = result.insert(ins.index + indexCorrection, insertTag);
-    console.log('teistring', insertions, result)
+    //console.log('teistring', insertions, result)
     indexCorrection += insertTag.length
   });
 

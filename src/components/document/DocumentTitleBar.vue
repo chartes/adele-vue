@@ -88,12 +88,11 @@ export default {
           // student
           if (!this.currentUserIsTeacher) {
             return !this.document.is_closed
-            // TODO: take the validation step in count too (like: if it reached the max step then it is like closed ?)
           } 
           // else, deny to teachers who don't own the doc
-          if (this.currentUser.id !== this.document.user_id) {
-            return false
-          } 
+          //if (this.currentUser.id !== this.document.user_id) {
+          //  return false
+          //} 
 
           return true
         }
