@@ -68,9 +68,11 @@
           label="Liste d'accès"
           width="150"
           sortable
-          centered
         >
-          {{ props.row['whitelist'].id }} - {{ props.row['whitelist'].label }}
+          <whitelist-dropdown
+            :initial-selection="props.row['whitelist'].id"
+            :doc-id="props.row.id"
+          />
         </b-table-column>
 
         <b-table-column
@@ -87,6 +89,7 @@
           v-slot="props"
           label="Avancement"
           width="190"
+          centered
         >
           <workflow-radio-steps-light
             :validation="props.row.validation"
@@ -127,12 +130,14 @@ import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLi
 import PublishButton from "./actions/PublishButton.vue";
 import DeleteButton from "./actions/DeleteButton.vue";
 import CloseButton from "./actions/CloseButton.vue";
+import WhitelistDropdown from './actions/WhitelistDropdown.vue'
 
 export default {
     name: "ManageDocumentTable",
     components: {
       WorkflowRadioStepsLight,
       PublishButton, DeleteButton, CloseButton,
+      WhitelistDropdown
     },
 
      data() {

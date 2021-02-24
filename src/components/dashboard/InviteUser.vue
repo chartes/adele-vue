@@ -1,8 +1,30 @@
 <template>
   <div class="invite-user">
-    <label class="label">Email</label>
-    <div class="field">
-      <div class="control has-icons-left has-icons-right">
+    <div class="control teacher">
+      <div class="control">
+        <label class="radio">
+          <input
+            id="student"
+            v-model="role"
+            type="radio"
+            value="student"
+          >
+          Étudiant
+        </label>
+        <label class="radio">
+          <input
+            id="teacher"
+            v-model="role"
+            type="radio"
+            value="teacher"
+          >
+          Enseignant
+        </label>
+      </div>
+    </div>
+      
+    <div class="field has-addons">
+      <span class="control has-icons-left has-icons-right">
         <input
           v-model="email"
           class="input email"
@@ -19,39 +41,9 @@
         >
           <i class="fas fa-exclamation-triangle" />
         </span>
-      </div>
-      <div class="control teacher">
-        <div class="control">
-          <label class="radio">
-            <input
-              id="student"
-              v-model="role"
-              type="radio"
-              value="student"
-            >
-            Étudiant
-          </label>
-          <label class="radio">
-            <input
-              id="teacher"
-              v-model="role"
-              type="radio"
-              value="teacher"
-            >
-            Enseignant
-          </label>
-        </div>
-      </div>
-    </div> 
-    <p
-      v-if="!emailIsValid && email.length > 4"
-      class="help is-danger"
-    >
-      This email is invalid
-    </p>
+      </span>
 
-    <div class="submit">
-      <div class="control">
+      <span class="control">
         <button
           class="button is-primary is-right"
           :disabled="!emailIsValid || email.length < 4"
@@ -59,8 +51,8 @@
         >
           Inviter
         </button>
-      </div>
-    </div>
+      </span>
+    </div> 
   </div>
 </template>
 
@@ -103,6 +95,7 @@ export default {
                 email: this.email,
                 role: this.role
             })
+            this.$root.$emit('userlist:refresh')
         }
       },
     }

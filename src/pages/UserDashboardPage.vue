@@ -33,12 +33,6 @@
                   <div class="card-content">
                     <ul class="doc-tabs">
                       <li
-                        id="users"
-                        @click="goTo('users')"
-                      >
-                        Gestion des comptes
-                      </li>
-                      <li
                         id="whitelists"
                         @click="goTo('whitelists')"
                       >
@@ -69,22 +63,16 @@
             <manage-document-table />
           </div>
           <div
-            v-if="$attrs.section === 'users'"
-          >
-            <h1>Gestion des utilisateurs</h1>
-            <p>
-              Invitation, suppression des comptes?
-              Gestion des listes ?
-            </p>
-            <invite-user v-if="currentUserIsTeacher" />
-          </div>
-          <div
             v-if="$attrs.section === 'whitelists'"
           >
-            <h1>Listes d'utilisateurs</h1>
-            <p>
-              Création de listes, suppression de liste, modification de liste, voir quels documents pour la liste
-            </p>
+            <h2>Inviter un nouvel utilisateur</h2>
+
+            <invite-user v-if="currentUserIsTeacher" />
+            <div style="height:50px; width: auto" />
+
+            <h2>Gestion des listes d'accès</h2>
+
+            <manage-whitelist v-if="currentUserIsTeacher" />
           </div>
         </div>
       </div>
@@ -98,6 +86,8 @@ import { mapState, mapGetters } from 'vuex';
 import InviteUser from '@/components/dashboard/InviteUser';
 import AddDocument from '@/components/dashboard/AddDocument';
 import ManageDocumentTable from '@/components/dashboard/ManageDocumentTable';
+import ManageWhitelist from '@/components/dashboard/ManageWhitelist';
+
 import Message from '@/components/Message.vue'
 
 export default {
@@ -106,6 +96,7 @@ export default {
       InviteUser,
       AddDocument,
       ManageDocumentTable,
+      ManageWhitelist,
       Message
     },
     data() {
