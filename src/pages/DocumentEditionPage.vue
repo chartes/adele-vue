@@ -252,7 +252,12 @@
               :class="`${imageVisibility ? '' : 'is-fluid'}`"
             >
               <!-- Notice -->
-              <document-edition-notice v-if="$attrs.section === 'notice'" />
+              <document-edition-notice v-if="$attrs.section === 'notice' && !currentUserIsStudent" />
+              <document-notice
+                v-if="$attrs.section === 'notice' && currentUserIsStudent"
+                :document="document"
+              />
+              
               <!-- Transcription -->
               <div v-if="$attrs.section === 'transcription'">
                 <!-- transcription error -->
@@ -386,10 +391,20 @@
                 </div>
                 <!-- translation edition -->
                 <div v-else>
-                  <translation-action-bar />
-                  <document-edition-translation
-                    :translation-with-notes="translationWithNotes"
-                  />
+                  <div class="columns">
+                    <div
+                      v-if="transcriptionVisibility"
+                      class="column is-two-fifths"
+                    >
+                      <document-transcription :readonly-data="transcriptionView" />
+                    </div>
+                    <div class="column">
+                      <translation-action-bar />
+                      <document-edition-translation
+                        :translation-with-notes="translationWithNotes"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
               <!-- Facsimilé -->
@@ -605,6 +620,7 @@ export default {
     DocumentTranscriptionAlignment,
     DocumentCommentaries,
     DocumentSpeechParts,
+    DocumentNotice,
 
     MiradorViewer,
     WorkflowRadioSteps,
@@ -654,8 +670,7 @@ export default {
 
       transcriptionAlignmentError: null,
 
-      imageVisibility:
-        this.$attrs.section !== "commentaries" && this.$attrs.section !== "notice",
+      imageVisibility: true,
       noticeVisibility: true,
       transcriptionVisibility: true,
       translationVisibility: true,
@@ -749,12 +764,15 @@ export default {
       this.$router.push({ name: "error", params: { error: error } });
     }
 
+    await this.fetchContentFromUser();
+    this.init = true;
+
+    this.imageVisibility = this.currentUserIsStudent
+
     if (this.$attrs.section === "translation") {
       this.hideImage();
     }
 
-    await this.fetchContentFromUser();
-    this.init = true;
     this.isLoading = false;
   },
   methods: {

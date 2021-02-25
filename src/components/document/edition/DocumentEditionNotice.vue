@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="edition-notice">
     <div class="content notice">
       <div class="columns">
         <div class="column is-two-fifths">
@@ -152,66 +152,6 @@
               </div>
             </div>
           </div>
-          <div class="is-divider" />
-          <!-- regeste -->
-          <div class="field">
-            <p class="control">
-              <label class="label">Regeste</label>
-            </p>
-            <div class="editor-area">
-              <div
-                ref="controls"
-                class="editor-controls m-b-sm"
-              >
-                <editor-button
-                  :selected="buttons.bold"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'bold'"
-                />
-                <editor-button
-                  :selected="buttons.italic"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'italic'"
-                />
-                <editor-button
-                  :selected="buttons.superscript"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'superscript'"
-                />
-                <editor-button
-                  :selected="buttons.smallcaps"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'smallcaps'"
-                />
-                <editor-button
-                  :selected="buttons.underline"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'underline'"
-                />
-                <editor-button
-                  :selected="buttons.del"
-                  :active="editorHasFocus"
-                  :callback="simpleFormat"
-                  :format="'del'"
-                />
-              </div>
-
-              <div
-                ref="editor"
-                class="quill-editor"
-                spellcheck="false"
-              />
-            </div>
-            <notice-action-bar
-              :data="document"
-              class="m-t-sm is-pulled-right"
-            />
-          </div>
         </div>
         <div class="is-divider-vertical m-sm" />
 
@@ -291,6 +231,68 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- regeste -->
+      <div
+        class="field"
+        style="width: 100%; max-width: 1000px; ;min-width: 400px"
+      >
+        <p class="control">
+          <label class="label">Regeste</label>
+        </p>
+        <div class="editor-area">
+          <div
+            ref="controls"
+            class="editor-controls m-b-sm"
+          >
+            <editor-button
+              :selected="buttons.bold"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'bold'"
+            />
+            <editor-button
+              :selected="buttons.italic"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'italic'"
+            />
+            <editor-button
+              :selected="buttons.superscript"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'superscript'"
+            />
+            <editor-button
+              :selected="buttons.smallcaps"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'smallcaps'"
+            />
+            <editor-button
+              :selected="buttons.underline"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'underline'"
+            />
+            <editor-button
+              :selected="buttons.del"
+              :active="editorHasFocus"
+              :callback="simpleFormat"
+              :format="'del'"
+            />
+          </div>
+
+          <div
+            ref="editor"
+            class="quill-editor"
+            spellcheck="false"
+          />
+        </div>
+        <notice-action-bar
+          :data="document"
+          class="m-t-sm is-pulled-right"
+        />
       </div>
     </div>
   </div>
