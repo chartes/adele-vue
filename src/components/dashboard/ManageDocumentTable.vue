@@ -87,7 +87,7 @@
         </b-table-column>
         <b-table-column
           v-slot="props"
-          label="Avancement"
+          label="Avancement du propriétaire"
           width="190"
           centered
         >
@@ -111,6 +111,7 @@
               :initial-status="props.row['is-closed']"
             />
             <delete-button
+              v-if="currentUserIsTeacher || currentUserIsAdmin"
               :doc-id="props.row.id"
               @document-deleted="refreshTable"
             />
@@ -153,7 +154,11 @@ export default {
         }
       },
       computed: {
-        ...mapGetters('user', ['getUser'])
+           ...mapGetters("user", [
+            "currentUserIsAdmin",
+            "currentUserIsTeacher",
+            "currentUserIsStudent",
+          ]),
       },
       created() {
         this.$on('document-created:show', (event) => {
@@ -188,7 +193,6 @@ export default {
                 try {
                   const response = await http.get(`dashboard/document-management?${params}`)
                   const data = response.data.data
-                  console.log('REFRESH TABLE')
 
                   this.total = data.total
 

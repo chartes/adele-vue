@@ -43,6 +43,14 @@
             </div>
           </router-link>
         </div>
+        <div v-else-if="loggedIn && currentUserIsStudent && !documentCanBeModified">
+          <div
+            class="tag is-primary"
+            style="margin-left: 10px"
+          >
+            Fermé en écriture
+          </div>
+        </div>
       </div>
     
       <div class="tile is-parent">
@@ -86,8 +94,10 @@ export default {
             return true
           }
           // student
-          if (!this.currentUserIsTeacher) {
-            return !this.document.is_closed
+          if (this.currentUserIsStudent) {
+            const me = this.document.whitelist.users.find(u => u.id === this.currentUser.id)
+            console.log("DOC@", me, this.document.whitelist, !this.document.is_closed, me !== undefined)
+            return !this.document.is_closed && me !== undefined
           } 
           // else, deny to teachers who don't own the doc
           //if (this.currentUser.id !== this.document.user_id) {

@@ -123,7 +123,6 @@ export default {
                 try {
                   const response = await http.get(`users?${params}`)
                   const data = response.data.data
-                  console.log('REFRESH TABLE')
 
                   this.total = data.total
 

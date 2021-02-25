@@ -21,6 +21,8 @@ const mutations = {
     localStorage.removeItem('user-adele')
     deleteCookie('csrf_access_token')
     deleteCookie('csrf_refresh_token')
+    deleteCookie('access_token_cookie')
+    deleteCookie('refresh_token_cookie')
     location.reload()
   }
 };
@@ -38,7 +40,8 @@ const actions = {
       })
   },
 
-  logout({commit}) {
+  async logout({commit}) {
+    await http.get('logout')
     commit('CLEAR_USER_DATA')
   },
 
@@ -95,7 +98,7 @@ const getters = {
     return state.currentUser && state.currentUser.roles.includes('teacher')
   },
   currentUserIsStudent(state) {
-    return state.currentUser && state.currentUser.roles.includes('student') && !state.currentUser.roles.includes('teacher')
+    return state.currentUser && state.currentUser.roles.includes('student') && !state.currentUser.roles.includes('teacher')  && !state.currentUser.roles.includes('admin')
   },
   userFromWhitelist: (state) => (whitelist, userId) => {
     return whitelist.users.find(u => {

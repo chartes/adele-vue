@@ -9,7 +9,7 @@
           |
         </span>
         <span class="m-r-sm is-size-6">
-          <span v-if="currentUser.id !== documentOwner.id || !currentUserIsTeacher">Dirigé par</span>
+          <span v-if="currentUser.id !== documentOwner.id">Dirigé par</span>
           <span v-else>Édité par</span>
         </span> 
         <!-- Select workflow user -->

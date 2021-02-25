@@ -282,7 +282,7 @@ const actions = {
 
 const getters = {
   documentOwner: state => {
-    return state.document.whitelist.users.find(u => u.id === state.document.user_id)
+    return state.document.user
   },
   getManifestInfoUrl: state => (canvasIdx) => {
     try {

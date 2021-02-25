@@ -25,7 +25,7 @@
                   </div>
                 </div>
               </li>
-              <li>
+              <li v-if="currentUserIsTeacher || currentUserIsAdmin">
                 <div class="theme-card card">
                   <div class="card-header">
                     <p>Utilisateurs</p>
@@ -49,7 +49,7 @@
           <div
             v-if="$attrs.section === 'documents' || $attrs.section === null"
           >
-            <add-document />
+            <add-document v-if="currentUserIsTeacher || currentUserIsAdmin" />
 
             <message v-if="newDocMessage">
               Document <b>{{ newDocMessage }}</b> ajouté ! <router-link
@@ -63,16 +63,16 @@
             <manage-document-table />
           </div>
           <div
-            v-if="$attrs.section === 'whitelists'"
+            v-if="$attrs.section === 'whitelists' && (currentUserIsTeacher || currentUserIsAdmin)"
           >
             <h2>Inviter un nouvel utilisateur</h2>
 
-            <invite-user v-if="currentUserIsTeacher" />
+            <invite-user />
             <div style="height:50px; width: auto" />
 
             <h2>Gestion des listes d'accès</h2>
 
-            <manage-whitelist v-if="currentUserIsTeacher" />
+            <manage-whitelist />
           </div>
         </div>
       </div>
@@ -105,7 +105,7 @@ export default {
       }
     },
     computed: {
-        ...mapGetters("user", ["loggedIn", "currentUserIsTeacher"]),
+        ...mapGetters("user", ["loggedIn", "currentUserIsTeacher", "currentUserIsAdmin"]),
     },
 
     beforeRouteEnter(to, from, next) {

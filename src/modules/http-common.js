@@ -20,10 +20,10 @@ export const http = axios.create({
 // Function that will be called to refresh authorization
 const refreshAuthLogic = failedRequest => http.post('refresh', {}, {
   headers: {
-    'X-CSRF-TOKEN': getCookie('csrf_refresh_token')
+    'X-CSRF-TOKEN': getCookie('access_token_cookie')
   }
 }).then(tokenRefreshResponse => {
-    const token = getCookie('csrf_access_token') 
+    const token = getCookie('access_token_cookie') 
 
     failedRequest.response.config.headers['Authorization'] = 'Bearer ' + token;
     failedRequest.response.config.headers['X-CSRF-Token'] = token;

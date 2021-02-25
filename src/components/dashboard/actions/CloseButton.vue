@@ -2,6 +2,7 @@
   <button
     class="action button is-outlined"
     :class="status ? 'is-primary' : ''"
+    :disabled="currentUserIsStudent"
     @click="togglePublication"
   >
     <span v-if="status">
@@ -39,8 +40,12 @@ export default {
         }
     },
     computed: {
-
-    },
+           ...mapGetters("user", [
+            "currentUserIsAdmin",
+            "currentUserIsTeacher",
+            "currentUserIsStudent",
+          ]),
+      },
     mounted() {
         this.status = this.initialStatus
     },

@@ -103,7 +103,6 @@ export default {
                 try {
                   const response = await http.get(`whitelists/${this.whitelistId}?${params}`)
                   const data = response.data.data
-                  console.log('REFRESH TABLE')
 
                   this.total = data.total
 

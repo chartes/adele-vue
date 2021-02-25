@@ -1,6 +1,12 @@
 <template>
   <div class="select-whitelist">
-    <span class="field">
+    <span v-if="currentUserIsStudent">
+      <h3 v-if="selected"> {{ selected.label }}</h3>
+    </span>
+    <span
+      v-else 
+      class="field"
+    >
       <span
         class="control dropdown"
         :class="open ?`is-active`: ''"
@@ -54,7 +60,7 @@
 
 <script>
 
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import Message from '@/components/Message';
 import http from '@/modules/http-common.js';
 
@@ -76,7 +82,11 @@ export default {
       }
     },
     computed: {
-      ...mapState('document', ['error']),
+      ...mapGetters("user", [
+            "currentUserIsAdmin",
+            "currentUserIsTeacher",
+            "currentUserIsStudent",
+      ]),
       selected() {
         if (this.selectedId) {
           return this.whitelists.find(w => w.id === this.selectedId)
