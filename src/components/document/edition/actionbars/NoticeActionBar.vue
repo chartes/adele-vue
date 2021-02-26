@@ -1,9 +1,12 @@
 <template>
-  <div class="edition-action-bar m-b-md">
+  <div
+    v-if="currentUserIsTeacher"
+    class="edition-action-bar m-b-md"
+  >
     <div class="field is-grouped">
       <!-- SAVE Notice --> 
       <p
-        v-if="currentUserIsTeacher"
+       
         class="control"
       >
         <save-Notice-button :data="data" />

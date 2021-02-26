@@ -1,9 +1,12 @@
 <template>
-  <div class="edition-action-bar m-b-md">
+  <div
+    v-if="!isTranslationReadOnly"
+    class="edition-action-bar m-b-md"
+  >
     <div class="field is-grouped">
       <!-- SAVE TRANSLATION --> 
       <p 
-        v-if="!isTranslationReadOnly && !transcriptionAlignmentMode"
+        v-if="!transcriptionAlignmentMode"
         class="control"
       >
         <save-translation-button />

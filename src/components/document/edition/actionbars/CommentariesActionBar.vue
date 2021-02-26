@@ -1,5 +1,8 @@
 <template>
-  <div class="edition-action-bar m-b-md m-b-md">
+  <div
+    v-if="!isCommentariesReadOnly"
+    class="edition-action-bar m-b-md"
+  >
     <!-- NEW COMMENTARIES --> 
     <div
       v-if="!hasCommentaryTypes(label)" 
@@ -24,9 +27,7 @@
       class="field is-grouped"
     >
       <div class="control">
-        <save-commentaries-button
-          v-if="!isCommentariesReadOnly"
-        />
+        <save-commentaries-button />
       </div>
       <div
         v-if="currentUserIsTeacher"

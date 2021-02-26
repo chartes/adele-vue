@@ -25,7 +25,6 @@
                   ? `is-active`
                   : ''
               "
-              @click="hideImage"
             >
               <router-link
                 :to="{
@@ -38,7 +37,6 @@
             </li>
             <li
               :class="$attrs.section === 'transcription' ? `is-active` : ''"
-              @click="showImage"
             >
               <router-link
                 :to="{
@@ -52,7 +50,6 @@
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'translation' ? `is-active` : ''"
-              @click="hideImage"
             >
               <router-link
                 :to="{
@@ -67,7 +64,6 @@
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'commentaries' ? `is-active` : ''"
-              @click="hideImage"
             >
               <router-link
                 :to="{
@@ -82,7 +78,6 @@
             <li
               v-if="currentUserIsTeacher"
               :class="$attrs.section === 'facsimile' ? `is-active` : ''"
-              @click="showImage"
             >
               <router-link
                 :to="{
@@ -96,7 +91,6 @@
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
               :class="$attrs.section === 'speech-parts' ? `is-active` : ''"
-              @click="showImage"
             >
               <router-link
                 :to="{
@@ -109,6 +103,54 @@
             </li>
           </ul>
         </div>
+
+        <!-- visibility widget -->
+        <div
+          class="visibility-controls"
+        >
+          <div class="field is-grouped">
+            <div class="control">
+              <span>AFFICHAGE</span>
+            </div>
+            <visibility-toggle
+              class="control"
+              :action="toggleImageVisibility"
+              :visible="imageVisibility"
+            >
+              image
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'notice'"
+              class="control"
+              :action="toggleNoticeVisibility"
+              :visible="noticeVisibility"
+            >
+              notice
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="
+                $attrs.section === 'translation' ||
+                  $attrs.section === 'transcription' ||
+                  $attrs.section === 'commentaries' ||
+                  $attrs.section === 'facsimile'
+              "
+              class="control"
+              :action="toggleTranscriptionVisibility"
+              :visible="transcriptionVisibility"
+            >
+              transcription
+            </visibility-toggle>
+            <visibility-toggle
+              v-if="$attrs.section === 'speech-parts'"
+              class="control"
+              :action="toggleSpeechPartsVisibility"
+              :visible="speechpartsVisibility"
+            >
+              parties du discours
+            </visibility-toggle>
+          </div>
+        </div>
+
         <!-- section content -->
         <div class="columns">
           <div
@@ -116,7 +158,7 @@
             class="column m-t-sm"
             :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
           >
-            <!-- Visibility widget-->
+            <!-- Visibility widget
             <div
               v-if="!showContent && $attrs.section !== 'commentaries'"
               class="visibility-controls m-b-md"
@@ -170,7 +212,7 @@
                 </visibility-toggle>
               </div>
             </div>
-
+            -->
             <mirador-viewer
               v-if="
                 $attrs.section !== 'commentaries' &&
@@ -191,65 +233,10 @@
             v-if="showContent"
             class="column"
           >
-            <!-- visibility widget -->
-            <div
-              v-if="$attrs.section !== 'commentaries'"
-              class="visibility-controls"
-            >
-              <div class="field is-grouped">
-                <div class="control">
-                  <span>AFFICHAGE</span>
-                </div>
-                <visibility-toggle
-                  class="control"
-                  :action="toggleImageVisibility"
-                  :visible="imageVisibility"
-                >
-                  image
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'notice'"
-                  class="control"
-                  :action="toggleNoticeVisibility"
-                  :visible="noticeVisibility"
-                >
-                  notice
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="
-                    $attrs.section === 'translation' ||
-                      $attrs.section === 'transcription' ||
-                      $attrs.section === 'facsimile'
-                  "
-                  class="control"
-                  :action="toggleTranscriptionVisibility"
-                  :visible="transcriptionVisibility"
-                >
-                  transcription
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'translation'"
-                  class="control"
-                  :action="toggleTranslationVisibility"
-                  :visible="translationVisibility"
-                >
-                  traduction
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'speech-parts'"
-                  class="control"
-                  :action="toggleSpeechPartsVisibility"
-                  :visible="speechpartsVisibility"
-                >
-                  parties du discours
-                </visibility-toggle>
-              </div>
-            </div>
-
             <div
               v-if="!!document && init"
               class="container"
-              :class="`${imageVisibility ? '' : 'is-fluid'}`"
+              :class="`${imageVisibility ? '' : 'fluid-content'}`"
             >
               <!-- Notice -->
               <document-edition-notice v-if="$attrs.section === 'notice' && !currentUserIsStudent" />
@@ -396,7 +383,11 @@
                       v-if="transcriptionVisibility"
                       class="column is-two-fifths"
                     >
-                      <document-transcription :readonly-data="transcriptionView" />
+                      <div style="margin-top: 1.5 em;">
+                        <document-transcription
+                          :readonly-data="transcriptionView"
+                        />
+                      </div>
                     </div>
                     <div class="column">
                       <translation-action-bar />
@@ -643,12 +634,13 @@ export default {
       if (!vm.loggedIn) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
-          next({ name: "document-view" });
+          next({ name: "document-view", params: {docId: vm.$attrs.docId, section: 'notice' } });
         } else {
           next({ name: "login" });
         }
       } else {
         vm.$store.dispatch("workflow/setEditionMode", true);
+        vm.setupVisibilityWidget(vm.$attrs.section)
         next();
       }
     });
@@ -656,6 +648,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch("workflow/setEditionMode", true);
     this.$store.dispatch("workflow/setCurrentSection", to.params.section);
+    this.setupVisibilityWidget(to.params.section)
     next();
   },
   beforeRouteLeave(to, from, next) {
@@ -766,13 +759,6 @@ export default {
 
     await this.fetchContentFromUser();
     this.init = true;
-
-    this.imageVisibility = this.currentUserIsStudent
-
-    if (this.$attrs.section === "translation") {
-      this.hideImage();
-    }
-
     this.isLoading = false;
   },
   methods: {
@@ -795,6 +781,60 @@ export default {
     ...mapActions("speechparts", {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
     }),
+    setupVisibilityWidget(section) {
+      console.log('going to', section)
+      switch (section) {
+        case "transcription":
+          this.transcriptionVisibility = true;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = false;
+          this.imageVisibility = true;
+          break;
+        case "translation":
+          this.transcriptionVisibility = true;
+          this.translationVisibility = true;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = false;
+          this.imageVisibility = false;
+          break;
+        case "facsimile":
+          this.transcriptionVisibility = false;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = false;
+          this.imageVisibility = true;
+          break;
+        case "notice":
+          this.transcriptionVisibility = false;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = true;
+          this.imageVisibility = true;
+          break;
+        case "commentaries":
+          this.transcriptionVisibility = true;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = false;
+          this.imageVisibility = true;
+          break;
+        case "speech-parts":
+          this.transcriptionVisibility = false;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = true;
+          this.noticeVisibility = false;
+          this.imageVisibility = true;
+          break;
+        default:
+          this.transcriptionVisibility = false;
+          this.translationVisibility = false;
+          this.speechpartsVisibility = false;
+          this.noticeVisibility = false;
+          this.imageVisibility = true;
+          break;
+      }
+    },
     async fetchContentFromUser() {
       await this.fetchSpeechPartsContent();
       await this.fetchTranscriptionContent();
@@ -864,4 +904,11 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.fluid-content {
+  min-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+</style>

@@ -301,13 +301,14 @@ export default {
       next(vm => {
         vm.$store.dispatch('workflow/setEditionMode', false)
         vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
+        vm.setupVisibilityWidget(vm.$attrs.section)
       })
     },
     async beforeRouteUpdate (to, from, next) {
       this.$store.dispatch('workflow/setEditionMode', false)
       this.$store.dispatch('workflow/setCurrentSection', to.params.section)
+      this.setupVisibilityWidget(to.params.section)
 
-      console.log('before route update', to.params.docId, from.params.docId)
       if (to.params.docId !== from.params.docId) {
         await this.loadDocument(to.params.docId);
       }
@@ -329,6 +330,67 @@ export default {
         'fetchSpeechPartsView': 'fetchSpeechPartsView',
         'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
         }),
+
+      setupVisibilityWidget(section) {
+        switch (section) {
+          case "transcription":
+            this.transcriptionVisibility = true;
+            this.translationVisibility = true;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "translation":
+            this.transcriptionVisibility = true;
+            this.translationVisibility = true;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "facsimile":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "notice":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = true;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "commentaries":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = true;
+            break;
+          case "speech-parts":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = true;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          default:
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+        }
+      },
       async loadDocument(docId) {
         this.isLoading = true;
         try {

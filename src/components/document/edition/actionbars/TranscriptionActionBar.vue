@@ -1,9 +1,11 @@
 <template>
-  <div class="edition-action-bar m-b-md">
+  <div
+    v-if="!isTranscriptionReadOnly"
+    class="edition-action-bar m-b-md"
+  >
     <div class="field is-grouped">
       <!-- SAVE TRANSCRIPTION --> 
       <p 
-        v-if="!isTranscriptionReadOnly"
         class="control"
       >
         <save-transcription-button />

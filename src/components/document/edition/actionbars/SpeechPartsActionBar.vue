@@ -1,9 +1,11 @@
 <template>
-  <div class="edition-action-bar m-b-md">
+  <div
+    v-if="!isSpeechPartsReadOnly"
+    class="edition-action-bar m-b-md"
+  >
     <div class="field is-grouped">
       <!-- SAVE TRANSCRIPTION --> 
       <p 
-        v-if="!isSpeechPartsReadOnly && false"
         class="control"
       >
         <save-speech-parts-button />
