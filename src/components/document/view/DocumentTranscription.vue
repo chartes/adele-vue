@@ -1,7 +1,12 @@
 <template>
-  <div>
+  <div v-if="!!readonlyData">
     <div
-      v-if="!!readonlyData"
+      class="has-text-weight-medium subtitle m-b-xl"
+    >
+      Transcription
+    </div>
+    <div
+      
       class="content"
       v-html="readonlyData.content"
     />

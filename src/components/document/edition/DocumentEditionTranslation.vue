@@ -16,7 +16,7 @@
       />
     </div>
     <translation-editor 
-      v-show="!transcriptionAlignmentMode"
+      v-else
       :key="'translation' + translationLoading"
       :initial-content="translationWithNotes"
     />

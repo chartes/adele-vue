@@ -15,7 +15,7 @@
         />
       </div>
       <div
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher && selectedUserId == document.user_id"
         class="control"
       >
         <validate-commentaries-button :doc-id="document.id" />

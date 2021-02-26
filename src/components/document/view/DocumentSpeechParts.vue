@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div
+      class="has-text-weight-medium subtitle m-b-xl"
+    >
+      Parties du discours
+    </div>
     <div>
       <nav
         class="navbar inner-navbar"

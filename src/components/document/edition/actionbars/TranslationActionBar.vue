@@ -13,7 +13,7 @@
       </p>
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
       <p
-        v-if="currentUserIsTeacher && currentUser.id === selectedUserId && !transcriptionAlignmentMode"
+        v-if="currentUserIsTeacher && selectedUserId == document.user_id && !transcriptionAlignmentMode && isTranscriptionValidated"
         class="control"
       >
         <validate-translation-button :doc-id="document.id" />

@@ -12,7 +12,7 @@
       </p>
       <!-- VALIDATE / UNVALIDATE SPEECH PARTS --> 
       <p
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher && selectedUserId == document.user_id"
         class="control"
       >
         <validate-speech-parts-button :doc-id="document.id" />

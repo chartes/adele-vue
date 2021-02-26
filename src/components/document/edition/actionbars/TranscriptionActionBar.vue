@@ -12,7 +12,7 @@
       </p>
       <!-- VALIDATE / UNVALIDATE TRANSCRIPTION --> 
       <p
-        v-if="currentUserIsTeacher"
+        v-if="currentUserIsTeacher && selectedUserId == document.user_id"
         class="control"
       >
         <validate-transcription-button :doc-id="document.id" />

@@ -131,8 +131,7 @@
               v-if="
                 $attrs.section === 'translation' ||
                   $attrs.section === 'transcription' ||
-                  $attrs.section === 'commentaries' ||
-                  $attrs.section === 'facsimile'
+                  $attrs.section === 'commentaries'
               "
               class="control"
               :action="toggleTranscriptionVisibility"
@@ -158,69 +157,9 @@
             class="column m-t-sm"
             :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
           >
-            <!-- Visibility widget
-            <div
-              v-if="!showContent && $attrs.section !== 'commentaries'"
-              class="visibility-controls m-b-md"
-            >
-              <div class="field is-grouped">
-                <div class="control">
-                  <span>AFFICHAGE</span>
-                </div>
-                <visibility-toggle
-                  class="control"
-                  :action="toggleImageVisibility"
-                  :visible="imageVisibility"
-                >
-                  image
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'notice'"
-                  class="control"
-                  :action="toggleNoticeVisibility"
-                  :visible="noticeVisibility"
-                >
-                  notice
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="
-                    $attrs.section === 'translation' ||
-                      $attrs.section === 'transcription' ||
-                      $attrs.section === 'facsimile'
-                  "
-                  class="control"
-                  :action="toggleTranscriptionVisibility"
-                  :visible="transcriptionVisibility"
-                >
-                  transcription
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'translation'"
-                  class="control"
-                  :action="toggleTranslationVisibility"
-                  :visible="translationVisibility"
-                >
-                  traduction
-                </visibility-toggle>
-                <visibility-toggle
-                  v-if="$attrs.section === 'speech-parts'"
-                  class="control"
-                  :action="toggleSpeechPartsVisibility"
-                  :visible="speechpartsVisibility"
-                >
-                  parties du discours
-                </visibility-toggle>
-              </div>
-            </div>
-            -->
             <mirador-viewer
-              v-if="
-                $attrs.section !== 'commentaries' &&
-                  document.manifest_origin_url &&
-                  !isLoading
-              "
-              :key="$attrs.section === 'facsimile'"
-              :manifest-url="document.manifest_origin_url"
+              v-if="document.manifest_url"
+              :manifest-url="document.manifest_url"
               :canvas-index="0"
             />
             <img
@@ -383,6 +322,15 @@
                       v-if="transcriptionVisibility"
                       class="column is-two-fifths"
                     >
+                      <message
+                        v-if="transcriptionError"
+                        message-class="is-info "
+                      >
+                        <p class="m-b-sm">
+                          <span>Il n'existe pas encore de transcription pour ce document</span>
+                        </p>
+                      </message>
+
                       <div style="margin-top: 1.5 em;">
                         <document-transcription
                           :readonly-data="transcriptionView"
@@ -472,9 +420,27 @@
                     :show-transcription="true"
                   />
                 </div>
-                <div v-else>
-                  <!-- commentaries edition -->
-                  <document-edition-commentaries />
+                <div
+                  v-else
+                >
+                  <div
+                    class="columns"
+                  >
+                    <div
+                      v-if="transcriptionVisibility"
+                      class="column"
+                    >
+                      <div style="margin-top: 1.5 em;">
+                        <document-transcription
+                          :readonly-data="transcriptionView"
+                        />
+                      </div>
+                    </div>
+                    <div class="column">
+                      <!-- commentaries edition -->
+                      <document-edition-commentaries />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -810,14 +776,14 @@ export default {
           this.translationVisibility = false;
           this.speechpartsVisibility = false;
           this.noticeVisibility = true;
-          this.imageVisibility = true;
+          this.imageVisibility = this.currentUserIsStudent;
           break;
         case "commentaries":
           this.transcriptionVisibility = true;
           this.translationVisibility = false;
           this.speechpartsVisibility = false;
           this.noticeVisibility = false;
-          this.imageVisibility = true;
+          this.imageVisibility = false;
           break;
         case "speech-parts":
           this.transcriptionVisibility = false;

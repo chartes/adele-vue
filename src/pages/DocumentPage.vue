@@ -349,14 +349,6 @@ export default {
             this.imageVisibility = true;
             this.commentariesVisibility = false;
             break;
-          case "facsimile":
-            this.transcriptionVisibility = false;
-            this.translationVisibility = false;
-            this.speechpartsVisibility = false;
-            this.noticeVisibility = false;
-            this.imageVisibility = true;
-            this.commentariesVisibility = false;
-            break;
           case "notice":
             this.transcriptionVisibility = false;
             this.translationVisibility = false;
