@@ -320,7 +320,8 @@
                   <div class="columns">
                     <div
                       v-if="transcriptionVisibility"
-                      class="column is-two-fifths"
+                      class="column"
+                      :class="transcriptionVisibility && imageVisibility ? 'is-one-third' :''"
                     >
                       <message
                         v-if="transcriptionError"
@@ -337,8 +338,10 @@
                         />
                       </div>
                     </div>
-                    <div class="column">
-                      <translation-action-bar />
+                    <div
+                      class="column"
+                      :class="transcriptionVisibility && imageVisibility ? 'is-one-third' :''"
+                    >
                       <document-edition-translation
                         :translation-with-notes="translationWithNotes"
                       />
@@ -453,7 +456,7 @@
                     message-class="is-info "
                   >
                     Vous devez valider la transcription avant d'entammer l'identification
-                    des parties de discours
+                    des parties du discours
                   </message>
                   <message
                     v-else-if="speechPartsError.response.status !== 404"
@@ -478,7 +481,7 @@
                       {{ documentOwner.last_name }} et n'est plus modifiable.</span>
                   </message>
                   <document-speech-parts
-                    v-if="!speechpartsVisibility || currentUser.id !== selectedUserId"
+                    v-if="speechpartsVisibility"
                     :readonly-data="speechPartsView"
                   />
                 </div>
@@ -544,7 +547,6 @@ import WorkflowRadioSteps from "@/components/WorkflowRadioSteps.vue";
 
 import DocumentTitleBar from "../components/document/DocumentTitleBar.vue";
 import TranscriptionActionBar from "@/components/document/edition/actionbars/TranscriptionActionBar.vue";
-import TranslationActionBar from "@/components/document/edition/actionbars/TranslationActionBar.vue";
 import SpeechPartsActionBar from "@/components/document/edition/actionbars/SpeechPartsActionBar.vue";
 
 import Message from "@/components/Message.vue";
@@ -563,7 +565,6 @@ export default {
   components: {
     DocumentTitleBar,
     TranscriptionActionBar,
-    TranslationActionBar,
     SpeechPartsActionBar,
 
     DocumentEditionNotice,
@@ -712,6 +713,7 @@ export default {
     async selectedUserId() {
       if (this.init) {
         await this.fetchContentFromUser();
+        this.setupVisibilityWidget(this.$attrs.section)
       }
     },
   },

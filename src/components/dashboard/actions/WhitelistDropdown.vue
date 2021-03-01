@@ -132,6 +132,8 @@ export default {
 <style lang="scss" scoped>
 .selected {
   min-width: 130px; 
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 .select-whitelist {
@@ -141,12 +143,14 @@ export default {
   margin-left: 20px;
 }
 .select-button {
-  justify-content: left
+  justify-content: left;
+  max-width: 220px;
 }
 .dropdown-content {
   padding: 0;
   max-height: 400px;
   overflow-y: scroll;
+
 }
 .dropdown-item {
   &:hover {

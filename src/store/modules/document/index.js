@@ -131,7 +131,7 @@ const actions = {
   },
   fetchTranscriptionView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
-    console.log("fetching  tr")
+    console.log("fetching tr view for user", userId)
     return http.get(`documents/${rootState.document.document.id}/view/transcriptions${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSCRIPTION_VIEW',  {
         content: response.data.data["content"],

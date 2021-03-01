@@ -309,9 +309,9 @@ export default {
       this.$store.dispatch('workflow/setCurrentSection', to.params.section)
       this.setupVisibilityWidget(to.params.section)
 
-      if (to.params.docId !== from.params.docId) {
-        await this.loadDocument(to.params.docId);
-      }
+      //if (to.params.docId !== from.params.docId) {
+      await this.loadDocument(to.params.docId);
+      //}
       next()
     },
     beforeRouteLeave (to, from, next) {

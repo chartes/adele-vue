@@ -202,20 +202,24 @@ const actions = {
       //throw error
     })
   },
-  fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
-    if (rootGetters['workflow/isTranscriptionReadOnly']) {
-      // when in readonly mode
-      // students see the reference content
-      // teacher and admins can see other ppl readonly views
-      return dispatch('document/fetchTranscriptionView', 
-       rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
-       {root: true})
-    } else {
-      return dispatch('fetchTranscriptionFromUser', {
+  async fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
+    console.log("fetch transcription content", rootState.workflow.selectedUserId, rootState.document.document.user_id)
+    if (rootState.workflow.currentSection === "speech-parts") {
+      await dispatch('fetchTranscriptionFromUser', {
         docId: rootState.document.document.id,
-        userId: rootState.workflow.selectedUserId
+        userId: rootState.document.document.user_id
       })
     }
+    else {
+      await dispatch('fetchTranscriptionFromUser', {
+          docId: rootState.document.document.id,
+          userId: rootState.workflow.selectedUserId
+        })
+      }
+      await dispatch('document/fetchTranscriptionView', 
+      rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.document.user_id,
+      {root: true})
+   
   },
   /* useful */
   async fetchTextAlignments ({commit, rootState}) {

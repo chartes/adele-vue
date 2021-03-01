@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div>
+      <translation-action-bar />
+    </div>
+
     <div
       v-if="transcriptionAlignmentMode"
       class="columns"
@@ -29,12 +33,14 @@
 import { mapState, mapGetters } from 'vuex';
 import TranslationEditor from "@/components/editors/TranslationEditor.vue"
 import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
+import TranslationActionBar from "@/components/document/edition/actionbars/TranslationActionBar.vue";
 
 export default {
     name: "DocumentEditionTranslation",
     components: {
         TranslationEditor,
-        TranscriptionEditor
+        TranscriptionEditor,
+        TranslationActionBar
     },
     props: {
       translationWithNotes: {type: String, default: ""}

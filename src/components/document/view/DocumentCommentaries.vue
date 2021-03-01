@@ -5,9 +5,6 @@
         v-if="showTranscription"
         class="column is-two-fifths"
       >
-        <div class="has-text-weight-medium subtitle m-b-xl">
-          Transcription
-        </div>
         <document-transcription
           :readonly-data="transcriptionView"
         />

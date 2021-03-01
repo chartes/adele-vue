@@ -13,10 +13,6 @@ import UserDashboardPage from "@/pages/UserDashboardPage.vue"
 import UserProfilePage from "@/pages/UserProfilePage.vue"
 
 
-/*
-import RegisterPage from "@/pages/RegisterPage.vue"
-*/
-
 Vue.use(VueRouter)
 
 const rootUrl = `${process.env.VUE_APP_APP_ROOT_URL}`
