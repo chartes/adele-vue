@@ -57,7 +57,7 @@ function MyComponent(props) {
           position: "absolute",
           top: 0,
           width: "100%"
-        }
+        },
       },
       annotationStyle && annotation ?
         React.createElement(
@@ -80,6 +80,7 @@ function MyComponent(props) {
   return React.createElement("div", {}, [
     portal,
     React.createElement(props.TargetComponent, {
+      key: "annotation_plugin",
       ...props.targetProps
     })
   ]);
