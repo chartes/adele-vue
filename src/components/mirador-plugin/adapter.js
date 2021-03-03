@@ -64,7 +64,95 @@ export default class AdeleStorageAdapter {
 
     /** */
     async all() {
-      return JSON.parse(localStorage.getItem(this.documentId));
-      //return http.get(`iiif/${this.documentId}/list/commenting-0`).then((response) => response.data);
+      return http.get(`iiif/${this.documentId}/list/commenting-0`)
+        .then((response) => (this.createAnnotationPage(response.data.resources)));
     }
+
+  /** Creates an AnnotationPage from a list of V2 annotations */
+  createAnnotationPage(v2annos) {
+    if (Array.isArray(v2annos)) {
+      const v3annos = v2annos.map((a) => AdeleStorageAdapter.createV3Anno(a));
+      return {
+        id: "commenting-0",
+        items: v3annos,
+        type: 'AnnotationPage',
+      };
+    }
+    return v2annos;
+  }
+
+  /** Creates a V3 annotation from a V2 annotation */
+  static createV3Anno(v2anno) {
+    const v3anno = {
+      id: v2anno.resource['@id'],
+      motivation: 'commenting',
+      type: 'Annotation',
+    };
+    if (Array.isArray(v2anno.resource)) {
+      v3anno.body = v2anno.resource.map((b) => this.createV3AnnoBody(b));
+    } else {
+      v3anno.body = this.createV3AnnoBody(v2anno.resource);
+    }
+    let v2target = v2anno.on;
+    if (Array.isArray(v2target)) {
+      [v2target] = v2target;
+    }
+    v3anno.target = {
+      selector: this.createV3AnnoSelector(v2target.selector),
+      source: v2target.full,
+    };
+    if (v2target.within) {
+      v3anno.target.source = {
+        id: v2target.full,
+        partOf: {
+          id: v2target.within['@id'],
+          type: 'Manifest',
+        },
+        type: 'Canvas',
+      };
+    }
+    return v3anno;
+  }
+
+  /** */
+  static createV3AnnoBody(v2body) {
+    const v3body = {
+      type: 'TextualBody',
+      value: v2body.chars,
+    };
+    if (v2body.format) {
+      v3body.format = v2body.format;
+    }
+    if (v2body.language) {
+      v3body.language = v2body.language;
+    }
+    if (v2body['@type'] === 'oa:Tag') {
+      v3body.purpose = 'tagging';
+    }
+    return v3body;
+  }
+
+  /** */
+  static createV3AnnoSelector(v2selector) {
+    switch (v2selector['@type']) {
+      case 'oa:SvgSelector':
+        return {
+          type: 'SvgSelector',
+          value: v2selector.value,
+        };
+      case 'oa:FragmentSelector':
+        return {
+          type: 'FragmentSelector',
+          value: v2selector.value,
+        };
+      case 'oa:Choice':
+        /* create alternate selectors */
+        return [
+          this.createV3AnnoSelector(v2selector.default),
+          this.createV3AnnoSelector(v2selector.item),
+        ];
+      default:
+        return null;
+    }
+  }
 }
