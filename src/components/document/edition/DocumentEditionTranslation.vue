@@ -51,11 +51,6 @@ export default {
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('transcription', ['isTranscriptionSaved']),
       ...mapGetters('translation', ['isTranslationSaved'])
-   },
-    async created() {
-    },
-    methods: {
-
     }
 }
 </script>

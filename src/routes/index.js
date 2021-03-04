@@ -12,6 +12,7 @@ import ErrorPage from "@/pages/ErrorPage.vue"
 import UserDashboardPage from "@/pages/UserDashboardPage.vue"
 import UserProfilePage from "@/pages/UserProfilePage.vue"
 
+import WorkInProgress from "@/pages/WorkInProgressPage.vue"
 
 Vue.use(VueRouter)
 
@@ -75,6 +76,11 @@ const router = new VueRouter({
       component: ErrorPage,
       name: 'error',
       props: true
+    },
+    {
+      path: '/wip',
+      component: WorkInProgress,
+      name: 'wip'
     }
   ]
 })

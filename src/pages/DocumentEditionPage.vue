@@ -621,6 +621,11 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.$store.dispatch("workflow/setCurrentSection", null);
     this.$store.dispatch("workflow/setEditionMode", false);
+    
+    if (to.params.section === "translation" || from.params.section === "translation") {
+      this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
+    }
+
     next();
   },
   data() {

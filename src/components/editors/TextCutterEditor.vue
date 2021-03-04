@@ -1,21 +1,10 @@
 <template>
-  <div> 
+  <div class="text-cutter"> 
     <div class="editor-area">
       <div
         ref="controls"
         class="editor-controls"
-      >
-        <div class="editor-controls-group">
-          <!--
-          <label>Structure éditoriale</label>
-          <editor-button
-            :active="isSpeechpartButtonActive"
-            :callback="setSpeechpartEditModeNew"
-            :format="'speechpart'"
-          />
-          -->
-        </div>
-      </div>
+      />
       <div class="editor-container">
         <div
           ref="editor"
@@ -33,48 +22,35 @@
           :delete-text="'Supprimer'"
         />
       </div>
-
-      <speechpart-form
-        v-if="selectedSpeechpartId !== null && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
-        :speechpart="currentSpeechpart"
-        :speechpart-id="selectedSpeechpartId"
-        :submit="updateSpeechpart"
-        :cancel="closeSpeechpartEdit"
-      />
-      <modal-confirm-speechpart-delete
-        v-if="speechpartEditMode === 'delete'"
-        :cancel="closeSpeechpartEdit"
-        :submit="deleteSpeechpart"
-      />
+    </div>
+    <div class="debug-box">
+      {{ selectedSpeechpartId }}
     </div>
   </div>
 </template>
 
 <script>
 
-  import { mapGetters, mapState, mapActions } from 'vuex';
+  import 'quill/dist/quill.core.css';
+  import 'quill/dist/quill.bubble.css';
+  import 'quill/dist/quill.snow.css';
+  import 'bulma/css/bulma.min.css';
+
   import EditorMixins from '../../mixins/EditorMixins'
   import InEditorActions from './InEditorActions';
-  import SpeechpartForm from "../forms/SpeechpartForm";
-  import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
 
-
-
+  import {http} from '@/modules/http-common.js'
 
   export default {
-    name: "SpeechpartsEditor",
+    name: "TextCutterEditor",
     components: {
-      ModalConfirmSpeechpartDelete,
-      SpeechpartForm,
       InEditorActions,
     },
     mixins: [EditorMixins],
-    props: { initialContent: {type: String, default: '<p></p>'}},
+    props: { initialContent: {type: String, default: '<p>hello world</p>'}},
     data() {
       return {
-        storeActions: {
-          changed: 'transcription/changed'
-        },
+        selection: null,
         delta: null,
         speechpartEditMode: null,
         selectedSpeechpartId: null,
@@ -86,20 +62,15 @@
       }
     },
     computed: {
-      /*
-      isSpeechpartButtonActive () {
-        const cond = this.editorHasFocus && this.buttons.speechpart;
-        return cond;
-      },
-      */
-      ...mapState('transcription', ['transcription']),
-      ...mapState('speechparts', ['newSpeechpart', 'speechparts']),
-      ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
+
     },
-    mounted () {
-      this.$store.dispatch('speechpartTypes/fetch')
-      console.log("this.$props.initialContent", this.$props.initialContent)
-      this.initEditor(this.$refs.editor, this.$props.initialContent);
+    async mounted () {
+      //this.$store.dispatch('speechpartTypes/fetch')
+      const response = await http.get(`documents/23/transcriptions/from-user/1010`);
+      console.log('initial content', response)
+      const initialContent = response.data.data.content
+
+      this.initEditor(this.$refs.editor, initialContent);
       this.preventKeyboard();
       this.activateMouseOver()
     },
@@ -111,15 +82,9 @@
       updateContent () {
         this.delta = this.editor.getContents().ops;
       },
-      /*
-      updateButtons (formats) {
-        for (let key in this.buttons) {
-          this.buttons[key] = !!formats[key];
-        }
-      },
-      */
       onSelection (range) {
         this.currentSpeechpart = null
+
         if (range && range.length > 0) {
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);
@@ -141,9 +106,10 @@
         }
       },
       onSpeechpartSelected (speechpart, range) {
-        console.log("onspeechpart selected", speechpart, range)
+        //console.log("onspeechpart selected", speechpart, range)
         if (!range.length) return;
         this.selectedSpeechpartId = range.index;
+        
       },
 
       updateSpeechpart(sp) {
@@ -154,26 +120,26 @@
           sp.id = 900000+sp.ptr_start
         }
         this.editor.format('speechpart', `${sp.id},${sp.speech_part_type.id}`);
-        this.$store.dispatch(`speechparts/update`, sp)
-        this.$store.dispatch('speechparts/saveSpeechParts')
+        //this.$store.dispatch(`speechparts/update`, sp)
+        //this.$store.dispatch('speechparts/saveSpeechParts')
         this.closeSpeechpartEdit()
       },
       deleteSpeechpart() {
-        console.log("this.currentSpeechpart", this.currentSpeechpart)
-        this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
+        //console.log("this.currentSpeechpart", this.currentSpeechpart)
+        //this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
         this.editor.format('speechpart', false);
 
         this.selectedSpeechpartId = null;
         this.currentSpeechpart = { transcription_id: this.transcription.id };
 
         this.closeSpeechpartEdit();
-        this.$store.dispatch(`speechparts/setToBeSaved`)
-        this.$store.dispatch('speechparts/saveSpeechParts')
+        //this.$store.dispatch(`speechparts/setToBeSaved`)
+        //this.$store.dispatch('speechparts/saveSpeechParts')
       },
 
 
       setSpeechpartEditModeDelete() {
-        this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
+        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
         this.speechpartEditMode = 'delete';
       },
       setSpeechpartEditModeNew() {
@@ -248,3 +214,18 @@
     }
   }
 </script>
+
+
+<style lang="scss" scoped>
+  .text-cutter {
+    border: 1px solid orangered;
+    margin: 0 auto;
+    width: 50%;
+    height: 500px;
+  }
+  .debug-box {
+    border: 1px dotted violet;
+    width: 100%;
+    height: 100px;
+  }
+</style>

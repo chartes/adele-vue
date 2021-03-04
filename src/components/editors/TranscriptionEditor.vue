@@ -223,7 +223,6 @@
     beforeDestroy () {
       if (this.transcriptionAlignmentMode) {
         this.disableTextAlignActions()
-        this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
       }
     },
     methods: {
