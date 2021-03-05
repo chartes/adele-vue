@@ -1,27 +1,5 @@
 <template>
   <div>
-    <div>
-      <code
-        class="original"
-        style="display: block"
-      >
-        {{ html }}
-      </code>
-      <div
-        class="original"
-        v-html="html"
-      />
-      <!-- -->
-      <div
-        id="cloned"
-        class="selection"
-      />
-      <code
-        id="cloned-code"
-        class="original"
-        style="display: block"
-      />
-    </div>
     <text-cutter-editor />
   </div>
 </template>

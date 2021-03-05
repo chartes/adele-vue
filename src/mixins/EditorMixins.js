@@ -60,7 +60,13 @@ var EditorMixin = {
 
     onTextChange (delta, oldDelta, source) {
       this.lastOperations = delta;
-      if (this.editorInited) this.$store.dispatch(this.storeActions.changed, delta)
+      if (this.editorInited) {
+        if (typeof this.storeActions.changed === 'string') {
+          this.$store.dispatch(this.storeActions.changed, delta)
+        } else {
+          this.storeActions.changed(delta)
+        }
+      }
     },
     onSelection (range) {
       if (range) {

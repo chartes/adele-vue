@@ -8,6 +8,8 @@ module.exports = {
   ? '/adele/'
   : '/',
 
+  //css: { extract: false },
+
   chainWebpack: config => {
     config.module
         .rule("vue")

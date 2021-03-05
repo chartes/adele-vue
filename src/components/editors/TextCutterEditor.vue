@@ -11,16 +11,6 @@
           class="quill-editor"
           spellcheck="false"
         />
-        <in-editor-actions
-          v-show="selectedSpeechpartId !== null && editor.hasFocus()"
-          class="speechpart-actions"
-          :style="actionsPosition"
-          refs="speechpartActions"
-          :edit="setSpeechpartEditModeEdit"
-          :delete="setSpeechpartEditModeDelete"
-          :edit-text="'Éditer'"
-          :delete-text="'Supprimer'"
-        />
       </div>
     </div>
     <div class="debug-box">
@@ -37,14 +27,12 @@
   import 'bulma/css/bulma.min.css';
 
   import EditorMixins from '../../mixins/EditorMixins'
-  import InEditorActions from './InEditorActions';
 
   import {http} from '@/modules/http-common.js'
 
   export default {
     name: "TextCutterEditor",
     components: {
-      InEditorActions,
     },
     mixins: [EditorMixins],
     props: { initialContent: {type: String, default: '<p>hello world</p>'}},
@@ -58,7 +46,10 @@
         defineNewSpeechpart: false,
         buttons: {
           //speechpart: false,
-        }
+        },
+        storeActions: {
+          changed: this.quillContentChanged
+        },
       }
     },
     computed: {
@@ -67,7 +58,6 @@
     async mounted () {
       //this.$store.dispatch('speechpartTypes/fetch')
       const response = await http.get(`documents/23/transcriptions/from-user/1010`);
-      console.log('initial content', response)
       const initialContent = response.data.data.content
 
       this.initEditor(this.$refs.editor, initialContent);
@@ -84,50 +74,53 @@
       },
       onSelection (range) {
         this.currentSpeechpart = null
-
+    
         if (range && range.length > 0) {
           this.setRangeBound(range);
+
+          //this.updateButtons(formats);
+         
           let formats = this.editor.getFormat(range.index, range.length);
           console.log(formats);
-          //this.updateButtons(formats);
-          if (formats.speechpart) {
-            this.onSpeechpartSelected(formats.speechpart, range);
-            const spId = formats.speechpart.split(',')[0]
-            const sp = this.speechparts.find(e => e.id === parseInt(spId))
-            console.log("ID SP", sp)
-            this.currentSpeechpart = sp
+          if (formats.annotation) {
+             this.editor.format('annotation', false);
+             console.log("remove anno")
+            //this.onSpeechpartSelected(formats.annotation, range);
+            //const spId = formats.annotation
+            //const sp = this.speechparts.find(e => e.id === parseInt(spId))
+            //console.log("ID SP", sp)
+            //this.currentSpeechpart = {id: parseInt(spId)}
             //this.buttons.speechpart = false;
           } else {
-            this.selectedSpeechpartId = range.index;
+            this.updateSpeechpart({ptr_start: range.index})
+            //this.selectedSpeechpartId = range.index;
             //this.buttons.speechpart = true;
           }
-        } else if (this.editor.hasFocus()){
-          this.selectedSpeechpartId = null
+
+
+        } else {
+          //this.selectedSpeechpartId = null
         }
-      },
-      onSpeechpartSelected (speechpart, range) {
-        //console.log("onspeechpart selected", speechpart, range)
-        if (!range.length) return;
-        this.selectedSpeechpartId = range.index;
-        
       },
 
       updateSpeechpart(sp) {
-        console.log("UPDATE SP", sp)
-        sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
-        sp.ptr_start = this.selectedSpeechpartId;
-        if (sp.id === undefined) {
-          sp.id = 900000+sp.ptr_start
+        console.log("UPDATE ANNOTATION SEGMENT", sp)
+        //sp.ptr_start = this.selectedSpeechpartId;
+        //if (sp.id === undefined) {
+        //  sp.id = 900000+sp.ptr_start
+       // }
+        this.editor.format('annotation', true);
+        if (document.querySelectorAll('annotation').length > 1) {
+          this.editor.format('annotation', false);
         }
-        this.editor.format('speechpart', `${sp.id},${sp.speech_part_type.id}`);
         //this.$store.dispatch(`speechparts/update`, sp)
         //this.$store.dispatch('speechparts/saveSpeechParts')
-        this.closeSpeechpartEdit()
+        //this.closeSpeechpartEdit()
       },
       deleteSpeechpart() {
         //console.log("this.currentSpeechpart", this.currentSpeechpart)
         //this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
-        this.editor.format('speechpart', false);
+        this.editor.format('annotation', false);
 
         this.selectedSpeechpartId = null;
         this.currentSpeechpart = { transcription_id: this.transcription.id };
@@ -136,8 +129,9 @@
         //this.$store.dispatch(`speechparts/setToBeSaved`)
         //this.$store.dispatch('speechparts/saveSpeechParts')
       },
-
-
+      quillContentChanged(delta){
+        console.log("quill content changed", delta)
+      },
       setSpeechpartEditModeDelete() {
         //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
         this.speechpartEditMode = 'delete';
@@ -199,9 +193,9 @@
       },
       mouseOverHandler (e) {
         let id = null;
-        if (e.target.tagName.toLowerCase() === 'speechpart') {
+        if (e.target.tagName.toLowerCase() === 'annotation') {
           id = parseInt(e.target.getAttribute('id'));
-        } else if (e.target.parentNode.tagName.toLowerCase() === 'speechpart') {
+        } else if (e.target.parentNode.tagName.toLowerCase() === 'annotation') {
           id = parseInt(e.target.parentNode.getAttribute('id'));
         }
         if (id === null) return;
@@ -216,7 +210,7 @@
 </script>
 
 
-<style lang="scss" scoped>
+<style>
   .text-cutter {
     border: 1px solid orangered;
     margin: 0 auto;
@@ -227,5 +221,10 @@
     border: 1px dotted violet;
     width: 100%;
     height: 100px;
+  }
+  annotation {
+    background-color: peachpuff;
+    padding: 0.35em;
+    border-radius: 5px;
   }
 </style>
