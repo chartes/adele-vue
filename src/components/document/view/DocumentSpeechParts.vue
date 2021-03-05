@@ -161,5 +161,10 @@ export default {
 </script>
 
 <style>
-
+.b-tooltip {
+  display: inline;
+}
+.b-trigger {
+  display: inline;
+}
 </style>
