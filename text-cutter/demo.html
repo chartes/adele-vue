@@ -1,0 +1,19 @@
+<meta charset="utf-8">
+<title>textCutter demo</title>
+<script src="https://unpkg.com/vue"></script>
+<script src="./textCutter.umd.min.js"></script>
+
+<link rel="stylesheet" href="./textCutter.css">
+
+
+<div id="app">
+  <text-cutter id="74"></text-cutter>
+</div>
+
+<script>
+new Vue({
+  components: {
+    'text-cutter': textCutter 
+  }
+}).$mount('#app')
+</script>

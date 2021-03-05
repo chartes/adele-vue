@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve --port 9090",
     "build": "vue-cli-service build",
-    "build-cutter" : "vue-cli-service build --inline-vue --target lib --name textCutter ./src/components/editors/TextCutterEditor.vue",
+    "build-cutter" : "vue-cli-service build --inline-vue --target lib --name textCutter ./src/components/editors/TextCutterEditor.vue && cp ./dist/textCutter.css ./text-cutter/ && cp ./dist/textCutter.umd.min.js ./text-cutter/",
+    "deploy-cutter" : "cp ./dist/textCutter.css ./text-cutter/ && cp ./dist/textCutter.umd.min.js ./text-cutter/",
     "lint": "vue-cli-service lint",
     "test": "jest --no-cache"
   },

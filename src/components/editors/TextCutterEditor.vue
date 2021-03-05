@@ -36,7 +36,7 @@
     components: {
     },
     mixins: [EditorMixins],
-    props: { docId: {type: Number, required: true, default: 23}},
+    props: { id: {type: String, required: true, default: '23'}},
     data() {
       return {
         delta: null,
@@ -52,16 +52,14 @@
 
     },
     async mounted () {
-      const response = await http.get(`documents/${this.docId}/transcriptions`);
+      const response = await http.get(`documents/${parseInt(this.id)}/transcriptions`);
       const initialContent = response.data.data.content
 
       this.initEditor(this.$refs.editor, TEIToQuill(initialContent));
       this.preventKeyboard();
-      //this.activateMouseOver()
     },
     beforeDestroy () {
       this.allowKeyboard();
-      //this.deactivateMouseOver();
     },
     methods: {
       updateContent () {
@@ -93,24 +91,22 @@
           const payload = {docId: this.docId, ...this.annotation}
           console.log("payload:", payload)
           document.dispatchEvent(new CustomEvent('text-selected', payload))
+          this.editor.blur();
         }
       },
 
       computeAnnotationPointers (htmlWithAnnotations){
-        //console.log("annotation html", htmlWithAnnotations)
         const regexpStart = /<annotation>/;
         const regexpEnd = /<\/annotation>/;
         let resStart, resEnd;
         const annotations = [];
-        console.log(htmlWithAnnotations)
+        //console.log(htmlWithAnnotations)
         while((resStart = regexpStart.exec(htmlWithAnnotations)) !== null) {
-          //console.log("annotation html resStart", resStart)
           htmlWithAnnotations = htmlWithAnnotations.replace(regexpStart, '');
           resEnd = regexpEnd.exec(htmlWithAnnotations);
           htmlWithAnnotations = htmlWithAnnotations.replace(regexpEnd, '');
 
           annotations.push({
-            //"id" : parseInt(resStart[1]),
             "ptr_start": resStart.index,
             "ptr_end": resEnd.index
           });
@@ -151,7 +147,7 @@
     height: 100px;
   }
   annotation {
-    background-color: peachpuff;
+    background-color: #89c2d9;
     padding: 0.35em;
     border-radius: 5px;
   }
