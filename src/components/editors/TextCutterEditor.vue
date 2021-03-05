@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="debug-box">
-      {{ selectedSpeechpartId }}
+      {{ annotation }}
     </div>
   </div>
 </template>
@@ -29,26 +29,22 @@
   import EditorMixins from '../../mixins/EditorMixins'
 
   import {http} from '@/modules/http-common.js'
+  import { quillToTEI, TEIToQuill } from '../../modules/quill/MarkupUtils';
 
   export default {
     name: "TextCutterEditor",
     components: {
     },
     mixins: [EditorMixins],
-    props: { initialContent: {type: String, default: '<p>hello world</p>'}},
+    props: { docId: {type: Number, required: true, default: 23}},
     data() {
       return {
-        selection: null,
         delta: null,
-        speechpartEditMode: null,
-        selectedSpeechpartId: null,
-        currentSpeechpart: null,
-        defineNewSpeechpart: false,
+        annotation: null,
         buttons: {
-          //speechpart: false,
         },
         storeActions: {
-          changed: this.quillContentChanged
+          changed: this.sendTextSelectedEvent
         },
       }
     },
@@ -56,113 +52,71 @@
 
     },
     async mounted () {
-      //this.$store.dispatch('speechpartTypes/fetch')
-      const response = await http.get(`documents/23/transcriptions/from-user/1010`);
+      const response = await http.get(`documents/${this.docId}/transcriptions`);
       const initialContent = response.data.data.content
 
-      this.initEditor(this.$refs.editor, initialContent);
+      this.initEditor(this.$refs.editor, TEIToQuill(initialContent));
       this.preventKeyboard();
-      this.activateMouseOver()
+      //this.activateMouseOver()
     },
     beforeDestroy () {
       this.allowKeyboard();
-      this.deactivateMouseOver();
+      //this.deactivateMouseOver();
     },
     methods: {
       updateContent () {
         this.delta = this.editor.getContents().ops;
       },
       onSelection (range) {
-        this.currentSpeechpart = null
     
         if (range && range.length > 0) {
           this.setRangeBound(range);
-
-          //this.updateButtons(formats);
-         
           let formats = this.editor.getFormat(range.index, range.length);
-          console.log(formats);
+          //console.log(formats);
           if (formats.annotation) {
              this.editor.format('annotation', false);
-             console.log("remove anno")
-            //this.onSpeechpartSelected(formats.annotation, range);
-            //const spId = formats.annotation
-            //const sp = this.speechparts.find(e => e.id === parseInt(spId))
-            //console.log("ID SP", sp)
-            //this.currentSpeechpart = {id: parseInt(spId)}
-            //this.buttons.speechpart = false;
           } else {
-            this.updateSpeechpart({ptr_start: range.index})
-            //this.selectedSpeechpartId = range.index;
-            //this.buttons.speechpart = true;
+            //console.log("UPDATE ANNOTATION SEGMENT", {ptr_start: range.index})
+            this.editor.format('annotation', true);
+            if (document.querySelectorAll('annotation').length > 1) {
+              // forbid more than one
+              this.editor.format('annotation', false);
+            }
           }
-
-
-        } else {
-          //this.selectedSpeechpartId = null
+        } 
+      },
+      sendTextSelectedEvent(delta){
+        const quillContent = this.getEditorHTML()
+        const annotations = this.computeAnnotationPointers(quillToTEI(quillContent))
+        if (annotations) {
+          this.annotation = annotations[0]
+          const payload = {docId: this.docId, ...this.annotation}
+          console.log("payload:", payload)
+          document.dispatchEvent(new CustomEvent('text-selected', payload))
         }
       },
 
-      updateSpeechpart(sp) {
-        console.log("UPDATE ANNOTATION SEGMENT", sp)
-        //sp.ptr_start = this.selectedSpeechpartId;
-        //if (sp.id === undefined) {
-        //  sp.id = 900000+sp.ptr_start
-       // }
-        this.editor.format('annotation', true);
-        if (document.querySelectorAll('annotation').length > 1) {
-          this.editor.format('annotation', false);
+      computeAnnotationPointers (htmlWithAnnotations){
+        //console.log("annotation html", htmlWithAnnotations)
+        const regexpStart = /<annotation>/;
+        const regexpEnd = /<\/annotation>/;
+        let resStart, resEnd;
+        const annotations = [];
+        console.log(htmlWithAnnotations)
+        while((resStart = regexpStart.exec(htmlWithAnnotations)) !== null) {
+          //console.log("annotation html resStart", resStart)
+          htmlWithAnnotations = htmlWithAnnotations.replace(regexpStart, '');
+          resEnd = regexpEnd.exec(htmlWithAnnotations);
+          htmlWithAnnotations = htmlWithAnnotations.replace(regexpEnd, '');
+
+          annotations.push({
+            //"id" : parseInt(resStart[1]),
+            "ptr_start": resStart.index,
+            "ptr_end": resEnd.index
+          });
         }
-        //this.$store.dispatch(`speechparts/update`, sp)
-        //this.$store.dispatch('speechparts/saveSpeechParts')
-        //this.closeSpeechpartEdit()
+        return annotations;
       },
-      deleteSpeechpart() {
-        //console.log("this.currentSpeechpart", this.currentSpeechpart)
-        //this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
-        this.editor.format('annotation', false);
-
-        this.selectedSpeechpartId = null;
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
-
-        this.closeSpeechpartEdit();
-        //this.$store.dispatch(`speechparts/setToBeSaved`)
-        //this.$store.dispatch('speechparts/saveSpeechParts')
-      },
-      quillContentChanged(delta){
-        console.log("quill content changed", delta)
-      },
-      setSpeechpartEditModeDelete() {
-        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        this.speechpartEditMode = 'delete';
-      },
-      setSpeechpartEditModeNew() {
-        this.speechpartEditMode = 'new';
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
-        this.newSpeechpartChoiceClose();
-      },
-      setSpeechpartEditModeEdit() {
-        this.speechpartEditMode = 'edit';
-        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        /*
-       if (!this.currentSpeechpart) {
-          this.currentSpeechpart = { transcription_id: this.transcription.id };
-        }
-        */
-      },
-
-      newSpeechpartChoiceClose() {
-        this.defineNewSpeechpart = false;
-        this.selectedSpeechpartId = null
-      },
-
-      closeSpeechpartEdit() {
-        this.speechpartEditMode = null;
-        this.currentSpeechpart = null;
-        this.selectedSpeechpartId = null
-        this.editor.focus();
-      },
-
       /*
         Prevent keyboard methods
        */
@@ -179,32 +133,6 @@
           event.preventDefault();
         }
       },
-
-      /* Speechpart mouse over */
-      activateMouseOver () {
-        this.$refs.editor.addEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.addEventListener('mouseout', this.mouseOutHandler)
-        //.querySelectorAll('speechpart')
-      },
-      deactivateMouseOver () {
-
-        this.$refs.editor.removeEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.removeEventListener('mouseout', this.mouseOutHandler)
-      },
-      mouseOverHandler (e) {
-        let id = null;
-        if (e.target.tagName.toLowerCase() === 'annotation') {
-          id = parseInt(e.target.getAttribute('id'));
-        } else if (e.target.parentNode.tagName.toLowerCase() === 'annotation') {
-          id = parseInt(e.target.parentNode.getAttribute('id'));
-        }
-        if (id === null) return;
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
-
-      },
-      mouseOutHandler (e) {
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
-      }
     }
   }
 </script>

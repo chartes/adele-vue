@@ -375,7 +375,6 @@ const actions = {
       console.log("state.transcriptionWithSpeechparts", TEIwithSpeechParts)
 
       let sanitizedWithSpeechparts = stripSegments(TEIwithSpeechParts);
-      //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
       return computeSpeechpartsPointers(sanitizedWithSpeechparts);
   },
@@ -407,44 +406,6 @@ const actions = {
       commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
     } 
   },
-  /*
-  saveImageAlignments ({ commit, rootState, state, rootGetters }) {
-
-
-    console.warn('STORE ACTION transcription/saveImageAlignments');
-
-    // compute image alignments pointers
-    let sanitizedWithFacsimile = stripSegments(state.transcriptionWithFacsimile);
-    sanitizedWithFacsimile = convertLinebreakQuillToTEI(sanitizedWithFacsimile);
-    const imageAlignments = computeImageAlignmentsPointers(sanitizedWithFacsimile);
-    imageAlignments.forEach(ia => {
-      let found = rootGetters['facsimile/getZoneById'](ia.zone_id);
-      ia.canvas_idx = found.canvas_idx;
-      ia.img_idx = found.img_idx;
-    });
-
-    const auth = rootGetters['user/authHeader'];
-    const data = {
-      username: rootState.user.author.username,
-      alignments: imageAlignments
-    };
-
-    return new Promise( ( resolve, reject ) => {
-      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/images`, { data: data }, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
-  */
   changed ({ commit, rootState }, deltas) {
     if (rootState.workflow.transcriptionAlignmentMode) {
       commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);

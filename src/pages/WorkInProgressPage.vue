@@ -1,6 +1,6 @@
 <template>
   <div>
-    <text-cutter-editor />
+    <text-cutter-editor :doc-id="74" />
   </div>
 </template>
 
