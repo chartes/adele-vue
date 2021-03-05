@@ -164,7 +164,7 @@ export default {
 .b-tooltip {
   display: inline;
 }
-.b-trigger {
+.b-tooltip .tooltip-trigger {
   display: inline;
 }
 </style>
