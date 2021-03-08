@@ -70,9 +70,15 @@
         if (range && range.length > 0) {
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);
-          //console.log(formats);
           if (formats.annotation) {
-             this.editor.format('annotation', false);
+            //deselect
+            this.editor.format('annotation', false);
+            // but if mutiple segments are created, cancel
+            const quillContent = this.getEditorHTML()
+            const count = (quillContent.match(/<annotation>/g) || []).length
+            if (count > 1) {
+               this.editor.format('annotation', true);
+            }
           } else {
             //console.log("UPDATE ANNOTATION SEGMENT", {ptr_start: range.index})
             this.editor.format('annotation', true);
@@ -88,7 +94,7 @@
         const annotations = this.computeAnnotationPointers(quillToTEI(quillContent))
         if (annotations) {
           this.annotation = annotations[0]
-          const payload = {docId: this.docId, ...this.annotation}
+          const payload = {docId: this.id, ...this.annotation}
           console.log("payload:", payload)
           document.dispatchEvent(new CustomEvent('text-selected', payload))
           this.editor.blur();
