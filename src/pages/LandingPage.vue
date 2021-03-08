@@ -9,20 +9,54 @@
             </p>
             <ul>
               <li>
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Notices</p>
+                <div
+                  class="document-card card featured"
+                  @click="goToFeature(featuredDocs[0])"
+                >
+                  <div class="card-header" />
+                  <div class="card-image">
+                    <figure class="image is-3by1">
+                      <img
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
+                        alt="Placeholder image"
+                      >
+                    </figure>
                   </div>
                   <div class="card-content">
-                    <p>Risus turpis, at commodo neque dictum eget. Nullam pretium suscipit sagittis. Proin ac consectetur metus, quis ultrices nisl.</p>
+                    <div class="content">
+                      <p class="title">
+                        Acte sous le sceau de l’officialité épiscopale de Beauvais
+                      </p>
+                      <p class="subtitle">
+                        Une opération de remembrement&nbsp;: la vente à l’abbaye Saint-Germer-de-Fly d’une terre tenue à champart test
+                      </p>
+                    </div>
                   </div>
                 </div>
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Documents féodaux</p>
+              </li>
+              <li>
+                <div
+                  class="document-card card featured"
+                  @click="goToFeature(featuredDocs[1])"
+                >
+                  <div class="card-header" />
+                  <div class="card-image">
+                    <figure class="image is-3by1">
+                      <img
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
+                        alt="Placeholder image"
+                      >
+                    </figure>
                   </div>
                   <div class="card-content">
-                    <p>Pellentesque interdum libero diam, facilisis pulvinar mi aliquam at.</p>
+                    <div class="content">
+                      <p class="title">
+                        Acte sous le sceau de l’officialité épiscopale de Beauvais
+                      </p>
+                      <p class="subtitle">
+                        Une opération de remembrement&nbsp;: la vente à l’abbaye Saint-Germer-de-Fly d’une terre tenue à champart test
+                      </p>
+                    </div>
                   </div>
                 </div>
               </li>
@@ -167,11 +201,49 @@
 
 <script>
 
-import { mapState } from 'vuex';
-
 export default {
     name: "LandingPage",
     components: {
+    },
+    data() {
+      return {
+        featuredDocs: [
+          {
+            availableCommentaries: [],
+            acteTypes: [],
+            centuries: [],
+            copyCenturies: [],
+            countries: [2],
+            creationRange: [
+              700,
+              1700
+            ],
+            districts: [20],
+            institutions: [],
+            languages: [
+               "lat"
+            ],
+            traditions: [5],
+          },
+          {
+            availableCommentaries: [],
+            acteTypes: [],
+            centuries: [],
+            copyCenturies: [],
+            countries: [1],
+            creationRange: [
+              900,
+              1300
+            ],
+            districts: [12],
+            institutions: [],
+            languages: [
+               
+            ],
+            traditions: [1,2,3,4],
+          }
+        ]
+      }
     },
     computed: {
     },
@@ -179,7 +251,11 @@ export default {
      
     },
     methods: {
-     
+      goToFeature(filters) {
+        console.log(filters)
+        this.$store.dispatch('search/set', filters) ;
+        this.$router.push({name: 'search'})
+      }
     }
 }
 </script>

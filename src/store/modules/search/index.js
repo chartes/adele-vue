@@ -1,5 +1,3 @@
-import {http} from '../../../modules/http-common';
-
 const initState = () => ({
   selection: {
       languages : [],
@@ -10,7 +8,8 @@ const initState = () => ({
       copyCenturies: [],
       availableCommentaries: [],
       countries: [],
-      districts: []
+      districts: [],
+      creationRange: []
   },
 })
 
@@ -21,6 +20,9 @@ const mutations = {
   CLEAR_ALL (state) {
     const initial = initState()
     Object.keys(initial).forEach(key => { state[key] = initial[key] })
+  },
+  SET (state, filters) {
+    state.selection = filters
   },
   REMOVE (state, {filter, index}) {
     state.selection[filter].splice(index, 1)
@@ -38,6 +40,9 @@ const actions = {
     clearAll({commit, state}) {
         commit('CLEAR_ALL')
     },
+    set({commit}, filters) {
+        commit('SET', filters)
+    },
     toggleSelection({commit, state}, {filter, item}) {
       console.log("toggleSelection", filter, item)
       const index = state.selection[filter].indexOf(item)
@@ -51,6 +56,9 @@ const actions = {
 };
 
 const getters = {
+    isCurrentlyFiltered: (state) => {
+      return JSON.stringify(initState().selection) !== JSON.stringify({...state.selection})
+    },
     isLanguageSelected : (state) => (item) => {
         return state.selection.languages.indexOf(item) > -1
     },

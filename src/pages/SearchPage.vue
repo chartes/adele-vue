@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="root">
     <div class="container is-fluid search-page">
       <div class="columns">
         <div class="column filters">
@@ -19,15 +19,16 @@
                       type="text"
                     >
                     
-                    <label class="checkbox">
-                      <input 
-                        v-model="filterByCreationRange"
-                        style="display: none"
-                        type="checkbox"
-                        :value="filterByCreationRange"
-                      >
-                      <span v-if="filterByCreationRange"> Ne pas filtrer </span>
-                      <span v-else>filtrer</span>
+                    <label class="checkbox date-checkbox">
+                      <b-field>
+                        <b-checkbox
+                          v-model="showDocsWithoutDates"
+                          :value="showDocsWithoutDates"
+                          type="is-light"
+                        >
+                          <span>Afficher les documents sans date</span>
+                        </b-checkbox>
+                      </b-field>
                     </label>
                   </p>
                   <slider
@@ -622,7 +623,7 @@ export default {
           institutions: false,
           availableCommentaries: false,
         },
-        filterByCreationRange: true,
+        showDocsWithoutDates: true,
         startDocDate: 700,
         endDocDate: 1700,
         minDocDate: 700,
@@ -630,6 +631,7 @@ export default {
       }
     },
     computed: {
+        ...mapState('search', ['selection']),
         ...mapState('document', ['documents', 'document', 'loading', 'meta']),
         ...mapState('languages', ['languages']),
         ...mapState('countries', ['countries']),
@@ -647,7 +649,8 @@ export default {
           'isInstitutionSelected',
           'isCountrySelected',
           'isDistrictSelected',
-          'isAvailableCommentarySelected'
+          'isAvailableCommentarySelected',
+          'isCurrentlyFiltered'
         ]),
         sliderKey() {
           return this.startDocDate + "," + this.endDocDate
@@ -764,7 +767,7 @@ export default {
       selectedFilters() {
         this.fetchAll()
       },
-      filterByCreationRange() {
+      showDocsWithoutDates() {
         this.fetchAll()
       },
       currentPage() {
@@ -782,7 +785,21 @@ export default {
         this.$store.dispatch('institutions/fetch')
       ])
     },
+    mounted() {
+      window.scrollTo(0, 0);
+    },
     created() {
+      if (this.isCurrentlyFiltered) {
+        Object.keys(this.selection).forEach(k => {
+          this.showFilters[k] = this.selection[k].length
+        })
+      }
+
+      if (this.selection.creationRange.length) {
+        this.startDocDate = this.selection.creationRange[0]
+        this.endDocDate = this.selection.creationRange[1]
+      }
+
       this.fetchAll()
     },
     methods: {
@@ -815,7 +832,7 @@ export default {
         }
 
         filters['creationRange'] = this.dateSliderOptions.start
-        filters['filterByCreationRange'] = this.filterByCreationRange
+        filters['filterByCreationRange'] = !this.showDocsWithoutDates
 
         let sorts = {}
 
