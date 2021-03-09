@@ -77,7 +77,7 @@ export default {
             enabled: false
           },
           annotation: {
-            adapter: (canvasId) => new AdeleStorageAdapter(this.manifestOriginUrl, this.documentId),
+            adapter: (canvasId) => new AdeleStorageAdapter(this.manifestOriginUrl, this.documentId, canvasId),
           },
           ...this.configuration
         }

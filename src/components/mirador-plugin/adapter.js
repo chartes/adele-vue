@@ -3,9 +3,12 @@ import { http } from '../../modules/http-common';
 
 export default class AdeleStorageAdapter {
     /** */
-    constructor(manifestUrl, documentId) {
+    constructor(manifestUrl, documentId, canvasId) {
         this.manifestUrl = manifestUrl;
         this.documentId = documentId;
+        this.canvasId = canvasId.match(/canvas\/f(\d*)$/)[1] - 1;
+        console.log(this.canvasId);
+        this.annotationPageId = `http://localhost:5000/api/1.0/iiif/${this.documentId}/list/commenting-${this.canvasId}`;
     }
   
     /** */
@@ -30,7 +33,7 @@ export default class AdeleStorageAdapter {
       http.post(`iiif/${this.documentId}/annotations`,
         {
             manifest_url: this.manifestUrl,
-            canvas_idx: 0,
+            canvas_idx: this.canvasId,
             // In case there are multiple images on a canvas, optionnal, default is 0
             img_idx: 0,
             zone_type_id: 2,
@@ -42,7 +45,6 @@ export default class AdeleStorageAdapter {
             note: annotation.body.value
         }
       );
-      //localStorage.setItem(this.annotationPageId, JSON.stringify(annotationPage));
       return annotationPage;
     }
   
@@ -64,7 +66,7 @@ export default class AdeleStorageAdapter {
 
     /** */
     async all() {
-      return http.get(`iiif/${this.documentId}/list/commenting-0`)
+      return http.get(`iiif/${this.documentId}/list/commenting-${this.canvasId}`)
         .then((response) => (this.createAnnotationPage(response.data.resources)));
     }
 
@@ -73,7 +75,7 @@ export default class AdeleStorageAdapter {
     if (Array.isArray(v2annos)) {
       const v3annos = v2annos.map((a) => AdeleStorageAdapter.createV3Anno(a));
       return {
-        id: "commenting-0",
+        id: `commenting-${this.canvasId}`,
         items: v3annos,
         type: 'AnnotationPage',
       };
@@ -85,8 +87,8 @@ export default class AdeleStorageAdapter {
   static createV3Anno(v2anno) {
     const v3anno = {
       id: v2anno.resource['@id'],
-      motivation: 'commenting',
-      type: 'Annotation',
+      motivation: 'sc:painting',
+      type: 'oa:Annotation',
     };
     if (Array.isArray(v2anno.resource)) {
       v3anno.body = v2anno.resource.map((b) => this.createV3AnnoBody(b));
@@ -106,7 +108,7 @@ export default class AdeleStorageAdapter {
         id: v2target.full,
         partOf: {
           id: v2target.within['@id'],
-          type: 'Manifest',
+          type: 'sc:Manifest',
         },
         type: 'Canvas',
       };
