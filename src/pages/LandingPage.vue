@@ -11,13 +11,13 @@
               <li>
                 <div
                   class="document-card card featured"
-                  @click="goToFeature(featuredDocs[0])"
+                  @click="goToFeature(featuredCollections[0])"
                 >
                   <div class="card-header" />
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/27.jpg/full/500,/0/default.jpg"
                         alt="Placeholder image"
                       >
                     </figure>
@@ -25,10 +25,7 @@
                   <div class="card-content">
                     <div class="content">
                       <p class="title">
-                        Acte sous le sceau de l’officialité épiscopale de Beauvais
-                      </p>
-                      <p class="subtitle">
-                        Une opération de remembrement&nbsp;: la vente à l’abbaye Saint-Germer-de-Fly d’une terre tenue à champart test
+                        Expansion et diversification formelle des chirographes
                       </p>
                     </div>
                   </div>
@@ -37,13 +34,13 @@
               <li>
                 <div
                   class="document-card card featured"
-                  @click="goToFeature(featuredDocs[1])"
+                  @click="goToFeature(featuredCollections[1])"
                 >
                   <div class="card-header" />
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/34.jpg/full/500,/0/default.jpg"
                         alt="Placeholder image"
                       >
                     </figure>
@@ -51,10 +48,53 @@
                   <div class="card-content">
                     <div class="content">
                       <p class="title">
-                        Acte sous le sceau de l’officialité épiscopale de Beauvais
+                        Naissance d’une bureaucratie paperassière: les documents du contrôle comptable
                       </p>
-                      <p class="subtitle">
-                        Une opération de remembrement&nbsp;: la vente à l’abbaye Saint-Germer-de-Fly d’une terre tenue à champart test
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div
+                  class="document-card card featured"
+                  @click="goToFeature(featuredCollections[2])"
+                >
+                  <div class="card-header" />
+                  <div class="card-image">
+                    <figure class="image is-3by1">
+                      <img
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/24.jpg/full/500,/0/default.jpg"
+                        alt="Placeholder image"
+                      >
+                    </figure>
+                  </div>
+                  <div class="card-content">
+                    <div class="content">
+                      <p class="title">
+                        Le modèle royal de l’acte princier en France
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div
+                  class="document-card card featured"
+                  @click="goToFeature(featuredCollections[3])"
+                >
+                  <div class="card-header" />
+                  <div class="card-image">
+                    <figure class="image is-3by1">
+                      <img
+                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/500,/0/default.jpg"
+                        alt="Placeholder image"
+                      >
+                    </figure>
+                  </div>
+                  <div class="card-content">
+                    <div class="content">
+                      <p class="title">
+                        La pression des vernaculaires au XIII<sup>e</sup> siècle
                       </p>
                     </div>
                   </div>
@@ -144,47 +184,11 @@
               Nouveaux dossiers
             </p>
             <ul>
-              <li>
-                <a href="#">
-                  <div class="document-card card">
-                    <div class="card-header" />
-                    <div class="card-image">
-                      <figure class="image is-3by1">
-                        <img
-                          src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/800,/0/default.jpg"
-                          alt="Placeholder image"
-                        >
-                      </figure>
-                    </div>
-                    <div class="card-content">
-                      <div class="content">
-                        <p class="title">Acte sous le sceau de l’officialité épiscopale de Beauvais</p>
-                        <p class="subtitle">Une opération de remembrement&nbsp;: la vente à l’abbaye Saint-Germer-de-Fly d’une terre tenue à champart test</p>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-              <li>
-                <a>
-                  <div class="document-card card">
-                    <div class="card-header" />
-                    <div class="card-image">
-                      <figure class="image is-3by1">
-                        <img
-                          src="https://iiif.chartes.psl.eu/images/adele/dossiers/39.jpg/full/800,/0/default.jpg"
-                          alt="Placeholder image"
-                        >
-                      </figure>
-                    </div>
-                    <div class="card-content">
-                      <div class="content">
-                        <p class="title">Acte sous les sceaux de l’officialité archidiaconale de Verdun et d’un seigneur (Lorraine)</p>
-                        <p class="subtitle">Un montage féodal complexe : reprises et cessions d’un fief épiscopal en cascade</p>
-                      </div>
-                    </div>
-                  </div>
-                </a>
+              <li
+                v-for="doc in documents"
+                :key="doc.id"
+              >
+                <document-card :doc="doc" />
               </li>
             </ul>
           </div>
@@ -200,60 +204,111 @@
 </template>
 
 <script>
+import { mapActions, mapState } from 'vuex';
+import DocumentCard from '../components/document/DocumentCard.vue';
 
 export default {
     name: "LandingPage",
     components: {
+      DocumentCard    
     },
     data() {
       return {
-        featuredDocs: [
+        featuredCollections: [
           {
-            availableCommentaries: [],
-            acteTypes: [],
-            centuries: [],
-            copyCenturies: [],
-            countries: [2],
-            creationRange: [
-              700,
-              1700
-            ],
-            districts: [20],
-            institutions: [],
-            languages: [
-               "lat"
-            ],
-            traditions: [5],
+            title: 'Expansion et diversification formelle des chirographes',
+            filters:{
+              availableCommentaries: [],
+              acteTypes: [],
+              centuries: [],
+              copyCenturies: [],
+              countries: [],
+              creationRange: [
+              
+              ],
+              districts: [],
+              institutions: [],
+              languages: [
+                
+              ],
+              traditions: [8],
+            }
           },
           {
-            availableCommentaries: [],
-            acteTypes: [],
-            centuries: [],
-            copyCenturies: [],
-            countries: [1],
-            creationRange: [
-              900,
-              1300
-            ],
-            districts: [12],
-            institutions: [],
-            languages: [
-               
-            ],
-            traditions: [1,2,3,4],
+            title: 'Naissance d’une bureaucratie paperassière: les documents du contrôle comptable ',
+            filters: {
+              availableCommentaries: [],
+              acteTypes: [7],
+              centuries: [],
+              copyCenturies: [],
+              countries: [],
+              creationRange: [
+                1300, 1500
+              ],
+              districts: [],
+              institutions: [],
+              languages: [
+                
+              ],
+              traditions: [],
+            }
+          },
+          {
+            title: 'Le modèle royal de l’acte princier en France',
+            filters: {
+              availableCommentaries: [],
+              acteTypes: [20,21],
+              centuries: [],
+              copyCenturies: [],
+              countries: [1],
+              creationRange: [
+              
+              ],
+              districts: [],
+              institutions: [],
+              languages: [
+                
+              ],
+              traditions: [],
+            }
+          },
+          {
+            title: 'La pression des vernaculaires au XIII<sup>e</sup> siècle',
+            filters: {
+              availableCommentaries: [],
+              acteTypes: [],
+              centuries: [],
+              copyCenturies: [],
+              countries: [],
+              creationRange: [
+                1200,
+                1300
+              ],
+              districts: [],
+              institutions: [],
+              languages: [
+                "oci", "fre"
+              ],
+              traditions: [],
+            }
           }
         ]
       }
     },
     computed: {
+      ...mapState('document', ['documents', 'loading'])
     },
-    created() {
-     
+    async created() {
+      await this.fetchLastItems()
     },
     methods: {
-      goToFeature(filters) {
-        console.log(filters)
-        this.$store.dispatch('search/set', filters) ;
+      ...mapActions('document', ['fetchLastItems']),
+      goToFeature(collection) {
+        console.log(collection)
+        this.$store.dispatch('search/set', {
+          title: collection.title,
+          filters: collection.filters
+        }) ;
         this.$router.push({name: 'search'})
       }
     }

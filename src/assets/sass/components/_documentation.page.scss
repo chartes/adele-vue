@@ -20,6 +20,15 @@ dl {
 .documentation-page {
     text-align: justify;
 
+    p {
+        margin-bottom: 18px;
+    }
+    .logos {
+        margin: 0 auto;
+        width: 80%;
+        text-align: center;
+    }
+
     .documentation ul {
         list-style: initial;
         padding-left: 24px;
@@ -231,10 +240,11 @@ dl {
     .bottom {
 
         margin-left: 0.75rem;
-        margin-right: 4rem;
+        margin-right: 0.75rem;
 
         border-top: 12px $grey-darker solid;
-        margin-top: 100px;
+        margin-top: 200px;
+        margin-bottom: 100px;
         padding-top: 60px;
 
         h2 {
@@ -323,6 +333,7 @@ dl {
 
         .bottom {
             margin-right: 0.75rem;
+            margin-top: 350px;
         }
 
     }
@@ -428,6 +439,7 @@ dl {
         .bottom {
 
             margin: 30px 6%;
+            margin-top: 350px;
             padding-top: 10px;
             border-top:none;
 

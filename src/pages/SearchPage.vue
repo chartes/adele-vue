@@ -403,6 +403,12 @@
 
         <div class="column documents is-three-quarters">
           <div class="section">
+            <header
+              v-if="title"
+              class="collection-title title"
+            >
+              <h1 v-html="title" />
+            </header>
             <div class="filters-sort-options">
               <h4 v-if="isFiltered">
                 Filtres  <a
@@ -631,7 +637,7 @@ export default {
       }
     },
     computed: {
-        ...mapState('search', ['selection']),
+        ...mapState('search', ['selection', 'title']),
         ...mapState('document', ['documents', 'document', 'loading', 'meta']),
         ...mapState('languages', ['languages']),
         ...mapState('countries', ['countries']),
@@ -832,7 +838,7 @@ export default {
         }
 
         filters['creationRange'] = this.dateSliderOptions.start
-        filters['filterByCreationRange'] = !this.showDocsWithoutDates
+        filters['showDocsWithoutDates'] = this.showDocsWithoutDates
 
         let sorts = {}
 

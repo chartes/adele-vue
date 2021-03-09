@@ -1,4 +1,5 @@
 const initState = () => ({
+  title: null,
   selection: {
       languages : [],
       acteTypes: [],
@@ -16,21 +17,25 @@ const initState = () => ({
 const mutations = {
   CLEAR (state, {filter}) {
     state.selection[filter] = []
+    state.title = null
   },
   CLEAR_ALL (state) {
     const initial = initState()
     Object.keys(initial).forEach(key => { state[key] = initial[key] })
+    state.title = null
   },
-  SET (state, filters) {
+  SET (state, {title, filters}) {
     state.selection = filters
+    state.title = title
   },
   REMOVE (state, {filter, index}) {
     state.selection[filter].splice(index, 1)
+    //state.title = null
   },
   ADD (state, {filter, item}) {
     state.selection[filter].push(item)
+    //state.title = null
   }
-
 };
 
 const actions = {
@@ -40,11 +45,10 @@ const actions = {
     clearAll({commit, state}) {
         commit('CLEAR_ALL')
     },
-    set({commit}, filters) {
-        commit('SET', filters)
+    set({commit}, {title, filters}) {
+        commit('SET', {title, filters})
     },
     toggleSelection({commit, state}, {filter, item}) {
-      console.log("toggleSelection", filter, item)
       const index = state.selection[filter].indexOf(item)
       if (index > -1) {
          commit('REMOVE', {filter, index})

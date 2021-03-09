@@ -234,6 +234,18 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
+  fetchLastItems ({ commit },) {
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
+    return http.get('documents/last-items').then( (response) => {
+      commit('UPDATE_ALL', response.data.data);
+      commit('UPDATE_META', response.data.meta);
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      commit('SET_ERROR', error)
+    })
+  },
   setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
     commit('SET_ERROR', null)

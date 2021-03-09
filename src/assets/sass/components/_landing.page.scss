@@ -3,6 +3,11 @@
     max-width: 1920px;
     margin: 0 auto;
 
+    .document-card {
+        border-bottom: solid 12px;
+        border-bottom-color:$grey-light;
+    }
+
     .featured {
         cursor: pointer;
     }
@@ -132,11 +137,6 @@
             padding: 0.25rem 0 1.25rem;
         }
 
-        .column.documents .document-card {
-            border-bottom: solid 12px;
-            border-bottom-color:$grey-light;
-        }
-
         .column.is-half {
             margin-top: 135px;
             padding: 60px 6% 0;
@@ -150,7 +150,7 @@
         margin-right: 1rem;
 
         border-top: 12px $grey-darker solid;
-        margin-top: 100px;
+        margin-top: 350px;
         margin-bottom: 100px;
         padding-top: 60px;
 

@@ -4,7 +4,10 @@
       v-if="!loggedIn"
       :to="{name: 'login'}"
     >
-      <a class="button is-primary">
+      <a
+        class="button "
+        style="background-color: #FFD500; color: white; font-weight: bold"
+      >
         Connexion
       </a>
     </router-link>
