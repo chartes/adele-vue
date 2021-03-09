@@ -196,9 +196,7 @@
       </div>
     </div>
     <div class="bottom">
-      <div class="logos">
-        Logos Scripta, ENC DIM stcn et de la commission internationale de diplomatique
-      </div>
+      <logos />
     </div>
   </div>
 </template>
@@ -206,11 +204,13 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import DocumentCard from '../components/document/DocumentCard.vue';
+import Logos from '../components/Logos.vue';
 
 export default {
     name: "LandingPage",
     components: {
-      DocumentCard    
+      DocumentCard,
+      Logos    
     },
     data() {
       return {
