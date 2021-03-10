@@ -1,5 +1,6 @@
 const initState = () => ({
   title: null,
+  sorts: ['creation'],
   selection: {
       languages : [],
       acteTypes: [],
@@ -22,11 +23,13 @@ const mutations = {
   CLEAR_ALL (state) {
     const initial = initState()
     Object.keys(initial).forEach(key => { state[key] = initial[key] })
-    state.title = null
   },
   SET (state, {title, filters}) {
     state.selection = filters
     state.title = title
+  },
+  SORT (state, fields) {
+    state.sorts = fields
   },
   REMOVE (state, {filter, index}) {
     state.selection[filter].splice(index, 1)
@@ -48,6 +51,9 @@ const actions = {
     set({commit}, {title, filters}) {
         commit('SET', {title, filters})
     },
+    setSort({commit}, fields) {
+      commit('SORT', fields)
+    },
     toggleSelection({commit, state}, {filter, item}) {
       const index = state.selection[filter].indexOf(item)
       if (index > -1) {
@@ -62,6 +68,9 @@ const actions = {
 const getters = {
     isCurrentlyFiltered: (state) => {
       return JSON.stringify(initState().selection) !== JSON.stringify({...state.selection})
+    },
+    isCurrentlySorted: (state) => {
+      return JSON.stringify(initState().sorts) !== JSON.stringify({...state.sorts})
     },
     isLanguageSelected : (state) => (item) => {
         return state.selection.languages.indexOf(item) > -1

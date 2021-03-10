@@ -458,9 +458,30 @@
                 </div>
               </div>
               <h4>Tris</h4>
-              <select>
-                <option>Date de l'acte</option>
+              <select v-model="selectedSort">
+                <option value="creation">
+                  Date de l'acte
+                </option>
+                <option value="id">
+                  Numéro de dossier
+                </option>
+                <option value="title">
+                  Titre
+                </option>
               </select>
+              <button
+                class="button is-light is-small sort-order"
+                @click="sortOrder = sortOrder === '' ? '-' : ''"
+              >
+                <i
+                  v-if="sortOrder === ''"
+                  class="fas fa-arrow-down"
+                />
+                <i
+                  v-else
+                  class="fas fa-arrow-up"
+                />
+              </button>
             </div>
             <progress
               v-show="loading" 
@@ -633,11 +654,13 @@ export default {
         startDocDate: 700,
         endDocDate: 1700,
         minDocDate: 700,
-        maxDocDate: 1900
+        maxDocDate: 1900,
+        selectedSort: 'creation',
+        sortOrder: '',
       }
     },
     computed: {
-        ...mapState('search', ['selection', 'title']),
+        ...mapState('search', ['selection', 'title', 'sorts']),
         ...mapState('document', ['documents', 'document', 'loading', 'meta']),
         ...mapState('languages', ['languages']),
         ...mapState('countries', ['countries']),
@@ -773,6 +796,14 @@ export default {
       selectedFilters() {
         this.fetchAll()
       },
+      selectedSort() {
+        this.setSort([`${this.sortOrder}${this.selectedSort}`])
+        this.fetchAll()
+      },
+      sortOrder() {
+        this.setSort([`${this.sortOrder}${this.selectedSort}`])
+        this.fetchAll()
+      },
       showDocsWithoutDates() {
         this.fetchAll()
       },
@@ -809,7 +840,7 @@ export default {
       this.fetchAll()
     },
     methods: {
-      ...mapActions('search', ['toggleSelection', 'clear', 'clearAll']),
+      ...mapActions('search', ['toggleSelection', 'clear', 'clearAll', 'setSort']),
       updateDocDate: debounce(function(values, handle, unencoded, tap, positions) {
         this.startDocDate = Math.ceil(unencoded[0])
         this.endDocDate = Math.ceil(unencoded[1])
@@ -840,7 +871,7 @@ export default {
         filters['creationRange'] = this.dateSliderOptions.start
         filters['showDocsWithoutDates'] = this.showDocsWithoutDates
 
-        let sorts = {}
+        const sorts = this.sorts
 
         return this.$store.dispatch('document/fetchAll', {
           pageNum: this.currentPage,

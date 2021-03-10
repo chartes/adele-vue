@@ -169,9 +169,7 @@
               </div>
               <div class="card-content">
                 <div class="card-title">
-                  De multiples capacités de tri permettant de créer des sous-corpus à volonté<div class="card-subtitle">
-                    permettant de créer des sous-corpus à volonté
-                  </div>
+                  De multiples capacités de tri permettant de créer des sous-corpus à volonté<div class="card-subtitle" />
                 </div>
               </div>
             </div>
@@ -217,6 +215,7 @@ export default {
         featuredCollections: [
           {
             title: 'Expansion et diversification formelle des chirographes',
+            sorts: ['creation'],
             filters:{
               availableCommentaries: [],
               acteTypes: [],
@@ -236,6 +235,7 @@ export default {
           },
           {
             title: 'Naissance d’une bureaucratie paperassière: les documents du contrôle comptable ',
+            sorts: ['creation'],
             filters: {
               availableCommentaries: [],
               acteTypes: [7],
@@ -255,6 +255,7 @@ export default {
           },
           {
             title: 'Le modèle royal de l’acte princier en France',
+            sorts: ['creation'],
             filters: {
               availableCommentaries: [],
               acteTypes: [20,21],
@@ -274,6 +275,7 @@ export default {
           },
           {
             title: 'La pression des vernaculaires au XIII<sup>e</sup> siècle',
+            sorts: ['creation'],
             filters: {
               availableCommentaries: [],
               acteTypes: [],
