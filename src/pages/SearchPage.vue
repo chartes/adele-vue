@@ -837,6 +837,10 @@ export default {
         this.endDocDate = this.selection.creationRange[1]
       }
 
+      this.sortOrder = this.sorts[0].startsWith('-') ? '-' : ''
+      this.selectedSort = this.sortOrder === '' ? this.sorts[0] : this.sorts[0].slice(1)
+      console.log('restoring sorts', this.sorts, this.sortOrder, this.selectedSort)
+
       this.fetchAll()
     },
     methods: {

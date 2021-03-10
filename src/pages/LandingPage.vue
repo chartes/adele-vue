@@ -309,7 +309,8 @@ export default {
         console.log(collection)
         this.$store.dispatch('search/set', {
           title: collection.title,
-          filters: collection.filters
+          filters: collection.filters,
+          sorts: collection.sorts
         }) ;
         this.$router.push({name: 'search'})
       }

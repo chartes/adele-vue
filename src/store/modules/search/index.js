@@ -24,9 +24,10 @@ const mutations = {
     const initial = initState()
     Object.keys(initial).forEach(key => { state[key] = initial[key] })
   },
-  SET (state, {title, filters}) {
+  SET (state, {title, filters, sorts}) {
     state.selection = filters
     state.title = title
+    state.sorts = sorts
   },
   SORT (state, fields) {
     state.sorts = fields
@@ -48,8 +49,8 @@ const actions = {
     clearAll({commit, state}) {
         commit('CLEAR_ALL')
     },
-    set({commit}, {title, filters}) {
-        commit('SET', {title, filters})
+    set({commit}, {title, filters, sorts}) {
+        commit('SET', {title, filters, sorts})
     },
     setSort({commit}, fields) {
       commit('SORT', fields)
