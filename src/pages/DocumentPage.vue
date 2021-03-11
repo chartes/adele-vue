@@ -196,16 +196,26 @@
                   v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
                   class="content"
                 >
-                  <document-transcription
-                    v-if="transcriptionVisibility && transcriptionView !== null && (!translationVisibility || translationView === null )"
-                    :readonly-data="transcriptionView"
-                  />
-                  <document-translation
-                    v-if="!transcriptionVisibility && translationView !== null && translationVisibility"
-                    :readonly-data="translationView"
-                  />
+                  <div class="columns">
+                    <div
+                      v-if="!translationAlignmentVisibility && transcriptionVisibility && transcriptionView !== null"
+                      class="column"
+                    >
+                      <document-transcription
+                        :readonly-data="transcriptionView"
+                      />
+                    </div>
+                    <div
+                      v-if="!translationAlignmentVisibility && translationView !== null && translationVisibility"
+                      class="column"
+                    >
+                      <document-translation
+                        :readonly-data="translationView"
+                      />
+                    </div>
+                  </div>
                   <document-transcription-alignment
-                    v-if="transcriptionAlignmentView && transcriptionVisibility && translationVisibility"
+                    v-if="translationAlignmentVisibility"
                     :readonly-data="transcriptionAlignmentView"
                   />
                 </div>
@@ -280,6 +290,10 @@ export default {
 
         canvasManifestInfo() {
           return this.getManifestInfoUrl(0)
+        },
+
+        translationAlignmentVisibility() {
+          return this.transcriptionAlignmentView && this.transcriptionVisibility && this.translationVisibility
         },
 
         showContent() {

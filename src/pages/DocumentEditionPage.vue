@@ -158,7 +158,7 @@
             :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
           >
             <mirador-viewer
-              v-if="document.manifest_url"
+              v-if="document.manifest_origin_url"
               :manifest-url="document.manifest_url"
               :manifest-origin-url="document.manifest_origin_url"
               :document-id="document.id"
