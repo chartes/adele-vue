@@ -113,7 +113,7 @@
               </div>
 
               <mirador-viewer
-                v-if="document.manifest_url && !isLoading"
+                v-if="document.manifest_origin_url && !isLoading"
                 :manifest-url="document.manifest_url"
                 :manifest-origin-url="document.manifest_origin_url"
                 :canvas-index="0"
@@ -197,11 +197,11 @@
                   class="content"
                 >
                   <document-transcription
-                    v-if="transcriptionVisibility && !translationVisibility"
+                    v-if="transcriptionVisibility && transcriptionView !== null && (!translationVisibility || translationView === null )"
                     :readonly-data="transcriptionView"
                   />
                   <document-translation
-                    v-if="!transcriptionVisibility && translationVisibility"
+                    v-if="!transcriptionVisibility && translationView !== null && translationVisibility"
                     :readonly-data="translationView"
                   />
                   <document-transcription-alignment
@@ -210,7 +210,7 @@
                   />
                 </div>
                 <document-commentaries
-                  v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
+                  v-if="isTranscriptionValidated && $attrs.section === 'commentaries' && commentariesView !== null "
                   :readonly-data="commentariesView"
                 />
                 <document-speech-parts
@@ -306,14 +306,15 @@ export default {
         vm.setupVisibilityWidget(vm.$attrs.section)
       })
     },
-    async beforeRouteUpdate (to, from, next) {
+     beforeRouteUpdate (to, from, next) {
       this.$store.dispatch('workflow/setEditionMode', false)
       this.$store.dispatch('workflow/setCurrentSection', to.params.section)
       this.setupVisibilityWidget(to.params.section)
 
-      //if (to.params.docId !== from.params.docId) {
-      await this.loadDocument(to.params.docId);
-      //}
+      if (to.params.docId !== from.params.docId) {
+        console.log('reload doc id')
+        this.loadDocument(to.params.docId);
+      }
       next()
     },
     beforeRouteLeave (to, from, next) {
@@ -386,6 +387,8 @@ export default {
         }
       },
       async loadDocument(docId) {
+         console.log('reload doc id (LOAD)', docId)
+
         this.isLoading = true;
         try {
           await this.fetchOne({id: docId})
@@ -408,7 +411,7 @@ export default {
         }
 
         try {
-          this.fetchCommentariesView()
+          await this.fetchCommentariesView()
         } catch(error) {
           console.log("No commentaries", error)
         }

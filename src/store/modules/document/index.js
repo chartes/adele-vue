@@ -122,6 +122,7 @@ const actions = {
       commit('RESET_TRANSLATION_VIEW')
       commit('RESET_COMMENTARIES_VIEW')
       commit('RESET_SPEECH_PARTS_VIEW')
+      commit('RESET_TRANSCRIPTION_ALIGNMENT_VIEW')
       console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -176,6 +177,7 @@ const actions = {
       console.log("tr alignments ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('RESET_TRANSCRIPTION_ALIGNMENT_VIEW')
       commit('LOADING_STATUS', false);
       throw error
     })
@@ -198,6 +200,7 @@ const actions = {
       dispatch('commentaries/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('RESET_COMMENTARIES_VIEW')
       dispatch('commentaries/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
       //throw error
@@ -216,6 +219,7 @@ const actions = {
       dispatch('speechparts/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('RESET_SPEECH_PARTS_VIEW')
       dispatch('speechparts/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
     })

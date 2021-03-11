@@ -3,18 +3,20 @@ import { http } from '../../modules/http-common';
 
 export default class AdeleStorageAdapter {
     /** */
-    constructor(manifestUrl, documentId, canvasId) {
-        this.manifestUrl = manifestUrl;
+    constructor(manifestOriginUrl, documentId, canvasId) {
+        this.manifestOriginUrl = manifestOriginUrl;
+        console.log("storage adapter", manifestOriginUrl)
         this.documentId = documentId;
         this.canvasId = canvasId.match(/canvas\/f(\d*)$/)[1] - 1;
         console.log(this.canvasId);
-        this.annotationPageId = `http://localhost:5000/api/1.0/iiif/${this.documentId}/list/commenting-${this.canvasId}`;
+        this.annotationPageId = `${process.env.VUE_APP_API_URL}/iiif/${this.documentId}/list/commenting-${this.canvasId}`;
     }
   
     /** */
     async create(annotation) {
       let fragment = null;
       let svg = null;
+      /*
       const emptyAnnoPage = {
         id: 0,
         items: [],
@@ -22,6 +24,7 @@ export default class AdeleStorageAdapter {
       };
       const annotationPage = emptyAnnoPage;
       annotationPage.items.push(annotation);
+      */
       const fragmentSelector = annotation.target.selector.find(({type}) => type === "FragmentSelector");
       if (fragmentSelector) {
         fragment = fragmentSelector.value.match(/xywh=(.*)$/)[1];
@@ -30,9 +33,9 @@ export default class AdeleStorageAdapter {
       if (svgSelector) {
         svg = svgSelector.value;
       }
-      http.post(`iiif/${this.documentId}/annotations`,
+      await http.post(`iiif/${this.documentId}/annotations`,
         {
-            manifest_url: this.manifestUrl,
+            manifest_url: this.manifestOriginUrl,
             canvas_idx: this.canvasId,
             // In case there are multiple images on a canvas, optionnal, default is 0
             img_idx: 0,
@@ -45,18 +48,46 @@ export default class AdeleStorageAdapter {
             note: annotation.body.value
         }
       );
-      return annotationPage;
+      return await this.all();
     }
   
     /** */
     async update(annotation) {
+      const zone_id = parseInt(annotation.id.split('/').pop())
+      console.log("lets update this", annotation, zone_id)
+      let fragment = null;
+      let svg = null;
+
+      const fragmentSelector = annotation.target.selector.find(({type}) => type === "FragmentSelector");
+      if (fragmentSelector) {
+        fragment = fragmentSelector.value.match(/xywh=(.*)$/)[1];
+      }
+      const svgSelector = annotation.target.selector.find(({type}) => type === "SvgSelector");
+      if (svgSelector) {
+        svg = svgSelector.value;
+      }
+
+      await http.put(`iiif/${this.documentId}/annotation/${zone_id}`, {
+        manifest_url: this.manifestOriginUrl,
+        canvas_idx: this.canvasId,
+        // In case there are multiple images on a canvas, optionnal, default is 0
+        img_idx: 0,
+        zone_type_id: 2,
+        fragment: fragment,
+        svg: svg,
+
+        // in case of a COMMENTING motivation, the text content is embedded within the annotation,
+        // optionnal, default is none
+        note: annotation.body.value
+    })
       return await this.all();
     }
   
     /** */
     async delete(annoId) {
-      const annotationPage = await this.all();
-      return annotationPage;
+      const zoneId = annoId.split('/').pop()
+      await http.delete(`iiif/${this.documentId}/annotation/${zoneId}`)
+      return await this.all();
     }
   
     /** */
