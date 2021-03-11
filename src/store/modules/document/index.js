@@ -138,7 +138,6 @@ const actions = {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      console.log("tr ok")
       dispatch('transcription/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -156,7 +155,6 @@ const actions = {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      console.log("tl ok")
       dispatch('translation/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -174,7 +172,6 @@ const actions = {
         content: response.data.data["alignments"],
         notes: response.data.data["notes"]
       })
-      console.log("tr alignments ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('RESET_TRANSCRIPTION_ALIGNMENT_VIEW')
@@ -186,7 +183,6 @@ const actions = {
     commit('LOADING_STATUS', true);
     console.log("fetching  coms")
     return http.get(`documents/${rootState.document.document.id}/view/commentaries${userId ? '/from-user/' + userId: ''}`).then( (response) => {
-      console.log(response.data)
       commit('UPDATE_COMMENTARIES_VIEW',  {
         commentaries: response.data.data.map(c => {
           return {
@@ -196,7 +192,6 @@ const actions = {
           }
         })
       })
-      console.log("coms ok")
       dispatch('commentaries/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -215,7 +210,6 @@ const actions = {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      console.log("speech parts view ok")
       dispatch('speechparts/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {

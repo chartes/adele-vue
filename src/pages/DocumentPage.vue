@@ -312,7 +312,6 @@ export default {
       this.setupVisibilityWidget(to.params.section)
 
       if (to.params.docId !== from.params.docId) {
-        console.log('reload doc id')
         this.loadDocument(to.params.docId);
       }
       next()
@@ -387,8 +386,6 @@ export default {
         }
       },
       async loadDocument(docId) {
-         console.log('reload doc id (LOAD)', docId)
-
         this.isLoading = true;
         try {
           await this.fetchOne({id: docId})

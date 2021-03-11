@@ -37,7 +37,6 @@ const mutations = {
       translationShadowQuill = new Quill(translationShadowQuillElement);
       translationShadowQuillElement.children[0].innerHTML = payload.content;
       state.translationContent = translationShadowQuillElement.children[0].innerHTML;
-      console.log('STORE ACTION translation/INIT')
 
       notesShadowQuillElement.innerHTML = "<p></p>"
       notesShadowQuill = new Quill(notesShadowQuillElement);
@@ -50,7 +49,6 @@ const mutations = {
       state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
   RESET (state) {
-    console.log("STORE MUTATION translation/RESET")
     state.translation = null;
     state.translationContent = null;
     state.translationWithTextAlignment = null;
@@ -272,7 +270,6 @@ const actions = {
   },
 
   insertSegments({commit, state}, segments) {
-    console.log("insert segments", segments)
     const TEIwithSegments = insertSegments(quillToTEI(state.translationContent), segments);
     const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
     const data = {
@@ -300,7 +297,6 @@ const actions = {
   },
 
   async cloneContent({dispatch, rootState}) {
-    console.log('STORE ACTION translation/cloneContent');
     const doc_id = rootState.document.document.id;
     const user_id = rootState.workflow.selectedUserId;
     try {

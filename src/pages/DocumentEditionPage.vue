@@ -757,7 +757,6 @@ export default {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
     }),
     setupVisibilityWidget(section) {
-      console.log('going to', section)
       switch (section) {
         case "transcription":
           this.transcriptionVisibility = true;

@@ -5,7 +5,6 @@ let Inline = Quill.import('blots/inline');
 class SpeechpartBlot extends Inline {
 	static create(value) {
 		let node = super.create();
-		console.log('speechpart create,', value)
 		if (typeof(value) === 'string'){
       const h = value.split(',')
       node.setAttribute('id', h[0]);
@@ -21,7 +20,6 @@ class SpeechpartBlot extends Inline {
   format(name, value) {
     if (name === 'speechpart' && value) {
       const h = value.split(',')
-      console.log("speechpart value", h[0],  h[1])
       this.domNode.setAttribute('id', h[0]);
       this.domNode.setAttribute('type', h[1]);
 

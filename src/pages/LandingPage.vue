@@ -306,7 +306,6 @@ export default {
     methods: {
       ...mapActions('document', ['fetchLastItems']),
       goToFeature(collection) {
-        console.log(collection)
         this.$store.dispatch('search/set', {
           title: collection.title,
           filters: collection.filters,

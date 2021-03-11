@@ -100,7 +100,6 @@ export default {
               password: this.password
             })
             .then((response) => { 
-              console.log(this.currentUser)
               if (this.currentUser) {
                 if (this.$route.name === 'login' || location.pathname.indexOf('adele') === -1) {
                   this.$router.go('home')

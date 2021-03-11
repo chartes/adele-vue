@@ -260,8 +260,6 @@ const insertSegments = (text, segments) => {
   segments = Array.from(new Set(segments))
   segments.sort((a, b) => a - b)
 
-  console.log("@WARN insert segments", segments)
-
   for(let i = 0; i < segments.length; ++i) {
     textWithSegments = [textWithSegments.slice(0, segments[i] + indexCorrection), segmentBlot, textWithSegments.slice(segments[i]  + indexCorrection)].join('');
     indexCorrection += segmentBlot.length
@@ -435,8 +433,6 @@ const computeNotesPointers  = (htmlWithNotes) => {
   htmlWithNotes = sanitizeHtmlWithNotesForSave(htmlWithNotes)
 
   //console.group("%c ###########################################", 'color:DarkOrchid')
-  console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
-  console.log("%c ######", 'color:DarkOrchid')
 
   while((resStart = regexpStart.exec(htmlWithNotes)) !== null) {
     resEnd = regexpEnd.exec(htmlWithNotes)
@@ -480,7 +476,6 @@ Replace strings like </ex></note><ex> by </note>
 and like </ex><note id="xxx"><ex> by <note id="xxx">
  */
 const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
-  console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
   regexpClosingToClean.forEach(re => {
     htmlWithNotes = htmlWithNotes.replace(re, '</note>')
   })
@@ -517,14 +512,11 @@ const computeAlignmentPointers  = (htmlWithSegments) => {
 }
 
 const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
-  console.log("speechparts html", htmlWithSpeechparts)
   const regexpStart = /<speechpart .*?id="(\d+)".*?>/;
   const regexpEnd = /<\/speechpart>/;
   let resStart, resEnd;
   const speechparts = [];
   while((resStart = regexpStart.exec(htmlWithSpeechparts)) !== null) {
-   console.log("speechparts html resStart", resStart)
-
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpStart, '');
     resEnd = regexpEnd.exec(htmlWithSpeechparts);
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
@@ -535,7 +527,6 @@ const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
       "ptr_end": resEnd.index
     });
   }
-  console.log("speechparts pointers", speechparts)
   return speechparts;
 }
 const computeImageAlignmentsPointers  = (htmlWithFacsimile) => {

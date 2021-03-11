@@ -96,7 +96,6 @@ export default {
           // student
           if (this.currentUserIsStudent) {
             const me = this.document.whitelist.users.find(u => u.id === this.currentUser.id)
-            console.log("DOC@", me, this.document.whitelist, !this.document.is_closed, me !== undefined)
             return !this.document.is_closed && me !== undefined
           } 
           // else, deny to teachers who don't own the doc

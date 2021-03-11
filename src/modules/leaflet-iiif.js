@@ -138,7 +138,6 @@ L.TileLayer.Iiif = L.TileLayer.extend({
     axios.get(this._infoUrl)
       .then((response) => {
         let data = response.data;
-        console.log(response.data)
         this.y = data.height;
         this.x = data.width;
 

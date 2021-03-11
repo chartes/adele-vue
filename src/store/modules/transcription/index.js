@@ -203,7 +203,6 @@ const actions = {
     })
   },
   async fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
-    console.log("fetch transcription content", rootState.workflow.selectedUserId, rootState.document.document.user_id)
     if (rootState.workflow.currentSection === "speech-parts") {
       await dispatch('fetchTranscriptionFromUser', {
         docId: rootState.document.document.id,
@@ -358,7 +357,6 @@ const actions = {
     return updatedNote
   },
   async cloneContent({dispatch, rootState}) {
-    console.log('STORE ACTION transcription/cloneContent');
     const doc_id = rootState.document.document.id;
     const user_id = rootState.workflow.selectedUserId;
     try {
@@ -370,9 +368,7 @@ const actions = {
     }
   },
   updateSpeechpartsPointers({state}) {
-      console.log("state.transcriptionWithSpeechparts", state.transcriptionWithSpeechparts)
       const TEIwithSpeechParts = quillToTEI(state.transcriptionWithSpeechparts)
-      console.log("state.transcriptionWithSpeechparts", TEIwithSpeechParts)
 
       let sanitizedWithSpeechparts = stripSegments(TEIwithSpeechParts);
       sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);

@@ -101,11 +101,8 @@ export default {
         this.resetTimeout = setTimeout(() => {
             const reset = document.querySelector(`button[title='Reset zoom']`);
         if (reset) {
-          console.log("RESET ZOOM");
           reset.click();
-        } else {
-          console.log("NO RESET ZOOM")
-        }
+        } 
         }, 2000)
 
 

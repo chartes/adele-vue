@@ -12,7 +12,6 @@ var EditorNotesMixin = {
   methods: {
 
     onNoteSelected (note, range) {
-      console.log("onNoteSelected", note, range.index, range.length)
       if (!range.length) return;
       this.selectedNoteId = note;
       //var deltas = this.editor.getContents().ops;

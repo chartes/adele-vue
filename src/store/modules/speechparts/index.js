@@ -109,9 +109,6 @@ const actions = {
           note: stateSp.note
         })
       })
-      console.log("spWithPointers", spWithPointers)
-      console.log("spWithPointers data", data)
-
       try {
         await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.workflow.selectedUserId}`, {data: data})
 

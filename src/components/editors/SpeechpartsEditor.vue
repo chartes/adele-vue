@@ -98,7 +98,6 @@
     },
     mounted () {
       this.$store.dispatch('speechpartTypes/fetch')
-      console.log("this.$props.initialContent", this.$props.initialContent)
       this.initEditor(this.$refs.editor, this.$props.initialContent);
       this.preventKeyboard();
       this.activateMouseOver()

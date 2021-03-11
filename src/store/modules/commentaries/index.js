@@ -39,19 +39,15 @@ async function saveCom(rootState, rootGetters, com) {
   let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
 
   const notes = computeNotesPointers(sanitizedWithNotes)
-  console.log("building notes to be saved", [...notes])
 
   notes.forEach(note => {
     const found = rootGetters['notes/getNoteById'](note.id)
-    console.log("building note found in comm for save,", note, found)
 
     note.content = found.content
     if (found.note_type) {
       note.type_id = found.note_type.id
     }
   })
-  console.log("building notes to be saved", notes.filter(n => n.id !== null && n.id >= 0))
-
 
   // put content & update notes
   await http.put(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, {

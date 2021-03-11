@@ -35,7 +35,6 @@ const actions = {
         commit('SET_USER_DATA', data)
         return data
       }).catch(({error}) => {
-        console.log("LOGIN ERROR", error)
         return error
       })
   },
