@@ -1,22 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import LandingPage from "@/pages/LandingPage.vue"
-import SearchPage from "@/pages/SearchPage.vue"
-import DocumentPage from "@/pages/DocumentPage.vue"
-import DocumentationPage from "@/pages/DocumentationPage.vue"
-
-import DocumentEditionPage from "@/pages/DocumentEditionPage.vue"
-import LoginPage from "@/pages/LoginPage.vue"
-import ErrorPage from "@/pages/ErrorPage.vue"
-
-import UserDashboardPage from "@/pages/UserDashboardPage.vue"
-import UserProfilePage from "@/pages/UserProfilePage.vue"
-
-import WorkInProgress from "@/pages/WorkInProgressPage.vue"
 
 Vue.use(VueRouter)
 
 const rootUrl = `${process.env.VUE_APP_APP_ROOT_URL}`
+
+const SearchPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/SearchPage.vue')
+const LandingPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/LandingPage.vue')
+const DocumentPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/DocumentPage.vue')
+
+const DocumentEditionPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/DocumentEditionPage.vue')
+const LoginPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/LoginPage.vue')
+const UserDashboardPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/UserDashboardPage.vue')
+const ErrorPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/ErrorPage.vue')
+const UserProfilePage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/UserProfilePage.vue')
+const DocumentationPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/DocumentationPage.vue')
+
 
 const router = new VueRouter({
   base: rootUrl,
@@ -77,11 +76,13 @@ const router = new VueRouter({
       name: 'error',
       props: true
     },
+    /*
     {
       path: '/wip',
       component: WorkInProgress,
       name: 'wip'
     }
+    */
   ]
 })
 
