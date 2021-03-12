@@ -3,7 +3,8 @@ import { http } from '../../modules/http-common';
 
 export default class AdeleStorageAdapter {
     /** */
-    constructor(manifestOriginUrl, documentId, canvasId) {
+    constructor(editable, manifestOriginUrl, documentId, canvasId) {
+        this.editable = editable
         this.manifestOriginUrl = manifestOriginUrl;
         console.log("storage adapter", manifestOriginUrl)
         this.documentId = documentId;
@@ -14,6 +15,9 @@ export default class AdeleStorageAdapter {
   
     /** */
     async create(annotation) {
+      if (!this.editable)
+        return await this.all();
+
       let fragment = null;
       let svg = null;
       /*
@@ -53,6 +57,9 @@ export default class AdeleStorageAdapter {
   
     /** */
     async update(annotation) {
+      if (!this.editable)
+        return await this.all();
+
       const zone_id = parseInt(annotation.id.split('/').pop())
       console.log("lets update this", annotation, zone_id)
       let fragment = null;
@@ -85,6 +92,9 @@ export default class AdeleStorageAdapter {
   
     /** */
     async delete(annoId) {
+      if (!this.editable)
+        return await this.all();
+
       const zoneId = annoId.split('/').pop()
       await http.delete(`iiif/${this.documentId}/annotation/${zoneId}`)
       return await this.all();

@@ -159,6 +159,7 @@
           >
             <mirador-viewer
               v-if="document.manifest_origin_url"
+              :editable="currentUserIsTeacher && $attrs.section === 'facsimile'"
               :manifest-url="document.manifest_url"
               :manifest-origin-url="document.manifest_origin_url"
               :document-id="document.id"

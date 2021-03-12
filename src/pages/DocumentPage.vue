@@ -285,7 +285,7 @@ export default {
         ...mapGetters('user', ['loggedIn']),
         ...mapGetters('document', ['getManifestInfoUrl']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
-        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated',
+        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated', 
         'isCommentariesReadOnly', 'isCommentariesValidated']),
 
         canvasManifestInfo() {
@@ -315,6 +315,11 @@ export default {
     },
     beforeRouteEnter (to, from, next) {
       next(vm => {
+
+        if (vm.$attrs.section === 'facsimile') {
+          vm.$router.push({name: 'document-view', params: {docId: vm.$attrs.docId, section:'notice'}})
+        }
+
         vm.$store.dispatch('workflow/setEditionMode', false)
         vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
         vm.setupVisibilityWidget(vm.$attrs.section)

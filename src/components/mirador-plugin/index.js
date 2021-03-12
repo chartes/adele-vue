@@ -67,9 +67,9 @@ function MyComponent(props) {
               position: "absolute",
               left: annotationStyle.left + "px",
               top: annotationStyle.top + "px",
-              color: "white",
+              color: "#EFEF88",
               textShadow: "1px 0 1px black, -1px 0px 1px black,0px 1px 1px black, 0px -1px 1px black",
-              fontSize: "20px",
+              fontSize: "22px",
             },
             dangerouslySetInnerHTML: {__html: annotation.chars}
           },
