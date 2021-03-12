@@ -6,7 +6,10 @@
         native-value="describing"
         type="is-primary is-light is-outlined"
       >
-        <b-icon icon="close" />
+        <b-icon
+          pack="fas"
+          icon="align-justify"
+        />
         <span>Transcription</span>
       </b-radio-button>
 
@@ -15,7 +18,10 @@
         native-value="commenting"
         type="is-info is-light is-outlined"
       >
-        <b-icon icon="check" />
+        <b-icon
+          pack="fas"
+          icon="comment-dots"
+        />
         <span>Commentaire libre</span>
       </b-radio-button>
     </b-field>
