@@ -169,7 +169,9 @@
               </div>
               <div class="card-content">
                 <div class="card-title">
-                  De multiples capacités de tri permettant de créer des sous-corpus à volonté<div class="card-subtitle" />
+                  De multiples capacités de tri<div class="card-subtitle">
+                    permettant de créer des sous-corpus à volonté
+                  </div>
                 </div>
               </div>
             </div>
