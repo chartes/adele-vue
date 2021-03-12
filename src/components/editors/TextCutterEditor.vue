@@ -1,5 +1,25 @@
 <template>
   <div class="text-cutter"> 
+    <b-field>
+      <b-radio-button
+        v-model="motivation"
+        native-value="describing"
+        type="is-primary is-light is-outlined"
+      >
+        <b-icon icon="close" />
+        <span>Transcription</span>
+      </b-radio-button>
+
+      <b-radio-button
+        v-model="motivation"
+        native-value="commenting"
+        type="is-info is-light is-outlined"
+      >
+        <b-icon icon="check" />
+        <span>Commentaire libre</span>
+      </b-radio-button>
+    </b-field>
+
     <div class="editor-area">
       <div
         ref="controls"
@@ -15,6 +35,16 @@
     </div>
     <div class="debug-box">
       {{ annotation }}
+      <input
+        id="ptr-start"
+        type="hidden"
+        :value="annotation ? annotation.ptr_start : null"
+      >
+      <input
+        id="ptr-end"
+        type="hidden"
+        :value="annotation ? annotation.ptr_end : null"
+      >
     </div>
   </div>
 </template>
@@ -36,11 +66,12 @@
     components: {
     },
     mixins: [EditorMixins],
-    props: { id: {type: String, required: true, default: '23'}},
+    props: { id: {type: Number, required: true, default: 23}},
     data() {
       return {
         delta: null,
         annotation: null,
+        motivation: 'describing',
         buttons: {
         },
         storeActions: {
@@ -51,23 +82,38 @@
     computed: {
 
     },
-    async mounted () {
-      const response = await http.get(`documents/${parseInt(this.id)}/transcriptions`);
-      const initialContent = response.data.data.content
-
-      this.initEditor(this.$refs.editor, TEIToQuill(initialContent));
+    watch: {
+      motivation() {
+        if (this.motivation === 'commenting') {
+          this.init()
+        }
+      }
+    },
+    mounted () {
+      this.init();
+      document.addEventListener('annotation-changed', this.init, false);
       this.preventKeyboard();
     },
     beforeDestroy () {
       this.allowKeyboard();
     },
     methods: {
+      async init() {
+        this.annotation = null
+        this.delta = null
+
+        const response = await http.get(`documents/${this.id}/transcriptions`);
+        const initialContent = response.data.data.content
+
+        this.$refs.editor.innerHTML = ''
+        this.initEditor(this.$refs.editor, TEIToQuill(initialContent));
+      },
       updateContent () {
         this.delta = this.editor.getContents().ops;
       },
       onSelection (range) {
     
-        if (range && range.length > 0) {
+        if (range && range.length > 0 && this.motivation === "describing") {
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);
           if (formats.annotation) {
@@ -142,12 +188,11 @@
 
 <style>
   .text-cutter {
-    border: 1px solid orangered;
-    margin: 0 auto;
-    width: 50%;
-    height: 500px;
+    margin-top: 8px;
+    min-height: 800px;
   }
   .debug-box {
+    display: none;
     border: 1px dotted violet;
     width: 100%;
     height: 100px;

@@ -155,7 +155,7 @@
           <div
             v-show="imageVisibility"
             class="column m-t-sm"
-            :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
+            :class="contentColumnClass"
           >
             <mirador-viewer
               v-if="document.manifest_origin_url"
@@ -353,8 +353,11 @@
                 </div>
               </div>
               <!-- Facsimilé -->
-              <div v-if="currentUserIsTeacher" />
-
+              <div
+                v-if="currentUserIsTeacher"
+              >
+                <text-cutter-editor :id="document.id" />
+              </div>
               <!-- Commentaires -->
               <div
                 v-if="$attrs.section === 'commentaries'"
@@ -553,6 +556,7 @@ import TranscriptionActionBar from "@/components/document/edition/actionbars/Tra
 import SpeechPartsActionBar from "@/components/document/edition/actionbars/SpeechPartsActionBar.vue";
 
 import Message from "@/components/Message.vue";
+import TextCutterEditor from "@/components/editors/TextCutterEditor.vue"
 import VisibilityToggle from "@/components/ui/VisibilityToggle.vue";
 
 import DeleteTranscriptionModal from "@/components/document/edition/modals/DeleteTranscriptionModal.vue";
@@ -566,6 +570,8 @@ import CloneCommentaryModal from "@/components/document/edition/modals/CloneComm
 export default {
   name: "DocumentEditionPage",
   components: {
+    TextCutterEditor,
+
     DocumentTitleBar,
     TranscriptionActionBar,
     SpeechPartsActionBar,
@@ -697,7 +703,7 @@ export default {
         case "translation":
           return this.translationVisibility || this.transcriptionVisibility;
         case "facsimile":
-          return false;
+          return true;
         case "notice":
           return this.noticeVisibility;
         case "commentaries":
@@ -716,6 +722,16 @@ export default {
     canvasManifestInfo() {
       return this.getManifestInfoUrl(0);
     },
+    contentColumnClass() {
+      if (this.imageVisibility && this.showContent){
+        if (this.$attrs.section === 'facsimile') {
+          return 'facsimile-content-column'
+        } else {
+          return 'is-two-fifths' 
+        }
+      }
+      return ''
+    }
   },
   watch: {
     async selectedUserId() {
@@ -885,5 +901,7 @@ export default {
   margin-left: 0;
   margin-right: 0;
 }
-
+.facsimile-content-column{
+  min-width: 62%;
+}
 </style>

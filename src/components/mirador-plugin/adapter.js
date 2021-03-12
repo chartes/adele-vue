@@ -37,21 +37,31 @@ export default class AdeleStorageAdapter {
       if (svgSelector) {
         svg = svgSelector.value;
       }
-      await http.post(`iiif/${this.documentId}/annotations`,
-        {
-            manifest_url: this.manifestOriginUrl,
-            canvas_idx: this.canvasId,
-            // In case there are multiple images on a canvas, optionnal, default is 0
-            img_idx: 0,
-            zone_type_id: 2,
-            fragment: fragment,
-            svg: svg,
-    
-            // in case of a COMMENTING motivation, the text content is embedded within the annotation,
-            // optionnal, default is none
-            note: annotation.body.value
-        }
-      );
+
+      const ptrStartInput = document.querySelector('#ptr-start')
+      const ptrEndInput = document.querySelector('#ptr-end')
+
+      let newAnno = {
+        manifest_url: this.manifestOriginUrl,
+        canvas_idx: this.canvasId,
+        // In case there are multiple images on a canvas, optionnal, default is 0
+        img_idx: 0,
+        fragment: fragment,
+        svg: svg,
+
+      }
+      if (ptrStartInput && ptrEndInput && ptrStartInput.value && ptrEndInput.value) {
+        newAnno['ptr_start'] = ptrStartInput.value
+        newAnno['ptr_end'] = ptrEndInput.value
+        newAnno['zone_type_id'] = 1
+      } else {
+        newAnno['zone_type_id'] = 2
+        newAnno['note'] =annotation.body.value
+      }
+
+      await http.post(`iiif/${this.documentId}/annotations`, newAnno);
+      document.dispatchEvent(new CustomEvent('annotation-changed'))
+
       return await this.all();
     }
   
@@ -74,19 +84,29 @@ export default class AdeleStorageAdapter {
         svg = svgSelector.value;
       }
 
-      await http.put(`iiif/${this.documentId}/annotation/${zone_id}`, {
+      const ptrStartInput = document.querySelector('#ptr-start')
+      const ptrEndInput = document.querySelector('#ptr-end')
+
+      let anno = {
         manifest_url: this.manifestOriginUrl,
         canvas_idx: this.canvasId,
         // In case there are multiple images on a canvas, optionnal, default is 0
         img_idx: 0,
-        zone_type_id: 2,
         fragment: fragment,
         svg: svg,
+      }
+      if (ptrStartInput && ptrEndInput && ptrStartInput.value && ptrEndInput.value) {
+        anno['ptr_start'] = ptrStartInput.value
+        anno['ptr_end'] = ptrEndInput.value
+        anno['zone_type_id'] = 1
+      } else {
+        anno['zone_type_id'] = 2
+        anno['note'] =annotation.body.value
+      }
 
-        // in case of a COMMENTING motivation, the text content is embedded within the annotation,
-        // optionnal, default is none
-        note: annotation.body.value
-    })
+      await http.put(`iiif/${this.documentId}/annotation/${zone_id}`, anno);
+      document.dispatchEvent(new CustomEvent('annotation-changed'))
+
       return await this.all();
     }
   
@@ -97,6 +117,8 @@ export default class AdeleStorageAdapter {
 
       const zoneId = annoId.split('/').pop()
       await http.delete(`iiif/${this.documentId}/annotation/${zoneId}`)
+      document.dispatchEvent(new CustomEvent('annotation-changed'))
+
       return await this.all();
     }
   
