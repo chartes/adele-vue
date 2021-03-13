@@ -174,6 +174,9 @@ export default {
 .mosaic-tile {
   margin: 0 !important;
 }
+.SizeMe\(Connect\(WithPlugins\(CompanionWindow\)\)\)-content-39 {
+  padding-left: 10px;
+}
 .Connect\(WithPlugins\(WindowTopBar\)\)-windowTopBarStyle-16.Connect\(WithPlugins\(WindowTopBar\)\)-focused-15, .mirador16.mirador15 {
   border-top: 1px solid lightgray !important;
 }

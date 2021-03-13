@@ -1,30 +1,42 @@
 <template>
   <div class="text-cutter"> 
-    <b-field>
-      <b-radio-button
-        v-model="motivation"
-        native-value="describing"
-        type="is-primary is-light is-outlined"
-      >
-        <b-icon
-          pack="fas"
-          icon="align-justify"
-        />
-        <span>Transcription</span>
-      </b-radio-button>
+    <div style="display: flex; justify-content: space-between ">
+      <b-field>
+        <b-radio-button
+          v-model="motivation"
+          native-value="describing"
+          type="is-primary is-light is-outlined"
+        >
+          <b-icon
+            pack="fas"
+            icon="align-justify"
+          />
+          <span>Transcription</span>
+        </b-radio-button>
 
-      <b-radio-button
-        v-model="motivation"
-        native-value="commenting"
-        type="is-info is-light is-outlined"
+        <b-radio-button
+          v-model="motivation"
+          native-value="commenting"
+          type="is-info is-light is-outlined"
+        >
+          <b-icon
+            pack="fas"
+            icon="comment-dots"
+          />
+          <span>Commentaire libre</span>
+        </b-radio-button>
+      </b-field>
+
+      <button
+        v-show="motivation === 'describing'"
+        :disabled="!annotation"
+        class="button is-primary is-outlined"
+        ml-3
+        @click="init"
       >
-        <b-icon
-          pack="fas"
-          icon="comment-dots"
-        />
-        <span>Commentaire libre</span>
-      </b-radio-button>
-    </b-field>
+        Effacer la sélection
+      </button>
+    </div>
 
     <div class="editor-area">
       <div
@@ -90,8 +102,12 @@
     },
     watch: {
       motivation() {
+        const commInputEl = document.querySelector('.TextEditor-editorRoot-80').parentElement.parentElement.parentElement;
         if (this.motivation === 'commenting') {
           this.init()
+          commInputEl.classList.remove('hide-input')
+        } else {
+          commInputEl.classList.add('hide-input')
         }
       }
     },
@@ -193,6 +209,9 @@
 
 
 <style>
+  .hide-input {
+    display: none !important;
+  }
   .text-cutter {
     margin-top: 8px;
     min-height: 800px;

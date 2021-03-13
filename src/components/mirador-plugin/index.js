@@ -2,6 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Point } from "openseadragon";
 
+function cleanAnnoText(s) {
+  s = s.replace(/persName/gi, 'persName-disabled')
+  s = s.replace(/placeName/gi, 'placeName-disabled')
+  console.log(s)
+  return s
+}
 
 function MyComponent(props) {
   const { viewer } = props;
@@ -71,7 +77,7 @@ function MyComponent(props) {
               textShadow: "1px 0 1px black, -1px 0px 1px black,0px 1px 1px black, 0px -1px 1px black",
               fontSize: "22px",
             },
-            dangerouslySetInnerHTML: {__html: annotation.chars}
+            dangerouslySetInnerHTML: {__html: cleanAnnoText(annotation.chars)}
           },
         ) : null
     ),
