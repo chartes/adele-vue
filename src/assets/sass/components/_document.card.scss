@@ -8,6 +8,20 @@
     border:solid 1px $primary;
   }
 
+  img {
+    object-fit: scale-down;
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  .placeholder-image {
+    object-fit: cover;
+  }
+
+  figure {
+    background: #E2E2E2;
+  }
+
   .card-header {
     box-shadow: none;
     flex-direction: column;

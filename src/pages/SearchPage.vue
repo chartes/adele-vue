@@ -879,7 +879,7 @@ export default {
 
         return this.$store.dispatch('document/fetchAll', {
           pageNum: this.currentPage,
-          pageSize: 25,
+          pageSize: 27,
           filters,
           sorts
         })

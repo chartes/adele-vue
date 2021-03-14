@@ -10,12 +10,11 @@
         </div>
       </div>
       <div class="card-image">
-        <figure
-          class="image is-4by3"
-        >
+        <figure>
           <img
-            :key="thumbnail_url"
-            :src="thumbnail_url"
+            :key="url"
+            :class="thumbnail_error ? 'placeholder-image' : ''"
+            :src="url"
             alt="thumbnail"
             @error="thumbnail_error = true"
           > 
@@ -43,18 +42,25 @@ export default {
   },
   data() {
     return {
-      thumbnail_error : false
+      thumbnail_error : false,
+      url: null
     }
   },
-  computed: {
-      thumbnail_url() {
-        if (this.thumbnail_error) {
-          return  require('@/assets/images/document_placeholder.svg')
-        } else {
-          const first_img = this.doc.images[0];
-          return first_img ? first_img["thumbnail_url"] : require('@/assets/images/document_placeholder.svg')
-        }
-      },
+  watch: {
+    thumbnail_error() {
+      console.log("wth", this.thumbnail_error)
+      if (this.thumbnail_error) {
+        this.url = require('@/assets/images/document_placeholder.svg')
+      }
+    }
+  },
+  created() {
+    try {
+      const first_img = this.doc.images[0];
+      this.url = first_img["thumbnail_url"]
+    } catch {
+      this.thumbnail_error = true
+    }
   }
 }
 </script>
