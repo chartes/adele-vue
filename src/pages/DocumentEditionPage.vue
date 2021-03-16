@@ -354,7 +354,7 @@
               </div>
               <!-- Facsimilé -->
               <div
-                v-if="currentUserIsTeacher"
+                v-if="currentUserIsTeacher && $attrs.section === 'facsimile'"
               >
                 <text-cutter-editor :id="document.id" />
               </div>
@@ -536,7 +536,6 @@ import { mapState, mapGetters, mapActions } from "vuex";
 import DocumentEditionNotice from "../components/document/edition/DocumentEditionNotice.vue";
 import DocumentEditionTranscription from "../components/document/edition/DocumentEditionTranscription.vue";
 import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
-import DocumentEditionFacsimile from "../components/document/edition/DocumentEditionFacsimile.vue";
 
 import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
 import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
