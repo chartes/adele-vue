@@ -802,6 +802,7 @@ export default {
       },
       sortOrder() {
         this.setSort([`${this.sortOrder}${this.selectedSort}`])
+        this.currentPage = 1
         this.fetchAll()
       },
       showDocsWithoutDates() {

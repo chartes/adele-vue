@@ -102,7 +102,7 @@
     },
     watch: {
       motivation() {
-        const commInputEl = document.querySelector('.TextEditor-editorRoot-80').parentElement.parentElement.parentElement;
+        const commInputEl = document.querySelector('.mirador-companion-area-right').querySelectorAll('.MuiGrid-container')[2];
         if (this.motivation === 'commenting') {
           this.init()
           commInputEl.classList.remove('hide-input')
