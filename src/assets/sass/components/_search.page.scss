@@ -107,6 +107,14 @@
        
     }
 
+    .b-slider .b-slider-track {
+        height: 2px;
+    }
+
+    .b-slider.is-primary .b-slider-fill {
+        background: #BAB9B6 !important;
+    }
+
     .date-range-selector {
 
         margin: 10px 0;
@@ -126,40 +134,12 @@
             text-align: center;
         }
 
-        .date-slider {
+    }
 
-            margin-top: 20px;
-
-            &.noUi-target {
-                border: none;
-            }
-
-            &.noUi-horizontal {
-                height: 2px;
-            }
-
-            .noUi-handle {
-                width: 19px;
-                height: 19px;
-                background: #E5E4E0;
-                border: 2px solid #BAB9B6;
-                border-radius: 50%;
-                right: -17px;
-                top: -9px;
-            }
-
-            .noUi-handle:active {
-                background: #FFFFFF;
-            }
-
-            .noUi-handle::after, .noUi-handle::before {
-                display: none;
-            }
-
-            .noUi-connect {
-                background: #BAB9B6;
-            }
-        }
+    .section-label {
+        font-weight: 500;
+        color: #8B8A7E;
+        margin-top: 18px;
     }
 }
 

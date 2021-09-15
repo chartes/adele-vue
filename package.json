@@ -18,7 +18,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.7.0",
     "@fortawesome/vue-fontawesome": "^0.1.7",
     "acorn": "^7.4.0",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "axios-auth-refresh": "^1.0.7",
     "buefy": "^0.9.3",
     "bulma": "^0.9.1",
@@ -26,7 +26,6 @@
     "bulma-divider": "^0.2.0",
     "bulma-steps": "^2.2.1",
     "bulma-tooltip": "^3.0.2",
-    "core-js": "^3.1.2",
     "lodash": "^4.17.20",
     "mirador": "^3.0.0-rc.6",
     "mirador-annotations": "^0.3.0",
@@ -50,23 +49,14 @@
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^24.9.0",
     "eslint": "^6.7.1",
-    "eslint-plugin-jest": "^23.0.5",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^6.2.2",
     "faker": "^4.1.0",
-    "fibers": "^4.0.2",
-    "jest": "^24.9.0",
-    "jest-environment-jsdom": "^26.3.0",
-    "jest-environment-puppeteer": "^4.3.0",
     "material-design-icons-iconfont": "^4.0.5",
-    "node-sass": "^4.13.1",
-    "puppeteer": "^1.20.0",
     "regenerator-runtime": "^0.13.3",
-    "sass": "^1.23.0",
-    "sass-loader": "^8.0.0",
-    "vue-jest": "^3.0.5",
+    "sass": "^1.39.2",
+    "sass-loader": "^10",
     "vue-loader": "^15.7.1",
     "vue-server-renderer": "^2.6.12",
     "vue-svg-inline-loader": "^1.4.3",
@@ -75,11 +65,10 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true,
-      "jest/globals": true
+      "node": true
     },
     "plugins": [
-      "jest"
+     
     ],
     "extends": [
       "plugin:vue/recommended",

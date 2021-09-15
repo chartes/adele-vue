@@ -5,7 +5,7 @@
       alt="logo enc"
     ></a>
     <a href="https://www.unicaen.fr/scripta/"><img
-      src="../assets/images/scripta.jpg"
+      src="../assets/images/scripta.png"
       alt="logo scripta"
     ></a>
     <a href="https://www.dim-humanites-numeriques.fr/"><img

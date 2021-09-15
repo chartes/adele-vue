@@ -6,7 +6,7 @@
           <section class="accordions">
             <article class="accordion">
               <div class="accordion-header no-toggle">
-                <p>Dates du document</p>
+                <p>Date de l'original</p>
                 <div class="date-range-selector">
                   <p>
                     Entre <input
@@ -31,13 +31,17 @@
                       </b-field>
                     </label>
                   </p>
-                  <slider
-                    id="dateSlider"
-                    :key="sliderKey"
-                    class="date-slider"
-                    :options="dateSliderOptions"
-                    :update="updateDocDate"
-                  />
+                  <b-field>
+                    <b-slider
+                      v-model="sliderDate"
+                      :min="minDocDate"
+                      :max="maxDocDate" 
+                      lazy
+                      rounded
+                      tooltip-type="is-light"
+                      @change="updateSliderInput"
+                    />
+                  </b-field>
                 </div>
               </div>
               <div class="accordion-body">
@@ -107,12 +111,17 @@
                 >
                   <ul>
                     <li
-                      v-for="acteType in acteTypes"
-                      :key="acteType.id"
-                      @click.prevent="toggleSelection({filter: 'acteTypes', item: acteType.id})"
+                      v-for="section in methSortedActeTypes"
+                      :key="section.sectionLabel"
                     >
+                      <div class="section-label">
+                        {{ section.sectionLabel }}
+                      </div>
                       <div
+                        v-for="acteType in section.acteTypes"
+                        :key="acteType.id"
                         class="labelled-checkbox"
+                        @click.prevent="toggleSelection({filter: 'acteTypes', item: acteType.id})"
                       >
                         <label><input
                           type="checkbox"
@@ -170,90 +179,7 @@
                 </div>
               </div>
             </article>
-            <article 
-              :class="showFilters.centuries ? 'is-active' : ''"
-              class="accordion"
-            >
-              <div 
-                class="accordion-header"
-                @click="showFilters.centuries = !showFilters.centuries"
-              >
-                <p>Siècle du document</p>
-                <button
-                  class="toggle"
-                  aria-label="toggle"
-                />
-              </div>
-              <div class="accordion-body">
-                <div
-                  v-if="showFilters.centuries"
-                  class="accordion-content"
-                >
-                  <ul>
-                    <li
-                      v-for="century in centuries"
-                      :key="century.id"
-                      @click.prevent="toggleSelection({filter: 'centuries', item: century.id})"
-                    >
-                      <div
-                        class="labelled-checkbox"
-                      >
-                        <label><input
-                          type="checkbox"
-                          :value="century.id"
-                          :checked="isCenturySelected(century.id)"
-                        ><span
-                          v-show="isCenturySelected(century.id)"
-                          class="checkmark"
-                        />{{ century.label }}</label>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </article>
-            <article 
-              :class="showFilters.copyCenturies ? 'is-active' : ''"
-              class="accordion"
-            >
-              <div 
-                class="accordion-header"
-                @click="showFilters.copyCenturies = !showFilters.copyCenturies"
-              >
-                <p>Siècle de la copie</p>
-                <button
-                  class="toggle"
-                  aria-label="toggle"
-                />
-              </div>
-              <div class="accordion-body">
-                <div
-                  v-if="showFilters.copyCenturies"
-                  class="accordion-content"
-                >
-                  <ul>
-                    <li
-                      v-for="century in copyCenturies"
-                      :key="century.id"
-                      @click.prevent="toggleSelection({filter: 'copyCenturies', item: century.id})"
-                    >
-                      <div
-                        class="labelled-checkbox"
-                      >
-                        <label><input
-                          type="checkbox"
-                          :value="century.id"
-                          :checked="isCopyCenturySelected(century.id)"
-                        ><span
-                          v-show="isCopyCenturySelected(century.id)"
-                          class="checkmark"
-                        />{{ century.label }}</label>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </article>
+            
             <article 
               :class="showFilters.countries ? 'is-active' : ''"
               class="accordion"
@@ -624,17 +550,15 @@
 
 import DocumentCard from '../components/document/DocumentCard.vue'
 import DocumentCardPlaceholder from '../components/document/DocumentCardPlaceholder.vue'
-import Slider from '../components/ui/Slider.vue'
 
 import { mapState, mapGetters, mapActions } from 'vuex';
-import {centuries, debounce} from '@/modules/utils'
+import {debounce} from '@/modules/utils'
 
 export default {
     name: "SearchPage",
     components: {
         DocumentCard,
         DocumentCardPlaceholder,
-        Slider
     },
     data() {
       return {
@@ -643,8 +567,6 @@ export default {
           languages: false,
           traditions: false,
           acteTypes: false,
-          centuries: false,
-          copyCenturies: false,
           countries: false,
           districts: false,
           institutions: false,
@@ -655,6 +577,7 @@ export default {
         endDocDate: 1700,
         minDocDate: 700,
         maxDocDate: 1900,
+        sliderDate: [700, 1700],
         selectedSort: 'creation',
         sortOrder: '',
       }
@@ -673,17 +596,13 @@ export default {
           'isLanguageSelected',
           'isActeTypeSelected',
           'isTraditionSelected',
-          'isCenturySelected',
-          'isCopyCenturySelected',
           'isInstitutionSelected',
           'isCountrySelected',
           'isDistrictSelected',
           'isAvailableCommentarySelected',
           'isCurrentlyFiltered'
         ]),
-        sliderKey() {
-          return this.startDocDate + "," + this.endDocDate
-        },
+        ...mapGetters('acteTypes', ['methSortedActeTypes']),
         dateSliderOptions() {
           let start = parseInt(this.startDocDate)
           let end = parseInt(this.endDocDate)
@@ -702,16 +621,6 @@ export default {
                 'max': [this.maxDocDate]
             }
           }
-        },
-        centuries() {
-          return Object.keys(centuries).map(arb => {
-            return {id: arb, label: centuries[arb]}
-          })
-        },
-        copyCenturies() {
-          return Object.keys(centuries).map(arb => {
-            return {id: arb, label: centuries[arb]}
-          })
         },
         isFiltered() {
           for(let f in this.selectedFilters) {
@@ -739,18 +648,6 @@ export default {
               label: 'Langue du document',
               values: this.languages.filter(t => this.isLanguageSelected(t.code)),
               getId: c => c.code,
-              getLabel: c => c.label 
-            },
-            centuries: {
-              label: 'Siècle du document', 
-              values: this.centuries.filter(t => this.isCenturySelected(t.id)),
-              getId: c => c.id,
-              getLabel: c => c.label 
-            },
-            copyCenturies: {
-              label: 'Siècle de la copie', 
-              values: this.copyCenturies.filter(t => this.isCopyCenturySelected(t.id)),
-              getId: c => c.id,
               getLabel: c => c.label 
             },
             countries: {
@@ -808,6 +705,12 @@ export default {
       showDocsWithoutDates() {
         this.fetchAll()
       },
+      startDocDate() {
+        this.sliderDate = [parseInt(this.startDocDate), parseInt(this.endDocDate)]
+      },
+      endDocDate() {
+        this.sliderDate = [parseInt(this.startDocDate), parseInt(this.endDocDate)]
+      },
       currentPage() {
         this.fetchAll()
       }
@@ -846,11 +749,6 @@ export default {
     },
     methods: {
       ...mapActions('search', ['toggleSelection', 'clear', 'clearAll', 'setSort']),
-      updateDocDate: debounce(function(values, handle, unencoded, tap, positions) {
-        this.startDocDate = Math.ceil(unencoded[0])
-        this.endDocDate = Math.ceil(unencoded[1])
-        this.fetchAll()
-      }, 10),
       resetFilter(filter) {
         this.showFilters[filter] = false
         this.clear({filter: filter})
@@ -859,13 +757,16 @@ export default {
         this.showFilters.languages = false
         this.showFilters.traditions = false
         this.showFilters.acteTypes = false
-        this.showFilters.centuries = false
-        this.showFilters.copyCenturies = false
         this.showFilters.countries = false
         this.showFilters.districts = false
         this.showFilters.institutions = false
         this.showFilters.availableCommentaries = false
         this.clearAll()
+      },
+      updateSliderInput(range){
+        this.startDocDate = range[0]
+        this.endDocDate = range[1]
+        this.fetchAll()
       },
       fetchAll: debounce(function() {
         let filters = {}
