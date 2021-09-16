@@ -12,7 +12,7 @@
           v-if="document.countries.length > 0"
         >
           <div class="tags has-addons">
-            <span class="tag is-dark">Pays</span>
+            <span class="tag is-dark">Pays contemporain</span>
           
             <span class="tag">{{ document.countries.map(country => `${country.label} ${ filterDistricts(country.id)}`).join(', ') }}</span>
           </div>
@@ -22,7 +22,7 @@
           class="control"
         >
           <div class="tags has-addons">
-            <span class="tag is-dark">Traditions</span>
+            <span class="tag is-dark">Mode de tradition</span>
             <span class="tag">{{ document.traditions.map(t => t.label).join(', ') }}</span>
           </div>
         </li>
@@ -30,7 +30,7 @@
           v-if="document.acte_types.length > 0"
         >
           <div class="tags has-addons">
-            <span class="tag is-dark">Types d'auteurs et de documents</span>
+            <span class="tag is-dark">Type d’auteur ou de document</span>
             <span class="tag">{{ document.acte_types.map(t => t.label).join(', ') }}</span>
           </div>
         </li>
@@ -69,6 +69,9 @@
           <div v-html="document.argument" />
         </li>
       </ul>
+      <p v-if="document.attribution">
+        Dossier préparé par {{ document.attribution }}
+      </p>
     </div>
   </div>
 </template>

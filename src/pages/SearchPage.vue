@@ -101,7 +101,7 @@
                 class="accordion-header"     
                 @click="showFilters.acteTypes = !showFilters.acteTypes"
               >
-                <p>Type d’acte</p>
+                <p>Type d’auteur ou de document</p>
                 <button
                   class="toggle"
                   aria-label="toggle"
@@ -154,7 +154,7 @@
                 class="accordion-header"
                 @click="showFilters.languages = !showFilters.languages"
               >
-                <p>Langue du document</p>
+                <p>Langues</p>
                 <button
                   class="toggle"
                   aria-label="toggle"
@@ -200,7 +200,7 @@
                 class="accordion-header"
                 @click="showFilters.countries = !showFilters.countries"
               >
-                <p>Pays</p>
+                <p>Pays contemporain</p>
                 <button
                   class="toggle"
                   aria-label="toggle"
@@ -245,7 +245,7 @@
                 class="accordion-header"
                 @click="showFilters.districts = !showFilters.districts"
               >
-                <p>Région contemporaine</p>
+                <p>District contemporain</p>
                 <button
                   class="toggle"
                   aria-label="toggle"
@@ -660,25 +660,25 @@ export default {
               getLabel: c => c.label 
             },
             acteTypes: {
-              label: 'Type d\'acte',
+              label: 'Type d’auteur ou de document',
               values: this.acteTypes.filter(t => this.isActeTypeSelected(t.id)),
               getId: c => c.id,
               getLabel: c => c.label 
               },
             languages: {
-              label: 'Langue du document',
+              label: 'Langues',
               values: this.languages.filter(t => this.isLanguageSelected(t.code)),
               getId: c => c.code,
               getLabel: c => c.label 
             },
             countries: {
-              label: 'Pays',
+              label: 'Pays contemporain',
               values: this.countries.filter(t => this.isCountrySelected(t.id)),
               getId: c => c.id,
               getLabel: c => c.label
             },
             districts: {
-              label: 'Région contemporaine',
+              label: 'District contemporain',
               values: this.districts.filter(t => this.isDistrictSelected(t.id)),
               getId: c => c.id,
               getLabel: c => c.label

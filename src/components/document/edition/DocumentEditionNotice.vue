@@ -136,7 +136,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label">Côte de conservation</label>
+                <label class="label">Cote de conservation</label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">
@@ -161,7 +161,7 @@
               <div>
                 <div class="select-with-tags">
                   <p class="subtitle">
-                    Langue(s)
+                    Langues
                   </p>
                   <select-with-tags-input
                     default-text="Ajouter une langue"
@@ -172,7 +172,7 @@
                 </div>
                 <div class="select-with-tags">
                   <p class="subtitle">
-                    Pays
+                    Pays contemporain
                   </p>
                   <select-with-tags-input
                     default-text="Ajouter un pays"
@@ -183,7 +183,7 @@
                 </div>
                 <div class="select-with-tags">
                   <p class="subtitle">
-                    District(s)
+                    District contemporain
                   </p>
                   <select-with-tags-input
                     default-text="Ajouter un district"
@@ -197,7 +197,7 @@
             <div class="column">
               <div class="select-with-tags">
                 <p class="subtitle">
-                  Tradition(s)
+                  Mode de tradition
                 </p>
                 <select-with-tags-input
                   default-text="Ajouter une tradition"
@@ -208,7 +208,7 @@
               </div>
               <div class="select-with-tags">
                 <p class="subtitle">
-                  Type(s) d'auteurs et de documents
+                  Type d’auteur ou de document
                 </p>
                 <select-with-tags-input
                   default-text="Ajouter un type d'auteur ou de document"
@@ -219,7 +219,7 @@
               </div>
               <div class="select-with-tags">
                 <p class="subtitle">
-                  Éditeur(s)
+                  Éditeur
                 </p>
                 <select-with-tags-input
                   default-text="Ajouter un éditeur"
