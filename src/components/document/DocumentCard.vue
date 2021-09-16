@@ -48,7 +48,6 @@ export default {
   },
   watch: {
     thumbnail_error() {
-      console.log("wth", this.thumbnail_error)
       if (this.thumbnail_error) {
         this.url = require('@/assets/images/document_placeholder.svg')
       }

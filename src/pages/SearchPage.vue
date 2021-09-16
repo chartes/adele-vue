@@ -74,6 +74,7 @@
                       @click.prevent="toggleSelection({filter: 'traditions', item: tradition.id})"
                     >
                       <div
+                        v-if="meta.filterCount['traditions'] && meta.filterCount['traditions'][tradition.id]"
                         class="labelled-checkbox"
                       >
                         <label><input
@@ -83,7 +84,9 @@
                         ><span
                           v-show="isTraditionSelected(tradition.id)"
                           class="checkmark"
-                        />{{ tradition.label }}</label>
+                        />{{ tradition.label }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['traditions'][tradition.id] }})</span></label>
                       </div>
                     </li>
                   </ul>
@@ -120,17 +123,23 @@
                       <div
                         v-for="acteType in section.acteTypes"
                         :key="acteType.id"
-                        class="labelled-checkbox"
                         @click.prevent="toggleSelection({filter: 'acteTypes', item: acteType.id})"
                       >
-                        <label><input
-                          type="checkbox"
-                          :value="acteType.id"
-                          :checked="isActeTypeSelected(acteType.id)"
-                        ><span
-                          v-show="isActeTypeSelected(acteType.id)"
-                          class="checkmark"
-                        />{{ acteType.label }}</label>
+                        <div
+                          v-if="meta.filterCount['acteTypes'] && meta.filterCount['acteTypes'][acteType.id]"
+                          class="labelled-checkbox"
+                        >
+                          <label><input
+                            type="checkbox"
+                            :value="acteType.id"
+                            :checked="isActeTypeSelected(acteType.id)"
+                          ><span
+                            v-show="isActeTypeSelected(acteType.id)"
+                            class="checkmark"
+                          />{{ acteType.label }} <span
+                            class="filter-count"
+                          >({{ meta.filterCount['acteTypes'][acteType.id] }})</span></label>
+                        </div>
                       </div>
                     </li>
                   </ul>
@@ -163,6 +172,7 @@
                       @click.prevent="toggleSelection({filter: 'languages', item: lang.code})"
                     >
                       <div
+                        v-if="meta.filterCount['languages'] && meta.filterCount['languages'][lang.code]"
                         class="labelled-checkbox"
                       >
                         <label><input
@@ -172,7 +182,9 @@
                         ><span
                           v-show="isLanguageSelected(lang.code)"
                           class="checkmark"
-                        />{{ lang.label }}</label>
+                        />{{ lang.label }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['languages'][lang.code] }})</span></label>
                       </div>
                     </li>
                   </ul>
@@ -206,6 +218,7 @@
                       @click.prevent="toggleSelection({filter: 'countries', item: country.id})"
                     >
                       <div
+                        v-if="meta.filterCount['countries'] && meta.filterCount['countries'][country.id]"
                         class="labelled-checkbox"
                       >
                         <label><input
@@ -215,7 +228,9 @@
                         ><span
                           v-show="isCountrySelected(country.id)"
                           class="checkmark"
-                        />{{ country.label }}</label>
+                        />{{ country.label }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['countries'][country.id] || 0 }})</span></label>
                       </div>
                     </li>
                   </ul>
@@ -248,6 +263,7 @@
                       @click.prevent="toggleSelection({filter: 'districts', item: district.id})"
                     >
                       <div
+                        v-if="meta.filterCount['districts'] && meta.filterCount['districts'][district.id]"
                         class="labelled-checkbox"
                       >
                         <label><input
@@ -257,7 +273,9 @@
                         ><span
                           v-show="isDistrictSelected(district.id)"
                           class="checkmark"
-                        />{{ district.label }}</label>
+                        />{{ district.label }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['districts'][district.id] || 0 }})</span></label>
                       </div>
                     </li>
                   </ul>
@@ -290,6 +308,7 @@
                       @click.prevent="toggleSelection({filter: 'institutions', item: institution.id})"
                     >
                       <div
+                        v-if="meta.filterCount['institutions'] && meta.filterCount['institutions'][institution.id]"
                         class="labelled-checkbox"
                       >
                         <label><input
@@ -299,7 +318,9 @@
                         ><span
                           v-show="isInstitutionSelected(institution.id)"
                           class="checkmark"
-                        />{{ institution.name }}</label>
+                        />{{ institution.name }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['institutions'][institution.id] || 0 }})</span></label>
                       </div>
                     </li>
                   </ul>
@@ -670,6 +691,10 @@ export default {
             },
           }
         },
+        activeFilterSection() {
+          const active = Object.entries(this.showFilters).filter(e => e[1])
+          return active.length > 0 ? active.map(a => a[0]) : false
+        },
         pagination() {
           let pagination = {
             current: this.meta.currentPage
@@ -692,6 +717,9 @@ export default {
     watch: {
       selectedFilters() {
         this.fetchAll()
+      },
+      activeFilterSection() {
+        this.fetchFilterCounts()
       },
       selectedSort() {
         this.setSort([`${this.sortOrder}${this.selectedSort}`])
@@ -776,6 +804,9 @@ export default {
 
         filters['creationRange'] = this.dateSliderOptions.start
         filters['showDocsWithoutDates'] = this.showDocsWithoutDates
+        if (this.activeFilterSection) {
+          filters['filtersToCount'] = this.activeFilterSection
+        }
 
         const sorts = this.sorts
 
@@ -786,6 +817,22 @@ export default {
           sorts
         })
       }, 750),
+      fetchFilterCounts: debounce(function() {
+        let filters = {}
+        for (let f in this.selectedFilters){
+          filters[f] = this.selectedFilters[f].values
+        }
+
+        filters['creationRange'] = this.dateSliderOptions.start
+        filters['showDocsWithoutDates'] = this.showDocsWithoutDates
+        if (this.activeFilterSection) {
+          filters['filtersToCount'] = this.activeFilterSection
+        }
+
+        return this.$store.dispatch('document/fetchFilterCounts', {
+          filters
+        })
+      }, 300),
     }
 }
 </script>
