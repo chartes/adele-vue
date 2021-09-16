@@ -233,18 +233,14 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
-  fetchFilterCounts ({ commit }, {pageNum, pageSize, filters, sorts}) {
-    //commit('LOADING_STATUS', true)
+  fetchFilterCounts ({ commit }, { filters}) {
     commit('SET_ERROR', null)
     return http.post('documents', {
       countOnly: true,
       filters
     }).then( (response) => {
-      //commit('UPDATE_ALL', response.data.data.data);
       commit('UPDATE_META', response.data.data.meta);
-      //commit('LOADING_STATUS', false);
     }).catch((error) => {
-      //commit('LOADING_STATUS', false);
       commit('SET_ERROR', error)
     })
   },

@@ -9,12 +9,12 @@
           </div>
         </li>
         <li
-          v-for="country in document.countries"
-          :key="country.id"
+          v-if="document.countries.length > 0"
         >
           <div class="tags has-addons">
             <span class="tag is-dark">Pays</span>
-            <span class="tag">{{ country.label }}{{ filterDistricts(country.id) }}</span>
+          
+            <span class="tag">{{ document.countries.map(country => `${country.label} ${ filterDistricts(country.id)}`).join(', ') }}</span>
           </div>
         </li>
         <li
@@ -95,7 +95,7 @@ export default {
     methods: {
         filterDistricts(country_id) {
           const dis = this.document.districts.filter(d => d.country_id === country_id).map(d => d.label).join(' et ')
-            return dis ? ", " + dis : ""
+            return dis ? ` (${dis})` : ""
         }
     }
 }

@@ -810,13 +810,16 @@ export default {
 
         const sorts = this.sorts
 
-        return this.$store.dispatch('document/fetchAll', {
+        this.$store.dispatch('document/fetchAll', {
           pageNum: this.currentPage,
           pageSize: 27,
           filters,
           sorts
         })
-      }, 750),
+
+        this.fetchFilterCounts()
+        
+      }, 500),
       fetchFilterCounts: debounce(function() {
         let filters = {}
         for (let f in this.selectedFilters){
