@@ -34,6 +34,10 @@
     font-size: 14px;
     padding-bottom: 6px;
     text-transform: uppercase;
+
+    a {
+      color: inherit;
+    }
   }
 
   .card-header .document-creation-lab {
@@ -60,6 +64,26 @@
     font-size: 16px;
     line-height: 21px;
     margin: 0;
+  }
+
+  .card-header-first-line {
+    display: flex;
+    justify-content: space-between;
+
+  }
+  .actions {
+
+    .bookmark {
+      &:hover {
+      cursor: pointer
+    }
+    }
+    .active-bookmark {
+      color: #48c774;
+    }
+    .inactive-bookmark {
+      color: rgb(155, 155, 155);
+    }
   }
 }
 

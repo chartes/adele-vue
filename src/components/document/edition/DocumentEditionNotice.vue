@@ -94,6 +94,21 @@
                   </div>
                 </div>
               </div>
+              <div class="field">
+                <label class="label">Dossier préparé par</label>
+                <div class="field-body">
+                  <div class="field">
+                    <div class="control">
+                      <input
+                        v-model="document.attribution"
+                        class="input"
+                        type="text"
+                        placeholder="Olivier Guyotjeannin, ..."
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="column">
               <div class="field">

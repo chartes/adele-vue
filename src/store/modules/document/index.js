@@ -244,10 +244,10 @@ const actions = {
       commit('SET_ERROR', error)
     })
   },
-  fetchLastItems ({ commit },) {
+  fetchBookmarks ({ commit },) {
     commit('LOADING_STATUS', true)
     commit('SET_ERROR', null)
-    return http.get('documents/last-items').then( (response) => {
+    return http.get('documents/bookmarks').then( (response) => {
       commit('UPDATE_ALL', response.data.data);
       commit('UPDATE_META', response.data.meta);
       commit('LOADING_STATUS', false);
@@ -255,6 +255,10 @@ const actions = {
       commit('LOADING_STATUS', false);
       commit('SET_ERROR', error)
     })
+  },
+  reorderBookmarks({commit}, bookmarks) {
+    console.log(bookmarks)
+    return http.post('dashboard/bookmarks/reorder', {bookmarks: bookmarks.map(b => { return {docId: b.id, bookmark_order: b.bookmark_order}})})
   },
   setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
@@ -299,6 +303,11 @@ const actions = {
   },
   deleteDocument ({commit }, docId) {
     return http.delete(`documents/${docId}`);
+  }, 
+  async toggleBookmark({commit}, docId) {
+    const resp = await http.get(`dashboard/bookmarks/${docId}/toggle`)
+    const order = resp.data.data.new_order ? resp.data.data.new_order :  null
+    return order
   }
 };
 

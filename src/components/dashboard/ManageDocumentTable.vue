@@ -28,6 +28,26 @@
       >
         <b-table-column
           v-slot="props"
+          field="bookmark_order"
+          label="Favori"
+          sortable
+          width="80"
+        >
+          <div
+            class="bookmark" 
+            @click="toggleBookmark(props.row.id)"
+          >
+            <span 
+              class="icon"
+              :class="props.row.bookmark_order ? 'active-bookmark' : 'inactive-bookmark'"
+            >
+              <i class="fas fa-bookmark" />
+            </span>
+          </div>
+        </b-table-column>
+      
+        <b-table-column
+          v-slot="props"
           field="id"
           label="Dossier"
           sortable
@@ -169,6 +189,11 @@ export default {
             this.loadAsyncData()
       },
       methods: {
+          async toggleBookmark(docId) {
+            const updated_order = await this.$store.dispatch('document/toggleBookmark', docId)
+            const rowItemIndex = this.data.findIndex(item => item.id === docId)
+            this.data[rowItemIndex].bookmark_order = updated_order 
+          },
           getThumbnailUrl(url) {
             return url ? url.replace('/full/full', '/full/200,') : require('@/assets/images/document_placeholder.svg')
           },
@@ -249,6 +274,18 @@ img {
 }
 .buttons {
   margin-top: 20px;
+}
+
+.bookmark {
+    &:hover {
+    cursor: pointer
+  }
+}
+.active-bookmark {
+  color: #48c774;
+}
+.inactive-bookmark {
+  color: rgb(155, 155, 155);
 }
 .action-buttons {
   margin-top: 6px;

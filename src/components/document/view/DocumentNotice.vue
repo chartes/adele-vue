@@ -1,6 +1,6 @@
 <template>
   <div v-if="document">
-    <div class="content">
+    <div class="content notice">
       <ul class="tag-list">
         <li v-if="document.languages.length > 0">
           <div class="tags has-addons">
@@ -68,10 +68,15 @@
           <span class="tag is-dark">Argument</span>
           <div v-html="document.argument" />
         </li>
+        <li>
+          <p
+            v-if="document.attribution"
+            class="attribution"
+          >
+            Dossier préparé par {{ document.attribution }}
+          </p>
+        </li>
       </ul>
-      <p v-if="document.attribution">
-        Dossier préparé par {{ document.attribution }}
-      </p>
     </div>
   </div>
 </template>

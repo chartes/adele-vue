@@ -183,14 +183,41 @@
             <p class="column-title">
               Nouveaux dossiers
             </p>
-            <ul>
-              <li
-                v-for="doc in documents"
-                :key="doc.id"
+            
+            <draggable
+              v-model="bookmarksTmpList"
+              class="list-group"
+              tag="ul"
+              handle=".handle"
+              v-bind="dragOptions"
+              @start="drag = true"
+              @end="dragEnd"
+            >
+              <transition-group
+                type="transition"
+                :name="!drag ? 'flip-list' : null"
               >
-                <document-card :doc="doc" />
-              </li>
-            </ul>
+                <li
+                  v-for="doc in bookmarksTmpList"
+                  :key="doc.id"
+                >
+                  <document-card
+                    :doc="doc"
+                    @toggle-bookmark="refreshBookmarks"
+                  >
+                    <template v-slot:handle>
+                      <span class="handle control ">
+                        <button class="button is-small is-light">
+                          <span class="icon is-small">
+                            <i class="fas fa-grip-vertical" />
+                          </span>
+                        </button>
+                      </span>
+                    </template>
+                  </document-card>
+                </li>
+              </transition-group>
+            </draggable>
           </div>
         </div>
       </div>
@@ -205,15 +232,26 @@
 import { mapActions, mapState } from 'vuex';
 import DocumentCard from '../components/document/DocumentCard.vue';
 import Logos from '../components/Logos.vue';
+import draggable from "vuedraggable";
 
 export default {
     name: "LandingPage",
     components: {
       DocumentCard,
+      draggable,
       Logos    
     },
     data() {
       return {
+        drag: false,
+        dragOptions: {
+          animation: 200,
+          group: "description",
+          disabled: false,
+          ghostClass: "ghost",
+        },
+        bookmarksTmpList: [],
+        
         featuredCollections: [
           {
             title: 'Expansion et diversification formelle des chirographes',
@@ -303,10 +341,10 @@ export default {
       ...mapState('document', ['documents', 'loading'])
     },
     async created() {
-      await this.fetchLastItems()
+      await this.refreshBookmarks()
     },
     methods: {
-      ...mapActions('document', ['fetchLastItems']),
+      ...mapActions('document', ['fetchBookmarks']),
       goToFeature(collection) {
         this.$store.dispatch('search/set', {
           title: collection.title,
@@ -314,6 +352,24 @@ export default {
           sorts: collection.sorts
         }) ;
         this.$router.push({name: 'search'})
+      },
+      async dragEnd() {
+        this.drag = false;
+        await this.recomputeOrder();
+      },
+      async recomputeOrder() {
+        this.bookmarksTmpList.forEach((element, i) => {
+          element.bookmark_order = i + 1;
+        });
+        
+        await this.$store.dispatch("document/reorderBookmarks", this.bookmarksTmpList);
+        
+        await this.refreshBookmarks()
+      },
+      async refreshBookmarks() {
+        console.log('refresh bookmarks')
+        await this.fetchBookmarks()
+        this.bookmarksTmpList = this.documents
       }
     }
 }
