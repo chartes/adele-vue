@@ -20,7 +20,7 @@
           <div class="select is-small">
             <select v-model="workflowUserId">
               <option
-                v-for="user in whitelistUsers"
+                v-for="user in selectableUsers"
                 :key="user.id"
                 :value="user.id"
                 :class="`${user.id === currentUser.id ? 'has-text-weight-bold' : ''}`"
@@ -187,16 +187,21 @@ export default {
                 this.$store.dispatch("workflow/changeSelectedUser", {userId: id})
             },
             get() {
-               return this.selectedUserId 
+               return this.selectedUserId ? this.selectedUserId : this.document.user.id
             }
         },
-        whitelistUsers() {
-            return this.document.whitelist.users.map(u => {
-                return {
-                    username: `${u.first_name} ${u.last_name}`,
-                    id: u.id
-                }
-            })
+        selectableUsers() {
+            let userList = this.document.whitelist.users;
+
+            if (userList.findIndex(u => u.id === this.document.user.id) === -1) {
+              userList.push(this.document.user)
+            }
+
+            if (userList.findIndex(u => u.id === this.currentUser.id) === -1) {
+              userList.push(this.currentUser)
+            }
+
+            return userList.sort((a, b) => a.username.localeCompare(b.username))
         },
         transcriptionValidatedOrTeacher() {
           return this.isTranscriptionValidated || this.currentUserIsTeacher
@@ -213,7 +218,11 @@ export default {
         }
     },
     created() {
-        this.workflowUserId = this.currentUser.id
+        if (this.selectableUsers.findIndex(u => u.id === this.currentUser.id) > -1) {
+          this.workflowUserId = this.currentUser.id
+        } else {
+          this.workflowUserId = this.document.user.id
+        }
     },
     mounted() {
        
