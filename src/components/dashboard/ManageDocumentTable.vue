@@ -69,7 +69,7 @@
           v-slot="props"
           field="title"
           label="Titre"
-          width="400"
+          width="360"
           sortable
         >
           <span
@@ -99,11 +99,19 @@
           v-slot="props"
           field="user_id"
           label="Propriétaire"
-          width="120"
+          width="200"
           sortable
           centered
         >
-          {{ props.row.owner['username'] }}
+          <b-autocomplete
+            v-model="props.row.owner['username']"
+            placeholder="e.g. Anne"
+            open-on-focus
+            :data="filteredDataObj(props.row.owner['username'])"
+            field="username"
+            clearable
+            @select="option => transferOwnership(props.row.id, option)"
+          />
         </b-table-column>
         <b-table-column
           v-slot="props"
@@ -170,25 +178,44 @@ export default {
                 sortOrder: 'desc',
                 defaultSortOrder: 'desc',
                 page: 1,
-                perPage: 25
+                perPage: 25,
+
+                teachersList: []
         }
       },
       computed: {
            ...mapGetters("user", [
             "currentUserIsAdmin",
             "currentUserIsTeacher",
-            "currentUserIsStudent",
+            "currentUserIsStudent"
           ]),
       },
-      created() {
+      async created() {
         this.$on('document-created:show', (event) => {
           this.refreshTable()
         });
+        
+        this.teachersList = await this.getTeachersList()
       },
       mounted() {
             this.loadAsyncData()
       },
       methods: {
+          ...mapActions('user', ['getTeachersList']),
+          filteredDataObj(username) {
+            return this.teachersList.filter(option => {
+              return (
+                option.username.toString()
+                           .toLowerCase()
+                           .indexOf(username.toLowerCase()) >= 0
+              )
+            })
+          },
+          transferOwnership(docId, user) {
+            if (docId && user){
+              this.$store.dispatch('document/transferOwnership', {docId, userId:user.id})
+            }
+          },
           async toggleBookmark(docId) {
             const updated_order = await this.$store.dispatch('document/toggleBookmark', docId)
             const rowItemIndex = this.data.findIndex(item => item.id === docId)

@@ -82,6 +82,11 @@ const actions = {
         error: e
       }
     }
+  },
+
+  async getTeachersList(state)  {
+    const response = await http.get(`teachers`)
+    return response.data.data.users
   }
  
 };

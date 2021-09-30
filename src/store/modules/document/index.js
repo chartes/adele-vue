@@ -308,6 +308,10 @@ const actions = {
     const resp = await http.get(`dashboard/bookmarks/${docId}/toggle`)
     const order = resp.data.data.new_order ? resp.data.data.new_order :  null
     return order
+  },
+  async transferOwnership({commit}, {docId, userId}) {
+    const resp = await http.get(`documents/${docId}/transfer-ownership/${userId}`)
+    console.log(resp.data)
   }
 };
 
