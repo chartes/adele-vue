@@ -99,24 +99,25 @@
           v-slot="props"
           field="user_id"
           label="Propriétaire"
-          width="200"
+          width="300"
           sortable
           centered
         >
-          <b-autocomplete
-            v-model="props.row.owner['username']"
-            placeholder="e.g. Anne"
-            open-on-focus
-            :data="filteredDataObj(props.row.owner['username'])"
-            field="username"
-            clearable
-            @select="option => transferOwnership(props.row.id, option)"
-          />
+          <div class="owner-container">
+            {{ props.row.owner['username'] }}
+            <b-button
+              type="is-primary is-outlined"
+              size="is-small"
+              @click="setOwnerModalProps(props.row)"
+            >
+              <i class="fas fa-exchange-alt" />
+            </b-button>
+          </div>
         </b-table-column>
         <b-table-column
           v-slot="props"
           label="Avancement du propriétaire"
-          width="190"
+          width="230"
           centered
         >
           <workflow-radio-steps-light
@@ -146,13 +147,30 @@
           </div>
         </b-table-column>
       </b-table>
+
+      <b-modal
+        v-model="isComponentModalActive"
+        has-modal-card
+        trap-focus
+        :destroy-on-hide="false"
+        aria-role="dialog"
+        aria-label="Example Modal"
+        aria-modal
+      >
+        <template #default="props">
+          <confirm-ownership-transfer
+            v-bind="formProps"
+            @close="closeOwnershipModal(props.close)"
+          />
+        </template>
+      </b-modal>
     </section>
   </div>
 </template>
 
 <script>
 
-import { mapState, mapActions, mapGetters } from 'vuex';
+import {  mapGetters } from 'vuex';
 import http from '@/modules/http-common.js';
 import WorkflowRadioStepsLight from "@/components/dashboard/WorkflowRadioStepsLight.vue";
 
@@ -160,17 +178,26 @@ import PublishButton from "./actions/PublishButton.vue";
 import DeleteButton from "./actions/DeleteButton.vue";
 import CloseButton from "./actions/CloseButton.vue";
 import WhitelistDropdown from './actions/WhitelistDropdown.vue'
+import ConfirmOwnershipTransfer from '@/components/dashboard/ConfirmOwnershipTransfer'
+
 
 export default {
     name: "ManageDocumentTable",
     components: {
       WorkflowRadioStepsLight,
       PublishButton, DeleteButton, CloseButton,
-      WhitelistDropdown
+      WhitelistDropdown,
+      ConfirmOwnershipTransfer
     },
 
      data() {
         return {
+                //ModalForm data
+                isComponentModalActive: false,
+                formProps: {
+                  row: null,
+                },
+
                 data: [],
                 total: 0,
                 loading: false,
@@ -178,9 +205,8 @@ export default {
                 sortOrder: 'desc',
                 defaultSortOrder: 'desc',
                 page: 1,
-                perPage: 25,
+                perPage: 20,
 
-                teachersList: []
         }
       },
       computed: {
@@ -195,27 +221,11 @@ export default {
           this.refreshTable()
         });
         
-        this.teachersList = await this.getTeachersList()
       },
       mounted() {
             this.loadAsyncData()
       },
       methods: {
-          ...mapActions('user', ['getTeachersList']),
-          filteredDataObj(username) {
-            return this.teachersList.filter(option => {
-              return (
-                option.username.toString()
-                           .toLowerCase()
-                           .indexOf(username.toLowerCase()) >= 0
-              )
-            })
-          },
-          transferOwnership(docId, user) {
-            if (docId && user){
-              this.$store.dispatch('document/transferOwnership', {docId, userId:user.id})
-            }
-          },
           async toggleBookmark(docId) {
             const updated_order = await this.$store.dispatch('document/toggleBookmark', docId)
             const rowItemIndex = this.data.findIndex(item => item.id === docId)
@@ -275,6 +285,15 @@ export default {
                 this.sortOrder = order
                 this.loadAsyncData()
             },
+
+          setOwnerModalProps(row) {
+            this.formProps.row = {id: row.id, username: row.owner['username']}
+            this.isComponentModalActive = true
+          },
+          closeOwnershipModal(close) {
+            close()
+            this.refreshTable()
+          }
          
         }
 }
@@ -326,5 +345,14 @@ img {
     color: #FFD500 !important;
     cursor: pointer;
   }
+}
+.owner-container{
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding-left: 20px;
+  padding-right: 40px;
 }
 </style>
