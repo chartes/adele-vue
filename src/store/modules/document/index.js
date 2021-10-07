@@ -98,7 +98,8 @@ const actions = {
     let doc = null
     try {
       const user = rootState.user.currentUser;
-      if (user === null || user.roles.indexOf('admin') < 0 || user.roles.indexOf('teacher') < 0) {
+      if (user === null || !user.roles.indexOf('admin') < 0 || user.roles.indexOf('teacher') < 0) {
+        console.log("USER", user)
         throw 'Forbidden access!'
       }
       doc = await http.post('documents/add', {
