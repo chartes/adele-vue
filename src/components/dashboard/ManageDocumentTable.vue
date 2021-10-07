@@ -106,6 +106,7 @@
           <div class="owner-container">
             {{ props.row.owner['username'] }}
             <b-button
+              v-if="currentUserIsAdmin"
               type="is-primary is-outlined"
               size="is-small"
               @click="setOwnerModalProps(props.row)"
