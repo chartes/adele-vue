@@ -203,7 +203,7 @@ export default {
                 total: 0,
                 loading: false,
                 sortField: 'id',
-                sortOrder: 'desc',
+                sortOrder: 'asc',
                 defaultSortOrder: 'desc',
                 page: 1,
                 perPage: 20,
