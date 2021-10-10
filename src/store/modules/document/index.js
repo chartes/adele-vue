@@ -236,12 +236,15 @@ const actions = {
   },
   fetchFilterCounts ({ commit }, { filters}) {
     commit('SET_ERROR', null)
+    commit('LOADING_STATUS', true)
     return http.post('documents', {
       countOnly: true,
       filters
     }).then( (response) => {
       commit('UPDATE_META', response.data.data.meta);
+      commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('LOADING_STATUS', false);
       commit('SET_ERROR', error)
     })
   },

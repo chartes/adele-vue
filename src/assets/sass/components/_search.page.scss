@@ -81,9 +81,14 @@
 
                 .accordion-content ul {
                     padding: 0.75em 0;
+
                 }
             }
 
+            .labelled-checkbox:hover label {
+                color: #F5A623 !important;
+            }
+        
         }
 
 

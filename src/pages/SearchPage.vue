@@ -327,11 +327,11 @@
                 </div>
               </div>
             </article>
-            <article
+            <article 
               :class="showFilters.availableCommentaries ? 'is-active' : ''"
               class="accordion"
             >
-              <div
+              <div 
                 class="accordion-header"
                 @click="showFilters.availableCommentaries = !showFilters.availableCommentaries"
               >
@@ -342,7 +342,34 @@
                 />
               </div>
               <div class="accordion-body">
-                <div class="accordion-content" />
+                <div 
+                  v-if="showFilters.availableCommentaries"
+                  class="accordion-content"
+                >
+                  <ul>
+                    <li
+                      v-for="comType in availableCommentaries"
+                      :key="comType.id"
+                      @click.prevent="toggleSelection({filter: 'availableCommentaries', item: comType.id})"
+                    >
+                      <div
+                        v-if="meta.filterCount['availableCommentaries'] && meta.filterCount['availableCommentaries'][comType.id]"
+                        class="labelled-checkbox"
+                      >
+                        <label><input
+                          type="checkbox"
+                          :value="comType.id"
+                          :checked="isAvailableCommentarySelected(comType.id)"
+                        ><span
+                          v-show="isAvailableCommentarySelected(comType.id)"
+                          class="checkmark"
+                        />{{ comType.label }} <span
+                          class="filter-count"
+                        >({{ meta.filterCount['availableCommentaries'][comType.id] || 0 }})</span></label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </article>
           </section>
@@ -613,6 +640,7 @@ export default {
         ...mapState('acteTypes', ['acteTypes']),
         ...mapState('editors', ['editors']),
         ...mapState('institutions', ['institutions']),
+        ...mapState('commentaries', { availableCommentaries: 'commentaryTypes' }),
         ...mapGetters('search', [
           'isLanguageSelected',
           'isActeTypeSelected',
@@ -689,6 +717,12 @@ export default {
               getId: c => c.id,
               getLabel: c => c.name 
             },
+            'availableCommentaries': {
+              label: 'Types de commentaires fournis',
+              values: this.availableCommentaries.filter(t => this.isAvailableCommentarySelected(t.id)),
+              getId: c => c.id,
+              getLabel: c => c.label 
+            },
           }
         },
         activeFilterSection() {
@@ -751,7 +785,8 @@ export default {
         this.$store.dispatch('traditions/fetch'),
         this.$store.dispatch('acteTypes/fetch'),
         this.$store.dispatch('editors/fetch'),
-        this.$store.dispatch('institutions/fetch')
+        this.$store.dispatch('institutions/fetch'),
+        this.$store.dispatch('commentaries/fetchTypes')
       ])
     },
     mounted() {

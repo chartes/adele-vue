@@ -148,8 +148,8 @@
               <cite>Chartae latinae antiquiores</cite> et les
               <cite>Monumenta palaeographica Medii Ævi</cite>. Rares sont ceux
               qui se sont volontairement construits autour d’un exposé raisonné
-              de diplomatique, implicitement dans le cas des Exempla
-              scripturarum pour les actes pontificaux (fasc. 3,
+              de diplomatique, implicitement dans le cas des <i>Exempla
+                scripturarum</i> pour les actes pontificaux (fasc. 3,
               1965<sup>2</sup>), explicitement dans celui du manuel inachevé
               d’Alain de Boüard (1929-1948), qui a délibérément prolongé, et
               même enrichi, son propos dans des recueils de planches,
@@ -228,7 +228,7 @@
             <p>
               Cet album est conçu comme un manuel inversé : il part des images
               pour arriver au discours ; et comme un manuel en petit appareil :
-              il part « du bas » avec de menues tesselles qui s’enchâssent
+              il part <span style="white-space: pre;">« du bas »</span> avec de menues tesselles qui s’enchâssent
               progressivement dans un discours plus général, chaîné par des
               renvois d’un dossier à un autre, modelable et paramétrable par
               l’utilisateur grâce aux fonctions de tri.
@@ -318,8 +318,8 @@
               </li>
               <li>Conseils : Jean-Baptiste Camps, Olivier Canteaut</li>
               <li>
-                Collaborateurs extérieurs : Pilar Ostos (Séville), Cristina
-                Cunha (Porto)
+                Collaborateurs extérieurs : 
+                Les rangs des collaborateurs extérieurs sont appelés à croître rapidement. Aux pionnières, Cristina Mantegna (Rome), Pilar Ostos (Séville), Cristina Cunha (Porto) doivent se joindre de nombreux collègues, pour certains en lien avec le Séminaire de dplomatique comparée de l’École des chartes.
               </li>
             </ul>
           </div>
