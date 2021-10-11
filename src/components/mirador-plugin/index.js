@@ -70,11 +70,15 @@ function MyComponent(props) {
           "div",
           {
             style: {
-              position: "absolute",
+              position: "sticky",
               left: annotationStyle.left + "px",
               top: annotationStyle.top + "px",
-              color: "#EFEF88",
-              textShadow: "1px 0 1px black, -1px 0px 1px black,0px 1px 1px black, 0px -1px 1px black",
+              display: 'inline-block',
+              maxWidth: '90%',
+              //color: "#EFEF88",
+              //textShadow: "1px 0 1px black, -1px 0px 1px black,0px 1px 1px black, 0px -1px 1px black",
+              color: "#FD4040",
+              backgroundColor: '#FEFEFE',
               fontSize: "22px",
             },
             dangerouslySetInnerHTML: {__html: cleanAnnoText(annotation.chars)}
