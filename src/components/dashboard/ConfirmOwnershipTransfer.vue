@@ -17,15 +17,25 @@
           vers le nouveau propriétaire. Le propriétaire actuel risque donc de voir son travail se faire écraser.
         </b-message>
 
-        <b-autocomplete
-          v-model="row.username"
-          placeholder="e.g. Anne"
-          open-on-focus
-          :data="filteredDataObj(row.username)"
-          field="username"
-          clearable
-          @select="(option) => selected = option"
-        />
+        
+        <b-field label="Sélectionner mon propre compte">
+          <b-checkbox v-model="myself">
+            {{ currentUser.username }}
+          </b-checkbox>
+        </b-field>
+        
+        <b-field label="Chercher un autre professeur">
+          <b-autocomplete
+            v-model="username"
+            placeholder="O.Guyotjeannin"
+            open-on-focus
+            :data="filteredDataObj(username)"
+            field="username"
+            clearable
+            max-height="100px"
+            @select="(option) => selected = option"
+          />
+        </b-field>
       </section>
       <footer class="modal-card-foot">
         <b-button
@@ -43,7 +53,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   name: "ConfirmOwnershipTransfer",
@@ -53,8 +63,27 @@ export default {
   data() {
     return {
       teachersList: [],
-      selected: null
+      selected: null,
+      username: null,
+      myself: true
     };
+  },
+  computed: {
+    ...mapState('user', ['currentUser'])
+  },
+  watch: {
+    selected() {
+      if (this.selected) {
+        this.myself = false;
+      }
+    },
+    myself() {
+      if (this.myself) {
+        // pass
+      } else {
+        this.username = null
+      }
+    } 
   },
   async created() {
     this.teachersList = await this.getTeachersList();
@@ -62,6 +91,9 @@ export default {
   methods: {
     ...mapActions("user", ["getTeachersList"]),
     filteredDataObj(username) {
+      if (username === null) {
+        return this.teachersList
+      }
       return this.teachersList.filter((option) => {
         return (
           option.username.toString().toLowerCase().indexOf(username.toLowerCase()) >= 0
@@ -74,8 +106,9 @@ export default {
       }
     },
     async validate() {
-      if (this.selected) {
-        await this.transferOwnership(this.row.id, this.selected)
+      if (this.selected || this.myself) {
+        const newUser = this.myself ? this.currentUser : this.selected
+        await this.transferOwnership(this.row.id, newUser)
       }
       this.$emit('close')
     }
