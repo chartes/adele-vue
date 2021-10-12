@@ -219,9 +219,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.content {
-  min-height: 100vh;
-}
-</style>

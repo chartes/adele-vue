@@ -35,6 +35,10 @@ dl {
         font-weight: 500;
     }
     
+    .documentation {
+        order: 2;
+    }
+
     .documentation ul {
         list-style: initial;
         padding-left: 24px;
@@ -391,7 +395,7 @@ dl {
                 }
 
                 .column.is-half {
-                    order: 1;
+                    
                     margin-top: 180px;
                     border-radius: 0;
 
@@ -427,7 +431,7 @@ dl {
                 }
 
                 .column.themes {
-                    order: 3;
+                    order: 1;
 
                     &::before {
                         display: none;
