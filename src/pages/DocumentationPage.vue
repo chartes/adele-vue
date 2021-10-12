@@ -8,102 +8,95 @@
             <p class="column-title">
               Documentation
             </p>
-            <ul>
-              <li>
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Accueil</p>
-                  </div>
-                  <div class="card-content">
-                    <ul class="doc-tabs">
-                      <li
-                        id="about"
-                        @click="goTo('about')"
-                      >
-                        À propos
-                      </li>
-                      <li
-                        id="projet"
-                        @click="goTo('projet')"
-                      >
-                        Le projet
-                      </li>
-                      <li
-                        id="contact"
-                        @click="goTo('contact')"
-                      >
-                        Contact
-                      </li>
-                      <li
-                        id="credits"
-                        @click="goTo('credits')"
-                      >
-                        Crédits
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Référentiels de données</p>
-                  </div>
-                  <div class="card-content">
-                    <ul class="doc-tabs">
-                      <li
-                        id="dates"
-                        @click="goTo('dates')"
-                      >
-                        Dates
-                      </li>
-                      <li
-                        id="conservation"
-                        @click="goTo('conservation')"
-                      >
-                        Lieux de conservation
-                      </li>
-                      <li
-                        id="speech-parts"
-                        @click="goTo('speech-parts')"
-                      >
-                        Parties du discours
-                      </li>
-                      <li
-                        id="places"
-                        @click="goTo('places')"
-                      >
-                        Pays & lieux identifiés
-                      </li>
-                      <li
-                        id="persons"
-                        @click="goTo('persons')"
-                      >
-                        Personnes identifiées
-                      </li>
-                      <li
-                        id="tradition"
-                        @click="goTo('tradition')"
-                      >
-                        Traditions
-                      </li>
-                      <li
-                        id="acte-types"
-                        @click="goTo('acte-types')"
-                      >
-                        Types d'auteurs et de documents
-                      </li>
-                      <li
-                        id="commentaries"
-                        @click="goTo('commentaries')"
-                      >
-                        Types de commentaires
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <nav>
+              <section class="">
+                <header>
+                  <h2>Accueil</h2>
+                </header>
+                <ul class="doc-tabs">
+                  <li
+                    id="about"
+                    @click="goTo('about')"
+                  >
+                    À propos
+                  </li>
+                  <li
+                    id="projet"
+                    @click="goTo('projet')"
+                  >
+                    Le projet
+                  </li>
+                  <li
+                    id="contact"
+                    @click="goTo('contact')"
+                  >
+                    Contact
+                  </li>
+                  <li
+                    id="credits"
+                    @click="goTo('credits')"
+                  >
+                    Crédits
+                  </li>
+                </ul>
+              </section>
+         
+              <section>
+                <header>
+                  <h2>Référentiels de données</h2>
+                </header>
+                <ul class="doc-tabs">
+                  <li
+                    id="dates"
+                    @click="goTo('dates')"
+                  >
+                    Dates
+                  </li>
+                  <li
+                    id="conservation"
+                    @click="goTo('conservation')"
+                  >
+                    Lieux de conservation
+                  </li>
+                  <li
+                    id="speech-parts"
+                    @click="goTo('speech-parts')"
+                  >
+                    Parties du discours
+                  </li>
+                  <li
+                    id="places"
+                    @click="goTo('places')"
+                  >
+                    Pays & lieux identifiés
+                  </li>
+                  <li
+                    id="persons"
+                    @click="goTo('persons')"
+                  >
+                    Personnes identifiées
+                  </li>
+                  <li
+                    id="tradition"
+                    @click="goTo('tradition')"
+                  >
+                    Traditions
+                  </li>
+                  <li
+                    id="acte-types"
+                    @click="goTo('acte-types')"
+                  >
+                    Types d'auteurs et de documents
+                  </li>
+                  <li
+                    id="commentaries"
+                    @click="goTo('commentaries')"
+                  >
+                    Types de commentaires
+                  </li>
+                </ul>
+              </section>
+            </nav>
           </div>
         </div>
         <div class="column content-column documentation">

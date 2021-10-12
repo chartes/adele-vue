@@ -23,6 +23,17 @@ dl {
     p {
         margin-bottom: 18px;
     }
+
+    nav {
+        text-align: initial;
+    }
+    nav header {
+        margin-top: 40px;
+    }
+    nav header h2 {
+        font-size: larger;
+        font-weight: 500;
+    }
     
     .documentation ul {
         list-style: initial;
@@ -43,9 +54,7 @@ dl {
         
         margin-top: 20px;
         margin-bottom: 20px;
-
         
-
         h2 {
             font-size: 20px !important;
             font-weight: bold;
