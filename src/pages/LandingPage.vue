@@ -17,16 +17,17 @@
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/27.jpg/full/500,/0/default.jpg"
+                        :src="featuredCollections[0].imgUrl"
                         alt="Placeholder image"
                       >
                     </figure>
                   </div>
                   <div class="card-content">
                     <div class="content">
-                      <p class="title">
-                        Expansion et diversification formelle des chirographes
-                      </p>
+                      <p
+                        class="title"
+                        v-html="featuredCollections[0].title"
+                      />
                     </div>
                   </div>
                 </div>
@@ -40,16 +41,17 @@
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/34.jpg/full/500,/0/default.jpg"
+                        :src="featuredCollections[1].imgUrl"
                         alt="Placeholder image"
                       >
                     </figure>
                   </div>
                   <div class="card-content">
                     <div class="content">
-                      <p class="title">
-                        Naissance d’une bureaucratie paperassière: les documents du contrôle comptable
-                      </p>
+                      <p
+                        class="title"
+                        v-html="featuredCollections[1].title"
+                      />
                     </div>
                   </div>
                 </div>
@@ -63,16 +65,17 @@
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/24.jpg/full/500,/0/default.jpg"
-                        alt="Placeholder image"
+                        :src="featuredCollections[2].imgUrl"
+                        alt="Placeholder image" 
                       >
                     </figure>
                   </div>
                   <div class="card-content">
                     <div class="content">
-                      <p class="title">
-                        Le modèle royal de l’acte princier en France
-                      </p>
+                      <p
+                        class="title"
+                        v-html="featuredCollections[2].title"
+                      />
                     </div>
                   </div>
                 </div>
@@ -86,16 +89,17 @@
                   <div class="card-image">
                     <figure class="image is-3by1">
                       <img
-                        src="https://iiif.chartes.psl.eu/images/adele/dossiers/20.jpg/full/500,/0/default.jpg"
+                        :src="featuredCollections[3].imgUrl"
                         alt="Placeholder image"
                       >
                     </figure>
                   </div>
                   <div class="card-content">
                     <div class="content">
-                      <p class="title">
-                        La pression des vernaculaires au XIII<sup>e</sup> siècle
-                      </p>
+                      <p
+                        class="title"
+                        v-html="featuredCollections[3].title"
+                      />
                     </div>
                   </div>
                 </div>
@@ -256,6 +260,7 @@ export default {
           {
             title: 'Expansion et diversification formelle des chirographes',
             sorts: ['creation'],
+            imgUrl: "https://iiif.chartes.psl.eu/images/adele/dossiers/27.jpg/full/500,/0/default.jpg",
             filters:{
               availableCommentaries: [],
               acteTypes: [],
@@ -276,6 +281,7 @@ export default {
           {
             title: 'Naissance d’une bureaucratie paperassière: les documents du contrôle comptable ',
             sorts: ['creation'],
+            imgUrl: "https://iiif.chartes.psl.eu/images/adele/dossiers/34.jpg/full/500,/0/default.jpg",
             filters: {
               availableCommentaries: [],
               acteTypes: [7],
@@ -296,6 +302,7 @@ export default {
           {
             title: 'Le modèle royal de l’acte princier en France',
             sorts: ['creation'],
+            imgUrl: "https://iiif.chartes.psl.eu/images/adele/dossiers/24.jpg/full/500,/0/default.jpg",
             filters: {
               availableCommentaries: [],
               acteTypes: [20,21],
@@ -314,22 +321,20 @@ export default {
             }
           },
           {
-            title: 'La pression des vernaculaires au XIII<sup>e</sup> siècle',
+            title: 'Documents propres à la diplomatie',
             sorts: ['creation'],
+            imgUrl: "https://iiif.chartes.psl.eu/images/adele/dossiers/169.jpg/full/500,/0/default.jpg",
             filters: {
               availableCommentaries: [],
-              acteTypes: [],
+              acteTypes: [25],
               centuries: [],
               copyCenturies: [],
               countries: [],
               creationRange: [
-                1200,
-                1300
               ],
               districts: [],
               institutions: [],
               languages: [
-                "oci", "fre"
               ],
               traditions: [],
             }

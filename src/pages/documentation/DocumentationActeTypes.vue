@@ -194,7 +194,7 @@
         </div>
         <ul>
           <li>
-            « Actes pontificaux » :
+            « Actes episcopaux » :
             <a
               href="http://elec.enc.sorbonne.fr/bede/feuilleter67.php"
             >http://elec.enc.sorbonne.fr/bede/feuilleter67.php</a>
