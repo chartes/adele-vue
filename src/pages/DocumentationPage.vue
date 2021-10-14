@@ -86,13 +86,13 @@
                     id="acte-types"
                     @click="goTo('acte-types')"
                   >
-                    Types d'auteurs et de documents
+                    Types d'auteur ou de document
                   </li>
                   <li
                     id="commentaries"
                     @click="goTo('commentaries')"
                   >
-                    Types de commentaires
+                    Types de commentaire
                   </li>
                 </ul>
               </section>
