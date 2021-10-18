@@ -265,7 +265,6 @@ export default {
               availableCommentaries: [],
               acteTypes: [],
               centuries: [],
-              copyCenturies: [],
               countries: [],
               creationRange: [
               
@@ -286,7 +285,6 @@ export default {
               availableCommentaries: [],
               acteTypes: [7],
               centuries: [],
-              copyCenturies: [],
               countries: [],
               creationRange: [
                 1300, 1500
@@ -307,7 +305,6 @@ export default {
               availableCommentaries: [],
               acteTypes: [20,21],
               centuries: [],
-              copyCenturies: [],
               countries: [1],
               creationRange: [
               
@@ -328,7 +325,6 @@ export default {
               availableCommentaries: [],
               acteTypes: [25],
               centuries: [],
-              copyCenturies: [],
               countries: [],
               creationRange: [
               ],

@@ -7,11 +7,11 @@ const initState = () => ({
       institutions: [],
       traditions: [],
       centuries: [],
-      copyCenturies: [],
       availableCommentaries: [],
       countries: [],
       districts: [],
-      creationRange: []
+      creationRange: [],
+      copyRange: []
   },
 })
 
@@ -81,12 +81,6 @@ const getters = {
     },
     isTraditionSelected : (state) => (item) => {
         return state.selection.traditions.indexOf(item) > -1
-    },
-    isCenturySelected : (state) => (item) => {
-        return state.selection.centuries.indexOf(item) > -1
-    },
-    isCopyCenturySelected : (state) => (item) => {
-        return state.selection.copyCenturies.indexOf(item) > -1
     },
     isInstitutionSelected : (state) => (item) => {
         return state.selection.institutions.indexOf(item) > -1

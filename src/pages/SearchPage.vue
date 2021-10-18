@@ -10,20 +10,20 @@
                 <div class="date-range-selector">
                   <p>
                     Entre <input
-                      v-model="startDocDate"
+                      v-model="creationDate.start"
                       class="min-date"
-                      type="text"
+                      type="number"
                     > et <input
-                      v-model="endDocDate"
+                      v-model="creationDate.end"
                       class="max-date"
-                      type="text"
+                      type="number"
                     >
                     
                     <label class="checkbox date-checkbox">
                       <b-field>
                         <b-checkbox
-                          v-model="showDocsWithoutDates"
-                          :value="showDocsWithoutDates"
+                          v-model="showDocsWithoutCreationDate"
+                          :value="showDocsWithoutCreationDate"
                           type="is-light"
                         >
                           <span>Afficher les documents sans date</span>
@@ -33,14 +33,78 @@
                   </p>
                   <b-field>
                     <b-slider
-                      v-model="sliderDate"
-                      :min="minDocDate"
-                      :max="maxDocDate" 
+                      v-model="creationDateSliderRange"
+                      :min="creationDate.min" 
+                      :max="creationDate.max"
+                      lazy
+                      rounded
+                      :step="10"
+                      tooltip-type="is-light"
+                      @change="fetchAll"
+                    >
+                      <template v-for="val in [750, 1000, 1250, 1500, 1750]">
+                        <b-slider-tick
+                          :key="val"
+                          :value="val"
+                        >
+                          {{ val }}
+                        </b-slider-tick>
+                      </template>
+                    </b-slider>
+                  </b-field>
+                </div>
+              </div>
+              <div class="accordion-body">
+                <div class="accordion-content" />
+              </div>
+            </article>
+            <article class="accordion">
+              <div class="accordion-header no-toggle">
+                <p>Siècle de la copie</p>
+                <div class="date-range-selector">
+                  <p>
+                    Entre <input
+                      v-model="copyDate.start"
+                      class="min-date"
+                      type="number"
+                    > et <input
+                      v-model="copyDate.end"
+                      class="max-date"
+                      type="number"
+                    >
+                    
+                    <label class="checkbox date-checkbox">
+                      <b-field>
+                        <b-checkbox
+                          v-model="showDocsWithoutCopyDate"
+                          :value="showDocsWithoutCopyDate"
+                          type="is-light"
+                        >
+                          <span>Afficher les documents sans date</span>
+                        </b-checkbox>
+                      </b-field>
+                    </label>
+                  </p>
+                  <b-field>
+                    <b-slider
+                      v-model="copyDateSliderRange"
+                      :min="copyDate.min" 
+                      :max="copyDate.max"
+                    
                       lazy
                       rounded
                       tooltip-type="is-light"
-                      @change="updateSliderInput"
-                    />
+                      @change="fetchAll"
+                    >
+                      <template v-for="val in [5, 7, 9, 11, 13, 15, 17, 19, 21]">
+                        <b-slider-tick
+                          :key="val"
+                          :value="val"
+                        >
+                          {{ val }}
+                        </b-slider-tick>
+                      </template>
+                    </b-slider>
                   </b-field>
                 </div>
               </div>
@@ -49,7 +113,7 @@
               </div>
             </article>
             <article
-              class="accordion"
+              class="accordion mt-3"
               :class="showFilters.traditions ? 'is-active' : ''"
             >
               <div
@@ -620,12 +684,21 @@ export default {
           institutions: false,
           availableCommentaries: false,
         },
-        showDocsWithoutDates: true,
-        startDocDate: 700,
-        endDocDate: 1700,
-        minDocDate: 700,
-        maxDocDate: 1900,
-        sliderDate: [700, 1700],
+        showDocsWithoutCreationDate: true,
+        showDocsWithoutCopyDate: true,
+        creationDate: {
+          start: 700,
+          end: 1700,
+          min: 400,
+          max: 2099,
+          step: 1
+        },
+        copyDate: {
+          start: 8,
+          end: 18,
+          min: 5,
+          max: 21
+        },
         selectedSort: 'creation',
         sortOrder: '',
       }
@@ -652,23 +725,44 @@ export default {
           'isCurrentlyFiltered'
         ]),
         ...mapGetters('acteTypes', ['methSortedActeTypes']),
-        dateSliderOptions() {
-          let start = parseInt(this.startDocDate)
-          let end = parseInt(this.endDocDate)
-
-          if(isNaN(start)) {
-            start = this.minDocDate
-          }
-          if(isNaN(end)) {
-            end = this.maxDocDate
-          }
-          
+        creationDateSliderOptions() {
+          let start = parseInt(this.creationDate.start)
+          let end = parseInt(this.creationDate.end)
           return {
-            start: [start, end],
+            start: [isNaN(start) ? this.creationDate.min : start, isNaN(end) ? this.creationDate.max : end],
             range: {
-                'min': [this.minDocDate],
-                'max': [this.maxDocDate]
+                'min': [this.creationDate.min],
+                'max': [this.creationDate.max]
             }
+          }
+        },
+        creationDateSliderRange: {
+          set(v) {
+            this.creationDate.start = v[0];
+            this.creationDate.end = v[1];
+          },
+          get() {
+            return [parseInt(this.creationDate.start), parseInt(this.creationDate.end)]
+          }
+        },
+        copyDateSliderOptions() {
+          let start = parseInt(this.copyDate.start)
+          let end = parseInt(this.copyDate.end)
+          return {
+            start: [isNaN(start) ? this.copyDate.min : start, isNaN(end) ? this.copyDate.max : end],
+            range: {
+                'min': [this.copyDate.min],
+                'max': [this.copyDate.max]
+            }
+          }
+        },
+        copyDateSliderRange: {
+          set(v) {
+            this.copyDate.start = v[0];
+            this.copyDate.end = v[1];
+          },
+          get() {
+            return [parseInt(this.copyDate.start), parseInt(this.copyDate.end)]
           }
         },
         isFiltered() {
@@ -764,14 +858,23 @@ export default {
         this.currentPage = 1
         this.fetchAll()
       },
-      showDocsWithoutDates() {
+      "creationDate.start"() {
         this.fetchAll()
       },
-      startDocDate() {
-        this.sliderDate = [parseInt(this.startDocDate), parseInt(this.endDocDate)]
+      "creationDate.end"() {
+        this.fetchAll()
       },
-      endDocDate() {
-        this.sliderDate = [parseInt(this.startDocDate), parseInt(this.endDocDate)]
+      "copyDate.start"() {
+        this.fetchAll()
+      },
+      "copyDate.end"() {
+        this.fetchAll()
+      },
+      showDocsWithoutCreationDate() {
+        this.fetchAll()
+      },
+      showDocsWithoutCopyDate() {
+        this.fetchAll()
       },
       currentPage() {
         this.fetchAll()
@@ -800,8 +903,13 @@ export default {
       }
 
       if (this.selection.creationRange.length) {
-        this.startDocDate = this.selection.creationRange[0]
-        this.endDocDate = this.selection.creationRange[1]
+        this.creationDate.start = this.selection.creationRange[0]
+        this.creationDate.end = this.selection.creationRange[1]
+      }
+
+      if (this.selection.copyRange.length) {
+        this.copyDate.start = this.selection.copyRange[0]
+        this.copyDate.end = this.selection.copyRange[1]
       }
 
       this.sortOrder = this.sorts[0].startsWith('-') ? '-' : ''
@@ -826,19 +934,18 @@ export default {
         this.showFilters.availableCommentaries = false
         this.clearAll()
       },
-      updateSliderInput(range){
-        this.startDocDate = range[0]
-        this.endDocDate = range[1]
-        this.fetchAll()
-      },
       fetchAll: debounce(function() {
         let filters = {}
         for (let f in this.selectedFilters){
           filters[f] = this.selectedFilters[f].values
         }
 
-        filters['creationRange'] = this.dateSliderOptions.start
-        filters['showDocsWithoutDates'] = this.showDocsWithoutDates
+        filters['creationRange'] = this.creationDateSliderOptions.start
+        filters['copyRange'] = this.copyDateSliderOptions.start
+
+        filters['showDocsWithoutCreationDate'] = this.showDocsWithoutCreationDate
+        filters['showDocsWithoutCopyDate'] = this.showDocsWithoutCopyDate
+
         if (this.activeFilterSection) {
           filters['filtersToCount'] = this.activeFilterSection
         }
@@ -861,8 +968,12 @@ export default {
           filters[f] = this.selectedFilters[f].values
         }
 
-        filters['creationRange'] = this.dateSliderOptions.start
-        filters['showDocsWithoutDates'] = this.showDocsWithoutDates
+        filters['creationRange'] = this.creationDateSliderOptions.start
+        filters['copyRange'] = this.copyDateSliderOptions.start
+
+        filters['showDocsWithoutCreationDate'] = this.showDocsWithoutCreationDate
+        filters['showDocsWithoutCopyDate'] = this.showDocsWithoutCopyDate
+
         if (this.activeFilterSection) {
           filters['filtersToCount'] = this.activeFilterSection
         }
