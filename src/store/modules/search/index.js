@@ -6,12 +6,12 @@ const initState = () => ({
       acteTypes: [],
       institutions: [],
       traditions: [],
-      centuries: [],
       availableCommentaries: [],
       countries: [],
       districts: [],
       creationRange: [],
-      copyRange: []
+      copyRange: [],
+      dateMode: 'witness'
   },
 })
 
@@ -28,6 +28,9 @@ const mutations = {
     state.selection = filters
     state.title = title
     state.sorts = sorts
+  },
+  SET_FILTER (state, {name, value}) {
+    state.selection[name] = value
   },
   SORT (state, fields) {
     state.sorts = fields
@@ -51,6 +54,9 @@ const actions = {
     },
     set({commit}, {title, filters, sorts}) {
         commit('SET', {title, filters, sorts})
+    },
+    setFilter({commit}, {name, value}) {
+      commit('SET_FILTER', {name, value})
     },
     setSort({commit}, fields) {
       commit('SORT', fields)

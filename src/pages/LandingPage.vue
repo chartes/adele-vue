@@ -264,10 +264,12 @@ export default {
             filters:{
               availableCommentaries: [],
               acteTypes: [],
-              centuries: [],
               countries: [],
               creationRange: [
               
+              ],
+              copyRange: [
+
               ],
               districts: [],
               institutions: [],
@@ -284,10 +286,12 @@ export default {
             filters: {
               availableCommentaries: [],
               acteTypes: [7],
-              centuries: [],
               countries: [],
               creationRange: [
                 1300, 1500
+              ],
+              copyRange: [
+
               ],
               districts: [],
               institutions: [],
@@ -304,10 +308,12 @@ export default {
             filters: {
               availableCommentaries: [],
               acteTypes: [20,21],
-              centuries: [],
               countries: [1],
               creationRange: [
               
+              ],
+              copyRange: [
+
               ],
               districts: [],
               institutions: [],
@@ -324,9 +330,11 @@ export default {
             filters: {
               availableCommentaries: [],
               acteTypes: [25],
-              centuries: [],
               countries: [],
               creationRange: [
+              ],
+              copyRange: [
+
               ],
               districts: [],
               institutions: [],

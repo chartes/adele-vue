@@ -879,18 +879,23 @@ export default {
         this.fetchAll()
       },
       "creationDate.start"() {
+        this.setFilter({name: 'creationRange', value:[this.creationDate.start, this.creationDate.end]})
         this.fetchAll()
       },
       "creationDate.end"() {
+        this.setFilter({name: 'creationRange', value: [this.creationDate.start, this.creationDate.end]})
         this.fetchAll()
       },
       "copyDate.start"() {
+        this.setFilter({name: 'copyRange', value: [this.copyDate.start, this.copyDate.end]})
         this.fetchAll()
       },
       "copyDate.end"() {
+        this.setFilter({name: 'copyRange', value: [this.copyDate.start, this.copyDate.end]})
         this.fetchAll()
       },
       dateMode() {
+        this.setFilter({name: 'dateMode', value: this.dateMode})
         this.fetchAll()
       },
       showDocsWithoutCreationDate() {
@@ -917,8 +922,7 @@ export default {
     },
     mounted() {
       window.scrollTo(0, 0);
-    },
-    created() {
+    
       if (this.isCurrentlyFiltered) {
         Object.keys(this.selection).forEach(k => {
           this.showFilters[k] = this.selection[k].length
@@ -935,6 +939,10 @@ export default {
         this.copyDate.end = this.selection.copyRange[1]
       }
 
+      if (this.selection.dateMode) {
+        this.dateMode = this.selection.dateMode
+      }
+
       this.sortOrder = this.sorts[0].startsWith('-') ? '-' : ''
       this.selectedSort = this.sortOrder === '' ? this.sorts[0] : this.sorts[0].slice(1)
       console.log('restoring sorts', this.sorts, this.sortOrder, this.selectedSort)
@@ -942,7 +950,7 @@ export default {
       this.fetchAll()
     },
     methods: {
-      ...mapActions('search', ['toggleSelection', 'clear', 'clearAll', 'setSort']),
+      ...mapActions('search', ['toggleSelection', 'clear', 'clearAll', 'setSort', 'setFilter']),
       resetFilter(filter) {
         this.showFilters[filter] = false
         this.clear({filter: filter})
