@@ -6,9 +6,26 @@
           <section class="accordions">
             <article class="accordion">
               <div class="accordion-header no-toggle">
-                <p>Date de l'original</p>
-                <div class="date-range-selector">
+                <select v-model="dateMode">
+                  <option value="witness">
+                    Date du témoin présenté
+                  </option>
+                  <option value="creation-only">
+                    Date de l'original 
+                  </option>
+                  <option value="copy-only">
+                    Siècle de la copie
+                  </option>
+                  <option value="creation-and-copy">
+                    Date de l'original et date de la copie
+                  </option>
+                </select>
+                <div
+                  v-if="dateMode !== 'copy-only'"
+                  class="date-range-selector"
+                >
                   <p>
+                    <span v-if="dateMode === 'creation-and-copy'">Original</span>
                     Entre <input
                       v-model="creationDate.start"
                       class="min-date"
@@ -18,7 +35,7 @@
                       class="max-date"
                       type="number"
                     >
-                    
+
                     <label class="checkbox date-checkbox">
                       <b-field>
                         <b-checkbox
@@ -26,7 +43,7 @@
                           :value="showDocsWithoutCreationDate"
                           type="is-light"
                         >
-                          <span>Afficher les documents sans date</span>
+                          <span>Inclure les documents sans date</span>
                         </b-checkbox>
                       </b-field>
                     </label>
@@ -53,25 +70,20 @@
                     </b-slider>
                   </b-field>
                 </div>
-              </div>
-              <div class="accordion-body">
-                <div class="accordion-content" />
-              </div>
-            </article>
-            <article class="accordion">
-              <div class="accordion-header no-toggle">
-                <p>Siècle de la copie</p>
-                <div class="date-range-selector">
+                <div
+                  v-if="dateMode === 'creation-and-copy' || dateMode === 'copy-only' "
+                  class="date-range-selector"
+                >
                   <p>
-                    Entre <input
+                    <span v-if="dateMode === 'creation-and-copy'">Copie</span> Entre le<input
                       v-model="copyDate.start"
-                      class="min-date"
+                      class="min-date date-copy"
                       type="number"
-                    > et <input
+                    ><sup>ème</sup> et le<input
                       v-model="copyDate.end"
-                      class="max-date"
+                      class="max-date date-copy"
                       type="number"
-                    >
+                    ><sup>ème</sup> siècle
                     
                     <label class="checkbox date-checkbox">
                       <b-field>
@@ -80,7 +92,7 @@
                           :value="showDocsWithoutCopyDate"
                           type="is-light"
                         >
-                          <span>Afficher les documents sans date</span>
+                          <span>Inclure les documents sans date</span>
                         </b-checkbox>
                       </b-field>
                     </label>
@@ -497,8 +509,14 @@
               </div>
               <h4>Tris</h4>
               <select v-model="selectedSort">
+                <option value="witness_date">
+                  Date du témoin présenté
+                </option>
                 <option value="creation">
-                  Date de l'acte
+                  Date de l'original
+                </option>
+                <option value="copy_cent">
+                  Siècle de la copie
                 </option>
                 <option value="id">
                   Numéro de dossier
@@ -684,6 +702,8 @@ export default {
           institutions: false,
           availableCommentaries: false,
         },
+
+        dateMode: 'witness',
         showDocsWithoutCreationDate: true,
         showDocsWithoutCopyDate: true,
         creationDate: {
@@ -699,7 +719,7 @@ export default {
           min: 5,
           max: 21
         },
-        selectedSort: 'creation',
+        selectedSort: 'witness_date',
         sortOrder: '',
       }
     },
@@ -870,6 +890,9 @@ export default {
       "copyDate.end"() {
         this.fetchAll()
       },
+      dateMode() {
+        this.fetchAll()
+      },
       showDocsWithoutCreationDate() {
         this.fetchAll()
       },
@@ -940,6 +963,7 @@ export default {
           filters[f] = this.selectedFilters[f].values
         }
 
+        filters['dateMode'] = this.dateMode
         filters['creationRange'] = this.creationDateSliderOptions.start
         filters['copyRange'] = this.copyDateSliderOptions.start
 
@@ -967,7 +991,7 @@ export default {
         for (let f in this.selectedFilters){
           filters[f] = this.selectedFilters[f].values
         }
-
+        filters['dateMode'] = this.dateMode
         filters['creationRange'] = this.creationDateSliderOptions.start
         filters['copyRange'] = this.copyDateSliderOptions.start
 

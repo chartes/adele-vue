@@ -28,8 +28,17 @@
           </div>
         </div>
       </div>
-      <div class="document-creation-lab">
-        {{ doc.creation_lab }}
+      <div class="document-dates-cartouche">
+        <div v-if="doc.creation && doc.creation_lab">
+          <span class="document-dates-prefix">Original : </span><span class="document-creation-lab">{{ doc.creation_lab }}</span>
+        </div>
+        <div v-else>
+          <span class="document-dates-prefix">Original : </span><span class="document-creation-lab-unknown"> — </span>
+        </div>
+         
+        <div v-show="doc.copy_year">
+          <span class="document-dates-prefix">Copie : </span><span class="document-creation-lab">{{ doc.copy_year }}</span> 
+        </div>
       </div>
     </div>
     <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">

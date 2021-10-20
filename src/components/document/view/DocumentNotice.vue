@@ -45,7 +45,7 @@
             v-if="document.copy_year"
             class="tags has-addons"
           >
-            <span class="tag is-dark">Date de l’état présenté</span>
+            <span class="tag is-dark">Date de la copie</span>
             <span class="tag">{{ document.copy_year }}</span>
           </div>
         </li>

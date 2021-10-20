@@ -55,7 +55,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label">Date de l’état présenté (formatée)</label>
+                <label class="label">Date du témoin présenté (formatée)</label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">

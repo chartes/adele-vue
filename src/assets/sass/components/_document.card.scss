@@ -40,11 +40,23 @@
     }
   }
 
+  .card-header .document-dates-cartouche {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 6px 0 12px;
+  }
+
   .card-header .document-creation-lab {
     color: #F5A623;
     font-size: 16px;
-    margin: 6px 0 12px;
   }
+  .card-header .document-dates-prefix {
+    font-weight: 400;
+    font-variant: all-small-caps;
+    margin-right: 4px;
+  }
+
 
   .card-content {
     color: #000000;
