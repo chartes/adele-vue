@@ -113,7 +113,7 @@
     }
 
     .b-slider {
-        margin-bottom: 40px;
+        margin-bottom: 45px;
     }
 
     .b-slider .b-slider-track {
@@ -124,9 +124,19 @@
         background: #BAB9B6 !important;
     }
 
+    .b-slider-tick-label {
+        -webkit-user-select: none;  
+        -moz-user-select: none;    
+        -ms-user-select: none;      
+        user-select: none;
+
+        font-size: 13px;
+        padding-top: 4px;
+    }
+
     .date-range-selector {
 
-        margin: 15px 0 22px;
+        margin: 20px 0 28px;
         font-family: $family-sans-serif;
         font-size: 14px;
         text-transform: uppercase;

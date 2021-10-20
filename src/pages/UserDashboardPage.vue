@@ -7,42 +7,35 @@
             <p class="column-title">
               Tableau de bord
             </p>
-            <ul>
-              <li>
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Dossiers</p>
-                  </div>
-                  <div class="card-content">
-                    <ul class="doc-tabs">
-                      <li
-                        id="documents"
-                        @click="goTo('documents')"
-                      >
-                        Gestion des dossiers
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-              <li v-if="currentUserIsTeacher || currentUserIsAdmin">
-                <div class="theme-card card">
-                  <div class="card-header">
-                    <p>Utilisateurs</p>
-                  </div>
-                  <div class="card-content">
-                    <ul class="doc-tabs">
-                      <li
-                        id="whitelists"
-                        @click="goTo('whitelists')"
-                      >
-                        Gestion des listes d'accès
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <nav>
+              <section>
+                <header>
+                  <h2>Dossiers</h2>
+                </header>
+                <ul class="doc-tabs">
+                  <li
+                    id="documents"
+                    @click="goTo('documents')"
+                  >
+                    Gestion des dossiers
+                  </li>
+                </ul>
+              </section>
+              
+              <section v-if="currentUserIsTeacher || currentUserIsAdmin">
+                <header>
+                  <h2>Utilisateurs</h2>
+                </header>
+                <ul class="doc-tabs">
+                  <li
+                    id="whitelists"
+                    @click="goTo('whitelists')"
+                  >
+                    Gestion des listes d'accès
+                  </li>
+                </ul>
+              </section>
+            </nav>
           </div>
         </div>
         <div class="column content-column dashboard">
