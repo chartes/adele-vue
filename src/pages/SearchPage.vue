@@ -528,7 +528,7 @@
               </button>
             </div>
 
-            <div v-if="!loading && meta && meta.totalCount == 0">
+            <div v-if="!loading && meta && (meta.totalCount == 0 || !meta.filterCount)">
               <b-message
                 type="is-info"
               >
