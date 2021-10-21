@@ -84,18 +84,6 @@
                       class="max-date date-copy"
                       type="number"
                     ><sup>ème</sup> siècle
-                    
-                    <label class="checkbox date-checkbox">
-                      <b-field>
-                        <b-checkbox
-                          v-model="showDocsWithoutCopyDate"
-                          :value="showDocsWithoutCopyDate"
-                          type="is-light"
-                        >
-                          <span>Inclure les documents sans date</span>
-                        </b-checkbox>
-                      </b-field>
-                    </label>
                   </p>
                   <b-field>
                     <b-slider
@@ -531,144 +519,152 @@
               >
                 <i
                   v-if="sortOrder === ''"
-                  class="fas fa-arrow-down"
+                  class="fas fa-arrow-up"
                 />
                 <i
                   v-else
-                  class="fas fa-arrow-up"
+                  class="fas fa-arrow-down"
                 />
               </button>
             </div>
-            <progress
-              v-show="loading" 
-              class="progress is-small is-warning"
-              max="100"
-            >
-              15%
-            </progress>
 
-            <nav 
-              class="pagination"
-              role="navigation"
-              aria-label="pagination"
-            >
-              <span class="pagination-documents-count pagination-previous">{{ meta.totalCount }} {{ meta.totalCount === 1 ? 'document' : 'documents' }}</span>
-              <ul class="pagination-list">
-                <li v-if="pagination.first">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.first}`"
-                    @click="currentPage=pagination.first"
-                  >{{ pagination.first }}</a>
-                </li>
-                <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li v-if="pagination.previous">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.previous}`"
-                    @click="currentPage=pagination.previous"
-                  >{{ pagination.previous }}</a>
-                </li>
-                <li>
-                  <a
-                    class="pagination-link is-current"
-                    :aria-label="`Goto page ${pagination.current}`"
-                  >{{ pagination.current }}</a>
-                </li>
-                <li v-if="pagination.next">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.next}`"
-                    @click="currentPage=pagination.next"
-                  >{{ pagination.next }}</a>
-                </li>
-                <li v-if="pagination.last && pagination.next + 1 < pagination.last">
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li v-if="pagination.last">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.last}`"
-                    @click="currentPage=pagination.last"
-                  >{{ pagination.last }}</a>
-                </li>
-              </ul>
-            </nav>
-            <div
-              v-if="!loading"
-              class="columns is-multiline "
-            >
-              <div
-                v-for="d in documents"
-                :key="d.id"
-                class="column is-one-third"
+            <div v-if="!loading && meta && meta.totalCount == 0">
+              <b-message
+                type="is-info"
               >
-                <document-card :doc="d" />
-              </div>
+                Cette recherche ne retourne aucun résultat.
+              </b-message>
             </div>
-            <div
-              v-else
-              class="columns is-multiline"
-            >
-              <div
-                v-for="d in [1,2,3,4,5,6]"
-                :key="d"
-                class="column is-one-third"
+            <div v-else>
+              <progress
+                v-show="loading" 
+                class="progress is-small is-warning"
+                max="100"
               >
-                <document-card-placeholder />
+                15%
+              </progress>
+              <nav 
+                class="pagination"
+                role="navigation"
+                aria-label="pagination"
+              >
+                <span class="pagination-documents-count pagination-previous">{{ meta.totalCount }} {{ meta.totalCount === 1 ? 'document' : 'documents' }}</span>
+                <ul class="pagination-list">
+                  <li v-if="pagination.first">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.first}`"
+                      @click="currentPage=pagination.first"
+                    >{{ pagination.first }}</a>
+                  </li>
+                  <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
+                    <span class="pagination-ellipsis">&hellip;</span>
+                  </li>
+                  <li v-if="pagination.previous">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.previous}`"
+                      @click="currentPage=pagination.previous"
+                    >{{ pagination.previous }}</a>
+                  </li>
+                  <li>
+                    <a
+                      class="pagination-link is-current"
+                      :aria-label="`Goto page ${pagination.current}`"
+                    >{{ pagination.current }}</a>
+                  </li>
+                  <li v-if="pagination.next">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.next}`"
+                      @click="currentPage=pagination.next"
+                    >{{ pagination.next }}</a>
+                  </li>
+                  <li v-if="pagination.last && pagination.next + 1 < pagination.last">
+                    <span class="pagination-ellipsis">&hellip;</span>
+                  </li>
+                  <li v-if="pagination.last">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.last}`"
+                      @click="currentPage=pagination.last"
+                    >{{ pagination.last }}</a>
+                  </li>
+                </ul>
+              </nav>
+              <div
+                v-if="!loading"
+                class="columns is-multiline "
+              >
+                <div
+                  v-for="d in documents"
+                  :key="d.id"
+                  class="column is-one-third"
+                >
+                  <document-card :doc="d" />
+                </div>
               </div>
+              <div
+                v-else
+                class="columns is-multiline"
+              >
+                <div
+                  v-for="d in [1,2,3,4,5,6]"
+                  :key="d"
+                  class="column is-one-third"
+                >
+                  <document-card-placeholder />
+                </div>
+              </div>
+              <nav
+                class="pagination bottom"
+                role="navigation"
+                aria-label="pagination"
+              >
+                <ul class="pagination-list">
+                  <li v-if="pagination.first">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.first}`"
+                      @click="currentPage=pagination.first"
+                    >{{ pagination.first }}</a>
+                  </li>
+                  <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
+                    <span class="pagination-ellipsis">&hellip;</span>
+                  </li>
+                  <li v-if="pagination.previous">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.previous}`"
+                      @click="currentPage=pagination.previous"
+                    >{{ pagination.previous }}</a>
+                  </li>
+                  <li>
+                    <a
+                      class="pagination-link is-current"
+                      :aria-label="`Goto page ${pagination.current}`"
+                    >{{ pagination.current }}</a>
+                  </li>
+                  <li v-if="pagination.next">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.next}`"
+                      @click="currentPage=pagination.next"
+                    >{{ pagination.next }}</a>
+                  </li>
+                  <li v-if="pagination.last && pagination.next + 1 < pagination.last">
+                    <span class="pagination-ellipsis">&hellip;</span>
+                  </li>
+                  <li v-if="pagination.last">
+                    <a
+                      class="pagination-link"
+                      :aria-label="`Goto page ${pagination.last}`"
+                      @click="currentPage=pagination.last"
+                    >{{ pagination.last }}</a>
+                  </li>
+                </ul>
+              </nav>
             </div>
-            <nav
-              class="pagination bottom"
-              role="navigation"
-              aria-label="pagination"
-            >
-              <span class="pagination-documents-count pagination-previous">{{ meta.totalCount }} {{ meta.totalCount === 1 ? 'document' : 'documents' }}</span>
-              <ul class="pagination-list">
-                <li v-if="pagination.first">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.first}`"
-                    @click="currentPage=pagination.first"
-                  >{{ pagination.first }}</a>
-                </li>
-                <li v-if="pagination.first && pagination.previous - 1 > pagination.first">
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li v-if="pagination.previous">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.previous}`"
-                    @click="currentPage=pagination.previous"
-                  >{{ pagination.previous }}</a>
-                </li>
-                <li>
-                  <a
-                    class="pagination-link is-current"
-                    :aria-label="`Goto page ${pagination.current}`"
-                  >{{ pagination.current }}</a>
-                </li>
-                <li v-if="pagination.next">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.next}`"
-                    @click="currentPage=pagination.next"
-                  >{{ pagination.next }}</a>
-                </li>
-                <li v-if="pagination.last && pagination.next + 1 < pagination.last">
-                  <span class="pagination-ellipsis">&hellip;</span>
-                </li>
-                <li v-if="pagination.last">
-                  <a
-                    class="pagination-link"
-                    :aria-label="`Goto page ${pagination.last}`"
-                    @click="currentPage=pagination.last"
-                  >{{ pagination.last }}</a>
-                </li>
-              </ul>
-            </nav>
           </div>
         </div>
       </div>
@@ -705,7 +701,6 @@ export default {
 
         dateMode: 'witness',
         showDocsWithoutCreationDate: true,
-        showDocsWithoutCopyDate: true,
         creationDate: {
           start: 700,
           end: 1700,
@@ -896,12 +891,26 @@ export default {
       },
       dateMode() {
         this.setFilter({name: 'dateMode', value: this.dateMode})
+        // update the sort
+        switch (this.dateMode) {
+          case 'witness':
+            this.selectedSort = 'witness_date'
+            this.sortOrder = '-'
+            break;
+          case 'creation-only':
+            this.selectedSort = 'creation'
+            this.sortOrder = '-'
+            break;
+          case 'copy-only':
+            this.selectedSort = 'copy_cent'
+            this.sortOrder = '-'
+            break;
+          default:
+            break;
+        }
         this.fetchAll()
       },
       showDocsWithoutCreationDate() {
-        this.fetchAll()
-      },
-      showDocsWithoutCopyDate() {
         this.fetchAll()
       },
       currentPage() {
@@ -976,7 +985,6 @@ export default {
         filters['copyRange'] = this.copyDateSliderOptions.start
 
         filters['showDocsWithoutCreationDate'] = this.showDocsWithoutCreationDate
-        filters['showDocsWithoutCopyDate'] = this.showDocsWithoutCopyDate
 
         if (this.activeFilterSection) {
           filters['filtersToCount'] = this.activeFilterSection
@@ -1004,7 +1012,6 @@ export default {
         filters['copyRange'] = this.copyDateSliderOptions.start
 
         filters['showDocsWithoutCreationDate'] = this.showDocsWithoutCreationDate
-        filters['showDocsWithoutCopyDate'] = this.showDocsWithoutCopyDate
 
         if (this.activeFilterSection) {
           filters['filtersToCount'] = this.activeFilterSection

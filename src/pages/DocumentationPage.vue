@@ -8,7 +8,7 @@
               Documentation
             </p>
             <nav>
-              <section class="">
+              <section>
                 <header>
                   <h2>Accueil</h2>
                 </header>

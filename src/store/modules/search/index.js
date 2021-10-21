@@ -1,6 +1,6 @@
 const initState = () => ({
   title: null,
-  sorts: ['witness_date'],
+  sorts: ['-witness_date'],
   selection: {
       languages : [],
       acteTypes: [],
