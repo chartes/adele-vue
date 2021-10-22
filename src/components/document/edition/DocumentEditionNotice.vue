@@ -127,7 +127,16 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label">Siècle de de la copie</label>
+                <label class="label">Siècle de de la copie
+                  <b-tooltip label="Obligatoire lorsqu'il s'agit d'une copie">
+                    <b-icon
+                      pack="far"
+                      icon="question-circle"
+                      size="is-small"
+                      class="ml-1"
+                    />
+                  </b-tooltip>
+                </label>
                 <div class="field-body">
                   <div class="field">
                     <div class="control">
@@ -139,11 +148,11 @@
                           Non défini
                         </option>
                         <option
-                          v-for="century in copyCenturies"
-                          :key="century.id"
-                          :value="century.id"
+                          v-for="century in [4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,21]"
+                          :key="century"
+                          :value="century"
                         >
-                          {{ century.label }}
+                          <span>{{ century }} ème</span>
                         </option>
                       </select>
                     </div>

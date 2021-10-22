@@ -527,15 +527,16 @@
                 />
               </button>
             </div>
-
-            <div v-if="!loading && meta && (meta.totalCount == 0 || !meta.filterCount)">
+            <div v-if="!loading && meta && (meta.totalCount == 0 && meta.filterCount !== {})">
               <b-message
                 type="is-info"
               >
                 Cette recherche ne retourne aucun résultat.
               </b-message>
             </div>
-            <div v-else>
+            <div
+              v-else
+            >
               <progress
                 v-show="loading" 
                 class="progress is-small is-warning"

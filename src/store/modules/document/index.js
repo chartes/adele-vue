@@ -5,7 +5,7 @@ const state = {
   document: null,
   documents: [],
   meta: {
-    totalCount: 0,
+    totalCount: null,
     filterCount: {},
     currentPage: 0,
     nbPages: 0
