@@ -537,6 +537,7 @@
             <div
               v-else
             >
+              <!--
               <progress
                 v-show="loading" 
                 class="progress is-small is-warning"
@@ -544,6 +545,7 @@
               >
                 15%
               </progress>
+              -->
               <nav 
                 class="pagination"
                 role="navigation"
