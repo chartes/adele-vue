@@ -83,7 +83,7 @@ const getters = {
     } 
     // teacher
     if (rootGetters['user/currentUserIsTeacher']) {
-       return rootState.user.currentUser.id !== state.selectedUserId
+       return rootState.user.currentUser.id !== rootState.document.document.user_id
     }
     
     return rootState.document.document.validation_flags[flag]

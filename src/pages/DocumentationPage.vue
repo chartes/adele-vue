@@ -79,7 +79,7 @@
                     id="tradition"
                     @click="goTo('tradition')"
                   >
-                    Traditions
+                    Modes de tradition
                   </li>
                   <li
                     id="acte-types"

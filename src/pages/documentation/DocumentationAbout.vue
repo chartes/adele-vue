@@ -3,7 +3,7 @@
     <header><h1>À propos</h1></header>
     <p>
       Développée par l’École nationale des chartes avec le soutien de
-      Scripta et du DIM Ile-de-France, l’application ADELE entend
+      Scripta et du DIM Ile-de-France sous le patronnage de la Commission internationale de diplomatique, l’application ADELE entend
       proposer à un public d’étudiants et de chercheurs un manuel de
       diplomatique progressivement construit autour du déchiffrement
       interactif, de l’annotation, si besoin de la traduction et enfin

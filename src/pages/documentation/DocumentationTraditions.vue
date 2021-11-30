@@ -288,7 +288,7 @@
       </dd>
 
       <dt id="tra-reg-not">
-        Registre de notaire et de tabellion
+        Registre
       </dt>
       <dd>
         Un registre est un volume dans lequel on procède à un

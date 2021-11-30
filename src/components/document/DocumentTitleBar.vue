@@ -67,7 +67,7 @@
       <div class="tile is-parent dates">
         <div class="tile is-child is-5">
           <p>Date de l'original : <span class="date">{{ document.creation_lab ? document.creation_lab : 'inconnue' }}</span></p>
-          <p>Date de du témoin présenté : <span class="date">{{ document.copy_year ? document.copy_year : document.creation_lab || 'inconnue' }}</span></p>
+          <p>Date du témoin présenté : <span class="date">{{ document.copy_year ? document.copy_year : document.creation_lab || 'inconnue' }}</span></p>
         </div>
       </div>
     </div>
