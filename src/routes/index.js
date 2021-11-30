@@ -5,16 +5,16 @@ Vue.use(VueRouter)
 
 const rootUrl = `${process.env.VUE_APP_APP_ROOT_URL}`
 
-const SearchPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/SearchPage.vue')
-const LandingPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/LandingPage.vue')
-const DocumentPage = () => import(/* webpackChunkName: "group-view" */ '@/pages/DocumentPage.vue')
+const SearchPage = () => import( '@/pages/SearchPage.vue')
+const LandingPage = () => import('@/pages/LandingPage.vue')
+const DocumentPage = () => import('@/pages/DocumentPage.vue')
 
-const DocumentEditionPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/DocumentEditionPage.vue')
-const LoginPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/LoginPage.vue')
-const UserDashboardPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/UserDashboardPage.vue')
-const ErrorPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/ErrorPage.vue')
-const UserProfilePage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/UserProfilePage.vue')
-const DocumentationPage = () => import(/* webpackChunkName: "group-edit" */ '@/pages/DocumentationPage.vue')
+const DocumentEditionPage = () => import('@/pages/DocumentEditionPage.vue')
+const LoginPage = () => import('@/pages/LoginPage.vue')
+const UserDashboardPage = () => import( '@/pages/UserDashboardPage.vue')
+const ErrorPage = () => import( '@/pages/ErrorPage.vue')
+const UserProfilePage = () => import('@/pages/UserProfilePage.vue')
+const DocumentationPage = () => import( '@/pages/DocumentationPage.vue')
 
 
 const router = new VueRouter({

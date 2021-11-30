@@ -4,7 +4,7 @@ import store from './store';
 import router from './routes/index';
 import Buefy from 'buefy'
 
-import 'buefy/dist/buefy.css'
+//import 'buefy/dist/buefy.css'
 
 import './assets/sass/main.scss'
 

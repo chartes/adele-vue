@@ -4,7 +4,9 @@
 
 
 /* Uncomment to import the entire Bulma framework */
-@import '~bulma/bulma';
+// @import '~bulma/bulma';
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
 
 @import '~bulma-steps';
 @import '~bulma-tooltip';

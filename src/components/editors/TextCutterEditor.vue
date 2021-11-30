@@ -72,7 +72,7 @@
   import 'quill/dist/quill.core.css';
   import 'quill/dist/quill.bubble.css';
   import 'quill/dist/quill.snow.css';
-  import 'bulma/css/bulma.min.css';
+  //import 'bulma/css/bulma.min.css';
 
   import EditorMixins from '../../mixins/EditorMixins'
 
