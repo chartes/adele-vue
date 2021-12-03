@@ -219,7 +219,7 @@
           >
         </div>
         <div class="column">      
-          <h3 class="is-size-4 mt-3">
+          <h3 class="is-size-4 mt-2">
             Vlaams Gewest (Flandre)
           </h3>
           <ul class="mb-3">
@@ -229,7 +229,7 @@
             <li>Vlaams-Brabant (Brabant flamand)</li>
             <li>West-Vlaanderen (Flandre-Occidentale)</li>
           </ul>
-          <h3 class="is-size-4 mt-3">
+          <h3 class="is-size-4 mt-2">
             Wallonie
           </h3>
           <ul>
@@ -545,7 +545,7 @@
             alt="carte de la République tchèque"
           >
         </div><div class="column">
-          <h3 class="is-size-4 mt-3">
+          <h3 class="is-size-4 mt-2">
             En Bohême
           </h3>
           <ul>
@@ -592,7 +592,7 @@
               (<i>Ústecký kraj</i>)
             </li>
           </ul>
-          <h3 class="is-size-4 mt-3">
+          <h3 class="is-size-4 mt-2">
             À cheval entre Bohême et Moravie
           </h3>
           <ul>
@@ -618,7 +618,7 @@
               (<i>Kraj Vysočina ou Vysočina</i>).
             </li>
           </ul>
-          <h3 class="is-size-4 mt-3 ">
+          <h3 class="is-size-4 mt-2 ">
             En Moravie
           </h3>
           <ul>
@@ -637,7 +637,7 @@
               (<i>Zlínský kraj</i>).
             </li>
           </ul>
-          <h3 class="is-size-4 mt-3">
+          <h3 class="is-size-4 mt-2">
             À cheval entre Moravie et Silésie
           </h3>
           <ul>
