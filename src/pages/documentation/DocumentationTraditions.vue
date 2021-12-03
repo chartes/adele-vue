@@ -45,7 +45,7 @@
             <li>
               <a
                 href="#tra-reg-not"
-              >Registre de notaire et de tabellion</a>
+              >Registre</a>
             </li>
             <li><a href="#tra-faux">Faux</a></li>
           </ul>
