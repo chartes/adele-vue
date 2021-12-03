@@ -2,9 +2,7 @@
   <article>
     <header> <h1>Contact</h1></header>
     <p>
-      Développée par l’École nationale des chartes avec le soutien de
-      Scripta et du DIM Ile-de-France, l’application ADELE entend
-      proposer à un public d’étudiants...
+      Veuillez adresser remarques et observations à : <a href="mailto:adele@chartes.psl.eu">adele@chartes.psl.eu</a>
     </p>
   </article>
 </template>

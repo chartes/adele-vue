@@ -52,6 +52,12 @@
                     Dates
                   </li>
                   <li
+                    id="languages"
+                    @click="goTo('languages')"
+                  >
+                    Langues
+                  </li>
+                  <li
                     id="conservation"
                     @click="goTo('conservation')"
                   >
@@ -128,6 +134,9 @@
           <section v-if="$attrs.section === 'contact'">
             <documentation-contact />
           </section>
+          <section v-if="$attrs.section === 'languages'">
+            <documentation-languages />
+          </section>
           <section v-if="$attrs.section === 'conservation'">
             <documentation-conservation />
           </section>
@@ -169,12 +178,14 @@ import DocumentationTraditions from '@/pages/documentation/DocumentationTraditio
 import DocumentationDates from '@/pages/documentation/DocumentationDates';
 import DocumentationProject from "@/pages/documentation/DocumentationProject";
 import DocumentationAbout from "@/pages/documentation/DocumentationAbout";
+import DocumentationLanguages from "@/pages/documentation/DocumentationLanguages";
 
 export default {
   name: "DocumentationPage",
   components: {
     Logos,
     DocumentationPlaces,
+    DocumentationLanguages,
     DocumentationCredits,
     DocumentationActeTypes,
     DocumentationSpeechparts,
