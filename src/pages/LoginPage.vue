@@ -42,7 +42,7 @@
           <span class="control">
             <button
               class="button  is-success"
-              @click="login"
+              @click="authenticate"
             >
               Valider
             </button>
@@ -92,7 +92,7 @@ export default {
       })
     },
     methods: {
-        login () {
+        authenticate () {
           this.error = false
           return this.$store
             .dispatch('user/login', {
