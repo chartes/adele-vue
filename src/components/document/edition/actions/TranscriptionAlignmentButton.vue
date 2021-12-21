@@ -38,7 +38,7 @@ export default {
       ...mapState('document', ['document', 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
       ...mapState('translation', ['savingStatus']),
       ...mapState('transcription', ['translationAlignmentSaved']),
-      ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
+      ...mapGetters('user', ['isAuthenticated', 'currentUserIsTeacher']),
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapGetters('workflow', ['isTranslationValidated']),
       disabled() {

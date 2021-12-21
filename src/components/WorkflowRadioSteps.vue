@@ -171,7 +171,7 @@ export default {
         ...mapState('user', ['currentUser']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('document', ['document']),
-        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        ...mapGetters('user', ['isAuthenticated', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapGetters('document', ['documentOwner']),
         
         ...mapGetters('workflow', [

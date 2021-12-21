@@ -282,7 +282,7 @@ export default {
         ...mapState('document', ['document', 
                                  'transcriptionView', 'translationView', 'transcriptionAlignmentView', 'speechPartsView',
                                  'commentariesView']),
-        ...mapGetters('user', ['loggedIn']),
+        ...mapGetters('user', ['isAuthenticated']),
         ...mapGetters('document', ['getManifestInfoUrl']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
         'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated', 

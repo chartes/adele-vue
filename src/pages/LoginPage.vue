@@ -76,7 +76,7 @@ export default {
     computed: {
       ...mapState("user", ["currentUser"]),
       ...mapGetters("user", [
-      "loggedIn"
+      "isAuthenticated"
     ]),
     },
     mounted() {
@@ -84,7 +84,7 @@ export default {
     },
      beforeRouteEnter(to, from, next) {
       next((vm) => {
-        if (vm.loggedIn) {
+        if (vm.isAuthenticated) {
           next({ name: "home" });
         } else {
           next();

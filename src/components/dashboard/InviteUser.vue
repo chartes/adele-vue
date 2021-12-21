@@ -77,7 +77,7 @@ export default {
     },
     computed: {
       ...mapState("user", ["currentUser"]),
-      ...mapGetters("user", ["loggedIn"]),
+      ...mapGetters("user", ["isAuthenticated"]),
       emailIsValid() {
           return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email)
       }

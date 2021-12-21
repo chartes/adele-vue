@@ -98,12 +98,12 @@ export default {
       }
     },
     computed: {
-        ...mapGetters("user", ["loggedIn", "currentUserIsTeacher", "currentUserIsAdmin"]),
+        ...mapGetters("user", ["isAuthenticated", "currentUserIsTeacher", "currentUserIsAdmin"]),
     },
 
     beforeRouteEnter(to, from, next) {
       next((vm) => {
-        if (!vm.loggedIn) {
+        if (!vm.isAuthenticated) {
           next({ name: "login" });
         } else {
           next();

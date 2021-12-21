@@ -92,7 +92,7 @@ const actions = {
 };
 
 const getters = {
-  loggedIn(state) {
+  isAuthenticated(state) {
     return !!state.currentUser
   },
   currentUserIsAdmin(state) {
