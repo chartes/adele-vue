@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from "@/store/index"
+import {getCurrentUser} from "@/modules/http-common"
 
 Vue.use(VueRouter)
 
@@ -84,6 +86,27 @@ const router = new VueRouter({
     }
     */
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (
+    to.fullPath.indexOf("/edit") > -1 ||
+    ["dashboard", "profile"].indexOf(to.name) > -1
+  ) {
+    if (!store.state.user.currentUser) {
+      next({ name: "login", query: { from: to.path } })
+    }
+  }
+  if (store.state.user.jwt) {
+    try {
+      const response = await getCurrentUser();
+      store.dispatch("user/setUserData", response.data.user_data)
+    } catch (e) {
+      console.log(e)
+      store.dispatch("user/logout")
+    }
+  }
+  next();
 })
 
 
