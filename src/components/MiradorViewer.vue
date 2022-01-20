@@ -155,6 +155,7 @@ export default {
   beforeDestroy() {
     if (this.resetTimeout)
       clearTimeout(this.resetTimeout)
+    this.viewer.unmount()
   }
 }
 </script>
