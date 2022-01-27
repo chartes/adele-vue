@@ -13,6 +13,8 @@ const DocumentPage = () => import('@/pages/DocumentPage.vue')
 
 const DocumentEditionPage = () => import('@/pages/DocumentEditionPage.vue')
 const LoginPage = () => import('@/pages/LoginPage.vue')
+const ForgotPasswordPage = () => import('@/pages/ForgotPasswordPage.vue')
+const PasswordResetPage = () => import('@/pages/PasswordResetPage.vue')
 const UserDashboardPage = () => import( '@/pages/UserDashboardPage.vue')
 const ErrorPage = () => import( '@/pages/ErrorPage.vue')
 const UserProfilePage = () => import('@/pages/UserProfilePage.vue')
@@ -71,6 +73,16 @@ const router = new VueRouter({
       path: '/login',
       component: LoginPage,
       name: 'login'
+    },
+    {
+      path: '/forgot-password',
+      component: ForgotPasswordPage,
+      name: 'forgot-password',
+    },
+    {
+      path: '/reset-password',
+      component: PasswordResetPage,
+      name: 'reset-password',
     },
     {
       path: '/error',

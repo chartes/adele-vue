@@ -41,6 +41,9 @@
             </span>
           </p>
         </div>
+        <router-link :to="{name: 'forgot-password'}">
+          Mot de passe oublié
+        </router-link>
         <div class="field">
           <span class="control">
             <button

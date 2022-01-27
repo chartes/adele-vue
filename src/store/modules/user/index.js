@@ -89,6 +89,14 @@ const actions = {
     }
   },
 
+  async sendPasswordResetLink(_, {email}) {
+    await http.post('send-password-reset-link', {email})
+  },
+
+  async resetPassword({commit}, {token, password, password2}) {
+    return await http.post('reset-password', {token, password, password2})
+  },
+
   async getTeachersList(state)  {
     const response = await http.get(`teachers`)
     return response.data.data.users
