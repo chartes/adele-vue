@@ -65,7 +65,7 @@ export default {
     components: {UserMenu},
     computed: {
         ...mapState('user', ['currentUser']),
-        ...mapGetters('user', ['loggedIn'])
+        ...mapGetters('user', ['isAuthenticated'])
     },
     methods: {
         logout() {

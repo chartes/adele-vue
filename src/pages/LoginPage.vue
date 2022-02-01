@@ -1,5 +1,8 @@
 <template>
-  <div class="container login-form">
+  <form
+    class="container login-form"
+    @submit.prevent="authenticate"
+  >
     <article class="message m-t-xxl">
       <div class="message-header">
         Connexion
@@ -17,7 +20,7 @@
             <input
               v-model="email"
               class="input"
-              type="email"
+              type="text"
               placeholder="Nom d'utilisateur ou email"
             >
             <span class="icon is-small is-left">
@@ -42,7 +45,6 @@
           <span class="control">
             <button
               class="button  is-success"
-              @click="login"
             >
               Valider
             </button>
@@ -54,7 +56,7 @@
         </div>
       </div>
     </article>
-  </div>
+  </form>
 </template>
 
 <script>
@@ -76,39 +78,29 @@ export default {
     computed: {
       ...mapState("user", ["currentUser"]),
       ...mapGetters("user", [
-      "loggedIn"
+      "isAuthenticated"
     ]),
+    },
+    created() {
+      if (this.isAuthenticated) {
+        this.$router.push({path: this.$route.query.from})
+      }
     },
     mounted() {
       this.error = false
     },
-     beforeRouteEnter(to, from, next) {
-      next((vm) => {
-        if (vm.loggedIn) {
-          next({ name: "home" });
-        } else {
-          next();
-        }
-      })
-    },
     methods: {
-        login () {
+        authenticate () {
           this.error = false
           return this.$store
             .dispatch('user/login', {
               email: this.email,
               password: this.password
             })
-            .then((response) => { 
-              if (this.currentUser) {
-                if (this.$route.name === 'login' || location.pathname.indexOf('adele') === -1) {
-                  this.$router.go('home')
-                } else {
-                  this.$router.go(-1)
-                }
-              } else {
-                this.error = true
-              }
+            .then(() => { 
+	      this.$router.push({name: "home"})
+            }).catch(() => {
+              this.error=true
             })
         }
       }

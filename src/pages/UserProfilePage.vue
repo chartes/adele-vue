@@ -149,7 +149,7 @@ export default {
     },
     computed: {
       ...mapState("user", ["currentUser"]),
-      ...mapGetters("user", ["loggedIn"]),
+      ...mapGetters("user", ["isAuthenticated"]),
       canSave() {
         return this.email.length > 5 && this.firstname && this.lastname && this.username.length >= 3 && this.password.length >= 5 && this.password2.length >= 5 && this.password == this.password2
       }
@@ -164,7 +164,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
       next((vm) => {
-        if (!vm.loggedIn) {
+        if (!vm.isAuthenticated) {
           next({ name: "login" });
         } else {
           next();

@@ -1,7 +1,7 @@
 <template>
   <div>
     <router-link
-      v-if="!loggedIn"
+      v-if="!isAuthenticated"
       :to="{name: 'login'}"
     >
       <a
@@ -12,7 +12,7 @@
       </a>
     </router-link>
     <div
-      v-if="loggedIn"
+      v-if="isAuthenticated"
       class="dropdown is-hoverable"
     >
       <div class="dropdown-trigger">
@@ -78,7 +78,7 @@ export default {
     name: "UserMenu",
     computed: {
         ...mapState('user', ['currentUser']),
-        ...mapGetters('user', ['loggedIn'])
+        ...mapGetters('user', ['isAuthenticated'])
     },
     methods: {
         logout() {

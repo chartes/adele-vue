@@ -606,7 +606,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next((vm) => {
       vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
-      if (!vm.loggedIn) {
+      if (!vm.isAuthenticated) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
           next({ name: "document-view", params: {docId: vm.$attrs.docId, section: 'notice' } });
@@ -673,7 +673,7 @@ export default {
     ...mapState("user", ["currentUser"]),
 
     ...mapGetters("user", [
-      "loggedIn",
+      "isAuthenticated",
       "currentUserIsAdmin",
       "currentUserIsTeacher",
       "currentUserIsStudent",

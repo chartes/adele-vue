@@ -1,8 +1,8 @@
-import {http} from '../../../modules/http-common';
-import { deleteCookie } from '../../../modules/cookies-helpers';
+import {http, isValidJwt} from '../../../modules/http-common';
 
 const state = {
   currentUser: null,
+  jwt: localStorage.getItem('tokenAdele'),
 
   usersSearchResults: [],
 };
@@ -10,38 +10,43 @@ const state = {
 const mutations = {
 
   SET_USER_DATA (state, userData) {
-    state.currentUser = {
-      ...userData,
-      isAdmin: userData.roles.indexOf("admin") > -1
+    if (userData) {
+      state.currentUser = {
+        ...userData,
+        isAdmin: userData.roles.indexOf("admin") > -1
+      }
+    } else {
+      state.currentUser = null
     }
-    localStorage.setItem('user-adele', JSON.stringify(state.currentUser))
   },
 
-  CLEAR_USER_DATA(state) {
-    localStorage.removeItem('user-adele')
-    deleteCookie('csrf_access_token')
-    deleteCookie('csrf_refresh_token')
-    deleteCookie('access_token_cookie')
-    deleteCookie('refresh_token_cookie')
-    location.reload()
+  SET_JWT_TOKEN(state, token) {
+    if (token) {
+      localStorage.tokenAdele = token;
+    } else {
+      localStorage.removeItem("tokenAdele");
+    }
+    state.jwt = token
   }
 };
 
 const actions = {
+  setUserData({ commit }, userData) {
+    commit('SET_USER_DATA', userData)
+  },
   login ({ commit }, credentials) { 
     return http
       .post('login', credentials)
       .then(({ data }) => {
-        commit('SET_USER_DATA', data)
+        commit('SET_USER_DATA', data.user_data)
+        commit('SET_JWT_TOKEN', data.token)
         return data
-      }).catch(({error}) => {
-        return error
-      })
-  },
+      })  },
 
   async logout({commit}) {
     await http.get('logout')
-    commit('CLEAR_USER_DATA')
+    commit('SET_USER_DATA', null)
+    commit('SET_JWT_TOKEN', null)
   },
 
   register({commit}) {
@@ -92,8 +97,8 @@ const actions = {
 };
 
 const getters = {
-  loggedIn(state) {
-    return !!state.currentUser
+  isAuthenticated(state) {
+    return !!state.currentUser && isValidJwt(state.jwt)
   },
   currentUserIsAdmin(state) {
     return state.currentUser && state.currentUser.roles.includes('admin')

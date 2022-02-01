@@ -1,6 +1,5 @@
 import axios from 'axios';
-import { getCookie } from './cookies-helpers'
-import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import store from '../store'
 
 const _baseApiURL = `${process.env.VUE_APP_API_URL}`;
 const _baseAppURL = `${process.env.VUE_APP_ROOT_URL}`;
@@ -11,26 +10,31 @@ export const baseAppURL = _baseAppURL;
 
 export const http = axios.create({
   baseURL: _baseApiURL,
-  headers: {
-    //'X-CSRF-TOKEN': getCookie('csrf_refresh_token')
-  },
   withCredentials: true
 });
 
-// Function that will be called to refresh authorization
-const refreshAuthLogic = failedRequest => http.post('refresh', {}, {
-  headers: {
-    'X-CSRF-TOKEN': getCookie('access_token_cookie')
+http.interceptors.request.use((config) => {
+  const jwt = store.state.user.jwt;
+  if (jwt) {
+    config.headers['Authorization'] = `Bearer ${jwt}`
   }
-}).then(tokenRefreshResponse => {
-    const token = getCookie('access_token_cookie') 
+  return config
+})
 
-    failedRequest.response.config.headers['Authorization'] = 'Bearer ' + token;
-    failedRequest.response.config.headers['X-CSRF-Token'] = token;
-    return Promise.resolve();
-});
 
-createAuthRefreshInterceptor(http, refreshAuthLogic);
+export function isValidJwt(jwt) {
+  if (!jwt || jwt.split(".").length < 3) {
+    return false;
+  }
+  const data = JSON.parse(atob(jwt.split(".")[1]))
+  const exp = new Date(data.exp * 1000); // JS deals with dates in milliseconds since epoch
+  const now = new Date()
+  return now < exp
+} 
+
+export function getCurrentUser() {
+  return http.get(`${_baseApiURL}/current-user`);
+}
 
 
 export default http;

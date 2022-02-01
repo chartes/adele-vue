@@ -25,7 +25,7 @@
           Dossier {{ document.id }}
         </span>
         <hr class="navbar-divider">
-        <div v-if="loggedIn && documentCanBeModified">
+        <div v-if="isAuthenticated && documentCanBeModified">
           <router-link
             v-if="!isInEditionMode"
             :to="{name: 'document-edition', params:{docId: document.id, section: currentSection || 'notice'}}"
@@ -43,7 +43,7 @@
             </div>
           </router-link>
         </div>
-        <div v-else-if="loggedIn && currentUserIsStudent && !documentCanBeModified">
+        <div v-else-if="isAuthenticated && currentUserIsStudent && !documentCanBeModified">
           <div
             class="tag is-primary"
             style="margin-left: 10px"
@@ -83,7 +83,7 @@ export default {
     props: {
     },
     computed: {
-        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        ...mapGetters('user', ['isAuthenticated', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapState('user', ['currentUser']),
         ...mapState('document', ['document']),
         ...mapState('workflow', ['isInEditionMode', 'currentSection']),

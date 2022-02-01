@@ -38,7 +38,7 @@ export default {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId']),
         ...mapState('user', ['currentUser']),
-        ...mapGetters('user', ['loggedIn', 'currentUserIsTeacher']),
+        ...mapGetters('user', ['isAuthenticated', 'currentUserIsTeacher']),
         ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranscriptionReadOnly',
         'isSpeechPartsValidated', 'isSpeechPartsReadOnly' ])
     },

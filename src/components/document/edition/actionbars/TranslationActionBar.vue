@@ -86,7 +86,7 @@ export default {
         ...mapState('document', ['document']),
         ...mapState('workflow', ['selectedUserId', 'transcriptionAlignmentMode']),
         ...mapState('user', ['currentUser']),
-        ...mapGetters('user', ['loggedIn', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
+        ...mapGetters('user', ['isAuthenticated', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapGetters('workflow', [
           'isTranscriptionValidated', 'selectedUserHasTranscription',
           'isTranslationValidated', 'selectedUserHasTranslation', 'isTranslationReadOnly'
