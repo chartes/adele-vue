@@ -1,34 +1,45 @@
 <template>
   <div>
     <div class="editor-area">
-      <div class="editor-controls" ref="controls">
+      <div
+        ref="controls"
+        class="editor-controls"
+      >
         <div class="editor-controls-group">
           <label>Structure éditoriale</label>
-          <editor-button :active="isZoneButtonActive" :callback="setFacsimileEditModeNew" :format="'zone'"/>
+          <editor-button
+            :active="isZoneButtonActive"
+            :callback="setFacsimileEditModeNew"
+            :format="'zone'"
+          />
         </div>
       </div>
       <div class="editor-container">
-        <div class="quill-editor" ref="editor" spellcheck="false"></div>
+        <div
+          ref="editor"
+          class="quill-editor"
+          spellcheck="false"
+        />
         <in-editor-actions
-                v-show="selectedZoneId && this.editor.hasFocus()"
-                :style="actionsPosition"
-                refs="facsimileActions"
-                :edit="setFacsimileEditModeEdit"
-                :delete="setFacsimileEditModeDelete"/>
+          v-show="selectedZoneId && this.editor.hasFocus()"
+          :style="actionsPosition"
+          refs="facsimileActions"
+          :edit="setFacsimileEditModeEdit"
+          :delete="setFacsimileEditModeDelete"
+        />
       </div>
 
       <facsimile-zone-list-form
-              v-if="facsimileEditMode == 'new' || facsimileEditMode == 'edit'"
-              :zoneId="selectedZoneId"
-              :submit="updateAlignment"
-              :cancel="closeFragmentsListEdit"
+        v-if="facsimileEditMode == 'new' || facsimileEditMode == 'edit'"
+        :zone-id="selectedZoneId"
+        :submit="updateAlignment"
+        :cancel="closeFragmentsListEdit"
       />
       <modal-confirm-facsimile-delete
-              v-if="facsimileEditMode == 'delete'"
-              :cancel="closeFragmentsListEdit"
-              :submit="deleteTextAlignment"
+        v-if="facsimileEditMode == 'delete'"
+        :cancel="closeFragmentsListEdit"
+        :submit="deleteTextAlignment"
       />
-
     </div>
   </div>
 </template>
@@ -44,9 +55,7 @@
   import FacsimileZoneListForm from "../forms/FacsimileZoneListForm";
 
   export default {
-    name: "facsimile-editior",
-    props: ['initialContent'],
-    mixins: [EditorMixins],
+    name: "FacsimileEditior",
     components: {
       FacsimileZoneListForm,
       ModalConfirmFacsimileDelete,
@@ -54,6 +63,8 @@
       InEditorActions,
       EditorButton,
     },
+    mixins: [EditorMixins],
+    props: ['initialContent'],
     data() {
       return {
         storeActions: {
@@ -95,7 +106,7 @@
           this.setRangeBound(range);
           let formats = this.editor.getFormat(range.index, range.length);
           this.updateButtons(formats);
-          if (!!formats.zone) {
+          if (formats.zone) {
             this.onTextAlignmentSelected(formats.zone, range);
             this.selectedZoneId = formats.zone;
             this.buttons.zone = false;
@@ -128,7 +139,6 @@
         this.facsimileEditMode = 'delete';
       },
       setFacsimileEditModeNew() {
-        console.log("setFacsimileEditModeNew");
         this.facsimileEditMode = 'new';
         this.currentFacsimile = { zone_id: this.selectedZoneId };
         this.newFacsimileChoiceClose();
@@ -179,17 +189,13 @@
 
     watch: {
       deletedFacsimileZoneId (zoneId) {
-        console.log('deletedFacsimileZoneId', zoneId)
         const c = this.editor.getContents()
-        console.log('editor content', c)
         let index = 0;
         c.ops.forEach(op => {
-          console.log("op", op.attributes && op.attributes.zone ? op.attributes.zone : null, op.attributes && op.attributes.zone && op.attributes.zone === zoneId)
           if (op.attributes && op.attributes.zone && op.attributes.zone === zoneId) {
             this.editor.formatText(index, op.insert.length, {zone: false}, 'api')
           }
           index += op.insert.length
-          console.log("next index", index)
 
         })
       }

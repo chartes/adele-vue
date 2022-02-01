@@ -12,14 +12,10 @@ var EditorNotesMixin = {
   methods: {
 
     onNoteSelected (note, range) {
-     //console.log("onNoteSelected", note, range.index, range.length)
-
       if (!range.length) return;
       this.selectedNoteId = note;
-
-      var deltas = this.editor.getContents().ops;
-      var length = deltas.length;
-
+      //var deltas = this.editor.getContents().ops;
+      //var length = deltas.length;
     },
 
     updateNoteId(newId) {
@@ -28,25 +24,44 @@ var EditorNotesMixin = {
       this.closeNoteEdit();
     },
     updateNote(note) {
-      const isNewNote = this.noteEditMode === 'new';
-      const action = isNewNote ? 'notes/add' : 'notes/update';
-      this.$store.dispatch(action, note).then(()=>{
+      const isNewNote = this.noteEditMode === 'new'
+      const store = this.$route.params['section'];
+      const action = isNewNote ? `${store}/insertNote` : `${store}/updateNote`
+
+      // set note missing data (ptrs)
+      note.ptr_start = this.currentSelection.index
+      note.ptr_end = note.ptr_start + this.currentSelection.length
+
+      if (isNewNote) {
+        // generate a temporary unique-ish id to avoid duplicates before saving
+        note.id = 0 - new Date().getTime()
+      }
+      // update the shadow quill content
+      this.$store.dispatch(action, note).then((response)=>{
         if (isNewNote) {
-          this.editor.format('note', this.$store.getters['notes/newNote'].id);
-          this.selectedNoteId = this.$store.getters['notes/newNote'].id;
+          // finally, format the selection in the editor
+          this.updateNoteId(response.id)
+        } else {
+          this.closeNoteEdit()
         }
-        this.closeNoteEdit();
       })
     },
     unlinkNote() {
-     //console.log('unlinkNote')
+      //console.log('unlinkNote')
       this.editor.format('note', false);
       this.selectedNoteId = null;
     },
-    deleteNote() {
-     //console.log('deleteNote')
+    async deleteNote() {
+      //console.log('deleteNote')
       // TODO delete note
       this.editor.format('note', false);
+      await this.$store.dispatch('transcription/saveTranscription')
+      await this.$store.dispatch('translation/saveTranslation')
+      await this.$store.dispatch('commentaries/saveCommentaries')
+      await this.$store.dispatch('notes/deleteNote', this.selectedNoteId)
+      await this.$store.dispatch('transcription/fetchTranscriptionContent')
+      await this.$store.dispatch('translation/fetchTranslationContent')
+      await this.$store.dispatch('commentaries/fetchCommentariesContent')
       this.selectedNoteId = null;
       this.closeNoteEdit();
     },
@@ -70,7 +85,9 @@ var EditorNotesMixin = {
      //console.log("closeNoteEdit")
       this.noteEditMode = null;
       this.currentNote = null;
-      this.editor.focus();
+      this.editor.blur();
+      this.selectedNoteId = null;
+      this.defineNewNote = false;
     },
     newNoteChoiceOpen() {
       this.defineNewNote = true;

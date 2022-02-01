@@ -1,3 +1,107 @@
 .document-card {
-   
+
+  box-shadow: none;
+  padding: 14px 12px 16px 12px;
+  border:solid 1px transparent;
+
+  &:hover {
+    border:solid 1px $primary;
+  }
+
+  img {
+    object-fit: scale-down;
+    height: 300px;
+    margin: 0 auto;
+  }
+
+  .placeholder-image {
+    object-fit: cover;
+  }
+
+  figure {
+    background: #E2E2E2;
+  }
+
+  .card-header {
+    box-shadow: none;
+    flex-direction: column;
+    font-family: $family-sans-serif;
+    font-weight: $weight-semibold;
+  }
+
+  .card-header .document-folder {
+    border-bottom: 6px solid #FFD500;
+    font-size: 14px;
+    padding-bottom: 6px;
+    text-transform: uppercase;
+
+    a {
+      color: inherit;
+    }
+  }
+
+  .card-header .document-dates-cartouche {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 6px 0 12px;
+  }
+
+  .card-header .document-creation-lab {
+    color: #F5A623;
+    font-size: 16px;
+  }
+  .card-header .document-dates-prefix {
+    font-weight: 400;
+    font-variant: all-small-caps;
+    margin-right: 4px;
+  }
+
+
+  .card-content {
+    color: #000000;
+    padding: 1.5rem 0;
+    border-bottom: 7px solid #E8E7E0;
+  }
+
+  .card-content .title {
+    font-family: $family-serif;
+    font-size: 17px;
+    line-height: 23px;
+    margin-bottom: 0.8rem;
+  }
+
+  .card-content .subtitle {
+    font-family: $family-sans-serif;
+    font-size: 16px;
+    line-height: 21px;
+    margin: 0;
+  }
+
+  .card-header-first-line {
+    display: flex;
+    justify-content: space-between;
+
+  }
+  .actions {
+
+    .bookmark {
+      &:hover {
+      cursor: pointer
+    }
+    }
+    .active-bookmark {
+      color: #48c774;
+    }
+    .inactive-bookmark {
+      color: rgb(155, 155, 155);
+    }
+  }
+}
+
+.document-card-placeholder {
+  height: 32px;
+  width: 100%;
+  background-color: lightgrey;
+  margin: 6px 0px 12px;
 }

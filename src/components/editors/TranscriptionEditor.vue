@@ -4,8 +4,12 @@
       ref="controls"
       class="editor-controls"
     >
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Structure éditoriale</label>
+        <!-- 
         <editor-button
           :selected="buttons.paragraph"
           :active="editorHasFocus"
@@ -18,19 +22,18 @@
           :callback="simpleFormat"
           :format="'verse'"
         />
+        -->
         <editor-button
+          
           :active="isNoteButtonActive"
           :callback="newNoteChoiceOpen"
           :format="'note'"
         />
-        <editor-button
-          :selected="buttons.segment"
-          :active="editorHasFocus"
-          :callback="insertSegment"
-          :format="'segment'"
-        />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements typographiques</label>
         <editor-button
           :selected="buttons.bold"
@@ -45,16 +48,16 @@
           :format="'italic'"
         />
         <editor-button
-          :selected="buttons.superscript"
-          :active="editorHasFocus"
-          :callback="simpleFormat"
-          :format="'superscript'"
-        />
-        <editor-button
           :selected="buttons.smallcaps"
           :active="editorHasFocus"
           :callback="simpleFormat"
           :format="'smallcaps'"
+        />
+        <editor-button
+          :selected="buttons.superscript"
+          :active="editorHasFocus"
+          :callback="simpleFormat"
+          :format="'superscript'"
         />
         <editor-button
           :selected="buttons.underline"
@@ -63,7 +66,10 @@
           :format="'underline'"
         />
       </div>
-      <div class="editor-controls-group">
+      <div
+        v-if="!transcriptionAlignmentMode"
+        class="editor-controls-group"
+      >
         <label>Enrichissements sémantiques</label>
         <editor-button
           :selected="buttons.del"
@@ -95,11 +101,13 @@
       <div
         id="transcription-editor"
         ref="editor"
-        class="quill-editor"
+        class="quill-editor transcription-editor"
         spellcheck="false"
       />
       <note-actions
-        v-show="selectedNoteId && editor.hasFocus()"
+        v-if="!transcriptionAlignmentMode"
+        v-show="noteEditMode == null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
+        :selected-note-id="selectedNoteId"
         refs="noteActions"
         :style="actionsPosition"
         :new-note="setNoteEditModeNew"
@@ -108,41 +116,36 @@
         :unlink="unlinkNote"
         :delete="setNoteEditModeDelete"
       />
-      <new-note-actions
-        v-if="defineNewNote"
-        :mode-new="setNoteEditModeNew"
-        :mode-link="setNoteEditModeList"
-        :cancel="newNoteChoiceClose"
+    </div>
+    <div v-if="!transcriptionAlignmentMode">
+      <notes-list-form
+        v-if="noteEditMode == 'list'"
+        :note-id="selectedNoteId"
+        :submit="updateNoteId"
+        :cancel="closeNoteEdit"
+      />
+      <textfield-form
+        v-if="formTextfield"
+        :title="formTextfield.title"
+        :label="formTextfield.label"
+        :value="formTextfield.value"
+        :submit="submitTextfieldForm"
+        :cancel="cancelTextfieldForm" 
+      />
+      <note-form
+        v-if="noteEditMode == 'new' || noteEditMode == 'edit'"
+        :title="noteEditMode == 'new' ? 'nouvelle note' : 'Éditer la note'"
+        :note="currentNote"
+        :note-id="selectedNoteId"
+        :submit="updateNote"
+        :cancel="closeNoteEdit"
+      />
+      <modal-confirm-note-delete
+        v-if="noteEditMode == 'delete'"
+        :cancel="closeNoteEdit"
+        :submit="deleteNote"
       />
     </div>
-        
-    <notes-list-form
-      v-if="noteEditMode == 'list'"
-      :note-id="selectedNoteId"
-      :submit="updateNoteId"
-      :cancel="closeNoteEdit"
-    />
-    <textfield-form
-      v-if="formTextfield"
-      :title="formTextfield.title"
-      :label="formTextfield.label"
-      :value="formTextfield.value"
-      :submit="submitTextfieldForm"
-      :cancel="cancelTextfieldForm" 
-    />
-    <note-form
-      v-if="noteEditMode == 'new' || noteEditMode == 'edit'"
-      :title="noteEditMode == 'new' ? 'nouvelle note' : 'Éditer la note'"
-      :note="currentNote"
-      :note-id="selectedNoteId"
-      :submit="updateNote"
-      :cancel="closeNoteEdit"
-    />
-    <modal-confirm-note-delete
-      v-if="noteEditMode == 'delete'"
-      :cancel="closeNoteEdit"
-      :submit="deleteNote"
-    />
   </div>
 </template>
 
@@ -150,23 +153,24 @@
     
     import { mapState } from 'vuex'
     import EditorButton from './EditorButton.vue';
+
     import EditorMixins from '../../mixins/EditorMixins'
     import EditorNotesMixins from '../../mixins/EditorNotesMixins'
     //import InEditorActions from './InEditorActions';
     import NoteActions from './NoteActions';
-    import NewNoteActions from './NewNoteActions';
     import NoteForm from '../forms/NoteForm';
     import NotesListForm from '../forms/NotesListForm';
     import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
     //import SaveBar from "../ui/SaveBar";
     import TextfieldForm from "../forms/TextfieldForm";
-    
+    import SegmentBlot from '../../modules/quill/blots/semantic/Segment';
+    import Quill from '../../modules/quill/AdeleQuill';
+
     export default {
         name: "TranscriptionEditor",
         components: {
             TextfieldForm,
             //SaveBar,
-            NewNoteActions,
             //InEditorActions,
             EditorButton,
             ModalConfirmNoteDelete,
@@ -198,22 +202,93 @@
                 }
             }
         },
-        mounted () {
-            this.initEditor(this.$refs.editor, this.$props.initialContent);
+        computed: {
+            ...mapState('workflow', ['transcriptionAlignmentMode', 'currentSection']),
+            ...mapState('transcription', ['transcriptionSaved']),
         },
-        beforeDestroy () {
-            this.deactivateEvents();
-        },
-        methods: {
-            
+        watch: {
+          currentSelection() {
+            if (this.currentSelection && this.currentSelection.length == 0) {
+              this.defineNewNote = false
+            }
+          },
+          transcriptionAlignmentMode () {
+            this.switchTextAlignActions()
+          }
+    },
+    mounted () {
+      this.initEditor(this.$refs.editor, this.$props.initialContent);
+      this.switchTextAlignActions()
+    },
+    beforeDestroy () {
+      if (this.transcriptionAlignmentMode) {
+        this.disableTextAlignActions()
+      }
+    },
+    methods: {
             updateContent () {
                 this.delta = this.editor.getContents().ops;
-                
-            }
-        },
-        
-        computed: {
-            ...mapState('transcription', ['transcriptionSaved']),
+            },
+
+        addSegmentOnClick(ev) {
+        let segment = Quill.find(ev.target);
+        if (segment && segment instanceof SegmentBlot) {
+          this.editor.deleteText(segment.offset(this.editor.scroll), 1)
+          this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+        } else {
+          const range = this.editor.getSelection()
+          if (range && range.length === 0) {
+            this.insertSegment('segment')
+            this.$store.dispatch('transcription/textAlignmentsNeedToBeSaved')
+          }
         }
+      },
+      switchTextAlignActions() {
+        if (this.editor && this.transcriptionAlignmentMode && this.currentSection === 'translation') {
+          console.log("enable read only")
+          this.editor.on('selection-change', this.onAlignSelection);
+          this.editor.on('text-change', this.onAlignTextChange);
+          this.editor.root.addEventListener('click', this.addSegmentOnClick);
+        } else {
+          console.log("disable read only")
+          this.disableTextAlignActions()
+        }
+      },
+      disableTextAlignActions() {
+        this.editor.off('selection-change', this.onAlignSelection);
+        this.editor.off('text-change', this.onAlignTextChange);
+        this.editor.root.removeEventListener("click", this.addSegmentOnClick); 
+      },
+      onAlignSelection (range) {
+        if (range) {
+          let beforeCharDelta = this.editor.getContents(range.index - 1, 1);
+          let isAfterSegment = false;
+          beforeCharDelta.ops.forEach(op => {
+            if (op.insert && op.insert.segment) isAfterSegment = true;
+          })
+          if (range.length === 0 && isAfterSegment) {
+            this.allowBackspace();
+          } else {
+            this.preventBackspace();
+          }
+        }
+      },
+      onAlignTextChange (delta, oldDelta, source) {
+        const range = this.editor.getSelection();
+        this.onAlignSelection(range);
+      },
+      preventBackspace () {
+        document.addEventListener('keydown', this.backspacePreventHandler, true)
+      },
+      allowBackspace () {
+        document.removeEventListener('keydown', this.backspacePreventHandler, true)
+
+      },
+      backspacePreventHandler (event) {
+        //if (event.keyCode === 8) {
+          event.preventDefault();
+        //}
+      }
     }
+  }
 </script>

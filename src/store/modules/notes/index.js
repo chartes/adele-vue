@@ -1,92 +1,54 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
 
 const state = {
-
-  notes: [],
-  newNote: false,
 
 };
 
 const mutations = {
 
-  UPDATE_ALL (state, notes) {
-    notes = Array.isArray(notes) ? notes : [notes];
-    state.notes = notes;
-  },
-  NEW (state, note) {
-    state.newNote = note;
-    state.notes.push(note);
-  },
-  UPDATE_ONE (state, note) {
-    state.notes = [...state.notes.filter(n => n.id !== note.id), note];
-  }
-
 };
 
 const actions = {
 
-  fetch ({ commit, rootState }, docId) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const authorId = rootState.user.author.id;
-    return axios.get(`/adele/api/1.0/documents/${docId}/notes/from-user/${authorId}`, config)
-      .then( (response) => {
-        commit('UPDATE_ALL', response.data.data)
-      }).catch(function(error) {
-        console.error('Error:', error)
-      });
-  },
-  add ({ commit, getters, rootState }, newNote) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const newNotes = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "type_id": newNote.type_id,
-        "content": newNote.content
-      }]
-    };
-    return axios.post(`/adele/api/1.0/notes`, newNotes, config)
-      .then( response => {
-        const note = response.data.data[0];
-        commit('NEW', note);
-      })
-  },
-  update ({ commit, getters, rootState }, note) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theNote = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": note.id,
-        "type_id": note.type_id,
-        "content": note.content
-      }]
-    };
-    return axios.put(`/adele/api/1.0/notes`, theNote, config)
-      .then( response => {
-        const note = response.data.data[0];
-        commit('UPDATE_ONE', note);
-      })
-  },
-  delete ({ commit, getters, rootState }, note) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theNote = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": note.id,
-        "type_id": note.type_id,
-        "content": note.content
-      }]
-    };
-    return axios.delete(`/adele/api/1.0/notes`, theNote, config)
-      .then( response => {
-        const note = response.data.data;
-        commit('UPDATE_ONE', note);
-      })
+  async deleteNote({getters, rootState, rootGetters}, noteId) {
+    await http.delete(`documents/notes/${noteId}`)
   }
-
 };
 
 const getters = {
+  notes: (state, getters, rootState, rootGetters) => {
+    const tr = rootState.transcription
+    const tl = rootState.translation
+    const coms = rootState.commentaries
 
+    const transcriptionNotes = tr !== undefined && tr.transcription ? tr.transcription.notes : []
+    const translationNotes = tl !== undefined && tl.translation ? tl.translation.notes : []
+    let commentariesNotes = []
+    Object.keys(coms.commentariesWithNotes).forEach(t => {
+      coms.commentariesWithNotes[t].notes.forEach(n => {
+        commentariesNotes.push(n)
+      })
+    });
+    let notes = [...transcriptionNotes]
+    translationNotes.forEach(n => {
+      if (notes.findIndex((e) => { return e.id === n.id}) === -1) {
+        notes.push(n)
+      }
+    })
+    commentariesNotes.forEach(n => {
+      if (notes.findIndex((e) => { return e.id === n.id}) === -1) {
+        notes.push(n)
+      }
+    })
+    return notes
+  },
+  getNoteById: (state, getters) => (id) => {
+    id = parseInt(id)
+    return getters.notes.find(note => {
+      return note.id === id;
+    });
+  }
+  /*
   notes: state => state.notes,
   newNote: state => state.newNote,
   getNoteById: (state) => (id) => {
@@ -95,6 +57,7 @@ const getters = {
       return note.id === id;
     });
   }
+  */
 
 };
 

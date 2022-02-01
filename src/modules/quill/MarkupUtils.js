@@ -8,9 +8,10 @@ const inlineTagsToClean = ['i', 'ex', 'del', 'u', 'b']
 const regexpOpeningToClean = []
 const regexpClosingToClean = []
 inlineTagsToClean.forEach(tag => {
-  regexpOpeningToClean.push(new RegExp('</'+tag+'><note id="(\\d+)"><'+tag+'>', 'gi'))
+  regexpOpeningToClean.push(new RegExp('</'+tag+'><note id="(-?\\d+)"><'+tag+'>', 'gi'))
   regexpClosingToClean.push(new RegExp('</'+tag+'></note><'+tag+'>', 'gi'))
 })
+
 
 const MAPPING_QUILL_TO_TEI = {
   'h1': { tag: 'head', attr: 'type', attrValue:'h1'},
@@ -31,9 +32,9 @@ const MAPPING_QUILL_TO_TEI = {
   // TODO couleur	hi[@style="$color"]	?
   'blockquote': { tag: 'quote', attr: 'rend', attrValue:'block'},
   'q': { tag: 'quote', attr: 'rend', attrValue:'inline'},
-  'cite': { tag: 'title', attr: 'ref'},
-  'persname': { tag: 'persName'},
-  'placeName': { tag: 'placeName'},
+  //'cite': { tag: 'title', attr: 'ref'},
+  'persname': { tag: 'persName', 'attr': 'ref'},
+  'placeName': { tag: 'placeName', 'attr': 'ref'},
 };
 const MAPPING_TEI_TO_QUILL = {
   'head': {
@@ -77,31 +78,46 @@ const MAPPING_TEI_TO_QUILL = {
       },
     }
   },
-  'title': { tag: 'cite'},
+  //'title': { tag: 'cite'},
   'persName': { tag: 'persname'},
   'placeName': { tag: 'placename'},
 };
 
-const TEIToQuill = (teiString) => {
+const trim = (s) => {
+  s = s.replace(/[\t\f\v ]{2,}/gmi, ' ')
+  s = s.replace(/\s+<\/p>/gmi, '</p>');
+  s = s.replace(/<p>\s+/gmi, '<p>');
+  s = s.replace(/\s*\n\s*/gi, '\n')
+  return s
+}
 
-  const xmlDoc = parser.parseFromString('<doc>'+teiString+'</doc>',"text/xml");
-  let newDoc;
-  newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
+const TEIToQuill = (teiString) => {
+  teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
+  teiString = trim(teiString)
+
+  teiString = `<doc>${teiString}</doc>`
+  //console.log('teistring', teiString);
+
+  const xmlDoc = parser.parseFromString(teiString,"text/xml");
+  let newDoc = recurChange(xmlDoc.documentElement, MAPPING_TEI_TO_QUILL);
   let str = xmlSerializer.serializeToString(newDoc);
+  
   str = str.replace(/<lb><\/lb>/gi, '<lb/>');
   str = str.replace(/<\/?doc([^>]*)>/gi, '');
-  //str = convertLinebreakTEIToQuill(str);
+  str = convertLinebreakTEIToQuill(str);
   return str;
 
 };
 
 const quillToTEI = quillString => {
-
+  quillString = quillString.replace(/<p><\/?br\/?><\/p>/gi, '');
   quillString = quillString.replace(/&nbsp;/gi, '&#160;');
+  quillString = trim(quillString)
+
   const xmlDoc = parser.parseFromString('<doc>'+quillString+'</doc>',"text/xml");
-  let newDoc;
-  newDoc = recurChange(xmlDoc.documentElement, MAPPING_QUILL_TO_TEI);
+  let newDoc = recurChange(xmlDoc.documentElement, MAPPING_QUILL_TO_TEI);
   let str = xmlSerializer.serializeToString(newDoc);
+  
   str = convertLinebreakQuillToTEI(str);
   str = str.replace(/<(\/?)persname( ref="[^"]*")?>/gmi, '<$1persName$2>');
   str = str.replace(/<(\/?)placename( ref="[^"]*")?>/gmi, '<$1placeName$2>');
@@ -115,16 +131,18 @@ const convertLinebreakTEIToQuill = str => {
 const convertLinebreakQuillToTEI = str => {
   return str.replace(/<lb><span class="br"><\/span><span class="segment-bullet"><\/span><\/lb>/gi, '<lb/>');
 }
-
+/*
 function changeElementName (elt, name) {
   var newElt = document.createElement(name);
   newElt.innerHTML = elt.innerHTML;
   copyEltContent(elt, newElt);
   elt.parentNode.replaceChild(newElt, elt);
 }
+
 function copyEltContent (sourceElt, destElt) {
   destElt.innerHTML = sourceElt.innerHTML;
 }
+*/
 function copyEltAttributes (sourceElt, destElt) {
   if (sourceElt.hasAttributes()) {
     var attrs = sourceElt.attributes;
@@ -200,25 +218,13 @@ String.prototype.insert = function (index, string) {
 };
 
 const insertNotes = (text, notes) => {
+  //console.log("computeQuillPointersFromTEIPointers (insertNotes)", notes)
 
-  //console.group(`%c insertNotes`, 'color:orange')²
-  const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  //console.log("%c notePointers =>", 'color:orange', notePointers)
+  const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
 
-  const shadowQuillElement = document.createElement('div');
-  shadowQuillElement.innerHTML = text;
-  let shadowQuill = new Quill(shadowQuillElement);
-
-  notePointers.forEach(note => {
-    shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-  })
-  //console.groupEnd()
-  return shadowQuillElement.children[0].innerHTML;
-
-  /*let result = text;
+  let result = text;
   let indexCorrection = 0;
-  notes.forEach(note => {
+  notePointers.forEach(note => {
     let opening = `<note id="${note.id}">`;
     let closing = '</note>'
     result = result.insert(note.ptr_start + indexCorrection, opening);
@@ -227,8 +233,8 @@ const insertNotes = (text, notes) => {
     indexCorrection += closing.length;
   })
   return result;
-  */
 };
+
 const insertFacsimileZones = (text, zones) => {
   let result = text;
   let indexCorrection = 0;
@@ -244,169 +250,85 @@ const insertFacsimileZones = (text, zones) => {
   })
   return result;
 };
-const insertSegments = (text, segments, translationOrTranscription) => {
 
-  /*const segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
-  console.log("%c insertSegments", 'color:red',translationOrTranscription, segments, segmentsIndices)
-  const tag = `<segment></segment>`;
-  const tagLength = tag.length;
-  let result = text;
+const insertSegments = (text, segments) => {
+  const segmentBlot = '<segment></segment>';
+  let textWithSegments = text
   let indexCorrection = 0;
-  segmentsIndices.forEach(segmentIndex => {
-    result = result.insert(segmentIndex + indexCorrection, tag);
-    indexCorrection += tagLength;
-  });
-  return result;*/
 
-  const shadowQuillElement = document.createElement('div');
-  shadowQuillElement.innerHTML = text;
-  let shadowQuill = new Quill(shadowQuillElement);
 
-  let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
-  segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
-  let indexCorrection = 0;
-  segmentsIndices.forEach(segmentIndex => {
-    shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-    indexCorrection++
-  })
-  return shadowQuillElement.children[0].innerHTML
+  segments = Array.from(new Set(segments))
+  segments.sort((a, b) => a - b)
+
+  for(let i = 0; i < segments.length; ++i) {
+    textWithSegments = [textWithSegments.slice(0, segments[i] + indexCorrection), segmentBlot, textWithSegments.slice(segments[i]  + indexCorrection)].join('');
+    indexCorrection += segmentBlot.length
+    //console.warn('@WARN', i, segments[i], textWithSegments)
+  }
+  return textWithSegments;
 };
+
 const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
+  const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
 
-  //console.group(`%c insertNotesAndSegments ${translationOrTranscription}`, 'color:orange')
-  const notePointers = computeQuillPointersFromTEIPointers(text, notes)
-  //console.log("%c notePointers =>", 'color:orange', notePointers)
-
-  const shadowQuillElement = document.createElement('div');
-  shadowQuillElement.innerHTML = text;
-  let shadowQuill = new Quill(shadowQuillElement);
-
+  let indexCorrection = 0;
   notePointers.forEach(note => {
-    shadowQuill.formatText(note.ptr_start, note.ptr_end - note.ptr_start, 'note', note.id, 'api')
-    //console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-  })
-
-  //console.log("%c insert segments =>", 'color:orange', segments)
-  let segmentsIndices = getRelevantSegmentsIndices(text, segments, translationOrTranscription)
-  segmentsIndices = computeQuillIndicesFromTEIIndices(text, segmentsIndices, translationOrTranscription)
-  //console.log("%c segmentsIndices =>", 'color:orange', segmentsIndices)
-  let indexCorrection = 0;
-  segmentsIndices.forEach(segmentIndex => {
-    shadowQuill.insertEmbed(segmentIndex + indexCorrection, 'segment', true, 'api')
-    console.log(`%c # ${shadowQuillElement.children[0].innerHTML}`, 'color:orange')
-    indexCorrection++
-  })
-
-  //console.groupEnd()
-  return shadowQuillElement.children[0].innerHTML;
-
-  //return text
-/*
-  const index = translationOrTranscription === 'transcription' ? 0 : 2;
-  let insertions = [];
-  segments.forEach(segment => {
-    if (segment[index]) insertions.push({index: segment[index], type: 'segment'});
+    let opening = `<note id="${note.id}">`;
+    let closing = '</note>';
+    text = text.insert(note.ptr_start + indexCorrection, opening);
+    indexCorrection += opening.length;
+    text = text.insert(note.ptr_end + indexCorrection, closing);
+    indexCorrection += closing.length;
   });
-  notes.forEach(note => {
-    insertions.push({index: note.ptr_start, type: 'note_start', note: note});
-    insertions.push({index: note.ptr_end, type: 'note_end'});
-  });
-  //console.log(insertions.length, "insertions after", notes.length,"notes")
-  insertions.sort((a, b) => { return a.index - b.index; });
-
-  console.log('')
-  console.log('insertNotesAndSegments', translationOrTranscription)
-  console.log('insertNotesAndSegments', text)
-  console.log('notes', notes)
-  console.log(insertions)
-  console.log('')
-
-  let result = text;
-  let indexCorrection = 0;
-
-  insertions.forEach(ins => {
-    let insertTag = '';
-    let inserted = false;
-    switch (ins.type) {
-      case 'segment':
-        let strAtInsertPoint = result.substr(ins.index + indexCorrection, 3);
-        inserted = (ins.index + indexCorrection > 0 && strAtInsertPoint !== '<p>' && strAtInsertPoint !== '<l>' && strAtInsertPoint !== '<lb');
-        if (ins.index + indexCorrection > 0 && strAtInsertPoint !== '<p>' && strAtInsertPoint !== '<l>' && strAtInsertPoint !== '<lb') {
-          insertTag = '<segment></segment>';
-        }
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag, strAtInsertPoint, inserted ? 'OUI' : 'NON');
-        break;
-      case 'note_start':
-        insertTag = `<note id="${ins.note.id}">`;
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag);
-        inserted = true;
-        break;
-      case 'note_end':
-        insertTag = `</note>`;
-        //console.log(" insert ", ins.type, "@ "+ins.index, `(${ins.index} + ${indexCorrection})`, insertTag);
-        inserted = true;
-        break;
-    }
-    result = result.insert(ins.index + indexCorrection, insertTag);
-    if (inserted) console.log(" =>", result)
-    indexCorrection += insertTag.length;
-  });
-  console.log('RES', result)
-  return result
-  */
-}
+  return  text 
+  }
 
 /*
 Converts TEI pointers which include some markup to quill pointers
 to be able to insert notes, segments, speechpart with quill's setFormat function
  */
-const computeQuillPointersFromTEIPointers = (text, teiPointer) => {
-
-
+const computeQuillPointersFromTEIPointers = (text, teiPointer, sanitize=true) => {
   if (!teiPointer || teiPointer.length === 0) {
     return []
   }
+  //console.log("converting TEI Pointers to Quill Pointers")
+  
+  // 1) insert [¤ ¤] placeholders in TEI 
+  let TEIData =  quillToTEI(text)
+  let ptrCount = 0
+  teiPointer.sort((p1, p2) => p1.ptr_start - p2.ptr_start).map(pointer => {
+    TEIData = TEIData.substr(0, pointer.ptr_start + 4*ptrCount) + '[¤' + TEIData.substr(pointer.ptr_start+ 4*ptrCount)
+    TEIData = TEIData.substr(0, pointer.ptr_end + 4*ptrCount + 2) + '¤]' + TEIData.substr(pointer.ptr_end + 4*ptrCount + 2) // '[¤' length
+    ptrCount += 1
+  })
+  //console.log('TEIData:', TEIData)
+  // 2) Sanitize
+  let QuillData
+  if (sanitize) {
+    const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
+    QuillData = TEIData.replace(sanitizePattern, '') //TEIToQuill(TEIData)
+  } else {
+    QuillData = TEIToQuill(TEIData)
+  }
 
-  //console.group(`%c computeQuillPointersFromTEIPointers ${text}`, 'color:green')
-  //console.log(text)
-
-  // deals with space between beginning of the text and first note
-  const sanitizePattern = /<(([/a-z])+\b[^>]*)>/gi
-  let count = 0;
-  let delta = 0;
-  const quillPointers = teiPointer.map(pointer => {
-
-    const start = count > 0 ? teiPointer[count-1].ptr_end : 0;
-    //console.group("%c ###", 'color:green', count, pointer.ptr_start, pointer.ptr_end)
-
-    const startText = text.substring(start, pointer.ptr_start);
-    const startTextSanitized = startText.replace(sanitizePattern, '')
-    const deltaStart = startText.length - startTextSanitized.length;
-    delta -= deltaStart;
-    let startIndex = pointer.ptr_start + delta;
-    //console.log(`%c before note (${start} => ${pointer.ptr_start}): '${startTextSanitized}' ${pointer.ptr_start}=>${startIndex} delta=${delta}`, 'color:green')
-
-    const linkedText =  text.substring(pointer.ptr_start, pointer.ptr_end);
-    const linkedTextSanitized = linkedText.replace(sanitizePattern, '')
-    const deltaLinked = linkedText.length - linkedTextSanitized.length;
-    delta -= deltaLinked;
-    let endIndex = pointer.ptr_end + delta;
-
-    //console.log(`%c end note (${pointer.ptr_start} => ${pointer.ptr_end}: ${linkedTextSanitized}) ${pointer.ptr_end}=>${endIndex} delta=${delta}`, 'color:green')
-
-    let quillPointer = { ...pointer, ptr_start: startIndex, ptr_end: endIndex}
-    //console.log("%c =>", 'color:green', startIndex, endIndex, quillPointer)
-    //console.groupEnd()
-    count++;
-    return quillPointer
-  });
-  //console.groupEnd()
-  return quillPointers
+  let QuillPtrs = []
+  //console.log('QuillData:', QuillData, QuillData.indexOf('[¤'))
+  // 3) Find indices of placeholders
+  for (let index = 0; index < ptrCount; index++) {
+    const tag_start = QuillData.indexOf('[¤')
+    const tag_end = QuillData.indexOf('¤]')
+    QuillPtrs.push({
+      ...teiPointer[index],
+      ptr_start: tag_start ,
+      ptr_end: tag_end - 2 // '[¤' length
+    })
+    QuillData = QuillData.substr(0, tag_start) + QuillData.substr(tag_start + 2, (tag_end - tag_start) - 2) + QuillData.substr(tag_end + 2)
+    //console.log("Tagstart:", QuillData)
+  }
+  return QuillPtrs
 }
-const computeQuillIndicesFromTEIIndices = (text, teiIndices) => {
 
+const computeQuillIndicesFromTEIIndices = (text, teiIndices) => {
 
   if (!teiIndices || teiIndices.length === 0) {
     return []
@@ -455,11 +377,20 @@ const getRelevantSegmentsIndices = (text, segments, translationOrTranscription) 
 
 
 const insertSpeechparts = (text, speechparts) => {
+  text = quillToTEI(text)
+
   let insertions = [];
-  speechparts.forEach((note, index) => {
-    insertions.push({index: note.ptr_start, type: 'sp_start', note: note, fakeId: index});
-    insertions.push({index: note.ptr_end, type: 'sp_end'});
-  });
+  for (let key in speechparts){
+    const sp = speechparts[key]
+    insertions.push({
+      index: sp.ptr_start,
+      tag: 'sp_start',
+      sp: sp,
+      fakeId: sp.id !== null ? sp.id : sp.ptr_start,
+      type:sp.speech_part_type
+    });
+    insertions.push({index: sp.ptr_end, tag: 'sp_end'});
+  }
   insertions.sort((a, b) => { return a.index - b.index; });
 
   let result = text;
@@ -468,9 +399,9 @@ const insertSpeechparts = (text, speechparts) => {
   insertions.forEach(ins => {
     let insertTag = '';
     let inserted = false;
-    switch (ins.type) {
+    switch (ins.tag) {
       case 'sp_start':
-        insertTag = `<speechpart id="${ins.fakeId}">`;
+        insertTag = `<speechpart id="${ins.fakeId}" type="${ins.type.id}">`;
         inserted = true;
         break;
       case 'sp_end':
@@ -479,50 +410,58 @@ const insertSpeechparts = (text, speechparts) => {
         break;
     }
     result = result.insert(ins.index + indexCorrection, insertTag);
-    if (inserted) //console.log(" =>", result)
-      indexCorrection += insertTag.length;
+    //console.log('teistring', insertions, result)
+    indexCorrection += insertTag.length
   });
 
+  result = TEIToQuill(result)
   return result
 };
 
-const stripNotes  = text => text.replace(/<\/?note( id="\d+")?>/gmi, '');
+const stripNotes  = text => text.replace(/<\/?note( id="-?\d+")?>/gmi, '');
 const stripSegments  = text => text.replace(/<\/?segment>/gmi, '');
-const stripSpeechparts  = text => text.replace(/<\/?speechpart( id="\d+")?>/gmi, '');
+const stripSpeechparts  = text => text.replace(/<\/?speechpart( id="\d+")?( type="\d+")?>/gmi, '');
 
 const computeNotesPointers  = (htmlWithNotes) => {
-
-  const regexpStart = /<note id="(\d+)">/;
-  const regexpEnd = /<\/note>/;
+  
+  const regexpStart = /<note id="(-?\d+)">/
+  const regexpEnd = /<\/note>/
+  const regexpContent = /<[^>]*>/gmi
   let resStart, resEnd;
-  const notes = [];
+  let notes = [];
 
   htmlWithNotes = sanitizeHtmlWithNotesForSave(htmlWithNotes)
 
-
   //console.group("%c ###########################################", 'color:DarkOrchid')
-  //console.log("%c computeNotesPointers", 'color:DarkOrchid', htmlWithNotes)
-  //console.log("%c ######", 'color:DarkOrchid')
 
   while((resStart = regexpStart.exec(htmlWithNotes)) !== null) {
-    //console.log(`# ${htmlWithNotes}`, 'color:DarkOrchid')
-    //console.log(`# resStart`, 'color:DarkOrchid', resStart)
+    resEnd = regexpEnd.exec(htmlWithNotes)
+    
+
+    //trying to achieve : <note><sup>t</sup></note> -> ptr_end - len(<sup>) - len(</sup>)
+    //todo: fonctionne que pour la première boucle. ptr_start (et ptr_end) pas bon ensuite ? 
+    // tours de boucle suivants : ptr_start est trop élevé car il garde les <note> précédentes? sinon pourquoi ?
+    //console.log(`%c # htmlWithNotes ${resStart.index} ${resEnd.index}`, 'color:DarkOrchid')
+    let noteContentWithHtml = htmlWithNotes.substring(resStart.index + resStart[0].length, resEnd.index)
+    //noteContentWithHtml = noteContentWithHtml.replace(regexpContent, '')
+    //console.log(`%c # noteContentWithHtml ${noteContentWithHtml}`, 'color:DarkOrchid')
+
+    //console.log(`%c # ${htmlWithNotes}`, 'color:DarkOrchid')
+    //console.log(`%c # resStart`, 'color:DarkOrchid', resStart)
     htmlWithNotes = htmlWithNotes.replace(regexpStart, '');
-    resEnd = regexpEnd.exec(htmlWithNotes);
-    //console.log(`# resEnd`, 'color:DarkOrchid', resEnd)
-    htmlWithNotes = htmlWithNotes.replace(regexpEnd, '');
+    htmlWithNotes = htmlWithNotes.replace(regexpEnd, ''); 
+
+    //console.log(`%c # resEnd`, 'color:DarkOrchid', resEnd)
+  
+   
     notes.push({
-      "note_id" : parseInt(resStart[1]),
+      "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
-      "ptr_end": resEnd.index
+      "ptr_end": resStart.index + noteContentWithHtml.length
     });
-    /*
-    console.log('%c =>', 'color:DarkOrchid', {
-      "note_id" : parseInt(resStart[1]),
-      "ptr_start": resStart.index,
-      "ptr_end": resEnd.index
-    })
-    */
+
+    console.log('%c =>', 'color:DarkOrchid', notes)
+    
   }
   //console.warn('%c computeNotesPointers', 'color:DarkOrchid', notes.length, notes)
 
@@ -537,7 +476,6 @@ Replace strings like </ex></note><ex> by </note>
 and like </ex><note id="xxx"><ex> by <note id="xxx">
  */
 const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
-  //console.log(`%c sanitizeHtmlWithNotesForSave ${htmlWithNotes}`, 'color:DarkSlateGray' )
   regexpClosingToClean.forEach(re => {
     htmlWithNotes = htmlWithNotes.replace(re, '</note>')
   })
@@ -549,27 +487,19 @@ const sanitizeHtmlWithNotesForSave = htmlWithNotes => {
   return htmlWithNotes;
 }
 const computeAlignmentPointers  = (htmlWithSegments) => {
+  if (htmlWithSegments === null) {
+    return []
+  }
+  const reg = /<segment>(?:.*?)<\/segment>/gmi;
+  let splitted  = htmlWithSegments.split(reg).filter(e => e);
+  //console.log(htmlWithSegments)
+  //console.log(splitted)
+  let positions = [0];
 
-  const reg = /<segment><\/segment>/gmi;
-  let splitted  = htmlWithSegments.split(reg);
-  let positions = [];
-  ////console.log("computeAlignmentPointers");
-  ////console.log(htmlWithSegments);
-  ////console.log("   splitted", splitted.length, splitted);
   let acc = 0;
   for (let i = 0; i < splitted.length; ++i) {
     acc += splitted[i].length;
     positions.push(acc);
-  }
-  ////console.log("   segments positions", positions);
-
-  const htmlWithoutSegments = htmlWithSegments.replace(reg, '');
-  ////console.log('htmlWithoutSegments', htmlWithoutSegments);
-  let regexp = /<(p|lb?)\/?>/gmi;
-  let res;
-  while ((res = regexp.exec(htmlWithoutSegments)) !== null) {
-    ////console.log("BR @", res.index)
-    positions.push(res.index);
   }
   positions.sort((a, b) => {
     return a - b;
@@ -582,25 +512,21 @@ const computeAlignmentPointers  = (htmlWithSegments) => {
 }
 
 const computeSpeechpartsPointers  = (htmlWithSpeechparts) => {
-
-  //console.log("computeSpeechpartsPointers", htmlWithSpeechparts)
-
-  const regexpStart = /<speechpart id="((\d+)|temp)">/;
+  const regexpStart = /<speechpart .*?id="(\d+)".*?>/;
   const regexpEnd = /<\/speechpart>/;
   let resStart, resEnd;
   const speechparts = [];
   while((resStart = regexpStart.exec(htmlWithSpeechparts)) !== null) {
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpStart, '');
     resEnd = regexpEnd.exec(htmlWithSpeechparts);
-    console.log(" ", resStart, resEnd)
     htmlWithSpeechparts = htmlWithSpeechparts.replace(regexpEnd, '');
+
     speechparts.push({
-      "index" : parseInt(resStart[1]),
+      "id" : parseInt(resStart[1]),
       "ptr_start": resStart.index,
       "ptr_end": resEnd.index
     });
   }
-  //console.log("speechparts pointers", speechparts)
   return speechparts;
 }
 const computeImageAlignmentsPointers  = (htmlWithFacsimile) => {
@@ -682,6 +608,7 @@ export {
   computeNotesPointers,
   computeSpeechpartsPointers,
   computeImageAlignmentsPointers,
-
-  sanitizeHtmlWithNotesForSave
+  computeQuillPointersFromTEIPointers,
+  sanitizeHtmlWithNotesForSave,
+  trim
 };

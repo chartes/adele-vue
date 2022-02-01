@@ -1,7 +1,12 @@
-$font-body: "Montserrat", Helvetica, SegoeUI, Arial, sans-serif;
-$font-alt: 'IBM Plex Sans', sans-serif;
+$font-body: "Barlow", Helvetica, SegoeUI, Arial, sans-serif;
+$font-alt: "Roboto", sans-serif;
 $info: 'black';
 $font-size-base: 16px;
 $line-height-base: 2rem;
-$image-path: '/lettres/static/images'
+$image-path: '../../assets/images';
+$icon-path: '../../assets/icons';
+$size-5: 14px;
 
+// does it work ?
+$modal-z: 999999;
+$modal-background-background-color: rgba(0,0,0,255);

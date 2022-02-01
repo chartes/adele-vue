@@ -1,22 +1,36 @@
 import {http} from '../../../modules/http-common';
-import { VALIDATION_STEPS_LABELS } from '../workflow';
 
 const state = {
 
-  document: undefined,
+  document: null,
   documents: [],
+  meta: {
+    totalCount: null,
+    filterCount: {},
+    currentPage: 0,
+    nbPages: 0
+  },
   
-  transcriptionView: undefined,
-  translationView: undefined,
-  transcriptionAlignmentView: undefined,
+  transcriptionView: null,
+  translationView: null,
+  transcriptionAlignmentView: null,
+  commentariesView: null,
+  speechPartsView: {content: null, notes: null},
 
   loading: false,
+  error: null,
 };
 
 const mutations = {
 
   UPDATE_DOCUMENT (state, payload) {
     state.document = payload;
+  },
+  UPDATE_META(state, payload) {
+    state.meta = {
+      ...state.meta,
+      ...payload
+    };
   },
   UPDATE_TRANSCRIPTION_VIEW (state, {content, notes}) {
     state.transcriptionView = {
@@ -36,6 +50,15 @@ const mutations = {
       notes
     };
   },
+  UPDATE_COMMENTARIES_VIEW (state, {commentaries}) {
+    state.commentariesView = commentaries
+  },
+  UPDATE_SPEECH_PARTS_VIEW(state, payload) {
+    state.speechPartsView = {
+      content: payload.content,
+      notes: payload.notes
+    }
+  },
   RESET_TRANSCRIPTION_VIEW(state) {
     state.transcriptionView = null;
   },
@@ -45,10 +68,18 @@ const mutations = {
   RESET_TRANSCRIPTION_ALIGNMENT_VIEW(state) {
     state.transcriptionAlignmentView = null;
   },
+  RESET_COMMENTARIES_VIEW(state) {
+    state.commentariesView = null;
+  },
+  RESET_SPEECH_PARTS_VIEW(state) {
+    state.speechPartsView = null;
+  },
   UPDATE_ALL (state, payload) {
     state.documents = payload;
   },
-
+  SET_ERROR(state, error) {
+    state.error = error
+  },
   PARTIAL_UPDATE_DOCUMENT(state, payload) {
     state.document =  {
       ...state.document,
@@ -62,7 +93,28 @@ const mutations = {
 };
 
 const actions = {
-
+  async addDocument ({ commit, rootState }, {title, subtitle}) {
+    commit('SET_ERROR', null)
+    let doc = null
+    try {
+      const user = rootState.user.currentUser;
+      if (user === null || !user.roles.indexOf('admin') < 0 || user.roles.indexOf('teacher') < 0) {
+        console.log("USER", user)
+        throw 'Forbidden access!'
+      }
+      doc = await http.post('documents/add', {
+        data: {
+          title, 
+          subtitle,
+          user_id: rootState.user.currentUser.id
+        }
+      })
+    } catch (e) {
+      console.warn("cannot add document:", e)
+      commit('SET_ERROR', 'cannot add document: ' + e)
+    }
+    return doc
+  },
   fetch ({ commit }, {id}) {
     commit('LOADING_STATUS', true);
     console.log("fetching doc")
@@ -70,6 +122,9 @@ const actions = {
       commit('UPDATE_DOCUMENT', response.data.data)
       commit('RESET_TRANSCRIPTION_VIEW')
       commit('RESET_TRANSLATION_VIEW')
+      commit('RESET_COMMENTARIES_VIEW')
+      commit('RESET_SPEECH_PARTS_VIEW')
+      commit('RESET_TRANSCRIPTION_ALIGNMENT_VIEW')
       console.log("doc ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -77,108 +132,204 @@ const actions = {
       throw error
     })
   },
-  fetchTranscriptionView ({ commit }, {id, userId}) {
+  fetchTranscriptionView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
-    console.log("fetching  tr")
-    return http.get(`documents/${id}/view/transcription${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+    console.log("fetching tr view for user", userId)
+    return http.get(`documents/${rootState.document.document.id}/view/transcriptions${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSCRIPTION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      console.log("tr ok")
+      dispatch('transcription/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      dispatch('transcription/setError', error, {root: true} )
+      commit('RESET_TRANSCRIPTION_VIEW')
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
-  fetchTranslationView ({ commit }, {id, userId}) {
+  fetchTranslationView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
     console.log("fetching  tl")
-    return http.get(`documents/${id}/view/translation${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+    return http.get(`documents/${rootState.document.document.id}/view/translations${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_TRANSLATION_VIEW',  {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      console.log("tl ok")
+      dispatch('translation/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      dispatch('translation/setError', error, {root: true} )
+      commit('RESET_TRANSLATION_VIEW')
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
-  fetchTranscriptionAlignmentView ({ commit }, {id}) {
+  fetchTranscriptionAlignmentView ({ commit, rootState }) {
     commit('LOADING_STATUS', true);
     console.log("fetching tr alignments")
-    return http.get(`documents/${id}/view/transcription-alignment`).then( (response) => {
+    return http.get(`documents/${rootState.document.document.id}/view/transcription-alignment`).then( (response) => {
       commit('UPDATE_TRANSCRIPTION_ALIGNMENT_VIEW',  {
         content: response.data.data["alignments"],
         notes: response.data.data["notes"]
       })
-      console.log("tr alignments ok")
       commit('LOADING_STATUS', false);
     }).catch((error) => {
+      commit('RESET_TRANSCRIPTION_ALIGNMENT_VIEW')
       commit('LOADING_STATUS', false);
       throw error
     })
   },
-  fetchAll ({ commit }, {pageId, pageSize, filters}) {
+  fetchCommentariesView ({ dispatch, commit, rootState }, userId) {
     commit('LOADING_STATUS', true);
-    return http.get(`documents?${filters}&page[size]=${pageSize}&page[number]=${pageId}`)
-      .then( (response) => {
+    console.log("fetching  coms")
+    return http.get(`documents/${rootState.document.document.id}/view/commentaries${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      commit('UPDATE_COMMENTARIES_VIEW',  {
+        commentaries: response.data.data.map(c => {
+          return {
+            type: c["type"],
+            content: c["content"],
+            notes: c["notes"]
+          }
+        })
+      })
+      dispatch('commentaries/setError', null, {root: true} )
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('RESET_COMMENTARIES_VIEW')
+      dispatch('commentaries/setError', error, {root: true} )
+      commit('LOADING_STATUS', false);
+      //throw error
+    })
+  },
+  async fetchSpeechPartsView ({ dispatch, commit, rootState }, userId) {
+    commit('LOADING_STATUS', true)
+    console.log("fetching speech parts view")
+    await dispatch('speechpartTypes/fetch', null, {root: true} )
+    return http.get(`documents/${rootState.document.document.id}/view/speech-parts${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+      commit('UPDATE_SPEECH_PARTS_VIEW', {
+        content: response.data.data["content"],
+        notes: response.data.data["notes"]
+      })
+      dispatch('speechparts/setError', null, {root: true} )
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('RESET_SPEECH_PARTS_VIEW')
+      dispatch('speechparts/setError', error, {root: true} )
+      commit('LOADING_STATUS', false);
+    })
+  },
+  fetchAll ({ commit }, {pageNum, pageSize, filters, sorts}) {
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
+    return http.post('documents', {
+      pageNum, pageSize, filters, sorts
+    }).then( (response) => {
+      commit('UPDATE_ALL', response.data.data.data);
+      commit('UPDATE_META', response.data.data.meta);
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      commit('SET_ERROR', error)
+    })
+  },
+  fetchFilterCounts ({ commit }, { filters}) {
+    commit('SET_ERROR', null)
+    commit('LOADING_STATUS', true)
+    return http.post('documents', {
+      countOnly: true,
+      filters
+    }).then( (response) => {
+      commit('UPDATE_META', response.data.data.meta);
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      commit('SET_ERROR', error)
+    })
+  },
+  fetchBookmarks ({ commit },) {
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
+    return http.get('documents/bookmarks').then( (response) => {
       commit('UPDATE_ALL', response.data.data);
+      commit('UPDATE_META', response.data.meta);
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
-      throw error
+      commit('SET_ERROR', error)
     })
   },
-  setValidationStep ({commit }, {docId, step}) {
+  reorderBookmarks({commit}, bookmarks) {
+    console.log(bookmarks)
+    return http.post('dashboard/bookmarks/reorder', {bookmarks: bookmarks.map(b => { return {docId: b.id, bookmark_order: b.bookmark_order}})})
+  },
+  setValidationFlag ({commit }, {docId, flagName}) {
     commit('LOADING_STATUS', true);
-    http.get(`documents/${docId}/validate-${VALIDATION_STEPS_LABELS[step]}`).then( (response) => {
+    commit('SET_ERROR', null)
+    http.get(`documents/${docId}/validate-${flagName}`).then( (response) => {
       commit('PARTIAL_UPDATE_DOCUMENT',  {
-        validation_step: step
+        validation_flags: response.data.data.validation_flags
       })
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('LOADING_STATUS', false);
-      throw error
-    })
-  }
-  /*
-  save ({ commit, rootGetters }, data) {
-
-    const auth = rootGetters['user/authHeader'];
-
-    return new Promise( ( resolve, reject ) => {
-      axios.put(`/adele/api/1.0/documents`, { data: data }, auth)
-        .then(response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          } else {
-            commit('UPDATE_DOCUMENT', response.data.data)
-            resolve(response.data)
-          }
-        })
-        .catch(error => {
-          console.error("error", error)
-          reject(error)
-        });
+      commit('SET_ERROR', error)
     })
   },
-  */
+  unsetValidationFlag ({commit }, {docId, flagName}) {
+    commit('LOADING_STATUS', true)
+    commit('SET_ERROR', null)
+    http.get(`documents/${docId}/unvalidate-${flagName}`).then( (response) => {
+      commit('PARTIAL_UPDATE_DOCUMENT',  {
+        validation_flags: response.data.data.validation_flags
+      })
+      commit('LOADING_STATUS', false);
+    }).catch((error) => {
+      commit('LOADING_STATUS', false);
+      commit('SET_ERROR', error)
+    })
+  },
+  partialUpdate({commit}, payload) {
+    commit('PARTIAL_UPDATE_DOCUMENT', payload)
+  },
+  save ({ commit }, {docId, data}) {
+    commit('LOADING_STATUS', true);
+    commit('SET_ERROR', null)
+    return http.put(`documents/${docId}`, {data: data})
+      .then( (response) => {
+      commit('PARTIAL_UPDATE_DOCUMENT', response.data.data)
+      commit('LOADING_STATUS', false)
+    }).catch((error) => {
+      commit('LOADING_STATUS', false)
+      commit('SET_ERROR', error)
+    })
+  },
+  deleteDocument ({commit }, docId) {
+    return http.delete(`documents/${docId}`);
+  }, 
+  async toggleBookmark({commit}, docId) {
+    const resp = await http.get(`dashboard/bookmarks/${docId}/toggle`)
+    const order = resp.data.data.new_order ? resp.data.data.new_order :  null
+    return order
+  },
+  async transferOwnership({commit}, {docId, userId}) {
+    const resp = await http.get(`documents/${docId}/transfer-ownership/${userId}`)
+    console.log(resp.data)
+  }
 };
 
 const getters = {
-
-  //document: state => state.document,
-  manifestURL: state => {
-    const manifest_url = `documents/${state.document.id}/manifest`;
-    return state.document && state.document.images && state.document.images.length > 0 ? manifest_url : null
-  },
   documentOwner: state => {
-    return state.document.whitelist.users.find(u => u.id === state.document.user_id)
+    return state.document.user
+  },
+  getManifestInfoUrl: state => (canvasIdx) => {
+    try {
+      return state.document.images[canvasIdx].info
+    } catch (error) {
+      console.warn(error)
+      return null
+    }
   }
 };
 

@@ -1,21 +1,13 @@
 <template>
-
-    <modal-confirm
-            :title="'Supprimer la note ?'"
-            :submitText="'Oui je veux la supprimer'"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            class="has-text-danger"
-    >
-                <p><b>Danger</b></p>
-                <p>Vous êtes sur le point de supprimer une note.</p>
-                <p>La note sera également perdue pour la transcription de ce document, sa traduction et ses commentaires.</p>
-                <p><b>Cette action ne peut pas être annulée.</b></p>
-
-    </modal-confirm>
-
-
-
+  <modal-confirm
+    :title="'Supprimer la note ?'"
+    :submit-text="'Supprimer'"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    class="has-text-danger"
+  >
+    <p>Vous êtes sur le point de supprimer toutes les occurences d'une note au sein d'un document.</p>
+  </modal-confirm>
 </template>
 
 <script>
@@ -23,11 +15,11 @@
     import ModalConfirm from './ModalConfirm';
 
   export default {
-    name: "modal-confirm-note-delete",
-    props: ['cancel', 'submit'],
+    name: "ModalConfirmNoteDelete",
     components: {
       ModalConfirm
     },
+    props: ['cancel', 'submit'],
     methods: {
       submitAction () {
         console.log("NotesListForm.submitAction", this.selected)

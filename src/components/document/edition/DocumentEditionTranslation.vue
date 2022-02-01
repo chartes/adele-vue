@@ -1,7 +1,27 @@
 <template>
   <div>
-    <translation-editor
-      v-if="!!translationWithNotes"
+    <div>
+      <translation-action-bar />
+    </div>
+
+    <div
+      v-if="transcriptionAlignmentMode"
+      class="columns"
+    >
+      <transcription-editor
+        v-if="transcriptionWithTextAlignment"
+        class="column"
+        :initial-content="transcriptionWithTextAlignment"
+      />
+      <translation-editor
+        v-if="translationWithTextAlignment"
+        class="column"
+        :initial-content="translationWithTextAlignment"
+      />
+    </div>
+    <translation-editor 
+      v-else
+      :key="'translation' + translationLoading"
       :initial-content="translationWithNotes"
     />
   </div>
@@ -12,21 +32,25 @@
 
 import { mapState, mapGetters } from 'vuex';
 import TranslationEditor from "@/components/editors/TranslationEditor.vue"
+import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
+import TranslationActionBar from "@/components/document/edition/actionbars/TranslationActionBar.vue";
 
 export default {
     name: "DocumentEditionTranslation",
     components: {
-        TranslationEditor
+        TranslationEditor,
+        TranscriptionEditor,
+        TranslationActionBar
     },
     props: {
-      translationWithNotes: {type: String, default: null}
+      translationWithNotes: {type: String, default: ""}
     },
     computed: {
-    },
-    async created() {
-    },
-    methods: {
-
+      ...mapState('translation', ['translationLoading', 'savingStatus', 'translationContent', 'translationWithTextAlignment']),
+      ...mapState('transcription', ['transcriptionLoading', 'savingStatus', 'transcriptionContent', 'transcriptionWithTextAlignment']),
+      ...mapState('workflow', ['transcriptionAlignmentMode']),
+      ...mapGetters('transcription', ['isTranscriptionSaved']),
+      ...mapGetters('translation', ['isTranslationSaved'])
     }
 }
 </script>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="47px" height="47px" viewBox="0 0 47 47" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Group 29</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="13 14 34.546 14 34.546 32.0154115 13 32.0154115"></polygon>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="COMPORTEMENTS" transform="translate(-342.000000, -3041.000000)">
+            <g id="Group-29" transform="translate(342.000000, 3041.000000)">
+                <g id="Group-27">
+                    <rect id="Rectangle-Copy-60" fill="#E9E9E9" x="0" y="0" width="47" height="47" rx="4"></rect>
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Clip-2-Copy-2"></g>
+                    <path d="M24.2905642,23.3851809 C20.391567,22.2015864 18.3666787,19.6944606 18.3666787,16.3377829 L18.3666787,15.7699104 C19.075148,16.5743213 19.8851033,16.9516992 20.9482904,16.9516992 C23.4303492,16.9516992 25,15.4864255 25,13.404527 C25,11.41923 23.4303492,10 21.251782,10 C18.5686843,10 17,11.8444573 17,15.2029406 C17,19.6944606 19.5303854,22.8651577 23.9870726,24 L24.2905642,23.3851809 Z M15.2879377,23.3851809 C11.3638132,22.2015864 9.32490272,19.6944606 9.32490272,16.3377829 L9.32490272,15.7699104 C10.0389105,16.5743213 10.905642,16.9516992 11.9747082,16.9516992 C14.4727626,16.9516992 16,15.4864255 16,13.404527 C16,11.41923 14.4212062,10 12.229572,10 C9.52821012,10 8,11.8444573 8,15.2029406 C8,19.6944606 10.4970817,22.8651577 14.9815175,24 L15.2879377,23.3851809 Z" id="Fill-1-Copy-9" fill="#9B9B9B"></path>
+                    <rect id="Rectangle" fill="#C5C5C5" x="28" y="14" width="11" height="3"></rect>
+                    <rect id="Rectangle-Copy-28" fill="#C5C5C5" x="28" y="21" width="11" height="3"></rect>
+                    <rect id="Rectangle-Copy-54" fill="#C5C5C5" x="8" y="28" width="31" height="3"></rect>
+                    <rect id="Rectangle-Copy-56" fill="#C5C5C5" x="8" y="35" width="31" height="3"></rect>
+                </g>
+                <g id="Group-25-Copy" transform="translate(8.000000, 14.000000)"></g>
+            </g>
+        </g>
+    </g>
+</svg>

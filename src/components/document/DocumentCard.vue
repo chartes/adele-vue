@@ -1,37 +1,115 @@
 <template>
-  <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">
-    <div class="document-card card">
-      <div class="card-image">
-        <figure
-          v-if="thumbnail_url"
-          class="image is-4by3"
-        >
-          <img
-            :src="thumbnail_url"
-            alt="Placeholder image"
+  <div class="document-card card">
+    <div class="card-header">
+      <div class="document-folder">
+        <div class="card-header-first-line">
+          <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">
+            Document {{ doc.id }}
+          </router-link>
+          <div
+            v-if="currentUserIsTeacher"
+            class="actions field is-grouped"
           >
+            <span
+              class="bookmark button is-light " 
+              @click="toggleBookmark(doc.id)"
+            >
+              <span 
+                class="icon"
+                :class="bookmarked ? 'active-bookmark' : 'inactive-bookmark'"
+              >
+                <i class="fas fa-bookmark" />
+              </span>
+            </span>
+
+            <slot
+              name="handle"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="document-dates-cartouche">
+        <div v-if="doc.creation && doc.creation_lab">
+          <span class="document-dates-prefix">Original : </span><span class="document-creation-lab">{{ doc.creation_lab }}</span>
+        </div>
+        <div v-else>
+          <span class="document-dates-prefix">Original : </span><span class="document-creation-lab-unknown"> — </span>
+        </div>
+         
+        <div v-show="doc.copy_year">
+          <span class="document-dates-prefix">Copie : </span><span class="document-creation-lab">{{ doc.copy_year }}</span> 
+        </div>
+      </div>
+    </div>
+    <router-link :to="{ name: 'document-view', params: { docId: doc.id, section: 'notice' }}">
+      <div class="card-image">
+        <figure>
+          <img
+            :key="url"
+            :class="thumbnail_error ? 'placeholder-image' : ''"
+            :src="url"
+            alt="thumbnail"
+            @error="thumbnail_error = true"
+          > 
         </figure>
       </div>
       <div class="card-content">
         <div class="content">
-          {{ doc.title }}
+          <p class="title">
+            {{ doc.title }}
+          </p>
+          <p class="subtitle">
+            {{ doc.subtitle }}
+          </p>
         </div>
       </div>
-    </div>
-  </router-link>
+    </router-link>
+  </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: "DocumentCard",
+  emit: ['toggle-bookmark'],
   props: {
       doc: {type: Object, default: null}
   },
+  data() {
+    return {
+      thumbnail_error : false,
+      url: null,
+      bookmarked: null
+    }
+  },
   computed: {
-      thumbnail_url() {
-          const first_img = this.doc.images[0];
-          return first_img ? first_img["thumbnail_url"] : null
-      } 
+    ...mapGetters('user', ['currentUserIsTeacher'])
+  },
+  watch: {
+    thumbnail_error() {
+      if (this.thumbnail_error) {
+        this.url = require('@/assets/images/document_placeholder.svg')
+      }
+    }
+  },
+  created() {
+    this.bookmarked = this.doc.bookmark_order;
+    
+    try {
+      const first_img = this.doc.images[0];
+      this.url = first_img["thumbnail_url"]
+    } catch {
+      this.thumbnail_error = true
+    }
+  },
+  methods: {
+    async toggleBookmark(docId) {
+      this.bookmarked = await this.$store.dispatch('document/toggleBookmark', docId)
+      this.$emit('toggle-bookmark')
+      //const rowItemIndex = this.data.findIndex(item => item.id === docId)
+      //this.data[rowItemIndex].bookmark_order = updated_order 
+    },
   }
 }
 </script>

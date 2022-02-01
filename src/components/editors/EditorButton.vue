@@ -1,17 +1,15 @@
 <template>
   <button
-    class="button is-small"
-    :class="{'selected': selected}"
+    class="button is-small "
+    :class="[{'selected': selected}, format]"
     :disabled="!active"
     @click="callback(format)"
   >
-    <i class="fa fa-bold" />
-    <!--
+    <!-- <i class="fa fa-bold" /> -->
     <img
       :src="iconSvg"
-      style="width:32px; height: 32px;"
     >
-    -->
+
   </button>
 </template>
 

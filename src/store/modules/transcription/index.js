@@ -8,13 +8,13 @@ import {
   convertLinebreakQuillToTEI,
   insertSegments,
   insertNotesAndSegments,
+  insertNotes,
   insertSpeechparts,
   insertFacsimileZones,
   stripSegments,
   computeNotesPointers,
-  computeAlignmentPointers,
   computeSpeechpartsPointers,
-  computeImageAlignmentsPointers
+  computeAlignmentPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
@@ -22,8 +22,10 @@ import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 const transcriptionShadowQuillElement = document.createElement('div');
 const notesShadowQuillElement = document.createElement('div');
 const speechpartsShadowQuillElement = document.createElement('div');
+const transcriptionWithTextAlignmentShadowQuillElement = document.createElement('div');
 const facsimileShadowQuillElement = document.createElement('div');
 let transcriptionShadowQuill;
+let transcriptionWithTextAlignmentShadowQuill;
 let notesShadowQuill;
 let speechpartsShadowQuill;
 let facsimileShadowQuill;
@@ -34,61 +36,71 @@ const state = {
   transcription: null,
   transcriptionContent: null,
   transcriptionWithNotes: null,
+  transcriptionWithTextAlignment: null,
   transcriptionWithSpeechparts: null,
   transcriptionWithFacsimile: null,
   transcriptionSaved: true,
+  translationAlignmentSaved: true,
   transcriptionError: null,
-  transcriptionAlignments: [],
-  referenceTranscription: null,
+  translationAlignmentError: null,
+  textAlignmentSegments: [],
   savingStatus: 'uptodate'
-
 };
 
 const mutations = {
 
 
   INIT(state, payload) {
-    //if (!transcriptionShadowQuill) {
-
-      transcriptionShadowQuillElement.innerHTML = payload.content || "";
+      transcriptionShadowQuillElement.innerHTML = "<p></p>" 
       transcriptionShadowQuill = new Quill(transcriptionShadowQuillElement);
+      transcriptionShadowQuillElement.children[0].innerHTML = payload.content || "";
       state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with content", state.transcriptionContent);
 
-      notesShadowQuillElement.innerHTML = payload.withNotes || "";
+      notesShadowQuillElement.innerHTML = "<p></p>" 
       notesShadowQuill = new Quill(notesShadowQuillElement);
+      notesShadowQuillElement.children[0].innerHTML = payload.withNotes || "";
       state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with notes", state.transcriptionWithNotes);
 
-      speechpartsShadowQuillElement.innerHTML = payload.withSpeechparts || "";
+      speechpartsShadowQuillElement.innerHTML = "<p></p>" 
       speechpartsShadowQuill = new Quill(speechpartsShadowQuillElement);
+      speechpartsShadowQuillElement.children[0].innerHTML = payload.withSpeechparts || "";
       state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
 
-      facsimileShadowQuillElement.innerHTML = payload.withFacsimile || "";
+      transcriptionWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
+      transcriptionWithTextAlignmentShadowQuill = new Quill(transcriptionWithTextAlignmentShadowQuillElement);
+      transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
+      state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
+      
+      facsimileShadowQuillElement.innerHTML = "<p></p>" 
       facsimileShadowQuill = new Quill(facsimileShadowQuillElement);
+      facsimileShadowQuillElement.children[0].innerHTML = payload.withFacsimile || "";
       state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
-
-    //}
   },
   RESET(state) {
 
     console.log("STORE MUTATION transcription/RESET");
     state.transcription = null;
-    state.transcriptionAlignments = [];
+    state.textAlignmentSegments = [];
     state.transcriptionContent = null;
     state.transcriptionWithNotes = null;
+    state.transcriptionWithTextAlignment = null;
     state.transcriptionWithSpeechparts = null;
     state.transcriptionWithFacsimile = null;
 
-    
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
+    if (transcriptionWithTextAlignmentShadowQuillElement && transcriptionWithTextAlignmentShadowQuillElement.children[0]) transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
     if (speechpartsShadowQuillElement && speechpartsShadowQuillElement.children[0]) speechpartsShadowQuillElement.children[0].innerHTML = "";
     if (facsimileShadowQuillElement && facsimileShadowQuillElement.children[0]) facsimileShadowQuillElement.children[0].innerHTML = "";
     
   },
-  REFERENCE(state, payload) {
-    state.referenceTranscription = payload;
+  SET_ERROR(state, payload) {
+    state.transcriptionError = payload
+  },
+  SET_TEXT_ALIGNMENT_ERROR(state, payload) {
+    state.translationAlignmentError = payload
   },
   LOADING_STATUS (state, payload) {
     state.transcriptionLoading = payload;
@@ -97,36 +109,44 @@ const mutations = {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
   },
-  ALIGNMENTS(state, payload) {
-    state.transcriptionAlignments = payload;
+  STORE_ALIGNMENTS(state, payload) {
+    state.textAlignmentSegments = payload;
   },
   UPDATE (state, payload) {
-    //console.log("STORE MUTATION transcription/UPDATE")
-    state.transcription = payload.transcription;
-    state.transcriptionWithNotes = payload.withNotes;
-    state.transcriptionWithSpeechparts = payload.withSpeechparts;
-    state.transcriptionWithFacsimile = payload.withFacsimile;
+    if (payload.transcription) {
+      state.transcription = payload.transcription;
+    }
+    if (payload.withNotes) {
+      state.transcriptionWithNotes = payload.withNotes;
+    }
+    if (payload.withSpeechparts) {
+      state.transcriptionWithSpeechparts = payload.withSpeechparts;
+    }
+    if (payload.withTextAlignment) {
+      state.transcriptionWithTextAlignment = payload.withTextAlignment;
+    }
+    if (payload.withFacsimile) {
+      state.transcriptionWithFacsimile = payload.withFacsimile;
+    }
+    //state.transcriptionSaved = true;
   },
   CHANGED (state) {
     // transcription changed and needs to be saved
-    //console.log("STORE MUTATION transcription/CHANGED")
     state.transcriptionSaved = false;
   },
+  ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
+    const deltaFilteredForTextAlignment = filterDeltaOperations(transcriptionWithTextAlignmentShadowQuill, payload, 'text-alignment');
+    transcriptionWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
+    state.transcriptionWithTextAlignment = transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML;
+  },
   ADD_OPERATION (state, payload) {
-
-    //console.log(`%c ADD_OPERATION`, 'color:red', payload);
 
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
-
-    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-    //console.log(`%c filtered`, 'color:red', deltaFilteredForContent);
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
-    //console.log(`%c transcriptionShadowQuill`, 'color:blue', transcriptionShadowQuill);
-  
     notesShadowQuill.updateContents(deltaFilteredForNotes);
     speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
     facsimileShadowQuill.updateContents(deltaFilteredForFacsimile);
@@ -135,62 +155,38 @@ const mutations = {
     state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
-  
-  
-    //console.log(`%c filtered`, 'color:red', transcriptionShadowQuillElement.children[0].innerHTML)
-
   },
   SAVED (state) {
     // transcription saved
-    //console.log("STORE MUTATION transcription/SAVED")
     state.transcriptionSaved = true;
+  },
+  SAVING_TRANSLATION_ALIGNMENT_STATUS (state, v) {
+    state.translationAlignmentSaved = v;
   }
 
 };
 
 const actions = {
-
-  fetch ({ commit, rootState }) {
-
-    commit('LOADING_STATUS', true);
-
-    const doc_id = rootState.document.document.id;
-    const user_id = rootState.user.author.id;
-
-    this.dispatch('noteTypes/fetch')
-      .then(() => this.dispatch('speechpartTypes/fetch', doc_id))
-      .then(() => this.dispatch('commentaries/fetchTypes'))
-      .then(() => this.dispatch('notes/fetch', doc_id))
-      .then(() => this.dispatch('speechparts/fetch', { doc_id, user_id }))
-      .then(() => this.dispatch('facsimile/fetchCanvasNames'))
-      .then(() => this.dispatch('facsimile/fetchFragments'))
-      .then(() => this.dispatch('facsimile/fetchAlignments'))
-      .then(() => this.dispatch('transcription/fetchAlignments', { doc_id, user_id }))
-      .then(() => this.dispatch('transcription/fetchTranscriptionFromUser', { doc_id, user_id }))
-      .then(() => this.dispatch('transcription/fetchReference', { doc_id }))
-      .then(() => this.dispatch('translation/fetch', { doc_id, user_id }))
-      .then(() => this.dispatch('translation/fetchReference', { doc_id, user_id }))
-      .then(() => this.dispatch('commentaries/fetch', { doc_id, user_id }))
-      .catch(err => {
-        console.error("Une erreur est survenue", err)
-      })
-
-  },
-  fetchTranscriptionFromUser ({commit, state, rootState}, {docId, userId}) {
+ 
+  /* useful */
+  fetchTranscriptionFromUser ({dispatch, commit, state, getters, rootState}, {docId, userId}) {
     commit('RESET')
-    return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then( response => {
-      commit('LOADING_STATUS', true);
+    commit('LOADING_STATUS', true);
+    return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
 
       let transcription = response.data.data;
 
       let quillContent = TEIToQuill(transcription.content);
-      let content = insertSegments(quillContent, state.transcriptionAlignments, 'transcription');
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.transcriptionAlignments, 'transcription');
+      
+      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
       const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
+      const withTextAlignment = TEIToQuill(insertSegments(transcription.content, state.textAlignmentSegments));
+
       const data = {
         transcription: transcription,
-        content: convertLinebreakTEIToQuill(content),
+        content: convertLinebreakTEIToQuill(quillContent),
+        withTextAlignment: convertLinebreakTEIToQuill(withTextAlignment),
         withNotes: convertLinebreakTEIToQuill(withNotes),
         withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
@@ -198,336 +194,222 @@ const actions = {
 
       commit('INIT', data);
       commit('UPDATE', data);
+      commit('SET_ERROR', null)
       commit('LOADING_STATUS', false);
-
     }).catch((error) => {
+      commit('SET_ERROR', error)
       commit('LOADING_STATUS', false);
-      throw error
+      //throw error
     })
   },
-  fetchAlignments ({commit}, {doc_id, user_id}) {
-    return http.get(`documents/${doc_id}/transcriptions/alignments/from-user/${user_id}`).then( response => {
-      //console.log("STORE ACTION transcription/fetchAlignments", response)
-      if (response.data.errors) {
-        commit('ALIGNMENTS', []);
-        return;
-      }
-      const alignments = response.data.data && Array.isArray(response.data.data[0]) ? response.data.data : [response.data.data];
-      commit('ALIGNMENTS', alignments);
-    })
-  },
-  fetchReference ({commit}, {doc_id}) {
-
-    //console.log('STORE ACTION transcription/fetchReference', doc_id);
-
-    return http.get(`documents/${doc_id}/transcriptions/reference`).then( response => {
-
-      commit('LOADING_STATUS', false);
-
-
-      if (response.data.errors && response.data.errors.status === 404) {
-        console.warn("NO reference transcription found");
-        return;
-      }
-      let transcription = false;
-
-      if (response.data.data) {
-        transcription = response.data.data;
-      }
-
-      if (!transcription) return commit('REFERENCE', false);
-
-      let quillContent = TEIToQuill(transcription.content);
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, [], 'transcription');
-      transcription.content = withNotes;
-
-      commit('REFERENCE', transcription)
-    })
-  },
-  validate({dispatch, commit, rootState, rootGetters}) {
-    const auth = rootGetters['user/authHeader'];
-    const docId = rootState.document.document.id;
-    return http.get(`documents/${docId}/validate-transcription`, auth).then(response => {
-      console.log("validate response", response.data, auth);
-      this.dispatch('document/setValidationStage', {
-        validationStage: response.data.data.validation_step,
-        validationStageLabel: response.data.data.validation_step_label
-      });
-    });
-  },
-  unvalidate({dispatch, commit, rootState, rootGetters}) {
-    const auth = rootGetters['user/authHeader'];
-    const docId = rootState.document.document.id;
-    return http.get(`documents/${docId}/unvalidate-transcription`, auth).then(response => {
-      console.log("unvalidate response", response.data.data.validation_step_label);
-      this.dispatch('document/setValidationStage', {
-        validationStage: response.data.data.validation_step,
-        validationStageLabel: response.data.data.validation_step_label
-      });
-    });
-  },
-  create ({ commit, rootState, rootGetters }) {
-    const auth = rootGetters['user/authHeader'];
-    const data = { data: [{
-        "content" : '<p></p>',
-        "username": rootState.user.currentUser.username
-      }]};
-    return new Promise( ( resolve, reject ) => {
-      http.post(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          reject( error )
-        });
-    } );
-  },
-  save ({dispatch, commit, rootState, rootGetters}) {
-    //console.log('STORE ACTION transcription/save');
-
-    commit('SAVING_STATUS', 'saving');
-
-    return dispatch('saveContent')
-      .then(response => {
-        console.warn("content saved", rootGetters['document/manifestURL']);
-        if (rootGetters['document/manifestURL']) {
-          console.warn("content saved", rootGetters['document/manifestURL']);
-          dispatch('saveImageAlignments')
-        }
+  async fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
+    if (rootState.workflow.currentSection === "speech-parts") {
+      await dispatch('fetchTranscriptionFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.document.document.user_id
       })
-      .then(reponse => {
-        if (rootState.translation.translation.id) {
-          // Saves alignment if translation exists
-          return dispatch('saveAlignment')
-        }
-        return true;
-      })
-      .then(reponse => dispatch('saveSpeechparts'))
-      .then(reponse => dispatch('saveNotes'))
-      .then(reponse => {
-        if (rootState.translation.translation) return dispatch('translation/save', null, {root:true});
-        else return true;
-      })
-      .then(function(values) {
-        //console.log('all saved', values);
-        commit('SAVED');
-        commit('SAVING_STATUS', 'uptodate');
-      })
-      .catch( error => {
-        console.error('something bad happened', error);
-        commit('SAVING_STATUS', 'error');
-        //dispatch( 'error', { error } )
-      });
-
-  },
-  saveContent ({ state, rootGetters, rootState }) {
-    console.log('STORE ACTION transcription/saveContent', state.transcriptionContent);
-    const auth = rootGetters['user/authHeader'];
-    const tei = quillToTEI(state.transcriptionContent);
-    const sanitized = stripSegments(tei);
-    console.log(`%c save transcription ${sanitized}`, 'color:red');
-    const data = { data: [{
-        "content" : sanitized,
-        "username": rootState.user.author.username
-      }]};
-    const method  = (state.transcription && state.transcription.doc_id) ? http.put : http.post;
-    
-    return new Promise( ( resolve, reject ) => {
-      method(`documents/${rootState.document.document.id}/transcriptions`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
-  cloneContent: function ({dispatch, state, rootGetters, rootState}) {
-    console.log('STORE ACTION transcription/cloneContent', state.transcriptionContent);
-    const auth = rootGetters['user/authHeader'];
-    console.log(`%c clone transcription`, 'color:red');
-    const doc_id = rootState.document.document.id;
-    const user_id = rootState.user.author.id;
-    return new Promise((resolve, reject) => {
-      http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`, auth)
-        .then(response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          } else resolve(response.data)
-        })
-        .then(response => {
-          dispatch("unvalidate");
-        })
-        .catch(error => {
-          console.error("error", error);
-          reject(error)
-        });
-    });
-  },
-  saveNotes ({ commit, rootState, state, rootGetters }) {
-
-      console.warn('STORE ACTION transcription/saveNotes');
-
-      // compute notes pointers
-      let sanitizedWithNotes = stripSegments(state.transcriptionWithNotes);
-
-      console.warn(sanitizedWithNotes);
-      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes);
-      console.warn(sanitizedWithNotes);
-      const notes = computeNotesPointers(sanitizedWithNotes);
-      notes.forEach(note => {
-          let found = rootState.notes.notes.find((element) => {
-              return element.id === note.note_id;
-          });
-          console.log(rootState.notes.notes, notes, found);
-          note.content = found.content;
-          note.transcription_username = rootState.user.author.username;
-          note.note_type = found.note_type.id;
-      });
-      const auth = rootGetters['user/authHeader'];
-
-      return new Promise((resolve, reject) => {
-          http.put(`documents/${rootState.document.document.id}/transcriptions/notes`, {data: notes}, auth)
-              .then(response => {
-                  if (response.data.errors) {
-                      console.error("error", response.data.errors);
-                      reject(response.data.errors);
-                  }
-                  else {
-                      resolve(response.data);
-                  }
-              });
-      })
-  },
-  saveSpeechparts ({ commit, rootState, state, rootGetters }) {
-
-
-    console.warn('STORE ACTION transcription/saveSpeechparts');
-
-    // compute notes pointers
-    //console.log("state.transcriptionWithSpeechparts", sanitizedWithSpeechparts)
-    let sanitizedWithSpeechparts = stripSegments(state.transcriptionWithSpeechparts);
-    //console.log("sanitizedWithSpeechparts", sanitizedWithSpeechparts)
-    sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
-    const speechparts = computeSpeechpartsPointers(sanitizedWithSpeechparts);
-
-    speechparts.forEach(sp => {
-      let found = rootState.speechparts.speechparts[sp.index];
-      sp.type_id = found.speech_part_type ? found.speech_part_type.id : found.type_id;
-      if(found.note) sp.note = found.note;
-    });
-
-    const auth = rootGetters['user/authHeader'];
-    const data = {
-      username: rootState.user.author.username,
-      speech_parts: speechparts
-    };
-    //console.log("saveSpeechparts", speechparts)
-
-    return new Promise( ( resolve, reject ) => {
-      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/discours`, { data: data }, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
-  saveImageAlignments ({ commit, rootState, state, rootGetters }) {
-
-
-    console.warn('STORE ACTION transcription/saveImageAlignments');
-
-    // compute image alignments pointers
-    let sanitizedWithFacsimile = stripSegments(state.transcriptionWithFacsimile);
-    sanitizedWithFacsimile = convertLinebreakQuillToTEI(sanitizedWithFacsimile);
-    const imageAlignments = computeImageAlignmentsPointers(sanitizedWithFacsimile);
-    imageAlignments.forEach(ia => {
-      let found = rootGetters['facsimile/getZoneById'](ia.zone_id);
-      ia.canvas_idx = found.canvas_idx;
-      ia.img_idx = found.img_idx;
-    });
-
-    const auth = rootGetters['user/authHeader'];
-    const data = {
-      username: rootState.user.author.username,
-      alignments: imageAlignments
-    };
-
-    return new Promise( ( resolve, reject ) => {
-      return http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/images`, { data: data }, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
-        })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
-  },
-  saveAlignment ({rootState, rootGetters}) {
-    console.warn('STORE ACTION transcription/saveAlignment');
-    const transcriptionTEI = quillToTEI(state.transcriptionContent);
-    const translationTEI = quillToTEI(rootState.translation.translationContent);
-    const transcriptionPointers = computeAlignmentPointers(transcriptionTEI);
-    const translationPointers = computeAlignmentPointers(translationTEI);
-    let pointers = [];
-    for (let i = 0; i < Math.max(transcriptionPointers.length, translationPointers.length); ++i) {
-      pointers.push([
-        ...(transcriptionPointers[i] ? transcriptionPointers[i] : [0,0]),
-        ...(translationPointers[i] ? translationPointers[i] : [0,0])
-      ]);
     }
-    console.log("Alignmant pointers", pointers);
-    const auth = rootGetters['user/authHeader'];
-    const data = { data: {
-        username: rootState.user.author.username,
-        ptr_list : pointers,
-      }};
-    return new Promise( ( resolve, reject ) => {
-      http.post(`documents/${rootState.document.document.id}/transcriptions/alignments`, data, auth)
-        .then( response => {
-          if (response.data.errors) {
-            console.error("error", response.data.errors);
-            reject(response.data.errors);
-          }
-          else resolve( response.data )
+    else {
+      await dispatch('fetchTranscriptionFromUser', {
+          docId: rootState.document.document.id,
+          userId: rootState.workflow.selectedUserId
         })
-        .catch( error => {
-          console.error("error", error);
-          reject( error )
-        });
-    } );
+      }
+      await dispatch('document/fetchTranscriptionView', 
+      rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.document.user_id,
+      {root: true})
+   
   },
-  changed ({ commit }, deltas) {
-    console.warn('STORE ACTION transcription/changed');
-    commit('ADD_OPERATION', deltas);
-    commit('CHANGED');
-    commit('SAVING_STATUS', 'tobesaved')
+  /* useful */
+  async fetchTextAlignments ({commit, rootState}) {
+    const response = await http.get(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`)
+    if (response.data.errors) {
+      commit('STORE_ALIGNMENTS', []);
+      return;
+    }
+    const alignments = response.data.data && Array.isArray(response.data.data[0]) ? response.data.data : [response.data.data];
+    commit('STORE_ALIGNMENTS', alignments);
   },
-  translationChanged ({ commit }, deltas) {
-    console.warn('STORE ACTION transcription/translationChanged');
-    commit('CHANGED');
+  /* useful */
+  addNewTranscription ({commit, dispatch, rootState}) {
+    const emptyTranscription = {
+      data: {
+        notes: [],
+        content: ""
+      }
+    }
+    return http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, emptyTranscription).then(response => {
+      commit('SET_ERROR', null)
+    }).catch(error => {
+      commit('SET_ERROR', error)
+    })
+  },
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
+  },
+  /* useful */
+  async deleteTranscriptionFromUser({dispatch, commit}, {docId, userId}) {
+    try {
+      commit('SET_ERROR', null)
+      const response = await http.delete(`documents/${docId}/transcriptions/from-user/${userId}`)
+      await dispatch('document/partialUpdate', {
+        validation_flags: response.data.data.validation_flags
+      }, {root: true})
+      await dispatch('fetchTranscriptionContent')
+    } catch(error) {
+      commit('SET_ERROR', error)
+    }
+  },
+  /* useful */
+  async saveTranscription({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
+    commit('LOADING_STATUS', true)
+
+    try {
+      // prepare notes
+      const tei = quillToTEI(state.transcriptionContent)
+      const sanitizedContent = stripSegments(tei)
+
+      const teiWithNotes = quillToTEI(state.transcriptionWithNotes)
+      let sanitizedWithNotes = stripSegments(teiWithNotes)
+      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
+
+      const notes = computeNotesPointers(sanitizedWithNotes)
+
+      notes.forEach(note => {
+        const found = rootGetters['notes/getNoteById'](note.id)
+        note.content = found.content
+        if (found.note_type) {
+          note.type_id = found.note_type.id
+        }
+      })
+
+      // put content && update notes
+      await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
+        data: {
+          content: sanitizedContent,
+          notes: notes.filter(n => n.id !== null && n.id >= 0)
+        }
+      })
+            
+      // and post new notes 
+      const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+        delete n.id
+        return n
+       })
+      if (new_notes.length > 0){
+        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
+          data: {notes: new_notes}
+        })
+      }
+      // update & save the speechparts pointers before reloading the transcription
+      await dispatch('speechparts/saveSpeechParts', null, {root: true})
+      // update the store content
+      
+      await dispatch('fetchTranscriptionContent')
+
+      commit('SAVING_STATUS', 'uptodate')
+      commit('SET_ERROR', false)
+      commit('LOADING_STATUS', false)
+    } catch(error) {
+      commit('SET_ERROR', error)
+      commit('SAVING_STATUS', 'error')
+      commit('LOADING_STATUS', false)
+    }
+  },
+  insertNote({commit, rootState, state}, newNote) {
+    const quillContent = TEIToQuill(state.transcriptionContent)
+    const textWithNotes = insertNotes(quillContent,  [newNote])
+    const data = {
+      transcription: {
+        ...state.transcription,
+        notes: state.transcription.notes.concat(newNote)
+      },
+      withNotes: convertLinebreakTEIToQuill(textWithNotes),
+    }
+    /* save the shadow content with notes */
+    commit('UPDATE', data)
+    return newNote
+  },
+  insertSegments({commit, state}, segments) {
+    const TEIwithSegments = insertSegments(quillToTEI(state.transcriptionContent), segments);
+    const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
+    const data = {
+      withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
+    };
+
+   transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = data.withTextAlignment;
+
+    commit('UPDATE', data);
+  },
+  updateNote({commit, rootState, state}, updatedNote) {
+    const currentNotes = state.transcription.notes;
+    const data = {
+      transcription: {
+        ...state.transcription,
+        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
+      }
+    }
+    /* save the note modification in the store */
+    commit('SAVING_STATUS', 'tobesaved')
+    commit('UPDATE', data)
+    return updatedNote
+  },
+  async cloneContent({dispatch, rootState}) {
+    const doc_id = rootState.document.document.id;
+    const user_id = rootState.workflow.selectedUserId;
+    try {
+      const response = await http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`)
+      await dispatch('document/unsetValidationFlag', {docId: doc_id, flagName: 'transcription'}, {root: true})
+      return response.data;
+    } catch (e) {
+      console.log(`%c error while cloning transcription ${e}`, 'color:red');
+    }
+  },
+  updateSpeechpartsPointers({state}) {
+      const TEIwithSpeechParts = quillToTEI(state.transcriptionWithSpeechparts)
+
+      let sanitizedWithSpeechparts = stripSegments(TEIwithSpeechParts);
+      sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
+      return computeSpeechpartsPointers(sanitizedWithSpeechparts);
+  },
+  textAlignmentsNeedToBeSaved({commit}) {
+    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+  },
+  async saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
+    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+    commit('SET_TEXT_ALIGNMENT_ERROR', null)
+    try {
+      let data = []
+      const transcription = rootGetters['transcription/transcriptionSegmentsFromQuill'];
+      const translation = rootGetters['translation/translationSegmentsFromQuill'];
+      
+      if (transcription.length !== translation.length) {
+        throw Error('Le nombre de segments doit être identique entre la transcription et la traduction')
+      }
+
+      for(let i = 0; i < transcription.length; i++) {
+        data.push([...transcription[i], ...translation[i]])
+      }
+      console.log('save translation alignment', data)
+
+      const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`, { data: data })
+      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
+
+    } catch(error) {
+      commit('SET_TEXT_ALIGNMENT_ERROR', error)
+      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
+    } 
+  },
+  changed ({ commit, rootState }, deltas) {
+    if (rootState.workflow.transcriptionAlignmentMode) {
+      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
+    } else {
+      commit('ADD_OPERATION', deltas);
+      commit('CHANGED');
+      commit('SAVING_STATUS', 'tobesaved')
+    }
   },
   reset({commit}) {
     commit('RESET')
@@ -536,7 +418,15 @@ const actions = {
 };
 
 const getters = {
+  isTranscriptionSaved(state) {
+    return state.savingStatus === 'uptodate'
+  },
+  transcriptionSegmentsFromQuill(state) {
+    if (!state.transcriptionWithTextAlignment) return [];
 
+    const text =  quillToTEI(state.transcriptionWithTextAlignment)
+    return computeAlignmentPointers(text)
+  }
 };
 
 const transcriptionModule = {

@@ -1,151 +1,236 @@
 <template>
   <div class="section">
     <div
-      v-if="document"
+      v-if="!!document"
       class="container is-fluid"
     >
+      <!-- header -->
       <document-title-bar
         :document="document"
       />
-
-      <!-- Visibility widget-->
-      <div class="m-b-sm">
-        <p class="is-size-6">
-          <span class="tag">
-            <visibility-toggle
-              class="m-r-md"
-              :action="toggleImageVisibility"
-              :visible="imageVisibility"
+      <!-- main container -->
+      <div class="m-t-md">
+        <!-- section tabs (notice, transcription, commentaires, etc) -->
+        <div class="section-tabs tabs">
+          <ul>
+            <li :class="$attrs.section === 'notice' || $attrs.section === undefined || !transcriptionView ? `is-active`: ''">
+              <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'notice'}}">
+                Notice
+              </router-link>
+            </li>
+            <li
+              v-if="transcriptionView"
+              :class="$attrs.section === 'transcription' || $attrs.section === 'translation'
+                ? 'is-active': '' "
             >
-              image
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'notice'"
-              :action="toggleNoticeVisibility"
-              :visible="noticeVisibility"
+              <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'transcription'}}">
+                <span v-if="translationView"> Transcription et traduction</span>
+                <span v-else> Transcription </span>
+              </router-link>
+            </li>
+            <li
+              v-if="isCommentariesValidated && !!commentariesView && commentariesView.length > 0"
+              :class="$attrs.section === 'commentaries' ? `is-active`: ''"
             >
-              notice
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
-              :action="toggleTranscriptionVisibility"
-              :visible="transcriptionVisibility"
+              <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'commentaries'}}">
+                Commentaires
+              </router-link>
+            </li>
+            <li
+              v-if="isSpeechPartsValidated && !!speechPartsView"
+              :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
             >
-              transcription
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'transcription' || $attrs.section === 'translation'"
-              class="m-l-md"
-              :action="toggleTranslationVisibility"
-              :visible="translationVisibility"
-            >
-              traduction
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'commentaries'"
-              :action="toggleCommentariesVisibility"
-              :visible="commentariesVisibility"
-            >
-              commentaires
-            </visibility-toggle>
-            <visibility-toggle
-              v-if="$attrs.section === 'speech-parts'"
-              :action="toggleSpeechPartsVisibility"
-              :visible="speechpartsVisibility"
-            >
-              parties du discours
-            </visibility-toggle>
-          </span>
-        </p>
-      </div>
-
-      <div class="columns">
-        <div
-          v-show="imageVisibility"
-          class="column m-t-sm"
-          :class="`${imageVisibility && showContent ? 'is-two-fifths' : ''}`"
-        >
-          <i-i-i-f-viewer />
+              <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'speech-parts'}}">
+                Parties du discours
+              </router-link>
+            </li>
+          </ul>
         </div>
+        <!-- section content -->
         <div
-          v-if="showContent"
-          class="column"
+          v-if="!!document"
         >
-          <div class="tabs">
-            <ul>
-              <li :class="$attrs.section === 'notice' || $attrs.section === undefined || !transcriptionView ? `is-active`: ''">
-                <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'notice'}}">
-                  Notice
-                </router-link>
-              </li>
-              <li
-                v-if="transcriptionView"
-                :class="$attrs.section === 'transcription' || $attrs.section === 'translation'
-                  ? 'is-active': '' "
-              >
-                <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'transcription'}}">
-                  <span v-if="translationView"> Transcription et traduction</span>
-                  <span v-else> Transcription </span>
-                </router-link>
-              </li>
-              <li
-                v-if="isTranscriptionValidated"
-                :class="$attrs.section === 'commentaries' ? `is-active`: ''"
-              >
-                <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'commentaries'}}">
-                  Commentaires
-                </router-link>
-              </li>
-              <li
-                v-if="isTranscriptionValidated"
-                :class="$attrs.section === 'speech-parts' ? `is-active`: ''"
-              >
-                <router-link :to="{name: 'document-view', params: {docId: $attrs.docId, section:'speech-parts'}}">
-                  Parties du discours
-                </router-link>
-              </li>
-            </ul>
-          </div>
-          <div
-            v-if="!!document"
-            class=""
-          >
-            <document-notice
-              v-if="$attrs.section === 'notice' || !transcriptionView"
-              :document="document"
-            />
+          <div class="columns">
             <div
-              v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
-              class="content"
+              v-show="imageVisibility"
+              class="column"
+              :class="`${imageVisibility && showContent ? 'is-half' : ''}`"
             >
-              <document-transcription
-                v-if="transcriptionVisibility && !translationVisibility"
-                :readonly-data="transcriptionView"
+              <!-- visibility widget -->
+              <div
+                v-if="!showContent"
+                class="visibility-controls m-b-md"
+              >
+                <div class="field is-grouped">
+                  <visibility-toggle
+                    class="control"
+                    :action="toggleImageVisibility"
+                    :visible="imageVisibility"
+                  >
+                    image
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'notice'"
+                    class="control"
+                    :action="toggleNoticeVisibility"
+                    :visible="noticeVisibility"
+                  >
+                    notice
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                    class="control"
+                    :action="toggleTranscriptionVisibility"
+                    :visible="transcriptionVisibility"
+                  >
+                    transcription
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                    class="control"
+                    :action="toggleTranslationVisibility"
+                    :visible="translationVisibility"
+                  >
+                    traduction
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'commentaries'"
+                    class="control"
+                    :action="toggleCommentariesVisibility"
+                    :visible="commentariesVisibility"
+                  >
+                    commentaires
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'speech-parts'"
+                    class="control"
+                    :action="toggleSpeechPartsVisibility"
+                    :visible="speechpartsVisibility"
+                  >
+                    parties du discours
+                  </visibility-toggle>
+                </div>
+              </div>
+
+              <mirador-viewer
+                v-if="document.manifest_origin_url && !isLoading"
+                :manifest-url="document.manifest_url"
+                :manifest-origin-url="document.manifest_origin_url"
+                :canvas-index="0"
+                :document-id="document.id"
               />
-              <document-translation
-                v-if="!transcriptionVisibility && translationVisibility"
-                :readonly-data="translationView"
-              />
-              <document-transcription-alignment
-                v-if="transcriptionAlignmentView && transcriptionVisibility && translationVisibility"
-                :readonly-data="transcriptionAlignmentView"
-              />
+              <img
+                v-else
+                :src="require('@/assets/images/document_placeholder.svg')"
+                class="iiif-viewer-placeholder"
+              >
             </div>
-            <document-commentaries
-              v-if="isTranscriptionValidated && $attrs.section === 'commentaries'"
-              :document="document"
-            />
-            <document-speech-parts
-              v-if="isTranscriptionValidated && $attrs.section === 'speech-parts'"
-              :document="document"
-            />
+
+            <div
+              v-if="showContent"
+              class="column"
+            >
+              <!-- visibility widget -->
+              <div class="visibility-controls m-b-md">
+                <div class="field is-grouped">
+                  <div class="control">
+                    <span>AFFICHAGE</span>
+                  </div>
+                  <visibility-toggle
+                    class="control"
+                    :action="toggleImageVisibility"
+                    :visible="imageVisibility"
+                  >
+                    image
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'notice'"
+                    class="control"
+                    :action="toggleNoticeVisibility"
+                    :visible="noticeVisibility"
+                  >
+                    notice
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="transcriptionView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                    class="control"
+                    :action="toggleTranscriptionVisibility"
+                    :visible="transcriptionVisibility"
+                  >
+                    transcription
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="translationView && $attrs.section === 'transcription' || $attrs.section === 'translation'"
+                    class="control"
+                    :action="toggleTranslationVisibility"
+                    :visible="translationVisibility"
+                  >
+                    traduction
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'commentaries'"
+                    class="control"
+                    :action="toggleCommentariesVisibility"
+                    :visible="commentariesVisibility"
+                  >
+                    commentaires
+                  </visibility-toggle>
+                  <visibility-toggle
+                    v-if="$attrs.section === 'speech-parts'"
+                    class="control"
+                    :action="toggleSpeechPartsVisibility"
+                    :visible="speechpartsVisibility"
+                  >
+                    parties du discours
+                  </visibility-toggle>
+                </div>
+              </div>
+
+              <!-- section content -->
+              <div>
+                <document-notice
+                  v-if="$attrs.section === 'notice' || !transcriptionView"
+                  :document="document"
+                />
+                <div
+                  v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
+                  class="content"
+                >
+                  <div class="columns">
+                    <div
+                      v-if="!translationAlignmentVisibility && transcriptionVisibility && transcriptionView !== null"
+                      class="column"
+                    >
+                      <document-transcription
+                        :readonly-data="transcriptionView"
+                      />
+                    </div>
+                    <div
+                      v-if="!translationAlignmentVisibility && translationView !== null && translationVisibility"
+                      class="column"
+                    >
+                      <document-translation
+                        :readonly-data="translationView"
+                      />
+                    </div>
+                  </div>
+                  <document-transcription-alignment
+                    v-if="translationAlignmentVisibility"
+                    :readonly-data="transcriptionAlignmentView"
+                  />
+                </div>
+                <document-commentaries
+                  v-if="isTranscriptionValidated && $attrs.section === 'commentaries' && commentariesView !== null "
+                  :readonly-data="commentariesView"
+                />
+                <document-speech-parts
+                  v-if="isTranscriptionValidated && $attrs.section === 'speech-parts' && speechPartsView != null"
+                  :readonly-data="speechPartsView"
+                />
+              </div>
+            </div>
           </div>
         </div>
-
-        <div 
-          v-show="false && !imageVisibility && showContent"
-          class="column is-one-quarter"
-        />
       </div>
     </div>
   </div>
@@ -153,7 +238,8 @@
 
 <script>
 
-import { mapState, mapGetters } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex'
+
 import DocumentNotice from '../components/document/view/DocumentNotice.vue'
 import DocumentTranscription from '../components/document/view/DocumentTranscription.vue'
 import DocumentTranslation from '../components/document/view/DocumentTranslation.vue'
@@ -161,7 +247,8 @@ import DocumentTranscriptionAlignment from '../components/document/view/Document
 
 import DocumentCommentaries from '../components/document/view/DocumentCommentaries.vue'
 import DocumentSpeechParts from '../components/document/view/DocumentSpeechParts.vue'
-import IIIFViewer from '../components/IIIFViewer.vue'
+import MiradorViewer from '../components/MiradorViewer.vue'
+
 import VisibilityToggle from '../components/ui/VisibilityToggle.vue'
 import DocumentTitleBar from '../components/document/DocumentTitleBar.vue'
 
@@ -175,14 +262,14 @@ export default {
       DocumentTranscriptionAlignment,
       DocumentCommentaries,
       DocumentSpeechParts,
-      IIIFViewer,
+      MiradorViewer,
       VisibilityToggle
-      
     },
     props: {
     },
     data() {
       return {
+        isLoading: false,
         imageVisibility: true,
         noticeVisibility: true,
         transcriptionVisibility: true,
@@ -192,64 +279,162 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document', 'loading',
-                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView']),
-        ...mapGetters('user', ['loggedIn']),
-        ...mapGetters('workflow', ['isTranscriptionValidated']),
+        ...mapState('document', ['document', 
+                                 'transcriptionView', 'translationView', 'transcriptionAlignmentView', 'speechPartsView',
+                                 'commentariesView']),
+        ...mapGetters('user', ['isAuthenticated']),
+        ...mapGetters('document', ['getManifestInfoUrl']),
+        ...mapGetters('workflow', ['isTranscriptionValidated', 'isTranslationValidated',
+        'isTranscriptionReadOnly', 'isTranslationReadOnly', 'isSpeechPartsReadOnly', 'isSpeechPartsValidated', 
+        'isCommentariesReadOnly', 'isCommentariesValidated']),
+
+        canvasManifestInfo() {
+          return this.getManifestInfoUrl(0)
+        },
+
+        translationAlignmentVisibility() {
+          return this.transcriptionAlignmentView && this.transcriptionVisibility && this.translationVisibility
+        },
 
         showContent() {
-          return (this.transcriptionVisibility || this.translationVisibility) && this.noticeVisibility && this.commentariesVisibility && this.speechpartsVisibility
+          switch(this.$attrs.section){
+            case 'transcription':
+              return this.transcriptionVisibility || this.translationVisibility
+            case 'translation':
+              return this.translationVisibility || this.transcriptionVisibility
+            case 'notice':
+              return this.noticeVisibility
+            case 'commentaries':
+              return this.commentariesVisibility
+            case 'speech-parts':
+              return this.speechpartsVisibility
+            default:
+              return true
+          }
         }
     },
-    async created() {
-      try {
-        await this.fetchOne()
-      }
-      catch (error) {
-        this.$router.push({name: 'error', params: {error: error}})
-      }
-      try {
-        await this.fetchTranscriptionView()
-      } catch(error) {
-        console.error(error)
-      }
-      try {
-        await this.fetchTranslationView()
-      } catch(error) {
-        console.error(error)
-      }
-      try {
-        await this.fetchTranscriptionAlignmentView()
-      } catch(error) {
-        console.error(error)
-      }
+    beforeRouteEnter (to, from, next) {
+      next(vm => {
 
-      //this.transcriptionVisibility = this.transcriptionView !== null
-      //this.translationVisibility = this.translationView !== null
-      // init notes popup
+        if (vm.$attrs.section === 'facsimile') {
+          vm.$router.push({name: 'document-view', params: {docId: vm.$attrs.docId, section:'notice'}})
+        }
+
+        vm.$store.dispatch('workflow/setEditionMode', false)
+        vm.$store.dispatch('workflow/setCurrentSection', vm.$attrs.section)
+        vm.setupVisibilityWidget(vm.$attrs.section)
+      })
+    },
+     beforeRouteUpdate (to, from, next) {
+      this.$store.dispatch('workflow/setEditionMode', false)
+      this.$store.dispatch('workflow/setCurrentSection', to.params.section)
+      this.setupVisibilityWidget(to.params.section)
+
+      if (to.params.docId !== from.params.docId) {
+        this.loadDocument(to.params.docId);
+      }
+      next()
+    },
+    beforeRouteLeave (to, from, next) {
+      this.$store.dispatch('workflow/setCurrentSection', null)
+      next()
+    },
+    async created() {
+      await this.loadDocument(this.$attrs.docId)
     },
     methods: {
-      fetchOne() {
-        return this.$store.dispatch('document/fetch', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranscriptionView() {
-        return this.$store.dispatch('document/fetchTranscriptionView', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranslationView() {
-        return this.$store.dispatch('document/fetchTranslationView', {
-          id: this.$attrs.docId
-        })
-      },
-      fetchTranscriptionAlignmentView() {
-        return this.$store.dispatch('document/fetchTranscriptionAlignmentView', {
-          id: this.$attrs.docId
-        })
-      },
+      ...mapActions('document', {
+        'fetchOne': 'fetch',
+        'fetchTranscriptionView': 'fetchTranscriptionView',
+        'fetchTranslationView': 'fetchTranslationView',
+        'fetchCommentariesView': 'fetchCommentariesView',
+        'fetchSpeechPartsView': 'fetchSpeechPartsView',
+        'fetchTranscriptionAlignmentView': 'fetchTranscriptionAlignmentView',
+        }),
 
+      setupVisibilityWidget(section) {
+        switch (section) {
+          case "transcription":
+            this.transcriptionVisibility = true;
+            this.translationVisibility = true;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "translation":
+            this.transcriptionVisibility = true;
+            this.translationVisibility = true;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "notice":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = true;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          case "commentaries":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = true;
+            break;
+          case "speech-parts":
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = true;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+          default:
+            this.transcriptionVisibility = false;
+            this.translationVisibility = false;
+            this.speechpartsVisibility = false;
+            this.noticeVisibility = false;
+            this.imageVisibility = true;
+            this.commentariesVisibility = false;
+            break;
+        }
+      },
+      async loadDocument(docId) {
+        this.isLoading = true;
+        try {
+          await this.fetchOne({id: docId})
+        }
+        catch (error) {
+          this.$router.push({name: 'error', params: {error: error}})
+        }
+
+        await this.fetchSpeechPartsView()
+        await this.fetchTranscriptionView()
+        await this.fetchTranslationView()
+
+        this.transcriptionVisibility = this.transcriptionView !== null
+        this.translationVisibility = this.translationView !== null
+
+        try {
+          await this.fetchTranscriptionAlignmentView()
+        } catch(error) {
+          console.log("No tr/tl alignment", error)
+        }
+
+        try {
+          await this.fetchCommentariesView()
+        } catch(error) {
+          console.log("No commentaries", error)
+        }
+
+        this.isLoading = false;
+        // init notes popup
+      },
       toggleImageVisibility() {
         // forbid hidding everything
         if (this.showContent) {

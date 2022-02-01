@@ -6,7 +6,7 @@
                @click="action"
                :key="status"
             >
-              <save-button-icon :status="status"/> &nbsp {{ buttonText }}
+              <save-button-icon :status="status"/> &nbsp; {{ buttonText }}
             </a>
 
     </transition>

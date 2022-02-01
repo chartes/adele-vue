@@ -1,0 +1,44 @@
+hi {
+    &[rend='i'] {
+        font-style: italic;
+    }
+    &[rend='b'] {
+        color: #363636;
+        font-weight: 700;
+    }
+    &[rend='u'] {
+        text-decoration-line: underline;
+    }
+    &[rend='sc'] {
+        font-variant: small-caps;
+    }
+    &[rend='sup'] {
+        vertical-align: super;
+        font-size: smaller;
+    }
+}   
+smallcaps, .sc {
+    font-variant: small-caps;
+}
+
+list {
+    item {
+        list-style: disc;
+        display: list-item;
+        list-style-position: inside;
+    }
+}
+
+blockquote, quote[rend="block"]{
+    display: block !important;
+    margin-top: 1em !important;
+    margin-bottom: 1em !important;
+    margin-left: 40px !important;
+    margin-right: 40px !important;
+}
+
+cite {
+    &:hover {
+        cursor: pointer;
+    }
+}

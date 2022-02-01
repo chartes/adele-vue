@@ -25,6 +25,10 @@ const deltaOperationsFilters = {
   facsimile: {
     removeAttributes: ['note', 'segment','speechpart'].concat(globalFilters.removeAttributes),
     keepFormats: ['zone'].concat(globalFilters.keepFormats),
+  },
+  "text-alignment": {
+    removeAttributes: ['note', 'speechpart', 'zone'].concat(globalFilters.removeAttributes),
+    keepFormats: ['segment'],
   }
 }
 

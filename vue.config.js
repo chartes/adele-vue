@@ -4,6 +4,12 @@ module.exports = {
   "transpileDependencies": [
   ],
 
+  publicPath: process.env.NODE_ENV === 'production'
+  ? '/adele/'
+  : '/',
+
+  //css: { extract: false },
+
   chainWebpack: config => {
     config.module
         .rule("vue")

@@ -8,16 +8,12 @@
   >
     <div class="NoteForm">
       <form @submit.prevent="">
-        <field-select
-          :label="'Type'"
-          :options="noteTypes"
-          :on-change="onSelectChange"
-        />
         <div class="field">
           <p class="control">
             <label class="label">Contenu</label>
           </p>
           <div class="editor-area">
+            <!--
             <div
               ref="controls"
               class="editor-controls"
@@ -59,6 +55,7 @@
                 :format="'del'"
               />
             </div>
+            -->
             <div
               ref="editor"
               class="quill-editor"
@@ -66,10 +63,6 @@
             />
           </div>
         </div>
-        <loading-indicator
-          :active="loading"
-          :full-page="true"
-        />
       </form>
     </div>
   </modal-form>
@@ -81,16 +74,12 @@
   import EditorMixins from '../../mixins/EditorMixins'
   import { mapGetters } from 'vuex';
   import ModalForm from './ModalForm';
-  import FieldSelect from './FieldSelect';
-  import EditorButton from '../editors/EditorButton.vue';
-  //import LoadingIndicator from '../ui/LoadingIndicator';
+  //import EditorButton from '../editors/EditorButton.vue';
 
   export default {
     name: "NoteForm",
     components: {
-      //LoadingIndicator,
-      EditorButton,
-      FieldSelect,
+      //EditorButton,
       ModalForm
     },
     mixins: [EditorMixins],

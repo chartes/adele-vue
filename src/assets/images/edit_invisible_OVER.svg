@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="20px" viewBox="0 0 25 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 61.2 (89653) - https://sketch.com -->
+    <title>Group 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="5.32907052e-15 2.25 24.0996 2.25 24.0996 14.437 5.32907052e-15 14.437"></polygon>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="COMPORTEMENTS" transform="translate(-77.000000, -1647.000000)">
+            <g id="Group-4" transform="translate(77.000000, 1648.750000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="Clip-2"></g>
+                <path d="M12.05,11.887 C10.093,11.887 8.507,10.301 8.507,8.344 C8.507,6.387 10.093,4.801 12.05,4.801 C14.007,4.801 15.593,6.387 15.593,8.344 C15.593,10.301 14.007,11.887 12.05,11.887 M12.05,2.25 C5.395,2.25 1.0658141e-14,8.344 1.0658141e-14,8.344 C1.0658141e-14,8.344 5.395,14.437 12.05,14.437 C18.705,14.437 24.1,8.344 24.1,8.344 C24.1,8.344 18.705,2.25 12.05,2.25" id="Fill-1" fill="#FFC400" mask="url(#mask-2)"></path>
+                <line x1="17" y1="0.25" x2="7" y2="16.25" id="Line-2" stroke="#4A4A4A" stroke-width="2" stroke-linecap="square"></line>
+            </g>
+        </g>
+    </g>
+</svg>

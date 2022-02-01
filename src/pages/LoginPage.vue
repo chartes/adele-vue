@@ -1,5 +1,8 @@
 <template>
-  <div class="container login-form">
+  <form
+    class="container login-form"
+    @submit.prevent="authenticate"
+  >
     <article class="message m-t-xxl">
       <div class="message-header">
         Connexion
@@ -17,7 +20,7 @@
             <input
               v-model="email"
               class="input"
-              type="email"
+              type="text"
               placeholder="Nom d'utilisateur ou email"
             >
             <span class="icon is-small is-left">
@@ -38,24 +41,30 @@
             </span>
           </p>
         </div>
+        <router-link :to="{name: 'forgot-password'}">
+          Mot de passe oublié
+        </router-link>
         <div class="field">
           <span class="control">
             <button
               class="button  is-success"
-              @click="login"
             >
               Valider
             </button>
+            <span
+              v-show="error"
+              class="control has-text-danger is-pulled-right p-t-sm"
+            >Nom d'utilisateur ou mot de passe incorrect(s)</span>
           </span>
         </div>
       </div>
     </article>
-  </div>
+  </form>
 </template>
 
 <script>
 
-import {mapState} from 'vuex'
+import {mapState, mapGetters} from 'vuex'
 
 export default {
     name: "LoginPage",
@@ -65,21 +74,36 @@ export default {
     data () {
         return {
           email: '',
-          password: ''
+          password: '',
+          error: false
         }
     },
     computed: {
-      ...mapState("user", ["currentUser"])
+      ...mapState("user", ["currentUser"]),
+      ...mapGetters("user", [
+      "isAuthenticated"
+    ]),
+    },
+    created() {
+      if (this.isAuthenticated) {
+        this.$router.push({path: this.$route.query.from})
+      }
+    },
+    mounted() {
+      this.error = false
     },
     methods: {
-        login () {
+        authenticate () {
+          this.error = false
           return this.$store
             .dispatch('user/login', {
               email: this.email,
               password: this.password
             })
             .then(() => { 
-              this.$router.go(-1)
+	      this.$router.push({name: "home"})
+            }).catch(() => {
+              this.error=true
             })
         }
       }

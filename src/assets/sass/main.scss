@@ -1,12 +1,20 @@
 
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css?family=Barlow:300,400,500,600,700,800|Noto+Serif:400,700|Roboto:400');
+
 
 /* Uncomment to import the entire Bulma framework */
-@import '~bulma/bulma';
+// @import '~bulma/bulma';
+@import "~bulma";
+@import "~buefy/src/scss/buefy";
 
 @import '~bulma-steps';
+@import '~bulma-tooltip';
+@import '~bulma-divider';
+@import '~bulma-checkradio';
 
 /* Import selected Bulma Sass
-/* Remove these if you import the entire Bulma framework above */
+/* Remove these if you import the entire Bulma framework above 
 @import "~bulma/sass/utilities/_all.sass";
 @import "~bulma/sass/base/_all.sass";
 @import "~bulma/sass/grid/_all.sass";
@@ -16,11 +24,11 @@
 @import "~bulma/sass/layout/section.sass";
 @import "~bulma/sass/components/card.sass";
 @import "~bulma/sass/form/_all.sass";
+*/
 
-
+@import 'settings/fonts';
 @import 'settings/colors';
 @import 'settings/vars';
-
 
 // Tools – globally used mixins and functions.
 // It’s important not to output any CSS in the first 2 layers.
@@ -41,13 +49,41 @@
 @import 'elements/html';
 @import 'elements/body';
 @import 'elements/a';
+@import 'elements/button';
 @import 'elements/img';
+@import 'elements/select';
+@import 'elements/input';
+@import 'elements/hi';
+@import 'elements/persname';
+@import 'elements/placename';
+@import 'elements/segment';
 
 
+@import "components/dashboard.invite-user.scss";
 @import "components/document.card";
+@import "components/document.titlebar";
+@import "components/document.transcription";
+@import "components/document.notice";
+@import "components/theme.card";
+@import "components/pagination";
 @import "components/navbar";
+@import "components/inner.navbar";
+@import "components/visibility.controls";
+@import "components/edition.actionbar";
+@import "components/leaflet";
 @import "components/iiifviewer";
 @import "components/login.form";
+@import "components/landing.page";
+@import "components/documentation.page";
+@import "components/userprofile";
+@import "components/search.page";
+@import "components/tabs";
+@import "components/tag.list";
+@import "components/filter.tag.list";
+@import "components/speechparts";
+@import "components/workflow";
+@import "components/workflow-steps";
+@import "components/labelled-checkbox";
 
 // Objects – class-based selectors which define undecorated design patterns,
 // for example media object known from OOCSS
@@ -57,36 +93,19 @@
 @import "objects/quill.core";
 @import "objects/quill.icons";
 @import "objects/editor";
+
+@import "components/note";
+@import "components/message";
+@import "components/modal";
+@import "components/tooltip";
+
 //@import "objects/error-page";
 // Components – specific UI components.
 // This is where majority of our work takes place
 // and our UI components are often composed of Objects and Components
 /*
 //
-@import "components/main-layout";
-@import "components/field.text";
-@import "components/field.title";
-@import "components/field.multi-select";
-@import "components/field.select-autocomplete";
-@import "components/icons";
-@import "components/loading";
-@import "components/note";
-@import "components/document.document-tag-bar";
-@import "components/document.argument";
-@import "components/document.attributes";
-@import "components/document.date-attributes";
-@import "components/document.collections";
-@import "components/document.correspondents";
-@import "components/document.notes-list";
-@import "components/document.placenames";
-@import "components/document.transcription";
-@import "components/document.witness-list";
-@import "components/document.date-list";
-@import "components/document.person-form";
-@import "components/document.person-list-form";
-@import "components/document.iiif-viewer";
-@import "components/collection.collection-list";
-@import "components/lock";
+
 
 // Utilities / trumps – utilities and helper classes
 // with ability to override anything which goes before in the triangle, eg. hide helper class

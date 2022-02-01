@@ -1,104 +1,140 @@
-import axios from "axios/index";
+import {http} from '../../../modules/http-common';
+import Vue from 'vue';
 
 const state = {
-
   speechparts: [],
   newSpeechpart: false,
-  mouseOver: false,
-  mouseOverY: 0,
-
+  savingStatus: 'uptodate',
+  speechPartsError: null
 };
 
 const mutations = {
-
+  SET_ERROR(state, payload) {
+    state.speechPartsError = payload
+  },
   UPDATE_ALL (state, speechparts) {
     state.speechparts = speechparts;
   },
+  SAVING_STATUS (state, payload) {
+    state.savingStatus = payload;
+  },
+  CLEAR(state) {
+    state.speechparts = []
+  },
+  /* need review */
+  /*
   NEW (state, speechpart) {
     state.newSpeechpart = speechpart;
     state.speechparts.push(speechpart);
+    state.savingStatus = 'tobesaved'
   },
-  MOUSE_OVER (state, { speechpart, posY}) {
-    state.mouseOver = speechpart;
-    state.mouseOverY = posY;
-  },
+  */
   UPDATE_ONE (state, speechpart) {
-    state.speechparts = [...state.speechparts.filter(sp => sp.id !== speechpart.id), speechpart];
+    //delete the one one
+    state.speechparts = state.speechparts.filter(item => {
+      return item.id !== speechpart.id
+    })
+    //add the new one
+    state.speechparts.push(speechpart)
+    state.savingStatus = 'tobesaved'
+  },
+  DELETE (state, id) {
+    state.speechparts = state.speechparts.filter(item => {
+      return item.id !== id
+    })
+    state.savingStatus = 'tobesaved'
   }
-
 };
 
 const actions = {
-
-  fetch ({ commit, getters, rootGetters }, { doc_id, user_id }) {
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/alignments/discours/from-user/${user_id}`)
-      .then( (response) => {
-        if (response.data && response.data.errors) {
-          commit('UPDATE_ALL', []);
-        } else {
-          commit('UPDATE_ALL', response.data.data);
-        }
-      }).catch(function(error) {
-        console.log(error);
-      });
+  /* useful */
+  setError({commit}, payload) {
+    commit('SET_ERROR', payload)
   },
-  add ({ commit, getters, rootState }, newSpeechpart) {
-    commit('NEW', newSpeechpart);
+  /* useful */
+  fetchSpeechPartsFromUser ({dispatch, getters, commit }, {docId, userId}) { 
+    return http.get(`documents/${ docId }/speech-parts/from-user/${ userId }`).then(async response => {
+      //commit('RESET')
+      commit('UPDATE_ALL', response.data.data)
+      // recompute transcriptionWithSpeechParts (may be overkill since it's already fetched once)
+      //await dispatch('transcription/fetchTranscriptionFromUser', {userId, docId}, {root: true})
+      
+      commit('SET_ERROR', null)
+    }).catch((error) => {
+      commit('SET_ERROR', error)
+      commit('CLEAR')
+      //throw error
+    })
   },
-  mouseover ({ commit, getters, rootState }, { speechpart, posY} ) {
-    commit('MOUSE_OVER', { speechpart, posY });
-  },
-
-  update ({ commit, getters, rootState }, speechpart) {
-    return commit('UPDATE_ONE', speechpart);
-    /*
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theSpeechpart = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": speechpart.id,
-        "type_id": speechpart.type_id,
-        "content": speechpart.content
-      }]
-    };
-    return axios.put(`/adele/api/1.0/speechparts`, theSpeechpart, config)
-      .then( response => {
-        const speechpart = response.data.data;
-        commit('UPDATE_ONE', speechpart);
-        return speechpart;
+  /* useful */
+  fetchSpeechPartsContent({dispatch, rootState, rootGetters}) {
+    if (rootGetters['workflow/isSpeechPartsReadOnly']) {
+      // when in readonly mode
+      // students see the reference content
+      // teacher and admins can see other ppl readonly views
+      return dispatch('document/fetchSpeechPartsView', 
+        rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.user_id,
+        {root: true})
+    } else {
+      return dispatch('fetchSpeechPartsFromUser', {
+        docId: rootState.document.document.id,
+        userId: rootState.workflow.selectedUserId
       })
-      */
+    }
   },
-  delete ({ commit, getters, rootState }, speechpart) {
-    const config = { auth: { username: rootState.user.authToken, password: undefined }};
-    const theSpeechpart = {
-      data: [{
-        "username": rootState.user.currentUser.username,
-        "id": speechpart.id,
-        "type_id": speechpart.type_id,
-        "content": speechpart.content
-      }]
-    };
-    return axios.delete(`/adele/api/1.0/speechparts`, theSpeechpart, config)
-      .then( response => {
-        const speechpart = response.data.data;
-        commit('UPDATE_ONE', speechpart);
+  add({commit}, speechpart) {
+    commit('UPDATE_ONE', speechpart)
+  },
+  update({commit}, speechpart) {
+    commit('UPDATE_ONE', speechpart)
+  },
+  delete({commit}, speechpartId) {
+    commit('DELETE', speechpartId)
+  },
+  setToBeSaved({commit}) {
+    commit('SAVING_STATUS', 'tobesaved')
+  },
+  async saveSpeechParts({dispatch, commit, state, rootState}) {
+      commit('SET_ERROR', false);
+      const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
+      //const sptrs = JSON.parse(JSON.stringify(state.speechparts))
+      let data = []
+      
+      Array.from(spWithPointers).forEach(sp => {
+        const stateSp = state.speechparts.find(e => e.id === sp.id)
+        data.push({
+          speech_part_type_id: stateSp.speech_part_type.id,
+          ptr_start: sp.ptr_start,
+          ptr_end: sp.ptr_end,
+          note: stateSp.note
+        })
       })
+      try {
+        await http.post(`documents/${rootState.document.document.id}/speech-parts/from-user/${rootState.workflow.selectedUserId}`, {data: data})
+
+        commit('SAVING_STATUS', 'uptodate')
+      } catch(error) {
+        commit('SET_ERROR', `Error while saving 'parts of speech' (${error})`)
+      }
   }
-
 };
 
 const getters = {
 
   speechparts: state => state.speechparts,
   newSpeechpart: state => state.newSpeechpart,
+
+  isSpeechPartsSaved : state => {
+    return state.savingStatus === 'uptodate'
+  },
+  /*
   getSpeechpartById: (state) => (id) => {
     id = parseInt(id);
     return state.speechparts.find(speechpart => {
       return speechpart.id === id;
     });
   }
-
+  */
 };
 
 const speechpartsModule = {

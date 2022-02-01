@@ -1,11 +1,7 @@
-import axios from "axios/index";
-
-const editorsById = {};
+import {http} from '../../../modules/http-common';
 
 const state = {
-
   editors: [],
-
 };
 
 const mutations = {
@@ -19,12 +15,9 @@ const mutations = {
 const actions = {
 
   fetch ({ commit }) {
-    axios.get(`/adele/api/1.0/editors`).then( response => {
-      const respData = response.data.data;
-      const isArray = Array.isArray(respData);
-      const editors = isArray ? respData : [respData];
-      commit('UPDATE', editors)
-    });
+    return http.get(`editors`).then( response => {
+      commit('UPDATE', response.data.data)
+    })
   }
 
 };

@@ -1,0 +1,72 @@
+.edition-action-bar {
+
+  display: flex;
+
+  &.m-b-md {
+    margin: 1.5rem 0;
+  }
+
+  .field.is-grouped > .control:not(:last-child) {
+    margin-right: 1.75rem;
+  }
+
+  .control {
+
+    border-right: solid 1px #979797;
+    margin: 0;
+    padding-right: 1.75rem;
+
+    &:last-child {
+      border: none;
+    }
+
+    .button {
+      background: none;
+      border: none;
+      box-shadow:none;
+      -webkit-appearance: button;
+      margin:0;
+      padding:0;
+      height: auto;
+
+      font-family: $family-sans-serif;
+      font-weight: bold;
+      font-size: 14px;
+      color: #2DC0D7;
+      letter-spacing: 0.35px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .button:active,
+    .button:focus,
+    .button:hover {
+      color: $blue;
+      background: none;
+        border: none;
+      outline: none;
+      box-shadow:none;
+    }
+
+    .button.has-text-danger {
+      color: #FF5C37 !important;
+      text-decoration: none;
+    }
+
+    .button.has-text-danger:hover {
+      background: none;
+      color: #FF0000 !important;
+    }
+
+    .button.is-primary[disabled] {
+      background: none;
+    }
+
+    .button .icon {
+      display: none;
+    }
+  }
+
+
+
+}

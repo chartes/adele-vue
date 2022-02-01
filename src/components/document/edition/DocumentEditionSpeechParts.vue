@@ -1,6 +1,9 @@
 <template>
   <div>
-    Parties du discours
+    <speechparts-editor
+      :key="transcriptionLoading"
+      :initial-content="transcriptionWithSpeechParts"
+    />
   </div>
 </template>
 
@@ -8,17 +11,18 @@
 <script>
 
 import { mapState } from 'vuex';
+import SpeechpartsEditor from "@/components/editors/SpeechpartsEditor.vue"
 
 export default {
     name: "DocumentEditionSpeechParts",
     components: {
-        
+        SpeechpartsEditor
     },
     props: {
-        document: {type: Object, default: null}
+        transcriptionWithSpeechParts: {type: String, default: ""}
     },
     computed: {
-        ...mapState('document', ['loading']),
+      ...mapState('transcription', ['transcriptionLoading']),
     },
     created() {
       

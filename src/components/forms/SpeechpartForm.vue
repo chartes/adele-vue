@@ -1,35 +1,74 @@
 <template>
-
-    <modal-form
-            :title="title"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            :valid="true"
-            :submittin="null"
-    >
-        <div class="SpeechpartForm">
-            <form>
-                <field-select :label="'Type'" :selected="form.type_id" :options="speechpartTypes" :onChange="onSelectChange"/>
-                <div class="field">
-                    <p class="control">
-                        <label class="label">Contenu</label>
-                        <div class="editor-area">
-                            <div class="editor-controls" ref="controls">
-                                <editor-button :selected="buttons.bold" :active="editorHasFocus" :callback="simpleFormat" :format="'bold'"/>
-                                <editor-button :selected="buttons.italic" :active="editorHasFocus" :callback="simpleFormat" :format="'italic'"/>
-                                <editor-button :selected="buttons.superscript" :active="editorHasFocus" :callback="simpleFormat" :format="'superscript'"/>
-                                <editor-button :selected="buttons.smallcaps" :active="editorHasFocus" :callback="simpleFormat" :format="'smallcaps'"/>
-                                <editor-button :selected="buttons.underline" :active="editorHasFocus" :callback="simpleFormat" :format="'underline'"/>
-                                <editor-button :selected="buttons.del" :active="editorHasFocus" :callback="simpleFormat" :format="'del'"/>
-                            </div>
-                            <div class="quill-editor" ref="editor" spellcheck="false"></div>
-                        </div>
-                    </p>
-                </div>
-            </form>
+  <modal-form
+    :title="title"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :valid="true"
+    :submittin="null"
+  >
+    <div class="SpeechpartForm">
+      <form>
+        <field-select
+          :label="'Partie du discours'"
+          :selected="form.type_id"
+          :options="speechpartTypes"
+          :on-change="onSelectChange"
+        />
+        <div class="field">
+          <p class="control">
+            <label class="label">Contenu</label>
+          </p><div class="editor-area">
+            <div
+              ref="controls"
+              class="editor-controls"
+            >
+              <editor-button
+                :selected="buttons.bold"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'bold'"
+              />
+              <editor-button
+                :selected="buttons.italic"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'italic'"
+              />
+              <editor-button
+                :selected="buttons.superscript"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'superscript'"
+              />
+              <editor-button
+                :selected="buttons.smallcaps"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'smallcaps'"
+              />
+              <editor-button
+                :selected="buttons.underline"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'underline'"
+              />
+              <editor-button
+                :selected="buttons.del"
+                :active="editorHasFocus"
+                :callback="simpleFormat"
+                :format="'del'"
+              />
+            </div>
+            <div
+              ref="editor"
+              class="quill-editor"
+              spellcheck="false"
+            />
+          </div>
         </div>
-    </modal-form>
-
+      </form>
+    </div>
+  </modal-form>
 </template>
 
 <script>
@@ -42,13 +81,13 @@
   import EditorButton from '../editors/EditorButton.vue';
 
   export default {
-    name: "speechpart-form",
-    mixins: [EditorMixins],
+    name: "SpeechpartForm",
     components: {
       EditorButton,
       FieldSelect,
       ModalForm
     },
+    mixins: [EditorMixins],
     props: ['title', 'speechpartId', 'speechpart', 'cancel', 'submit'],
     data() {
       return {
@@ -66,14 +105,14 @@
       }
     },
     mounted () {
-      this.$refs.editor.innerHTML = !!this.$props.speechpart ? this.$props.speechpart.note ? this.$props.speechpart.note: '' : '';
+      this.$refs.editor.innerHTML = this.$props.speechpart ? this.$props.speechpart.note ? this.$props.speechpart.note: '' : '';
       this.editor = getNewQuill(this.$refs.editor);
       this.editor.on('selection-change', this.onSelection);
       this.editor.on('selection-change', this.onFocus);
       this.editor.on('text-change', this.onTextChange);
       this.textLength = this.editor.getLength();
       this.form = Object.assign({}, this.speechpart);
-      this.form.type_id = this.speechpart.speech_part_type ? this.speechpart.speech_part_type.id : 0;
+      this.form.type_id = this.$props.speechpart ? this.$props.speechpart.speech_part_type ? this.speechpart.speech_part_type.id : this.speechpartTypes[0].id : this.speechpartTypes[0].id;
 
       console.log("SpeechpartForm.mounted", this.form)
     },

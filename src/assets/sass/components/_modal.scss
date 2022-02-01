@@ -1,0 +1,77 @@
+.modal {
+
+    .modal-card {
+
+        .modal-card-head {
+            border-bottom:2px solid #FFE76E;
+        }
+
+        .modal-card-head,
+        .modal-card-foot {
+            background-color: $white;
+
+            .modal-card-title {
+                font-family: $family-secondary;
+                font-size: 18px;
+                color: #000000;
+            }
+
+            .delete {
+                background: #9B9B9B;
+                border-radius: 3px;
+            }
+        }
+
+        .modal-card-body {
+
+            font-family: $family-secondary;
+            color: #000000;
+
+            .message.is-warning {
+                background: $white;
+            }
+
+            .message.is-warning .message-body {
+                color: #000000;
+                padding-left: 0;
+            }
+
+        }
+
+        .modal-card-foot {
+
+            position: relative;
+            padding: 30px 0;
+
+            .button {
+                font-family: $family-sans-serif;
+                font-size: 14px;
+                font-weight: bold;
+                letter-spacing: 0.35px;
+                text-align: center;
+                line-height: 20px;
+                background: none;
+                border: none;
+                text-transform: uppercase;
+                position: absolute;
+                top:12px;
+            }
+
+            /* Valider */
+            .button:first-child {
+                right:10px;
+                color: #2DC0D7;
+            }
+
+            /* Annuler */
+            .button:last-child {
+                left:10px;
+                color: #5F5F5F;
+            }
+
+        }
+
+    }
+
+}
+

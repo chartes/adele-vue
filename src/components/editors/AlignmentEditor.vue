@@ -1,12 +1,15 @@
 <template>
-    <div class="editor-area">
-        <div class="editor-container">
-            <div class="quill-editor" ref="editor" spellcheck="false"></div>
-        </div>
-
-        <save-bar :action="save"/>
-
+  <div class="editor-area">
+    <div class="editor-container">
+      <div
+        ref="editor"
+        class="quill-editor"
+        spellcheck="false"
+      />
     </div>
+
+    <save-bar :action="save" />
+  </div>
 </template>
 
 <script>
@@ -16,12 +19,12 @@
   import SaveBar from "../ui/SaveBar";
 
   export default {
-    name: "alignment-editor",
-    props: ['initialContent','type'],
-    mixins: [EditorMixins],
+    name: "AlignmentEditor",
     components: {
       SaveBar,
     },
+    mixins: [EditorMixins],
+    props: ['initialContent','type'],
     data() {
       return {
         storeActions: {
@@ -42,6 +45,9 @@
           note: false,
         }
       }
+    },
+
+    computed: {
     },
     mounted () {
 
@@ -92,9 +98,6 @@
         }
       }
 
-    },
-
-    computed: {
     }
   }
 </script>

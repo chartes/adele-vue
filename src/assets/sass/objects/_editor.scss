@@ -2,26 +2,284 @@
   font-size: 1em;
   margin: 0 auto;
   width: 100%;
-  border: 1px solid #eee;
   max-height: 80vh;
+  min-height: 100px;
   overflow: scroll;
   background: white;
 }
+
 .editor-controls {
   display: flex;
   flex-wrap: wrap;
+
   hr {
     margin: .5em 0;
   }
 
   button {
+
     font-weight: bold;
     margin: .125em 0;
+    width: 47px;
+    height: 47px;
+    padding: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+
     &:active, &:focus {
       outline: none;
     }
+
+
+    &.paragraph {
+      background: url( #{$image-path}/pic_edit01.svg);
+    }
+
+    &.paragraph:hover {
+      background: url( #{$image-path}/pic_edit01_over.svg);
+    }
+
+    &.paragraph.selected {
+      background: url( #{$image-path}/pic_edit01_sel.svg);
+    }
+
+
+    &.verse:hover {
+      background: url( #{$image-path}/pic_edit02_over.svg);
+    }
+
+    &.verse.selected {
+      background: url( #{$image-path}/pic_edit02_sel.svg);
+    }
+
+    &.verse {
+      background: url( #{$image-path}/pic_edit02.svg);
+    }
+
+
+    &.note {
+      background: url( #{$image-path}/pic_edit03.svg);
+    }
+
+    &.note:hover {
+      background: url( #{$image-path}/pic_edit03_over.svg);
+    }
+
+    &.note.selected {
+      background: url( #{$image-path}/pic_edit03_sel.svg);
+    }
+
+
+    &.segment {
+      background: url( #{$image-path}/pic_edit04.svg);
+    }
+
+    &.segment:hover {
+      background: url( #{$image-path}/pic_edit04_over.svg);
+    }
+
+    &.segment.selected {
+      background: url( #{$image-path}/pic_edit04_sel.svg);
+    }
+
+
+    &.bold {
+      background: url( #{$image-path}/pic_typo01.svg);
+    }
+
+    &.bold:hover {
+      background: url( #{$image-path}/pic_typo01_over.svg);
+    }
+
+    &.bold.selected {
+      background: url( #{$image-path}/pic_typo01_sel.svg);
+    }
+
+
+    &.italic {
+      background: url( #{$image-path}/pic_typo02.svg);
+    }
+
+    &.italic:hover {
+      background: url( #{$image-path}/pic_typo02_over.svg);
+    }
+
+    &.italic.selected {
+      background: url( #{$image-path}/pic_typo02_sel.svg);
+    }
+
+
+    &.smallcaps {
+      background: url( #{$image-path}/pic_typo03.svg);
+    }
+
+    &.smallcaps:hover {
+      background: url( #{$image-path}/pic_typo03_over.svg);
+    }
+
+    &.smallcaps.selected {
+      background: url( #{$image-path}/pic_typo03_sel.svg);
+    }
+
+
+    &.superscript {
+      background: url( #{$image-path}/pic_typo04.svg);
+    }
+
+    &.superscript:hover {
+      background: url( #{$image-path}/pic_typo04_over.svg);
+    }
+
+    &.superscript.selected {
+      background: url( #{$image-path}/pic_typo04_sel.svg);
+    }
+
+
+    &.underline {
+      background: url( #{$image-path}/pic_typo05.svg);
+    }
+
+    &.underline:hover {
+      background: url( #{$image-path}/pic_typo05_over.svg);
+    }
+
+    &.underline.selected {
+      background: url( #{$image-path}/pic_typo05_sel.svg);
+    }
+
+
+    &.del {
+      background: url( #{$image-path}/pic_typo06.svg);
+    }
+
+    &.del:hover {
+      background: url( #{$image-path}/pic_typo06_over.svg);
+    }
+
+    &.del.selected {
+      background: url( #{$image-path}/pic_typo06_sel.svg);
+    }
+
+
+    &.expan {
+      background: url( #{$image-path}/pic_semant02.svg);
+    }
+
+    &.expan:hover {
+      background: url( #{$image-path}/pic_semant02_over.svg);
+    }
+
+    &.expan.selected {
+      background: url( #{$image-path}/pic_semant02_sel.svg);
+    }
+
+
+    &.person {
+      background: url( #{$image-path}/pic_semant03.svg);
+    }
+
+    &.person:hover {
+      background: url( #{$image-path}/pic_semant03_over.svg);
+    }
+
+    &.person.selected {
+      background: url( #{$image-path}/pic_semant03_sel.svg);
+    }
+
+
+    &.location {
+      background: url( #{$image-path}/pic_semant04.svg);
+    }
+
+    &.location:hover {
+      background: url( #{$image-path}/pic_semant04_over.svg);
+    }
+
+    &.location.selected {
+      background: url( #{$image-path}/pic_semant04_sel.svg);
+    }
+
+
+    &.link {
+      background: url( #{$image-path}/pic_semant05.svg);
+    }
+
+    &.link:hover {
+      background: url( #{$image-path}/pic_semant05_over.svg);
+    }
+
+    &.link.selected {
+      background: url( #{$image-path}/pic_semant05_sel.svg);
+    }
+
+
+    &.cite {
+      background: url( #{$image-path}/pic_semant06.svg);
+    }
+
+    &.cite:hover {
+      background: url( #{$image-path}/pic_semant06_over.svg);
+    }
+
+    &.cite.selected {
+      background: url( #{$image-path}/pic_semant06_sel.svg);
+    }
+
+
+    &.list {
+      background: url( #{$image-path}/pic_list.svg);
+    }
+
+    &.list:hover {
+      background: url( #{$image-path}/pic_list_OVER.svg);
+    }
+
+    &.list.selected {
+      background: url( #{$image-path}/pic_list_SEL.svg);
+    }
+
+
+    &.blockquote {
+      background: url( #{$image-path}/pic_blockQuote.svg);
+    }
+
+    &.blockquote:hover {
+      background: url( #{$image-path}/pic_blockQuote_OVER.svg);
+    }
+
+    &.blockquote.selected {
+      background: url( #{$image-path}/pic_blockQuote_SEL.svg);
+    }
+
+
+    &.quote {
+      background: url( #{$image-path}/pic_Quote.svg);
+    }
+
+    &.quote:hover {
+      background: url( #{$image-path}/pic_Quote_OVER.svg);
+    }
+
+    &.quote.selected {
+      background: url( #{$image-path}/pic_Quote_SEL.svg);
+    }
+
+
+    &.delete {
+      background: url( #{$image-path}/pic_poubelle.svg);
+    }
+
+    &.delete:hover {
+      background: url( #{$image-path}/pic_poubelle_OVER.svg);
+    }
+
+    img {
+      object-fit: cover;
+      opacity: 0;
+    }
   }
 }
+
 .editor-controls-group {
   margin-right: 2em;
   margin-bottom: .5em;
@@ -30,13 +288,12 @@
   }
   label {
     display: block;
-    font-size: 60%;
-    font-variant: small-caps;
+    font-family: $family-secondary;
+    font-size: 14px;
+    color: $grey-darker;
+    padding-bottom: 4px;
   }
   .button {
-
-    padding-bottom: calc(.5em - 1px);
-    padding-top: calc(.5em - 1px);
   }
   .icon {
     height: 100%;
@@ -68,10 +325,16 @@
 .ql-editor {
 
   line-height: 1.8;
+  border: 1px solid #eee;
+
+  &:hover {
+    border:#818181 solid 1px ;
+  }
 
   &:focus {
-    outline: none;
+    border:$primary solid 1px ;
   }
+
   p {
     margin: 0.75em 0;
   }
@@ -104,6 +367,34 @@
     z-index: -1;
   }
 
+  a.button {
+
+    width: 100%;
+    justify-content:left;
+    font-family: $family-sans-serif;
+    font-weight: 500;
+    font-size:15px;
+
+    &.is-primary {
+      background-color: $primary;
+      color: #000000;
+    }
+
+    &.is-danger {
+      background-color: #FF5C37;
+    }
+
+    &.is-new {
+      background-color: #01BED1;
+      color:#FFFFFF;
+    }
+
+    span:not(.icon) {
+      margin-left: 0.5em;
+    }
+
+  }
+
 }
 .note-actions, .new-note-actions {
   .button { width: 100%; }
@@ -111,25 +402,28 @@
 
 
 .notes-list-item, .list-item {
-
-  background-color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
+  font-size: 1.25rem;
+  //box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px rgba(10,10,10,.1);
   color: #4a4a4a;
   display: block;
   padding: .75rem;
-  border: 1px solid transparent;
+  border-top: 1px  dashed lightgrey;
 
   .content { font-size: 60% }
   &.selected, &:hover, &:focus {
-    box-shadow: 0 2px 3px rgba(10,10,10,.1), 0 0 0 1px $info;
-    border-color: $info;
+    background-color: $yellow;
+    color: black;
+    cursor: pointer;
   }
   &:not(:last-child) {
-    margin-bottom: .75rem;
+    margin-bottom: .25rem;
   }
 }
 .list-subsection-title {
   margin: 2em 0 1em 0;
   font-weight: bold;
+}
+
+ex {
+  color: darkgrey;
 }

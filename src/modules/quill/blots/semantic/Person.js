@@ -24,7 +24,6 @@ class PersonBlot extends Inline {
   }
 
 
-
   format(name, data) {
     if (name === 'person' && data) {
       this.domNode.setAttribute('ref', data);

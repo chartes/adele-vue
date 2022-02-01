@@ -7,7 +7,6 @@
 
 <script>
 
-import {mapState} from 'vuex'
 import NavBar from '@/components/NavBar.vue'
 
 export default {
@@ -20,11 +19,8 @@ export default {
       }
     },
     computed: {
-      //...mapState("user", ["currentUser"])
     },
-
     created() {
-       //this.$store.dispatch('user/fetchCurrent');
     }
 }
 </script>

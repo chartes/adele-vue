@@ -23,10 +23,18 @@ export default {
     },
     computed: {
         title() {
-            return this.error && this.error.response.data.errors ? `${this.error.response.status}: ${this.error.response.data.errors.title}` : 'Erreur'
+          try {
+            return `${this.error.response.status}: ${this.error.response.data.errors.title}`
+          } catch(error) {
+            return 'Erreur'
+          }
         },
         details() {
-            return this.error &&  this.error.response.data.errors ? this.error.response.data.errors.details : 'Oups! Une erreur inconnue est survenue.'
+          try {
+            return this.error.response.data.errors.details
+          } catch(error) {
+            return 'Oups! Une erreur inconnue est survenue.'
+          }
         }
     }
 }

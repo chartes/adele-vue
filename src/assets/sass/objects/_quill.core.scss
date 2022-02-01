@@ -6,10 +6,10 @@
  */
 .ql-container {
   box-sizing: border-box;
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 13px;
+  font-family: $family-secondary;
+  font-size: 20px;
   height: 100%;
-  margin: 0px;
+  margin: 0;
   position: relative;
 
   &.ql-disabled {
@@ -35,7 +35,8 @@
 }
 .ql-editor {
   box-sizing: border-box;
-  line-height: 1.42;
+  font-size:1.25em;
+  line-height:2.1875em;
   height: 100%;
   outline: none;
   overflow-y: auto;

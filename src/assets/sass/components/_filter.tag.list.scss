@@ -1,0 +1,54 @@
+.filter-tag-list {
+
+    margin-bottom: 25px;
+
+    &.field.is-grouped > .control:not(:last-child) {
+        margin-right: 0.3rem;
+    }
+
+    .tags a.tag {
+        font-family: $family-sans-serif;
+        font-size: 16px;
+        color: #686239;
+        background: #EFEFEF;
+        letter-spacing: 0;
+        text-align: center;
+        height: 1.55em;
+        margin-bottom: 0.15rem;
+        padding-left: 0.5em;
+        padding-right: 0.5em;
+    }
+
+    .tags a.tag {
+        border-radius: 3px;
+    }
+
+    .tags .tag:not(:last-child) {
+        margin-right: 0.25rem;
+    }
+
+    .tags.filter-category a.tag {
+        background: #D9D8D3;
+    }
+
+    .tags.filter-category a.tag:first-child {
+        background: #D9D8D3 url( #{$image-path}/croix-blanche.svg) center center / 11px 11px no-repeat;
+        height: 1.55em;
+        width: 1.55em;
+        margin-right: 0.15rem;
+    }
+
+    .tags:not(.filter-category) a.tag {
+        padding-left: 0em;
+    }
+
+    .tags:not(.filter-category) a.tag::before {
+        content: '';
+        background: url( #{$image-path}/croix.svg) center center / 11px 11px no-repeat;
+        width: 22px;
+        height: 22px;
+        display: inline-flex;
+    }
+
+
+}

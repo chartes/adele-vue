@@ -27,6 +27,7 @@ import ZoneBlot from './blots/editorial/Zone';
 
 import SpeechpartBlot from './blots/editorial/SpeechpartBlot';
 import ColumnBreakBlot from './blots/editorial/ColumnBreak';
+import AnnotationSegment from './blots/editorial/AnnotationSegment';
 
 //import Inline from 'quill/blots/inline';
 
@@ -38,7 +39,7 @@ Inline.order = [
   'cursor', 'expan', 'inline',   // Must be lower
   'underline', 'strike', 'italic', 'bold', 'script',
   'del', 'link', 'code',
-  'person', 'location', 'note', 'zone', 'speechpart',          // Must be higher
+  'person', 'location', 'note', 'zone', 'speechpart', 'annotation'         // Must be higher
 ];
 
 Quill.register('modules/clipboard', PlainClipboard, true);
@@ -73,6 +74,7 @@ Quill.register(ColumnBreakBlot, true);
 
 // other
 Quill.register(SpeechpartBlot, true);
+Quill.register(AnnotationSegment, true);
 
 function lineBreakMatcher() {
   var newDelta = new Delta();
@@ -108,7 +110,7 @@ function getNewQuill (elt, opt = null) {
 
   let opts = opt || options;
 
-  let quill = new Quill(elt, options);
+  let quill = new Quill(elt, opts);
   var length = quill.getLength()
   var text = quill.getText(length - 2, 2)
 

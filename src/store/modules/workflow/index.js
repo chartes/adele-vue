@@ -1,49 +1,149 @@
-import {http} from '../../../modules/http-common'
-
 
 const state = {
   selectedUserId: null,
+  transcriptionAlignmentMode: false,
+  currentSection: 'notice',
+  isInEditionMode: false,
 }
 
 const mutations = {
   SELECT_USER (state, userId) {
     state.selectedUserId = userId
+  },
+  SET_TRANSCRIPTION_ALIGNMENT_MODE (state, v) {
+    state.transcriptionAlignmentMode = v
+  },
+  SET_CURRENT_SECTION (state, v) {
+    state.currentSection = v
+  },
+  SET_EDITION_MODE (state, v) {
+    state.isInEditionMode = v
   }
 }
 
 const actions = {
   changeSelectedUser ({ commit }, {userId}) { 
     commit('SELECT_USER', userId)
+  },
+  setCurrentSection({commit}, section) {
+    commit('SET_CURRENT_SECTION', section)
+  },
+  setEditionMode({commit}, v) {
+    commit('SET_EDITION_MODE', v)
+  },
+  async setTranscriptionAlignmentMode ({dispatch, commit, rootState}, v) { 
+    await dispatch('transcription/fetchTranscriptionContent', null, {root: true})
+    await dispatch('translation/fetchTranslationContent', null, {root: true})
+    if (v) {
+      await dispatch('transcription/fetchTextAlignments', null, {root: true})
+
+      let transcriptionSegments = rootState.transcription.textAlignmentSegments.map(e => [e[0], e[1]]).flat()
+      //transcriptionSegments = Array.from(new Set(transcriptionSegments))
+      transcriptionSegments.shift() //remove the first pointer (its the first, useless)
+      transcriptionSegments.pop() //remove the last pointer (its the closing tag, useless)
+      dispatch('transcription/insertSegments', transcriptionSegments, {root: true})
+
+      let translationSegments = rootState.transcription.textAlignmentSegments.map(e => [e[2], e[3]]).flat()
+      //translationSegments = Array.from(new Set(translationSegments))
+      translationSegments.shift() //remove the first pointer (its the first, useless)
+      translationSegments.pop() //remove the last pointer (its the closing tag, useless)
+      dispatch('translation/insertSegments', translationSegments, {root: true})
+      
+    }
+    commit('SET_TRANSCRIPTION_ALIGNMENT_MODE', v)
   }
 }
 
-const NONE_STEP = 0
-const TRANSCRIPTION_STEP = 1
-const TRANSLATION_STEP = 2
-const COMMENTARIES_STEP = 3
-const FACSIMILE_STEP = 4
-const SPEECH_PARTS_STEP = 5
-
-const VALIDATION_STEPS = [NONE_STEP, TRANSCRIPTION_STEP, TRANSLATION_STEP, COMMENTARIES_STEP, FACSIMILE_STEP, SPEECH_PARTS_STEP];
-const VALIDATION_STEPS_LABELS = ['none', 'transcription', 'translation', 'commentaries', 'facsimile', 'speech-parts'];
-
-
 const getters = {
   isTranscriptionValidated(state, getters, rootState, rootGetters) {
-    return rootState.document.document.validation_step >= TRANSCRIPTION_STEP
+    return rootState.document.document.validation_flags.transcription
   },
   isTranslationValidated(state, getters, rootState, rootGetters) {
-      return rootState.document.document.validation_step >= TRANSLATION_STEP
+      return rootState.document.document.validation_flags.translation
   },
   isCommentariesValidated(state, getters, rootState, rootGetters) {
-      return rootState.document.document.validation_step >= COMMENTARIES_STEP
+      return rootState.document.document.validation_flags.commentaries
   },
   isFacsimileValidated(state, getters, rootState, rootGetters) {
-      return rootState.document.document.validation_step >= FACSIMILE_STEP
+      return rootState.document.document.validation_flags.facsimile
   },
   isSpeechPartsValidated(state, getters, rootState, rootGetters) {
-      return rootState.document.document.validation_step >= SPEECH_PARTS_STEP
-  }
+      return rootState.document.document.validation_flags['speech-parts']
+  },
+  isStepReadOnly: (state, getters, rootState, rootGetters) => (flag) => {
+    // should be avoidable with guard routing 
+    if (rootState.user.currentUser === null) {
+      return true
+    }
+
+    console.log("isStepReadOnly",rootState.user.currentUser, rootGetters['user/currentUserIsAdmin'], rootGetters['user/currentUserIsAdmin'] )
+    // admin
+    if (rootGetters['user/currentUserIsAdmin']) {
+      return false
+    } 
+    // teacher
+    if (rootGetters['user/currentUserIsTeacher']) {
+       return rootState.user.currentUser.id !== rootState.document.document.user_id
+    }
+    
+    return rootState.document.document.validation_flags[flag]
+  },
+  isTranscriptionReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly('transcription')
+  },
+  isTranslationReadOnly: (state, getters) => {
+    return getters.isStepReadOnly('translation')
+  },
+  isCommentariesReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly('commentaries')
+  },
+  isSpeechPartsReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly('speech-parts')
+  },
+  isFacsimileReadOnly: (state, getters)  => {
+    return getters.isStepReadOnly('facsimile')
+  },
+  selectedUsername(state, getters, rootState) {
+    const whitelist = rootState.document.document.whitelist
+    if (whitelist) {
+      const user = rootState.document.document.whitelist.users.find(u => u.id == state.selectedUserId)
+      if (user) {
+        return `${user.first_name} ${user.last_name}`
+      }
+    }
+    return null
+  },
+  selectedUserHasTranscription: (state, getters, rootState,) => {
+    if (getters.isTranscriptionReadOnly) {
+      return rootState.document.transcriptionView !== null
+    } else {
+      return rootState.transcription.transcription !== null
+    }
+  },
+  selectedUserHasTranslation: (state, getters, rootState) => {
+    if (getters.isTranslationReadOnly) {
+      return rootState.document.translationView !== null
+    } else {
+      return rootState.translation.translation !== null
+    }
+  },
+  selectedUserHasCommentaries: (state, getters, rootState) => {
+    if (getters.isCommentariesReadOnly) {
+      return rootState.document.commentariesView !== null
+    } else {
+      return Object.keys(rootState.commentaries.commentariesWithNotes).length > 0
+    }
+  },
+  selectedUserHasFacsimile: (state, getters, rootState) => {
+    return rootState.document.user_id == state.selectedUserId && rootState.document.document.exist_flags.facsimile
+  },
+  selectedUserHasSpeechParts: (state, getters, rootState) => {
+    if (getters.isSpeechPartsReadOnly) {
+      return rootState.document.speechPartsView !== null
+    } else {
+      return rootState.speechparts.speechparts.length > 0
+    }
+  },
 }
 
 const workflowModule = {
@@ -57,12 +157,5 @@ const workflowModule = {
 export default workflowModule;
 
 export {
-  NONE_STEP,
-  TRANSCRIPTION_STEP,
-  TRANSLATION_STEP,
-  COMMENTARIES_STEP,
-  FACSIMILE_STEP,
-  SPEECH_PARTS_STEP,
-  VALIDATION_STEPS,
-  VALIDATION_STEPS_LABELS
+
 }

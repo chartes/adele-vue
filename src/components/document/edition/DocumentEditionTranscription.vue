@@ -1,7 +1,7 @@
 <template>
   <div>
     <transcription-editor
-      v-if="!!transcriptionWithNotes"
+      :key="transcriptionLoading"
       :initial-content="transcriptionWithNotes"
     />
   </div>
@@ -19,9 +19,10 @@ export default {
         TranscriptionEditor
     },
     props: {
-      transcriptionWithNotes: {type: String, default: null}
+      transcriptionWithNotes: {type: String, default: ""}
     },
     computed: {
+      ...mapState('transcription', ['transcriptionLoading'])
     },
     async created() {
     },

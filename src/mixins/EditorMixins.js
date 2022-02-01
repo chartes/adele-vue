@@ -1,6 +1,8 @@
 /* eslint-disable no-extra-boolean-cast */
 import Quill, {getNewQuill, options} from '../modules/quill/AdeleQuill';
 import { getNewDelta } from '../modules/quill/DeltaUtils';
+import { trim } from '../modules/quill/MarkupUtils';
+
 import _isEmpty from 'lodash/isEmpty';
 
 var EditorMixin = {
@@ -24,8 +26,7 @@ var EditorMixin = {
   methods: {
 
     initEditor(editorElement, initialContent) {
-
-      editorElement.innerHTML = initialContent;
+      editorElement.innerHTML = trim(initialContent);
       this.editor = getNewQuill(editorElement);
       this.activateEvents();
       this.editor.updateContents(getNewDelta().retain(this.editor.getLength(), 'api'))
@@ -41,9 +42,11 @@ var EditorMixin = {
     },
     deactivateEvents () {
       //console.log("EditorMixins.deactivateEvents")
-      this.editor.off('selection-change', this.onSelection);
-      this.editor.off('selection-change', this.onFocus);
-      this.editor.off('text-change', this.onTextChange);
+      if (this.editor) {
+        this.editor.off('selection-change', this.onSelection);
+        this.editor.off('selection-change', this.onFocus);
+        this.editor.off('text-change', this.onTextChange);
+      }
     },
 
     getEditorHTML () {
@@ -57,7 +60,13 @@ var EditorMixin = {
 
     onTextChange (delta, oldDelta, source) {
       this.lastOperations = delta;
-      if (this.editorInited) this.$store.dispatch(this.storeActions.changed, delta)
+      if (this.editorInited) {
+        if (typeof this.storeActions.changed === 'string') {
+          this.$store.dispatch(this.storeActions.changed, delta)
+        } else {
+          this.storeActions.changed(delta)
+        }
+      }
     },
     onSelection (range) {
       if (range) {
@@ -72,6 +81,7 @@ var EditorMixin = {
           this.selectedNoteId = null;
           this.buttons.note = true;
         }
+        this.currentSelection = range
       }
     },
     onFocus () {
@@ -88,11 +98,13 @@ var EditorMixin = {
     },
 
     insertSegment () {
-
       let range = this.editor.getSelection(true);
-      this.editor.updateContents(getNewDelta().retain(range.index).delete(range.length).insert({ segment: true }), Quill.sources.USER);
+      this.editor.updateContents(getNewDelta().retain(range.index).insert({ segment: true }), Quill.sources.USER);
+      console.log('insert seg', this.editor.getContents())
       this.editor.setSelection(range.index + 1, Quill.sources.SILENT);
-
+    },
+    deleteSegment () {
+      console.log("delete segment", this.editor.getSelection())
     },
     insertColBreak () {
 
