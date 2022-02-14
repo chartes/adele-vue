@@ -6,8 +6,16 @@
 </template>
 
 <script>
-import Mirador from "mirador";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {Provider} from 'react-redux';
+
+import Mirador from 'mirador';
+import HotApp from 'mirador/dist/es/src/components/App';
+import {filterValidPlugins} from 'mirador/dist/es/src/extend/pluginPreprocessing';
+import createPluggableStore from 'mirador/dist/es/src/state/createPluggableStore';
 import annotationPlugins from 'mirador-annotations';
+
 import MyPlugin from './mirador-plugin';
 import AdeleStorageAdapter from './mirador-plugin/adapter';
 
@@ -126,17 +134,31 @@ export default {
   watch: {
     viewerContainer() {
       if (this.viewerContainer && !this.viewer) {
+        // TODO replace instantiation with `Mirador.viewer` when the following
+        // PR is merged/published:
+        // https://github.com/ProjectMirador/mirador/pull/3534
+        const plugins = filterValidPlugins([...annotationPlugins, MyPlugin]);
+        const store = createPluggableStore(this.fullConfig, plugins);
         // instantiate the viewer with a single manifest & window for simplicity
-        const v = Mirador.viewer(this.fullConfig, [...annotationPlugins, MyPlugin])
+        ReactDOM.render(
+          React.createElement(
+            Provider,
+            {store},
+            React.createElement(
+              HotApp,
+              {plugins}
+            )
+          ),
+          this.viewerContainer
+        )
         try {
           //this.viewer = Mirador.viewer(this.fullConfig,[...annotationPlugins]);
           var action = Mirador.actions.minimizeWindow('1')
           // Now we can dispatch it.
-          v.store.dispatch(action);
+          store.dispatch(action);
         } catch (e) {
           console.warn("Mirrador viewer: ", e);
         }
-        this.viewer = v;
 
         this.resetTimeout = setTimeout(() => {
             const reset = document.querySelector(`button[title='Reset zoom']`);
@@ -155,7 +177,7 @@ export default {
   beforeDestroy() {
     if (this.resetTimeout)
       clearTimeout(this.resetTimeout)
-    this.viewer.unmount()
+    ReactDOM.unmountComponentAtNode(this.viewerContainer);
   }
 }
 </script>
