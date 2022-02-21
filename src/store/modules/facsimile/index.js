@@ -56,7 +56,7 @@ const actions = {
 
   fetchCanvasNames ({ commit, dispatch, rootState }) {
 
-    return axios.get(`/adele/api/1.0/documents/${rootState.document.document.id}/first-sequence`).then( response => {
+    return axios.get(`${process.env.VUE_APP_API_URL}/documents/${rootState.document.document.id}/first-sequence`).then( response => {
       if (response.data && response.data.errors) {
         return false;
       }
@@ -82,7 +82,7 @@ const actions = {
     const user_id = rootState.user.author.id;
     const canvas = state.canvasNames[state.currentCanvas];
 
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/annotations/${canvas}/fragments/from-user/${user_id}`).then( response => {
+    return axios.get(`${process.env.VUE_APP_API_URL}/documents/${doc_id}/annotations/${canvas}/fragments/from-user/${user_id}`).then( response => {
       if (response.data && response.data.errors) {
         return;
       }
@@ -111,7 +111,7 @@ const actions = {
     const doc_id = rootState.document.document.id;
     const user_id = rootState.user.author.id;
 
-    return axios.get(`/adele/api/1.0/documents/${doc_id}/transcriptions/alignments/images/from-user/${user_id}`).then( response => {
+    return axios.get(`${process.env.VUE_APP_API_URL}/documents/${doc_id}/transcriptions/alignments/images/from-user/${user_id}`).then( response => {
       if (response.data && response.data.errors) {
         return;
       }
