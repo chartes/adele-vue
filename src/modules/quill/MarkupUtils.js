@@ -91,6 +91,14 @@ const trim = (s) => {
   return s
 }
 
+const removeEmptyTags = (s) => {
+  const replaced = s.replace(/<([^/>]+)><\/\1>/, "");
+  if (s === replaced) {
+    return s
+  }
+  return removeEmptyTags(replaced)
+}
+
 const TEIToQuill = (teiString) => {
   teiString = teiString.replace(/<p><\/?br\/?><\/p>/gi, '');
   teiString = trim(teiString)
@@ -112,6 +120,8 @@ const TEIToQuill = (teiString) => {
 const quillToTEI = quillString => {
   quillString = quillString.replace(/<p><\/?br\/?><\/p>/gi, '');
   quillString = quillString.replace(/&nbsp;/gi, '&#160;');
+  // Remove empty tags that Quill missed
+  quillString = removeEmptyTags(quillString);
   quillString = trim(quillString)
 
   const xmlDoc = parser.parseFromString('<doc>'+quillString+'</doc>',"text/xml");
