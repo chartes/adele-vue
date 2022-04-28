@@ -4,7 +4,7 @@
       src="../assets/images/enc.png"
       alt="logo enc"
     ></a>
-    <a href="https://www.unicaen.fr/scripta/"><img
+    <a href="https://scripta.psl.eu"><img
       src="../assets/images/scripta.png"
       alt="logo scripta"
     ></a>

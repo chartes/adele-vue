@@ -97,7 +97,7 @@ export default {
               this.error = false;
               this.success = true;
             }).catch(({response}) => {
-              if (response?.data?.error) {
+              if (response.data.error) {
                 this.error = response.data.error
               } else {
                 this.error = "Une erreur est survenue. Veuillez renouveler votre demande."
