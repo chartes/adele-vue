@@ -5,7 +5,6 @@ import { Point } from "openseadragon";
 function cleanAnnoText(s) {
   s = s.replace(/persName/gi, 'persName-disabled')
   s = s.replace(/placeName/gi, 'placeName-disabled')
-  console.log(s)
   return s
 }
 

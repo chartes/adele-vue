@@ -49,7 +49,7 @@
         <transcription-alignment-button />
       </p>
       <p
-        v-if="transcriptionAlignmentMode && !warningConditions"
+        v-if="transcriptionAlignmentMode"
         class="control"
       >
         <message>
@@ -94,11 +94,6 @@ export default {
       showAlignmentButton() {
           return this.isTranslationValidated && this.currentUserIsTeacher
       },
-      ...mapGetters('translation', ['translationSegmentsFromQuill']),
-      ...mapGetters('transcription', ['transcriptionSegmentsFromQuill']),
-      warningConditions() {
-        return this.transcriptionSegmentsFromQuill.length === this.translationSegmentsFromQuill.length
-      }
     },
     methods: {
       

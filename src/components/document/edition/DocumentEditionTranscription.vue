@@ -1,28 +1,33 @@
 <template>
-  <div>
-    <transcription-editor
-      :key="transcriptionLoading"
-      :initial-content="transcriptionWithNotes"
+  <section>
+    <transcription-action-bar :section="section"/>
+    <rich-text-editor
+        v-if="!transcriptionLoading"
+        :initial-content="transcriptionContent"
+        change-action="transcription/changed"
     />
-  </div>
+  </section>
 </template>
 
 
 <script>
 
 import { mapState, mapGetters } from 'vuex';
-import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
+import RichTextEditor from "@/components/editors/RichTextEditor.vue"
+import TranscriptionActionBar from "@/components/document/edition/actionbars/TranscriptionActionBar.vue";
 
 export default {
     name: "DocumentEditionTranscription",
     components: {
-        TranscriptionEditor
+        RichTextEditor, TranscriptionActionBar
     },
     props: {
-      transcriptionWithNotes: {type: String, default: ""}
+      section: {type: String, required: true}
     },
     computed: {
-      ...mapState('transcription', ['transcriptionLoading'])
+      ...mapState('transcription', ['transcriptionContent', 'transcriptionLoading']),
+      ...mapGetters('document', ['documentOwner']),
+      ...mapState('user', ['currentUser'])
     },
     async created() {
     },

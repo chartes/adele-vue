@@ -55,13 +55,17 @@ var EditorNotesMixin = {
       //console.log('deleteNote')
       // TODO delete note
       this.editor.format('note', false);
+      
+      await this.$store.dispatch('notes/deleteNote', this.selectedNoteId)
+
       await this.$store.dispatch('transcription/saveTranscription')
       await this.$store.dispatch('translation/saveTranslation')
       await this.$store.dispatch('commentaries/saveCommentaries')
-      await this.$store.dispatch('notes/deleteNote', this.selectedNoteId)
-      await this.$store.dispatch('transcription/fetchTranscriptionContent')
-      await this.$store.dispatch('translation/fetchTranslationContent')
-      await this.$store.dispatch('commentaries/fetchCommentariesContent')
+
+      //await this.$store.dispatch('transcription/fetchTranscriptionContent')
+      //await this.$store.dispatch('translation/fetchTranslationContent')
+      //await this.$store.dispatch('commentaries/fetchCommentariesContent')
+      
       this.selectedNoteId = null;
       this.closeNoteEdit();
     },

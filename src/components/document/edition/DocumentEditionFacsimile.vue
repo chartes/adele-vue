@@ -1,6 +1,6 @@
 <template>
   <div>
-    <transcription-editor
+    <rich-text-editor
       v-if="!!transcriptionWithNotes"
       :initial-content="transcriptionWithNotes"
     />
@@ -11,12 +11,12 @@
 <script>
 
 import { mapState, mapGetters } from 'vuex';
-import TranscriptionEditor from "@/components/editors/TranscriptionEditor.vue"
+import RichTextEditor from "@/components/editors/RichTextEditor.vue"
 
 export default {
     name: "DocumentEditionFacsimile",
     components: {
-        TranscriptionEditor
+        RichTextEditor
     },
     props: {
       transcriptionWithNotes: {type: String, default: null}

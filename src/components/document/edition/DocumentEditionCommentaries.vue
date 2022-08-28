@@ -39,11 +39,11 @@
         :key="com.label"
       >
         <div v-show="com.label === selectedCommentaryLabel">
-          <commentary-editor
+          <rich-text-editor
             v-if="hasCommentaryTypes(com.label)"
             :key="commentariesLoading"
             :initial-content="getCommentaryContent(com.label)"
-            :type="com.id"
+            change-action="commentaries/changed"
           />
           <message
             v-else
@@ -62,14 +62,14 @@
 
 import { mapState, mapGetters, mapActions } from 'vuex';
 
-import CommentaryEditor from '../../editors/CommentaryEditor.vue'
+import RichTextEditor from '../../editors/RichTextEditor.vue'
 import CommentariesActionBar from './actionbars/CommentariesActionBar.vue'
 import Message from '../../Message'
 
 export default {
     name: "DocumentEditionCommentaries",
     components: {
-        CommentaryEditor,
+        RichTextEditor,
         CommentariesActionBar,
         Message,
     },
@@ -82,8 +82,7 @@ export default {
       }
     },
     computed: {
-        ...mapState('document', ['document']),
-        ...mapState('document', ['transcriptionLoading']),
+        ...mapState('document', ['document', 'transcriptionLoading']),
         ...mapState('commentaries', ['commentaryTypes', 'selectedCommentaryLabel', 'commentariesLoading']),
         ...mapGetters('commentaries', ['getCommentary', 'hasCommentaryTypes']),
     },

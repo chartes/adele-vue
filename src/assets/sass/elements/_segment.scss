@@ -5,7 +5,7 @@ segment::before {
     padding: 4px;
 }
 
-.transcription-editor {
+.rich-text-editor {
     counter-reset: transcriptionSegment;
     segment {
         counter-increment: transcriptionSegment;
