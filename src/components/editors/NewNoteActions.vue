@@ -31,9 +31,9 @@
             </p>
           </div>
           <div
-v-if="notes && notes.length > 0"
-               class="field"
->
+            v-if="notes && notes.length > 0"
+            class="field"
+          >
             <p class="control">
               <a
                 class="button is-info"

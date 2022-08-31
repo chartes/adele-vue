@@ -1,14 +1,17 @@
 <template>
-    <article class="message" :class="type">
-        <div class="message-body">
-            <p v-html="body"></p>
-        </div>
-    </article>
+  <article
+    class="message"
+    :class="type"
+  >
+    <div class="message-body">
+      <p v-html="body" />
+    </div>
+  </article>
 </template>
 
 <script>
   export default {
-    name: "minimal-message",
+    name: "MinimalMessage",
     props: ['type', 'body']
   }
 </script>

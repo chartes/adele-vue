@@ -6,7 +6,7 @@
       <div class="message-header">
         Réinitialisation de votre mot de passe.
       </div>
-      <div class="message-body" >
+      <div class="message-body">
         <form
           v-if="!success"
           class="container login-form"
@@ -15,7 +15,9 @@
           <p
             v-show="error"
             class="control has-text-danger m-b-sm"
-          >{{ error }}</p>
+          >
+            {{ error }}
+          </p>
           <div class="field">
             <p class="control has-icons-left has-icons-right">
               <input

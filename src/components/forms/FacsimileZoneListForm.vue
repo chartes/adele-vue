@@ -7,14 +7,14 @@
   >
     <div class="ZoneForm">
       <a
-v-for="fragment in transcriptionFragments"
-               class="zones-list-item list-item"
-         :key="fragment.zone_id"
-         :class="{ selected: fragment.zone_id == selected }"
-               @click="selectItem(fragment.zone_id)"
+        v-for="fragment in transcriptionFragments"
+        :key="fragment.zone_id"
+        class="zones-list-item list-item"
+        :class="{ selected: fragment.zone_id == selected }"
+        @click="selectItem(fragment.zone_id)"
       >
         <div class="content">
-          <img :src="fragment.fragment_url" >
+          <img :src="fragment.fragment_url">
         </div>
       </a>
     </div>

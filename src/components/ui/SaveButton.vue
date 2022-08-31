@@ -1,14 +1,18 @@
 <template>
-  <button class="save-button button" @click.prevent="clickHandler" :class="buttonClass">
-    <save-button-icon :status="status"/>
-     &nbsp; {{ statustext }}
+  <button
+    class="save-button button"
+    :class="buttonClass"
+    @click.prevent="clickHandler"
+  >
+    <save-button-icon :status="status" />
+    &nbsp; {{ statustext }}
   </button>
 </template>
 
 <script>
   import SaveButtonIcon from './SaveButtonIcon';
   export default {
-    name: "save-button",
+    name: "SaveButton",
     components: {SaveButtonIcon},
     props: {
       status: {
@@ -23,12 +27,6 @@
         type: Function,
         required: true
       }
-    },
-    methods: {
-      clickHandler () {
-        this.$el.blur();
-        this.action();
-      },
     },
     computed: {
 
@@ -50,6 +48,12 @@
         }
         return this.text;
       }
+    },
+    methods: {
+      clickHandler () {
+        this.$el.blur();
+        this.action();
+      },
     }
   }
 </script>

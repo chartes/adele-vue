@@ -1,13 +1,17 @@
 <template>
-    <transition name="slideup">
-        <div class="save-bar" v-show="visible">
-            <div class="container save-bar__container">
-
-                <save-bar-button :action="action" :status="buttonStatus" />
-
-            </div>
-        </div>
-    </transition>
+  <transition name="slideup">
+    <div
+      v-show="visible"
+      class="save-bar"
+    >
+      <div class="container save-bar__container">
+        <save-bar-button
+          :action="action"
+          :status="buttonStatus"
+        />
+      </div>
+    </div>
+  </transition>
 </template>
 
 <script>
@@ -15,7 +19,7 @@
   import { mapState } from 'vuex';
   import SaveBarButton from "./SaveBarButton";
   export default {
-    name: "save-bar",
+    name: "SaveBar",
     components: {SaveBarButton},
     props: {
       disabled: {
@@ -33,22 +37,6 @@
         visibilityTimeout: null,
         statusTimeout: null,
         buttonStatus: 'normal'
-      }
-    },
-    beforeDestroy () {
-      clearTimeout(this.visibilityTimeout)
-      clearTimeout(this.statusTimeout)
-    },
-    methods: {
-      changeVisibilityWithDelay (isVisible) {
-        this.visibilityTimeout = setTimeout(() => {
-          this.visible = isVisible;
-        }, 2000)
-      },
-      changeStatusWithDelay (status) {
-        this.statusTimeout = setTimeout(() => {
-          this.buttonStatus = status;
-        }, 3000)
       }
     },
     watch: {
@@ -73,6 +61,22 @@
             this.buttonStatus = 'working';
             break;
         }
+      }
+    },
+    beforeDestroy () {
+      clearTimeout(this.visibilityTimeout)
+      clearTimeout(this.statusTimeout)
+    },
+    methods: {
+      changeVisibilityWithDelay (isVisible) {
+        this.visibilityTimeout = setTimeout(() => {
+          this.visible = isVisible;
+        }, 2000)
+      },
+      changeStatusWithDelay (status) {
+        this.statusTimeout = setTimeout(() => {
+          this.buttonStatus = status;
+        }, 3000)
       }
     },
     computed: {

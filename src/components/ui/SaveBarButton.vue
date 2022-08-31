@@ -1,22 +1,24 @@
 <template>
-    <transition name="fade"  mode="out-in">
-
-            <a class="button is-fullwidth"
-               :class="buttonClass"
-               @click="action"
-               :key="status"
-            >
-              <save-button-icon :status="status"/> &nbsp; {{ buttonText }}
-            </a>
-
-    </transition>
+  <transition
+    name="fade"
+    mode="out-in"
+  >
+    <a
+      :key="status"
+      class="button is-fullwidth"
+      :class="buttonClass"
+      @click="action"
+    >
+      <save-button-icon :status="status" /> &nbsp; {{ buttonText }}
+    </a>
+  </transition>
 </template>
 
 <script>
   import SaveButtonIcon from './SaveButtonIcon';
   export default {
 
-    name: "save-bar-button",
+    name: "SaveBarButton",
     components: {SaveButtonIcon},
     props: {
       visible: {

@@ -11,7 +11,7 @@
         </div>
         <div class="is-divider-vertical p-t-xl p-b-xl" />
         <div class="column workflow">
-          <workflow-radio-steps :section="$attrs.section" />
+          <workflow-radio-steps />
         </div>
       </div>
       <!-- main container -->
@@ -21,7 +21,7 @@
           <ul>
             <li
               :class="
-                $attrs.section === 'notice' || $attrs.section === undefined
+                currentSection === 'notice' || currentSection === undefined
                   ? `is-active`
                   : ''
               "
@@ -36,7 +36,7 @@
               </router-link>
             </li>
             <li
-              :class="$attrs.section === 'transcription' ? `is-active` : ''"
+              :class="currentSection === 'transcription' ? `is-active` : ''"
             >
               <router-link
                 :to="{
@@ -49,7 +49,7 @@
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'translation' ? `is-active` : ''"
+              :class="currentSection === 'translation' ? `is-active` : ''"
             >
               <router-link
                 :to="{
@@ -63,7 +63,7 @@
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'commentaries' ? `is-active` : ''"
+              :class="currentSection === 'commentaries' ? `is-active` : ''"
             >
               <router-link
                 :to="{
@@ -77,7 +77,7 @@
             <!-- students don't get to deal with facsimile alignment -->
             <li
               v-if="currentUserIsTeacher"
-              :class="$attrs.section === 'facsimile' ? `is-active` : ''"
+              :class="currentSection === 'facsimile' ? `is-active` : ''"
             >
               <router-link
                 :to="{
@@ -90,7 +90,7 @@
             </li>
             <li
               v-if="isTranscriptionValidated || currentUserIsTeacher"
-              :class="$attrs.section === 'speech-parts' ? `is-active` : ''"
+              :class="currentSection === 'speech-parts' ? `is-active` : ''"
             >
               <router-link
                 :to="{
@@ -120,7 +120,7 @@
               image
             </visibility-toggle>
             <visibility-toggle
-              v-if="$attrs.section === 'notice'"
+              v-if="currentSection === 'notice'"
               class="control"
               :action="toggleNoticeVisibility"
               :visible="noticeVisibility"
@@ -129,9 +129,9 @@
             </visibility-toggle>
             <visibility-toggle
               v-if="
-                $attrs.section === 'translation' ||
-                  $attrs.section === 'transcription' ||
-                  $attrs.section === 'commentaries'
+                currentSection === 'translation' ||
+                  currentSection === 'transcription' ||
+                  currentSection === 'commentaries'
               "
               class="control"
               :action="toggleTranscriptionVisibility"
@@ -140,7 +140,7 @@
               transcription
             </visibility-toggle>
             <visibility-toggle
-              v-if="$attrs.section === 'speech-parts'"
+              v-if="currentSection === 'speech-parts'"
               class="control"
               :action="toggleSpeechPartsVisibility"
               :visible="speechpartsVisibility"
@@ -159,7 +159,7 @@
           >
             <mirador-viewer
               v-if="document.manifest_origin_url"
-              :editable="currentUserIsTeacher && $attrs.section === 'facsimile'"
+              :editable="currentUserIsTeacher && currentSection === 'facsimile'"
               :manifest-url="document.manifest_url"
               :manifest-origin-url="document.manifest_origin_url"
               :document-id="document.id"
@@ -181,14 +181,17 @@
               :class="`${imageVisibility ? '' : 'fluid-content'}`"
             >
               <!-- Notice -->
-              <document-edition-notice v-if="$attrs.section === 'notice' && !currentUserIsStudent" />
-              <document-notice
-                v-if="$attrs.section === 'notice' && currentUserIsStudent"
-                :document="document"
-              />
+              <div v-if="currentSection === 'notice'">
+                <document-edition-notice v-if="!currentUserIsStudent" />
+                <document-notice
+                  v-else
+                  :document="document"
+                />
+              </div>
+
               
               <!-- Transcription -->
-              <div v-if="$attrs.section === 'transcription'">
+              <div v-if="currentSection === 'transcription'">
                 <!-- transcription error -->
                 <div v-if="transcriptionError && !selectedUserHasTranscription">
                   <message
@@ -240,14 +243,11 @@
                 </div>
                 <!-- transcription edition -->
                 <div v-else>
-                  <transcription-action-bar />
-                  <document-edition-transcription
-                    :transcription-with-notes="transcriptionWithNotes"
-                  />
+                  <document-edition-transcription />
                 </div>
               </div>
               <!-- Translation -->
-              <div v-if="$attrs.section === 'translation'">
+              <div v-if="currentSection === 'translation'">
                 <!-- translation error -->
                 <div
                   v-if="
@@ -345,22 +345,20 @@
                       class="column"
                       :class="transcriptionVisibility && imageVisibility ? 'is-one-third' :''"
                     >
-                      <document-edition-translation
-                        :translation-with-notes="translationWithNotes"
-                      />
+                      <document-edition-translation />
                     </div>
                   </div>
                 </div>
               </div>
               <!-- Facsimilé -->
               <div
-                v-if="currentUserIsTeacher && $attrs.section === 'facsimile'"
+                v-if="currentUserIsTeacher && currentSection === 'facsimile'"
               >
                 <text-cutter-editor :id="document.id" />
               </div>
               <!-- Commentaires -->
               <div
-                v-if="$attrs.section === 'commentaries'"
+                v-if="currentSection === 'commentaries'"
                 class="m-t-md"
               >
                 <!-- commentaries error -->
@@ -454,7 +452,7 @@
               </div>
 
               <!-- Parties du discours -->
-              <div v-if="$attrs.section === 'speech-parts'">
+              <div v-if="currentSection === 'speech-parts'">
                 <!-- Parties du discours error -->
                 <div v-if="!isTranscriptionValidated">
                   <message
@@ -493,10 +491,7 @@
                 </div>
                 <!-- speechpart edition -->
                 <div v-else>
-                  <speech-parts-action-bar />
-                  <document-edition-speech-parts
-                    :transcription-with-speech-parts="transcriptionWithSpeechparts"
-                  />
+                  <document-edition-transcription />
                 </div>
               </div>
             </div>
@@ -511,21 +506,21 @@
 
     <!-- modals -->
     <div v-if="!loading">
-      <clone-transcription-modal v-if="$attrs.section === 'transcription'" />
-      <clone-translation-modal v-if="$attrs.section === 'translation'" />
-      <clone-commentary-modal v-if="$attrs.section === 'commentaries'" />
+      <clone-transcription-modal v-if="currentSection === 'transcription'" />
+      <clone-translation-modal v-if="currentSection === 'translation'" />
+      <clone-commentary-modal v-if="currentSection === 'commentaries'" />
 
       <delete-transcription-modal
-        v-if="$attrs.section === 'transcription'"
+        v-if="currentSection === 'transcription'"
         :doc-id="parseInt($attrs.docId)"
         :user-id="selectedUserId"
       />
       <delete-translation-modal
-        v-if="$attrs.section === 'translation'"
+        v-if="currentSection === 'translation'"
         :doc-id="parseInt($attrs.docId)"
         :user-id="selectedUserId"
       />
-      <delete-commentary-modal v-if="$attrs.section === 'commentaries'" />
+      <delete-commentary-modal v-if="currentSection === 'commentaries'" />
     </div>
   </div>
 </template>
@@ -538,7 +533,7 @@ import DocumentEditionTranscription from "../components/document/edition/Documen
 import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
 
 import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
-import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
+//import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
 
 import DocumentNotice from "../components/document/view/DocumentNotice.vue";
 import DocumentTranscription from "../components/document/view/DocumentTranscription.vue";
@@ -552,7 +547,6 @@ import WorkflowRadioSteps from "@/components/WorkflowRadioSteps.vue";
 
 import DocumentTitleBar from "../components/document/DocumentTitleBar.vue";
 import TranscriptionActionBar from "@/components/document/edition/actionbars/TranscriptionActionBar.vue";
-import SpeechPartsActionBar from "@/components/document/edition/actionbars/SpeechPartsActionBar.vue";
 
 import Message from "@/components/Message.vue";
 import TextCutterEditor from "@/components/editors/TextCutterEditor.vue"
@@ -573,13 +567,13 @@ export default {
 
     DocumentTitleBar,
     TranscriptionActionBar,
-    SpeechPartsActionBar,
+    //SpeechPartsActionBar,
 
     DocumentEditionNotice,
     DocumentEditionTranscription,
     DocumentEditionTranslation,
     DocumentEditionCommentaries,
-    DocumentEditionSpeechParts,
+    //DocumentEditionSpeechParts,
 
     DocumentTranscription,
     DocumentTranslation,
@@ -602,10 +596,9 @@ export default {
     CloneTranslationModal,
     CloneCommentaryModal
   },
-  props: {},
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
+      vm.$store.dispatch("workflow/setCurrentSection", vm.currentSection);
       if (!vm.isAuthenticated) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
@@ -615,7 +608,7 @@ export default {
         }
       } else {
         vm.$store.dispatch("workflow/setEditionMode", true);
-        vm.setupVisibilityWidget(vm.$attrs.section)
+        vm.setupVisibilityWidget(vm.currentSection)
         next();
       }
     });
@@ -629,19 +622,12 @@ export default {
   beforeRouteLeave(to, from, next) {
     this.$store.dispatch("workflow/setCurrentSection", null);
     this.$store.dispatch("workflow/setEditionMode", false);
-    
-    if (to.params.section === "translation" || from.params.section === "translation") {
-      this.$store.dispatch('workflow/setTranscriptionAlignmentMode', false)
-    }
-
     next();
   },
   data() {
     return {
       isLoading: false,
       init: false,
-
-      transcriptionAlignmentError: null,
 
       imageVisibility: true,
       noticeVisibility: true,
@@ -660,13 +646,12 @@ export default {
       "commentariesView",
       "speechPartsView",
     ]),
-    ...mapState("workflow", ["selectedUserId"]),
+    ...mapState("workflow", ["selectedUserId", "currentSection"]),
     ...mapState("transcription", [
-      "transcriptionWithNotes",
-      "transcriptionWithSpeechparts",
+      "transcriptionContent",
       "transcriptionError",
     ]),
-    ...mapState("translation", ["translationWithNotes", "translationError"]),
+    ...mapState("translation", ["translationContent", "translationError"]),
     ...mapState("commentaries", ["commentaries", "commentariesError"]),
     ...mapState("speechparts", ["speechPartsError"]),
 
@@ -696,7 +681,7 @@ export default {
     ...mapGetters("document", ["documentOwner", "getManifestInfoUrl"]),
 
     showContent() {
-      switch (this.$attrs.section) {
+      switch (this.currentSection) {
         case "transcription":
           return this.transcriptionVisibility;
         case "translation":
@@ -723,7 +708,7 @@ export default {
     },
     contentColumnClass() {
       if (this.imageVisibility && this.showContent){
-        if (this.$attrs.section === 'facsimile') {
+        if (this.currentSection === 'facsimile') {
           return 'facsimile-content-column'
         } else {
           return 'is-two-fifths' 
@@ -734,21 +719,24 @@ export default {
   },
   watch: {
     async selectedUserId() {
-      if (this.init) {
-        await this.fetchContentFromUser();
-        this.setupVisibilityWidget(this.$attrs.section)
-      }
+      await this.fetchContentFromUser();
+      this.setupVisibilityWidget(this.currentSection)
     },
+    async currentSection() {
+      await this.fetchContentFromUser();
+    }
   },
   async created() {
     this.isLoading = true;
+    // ² document (and notice infos)
     try {
       await this.fetchOne({ id: this.$attrs.docId });
     } catch (error) {
       this.$router.push({ name: "error", params: { error: error } });
     }
-
+    // fetch content for all other tabs
     await this.fetchContentFromUser();
+
     this.init = true;
     this.isLoading = false;
   },
@@ -826,18 +814,11 @@ export default {
       }
     },
     async fetchContentFromUser() {
-      await this.fetchSpeechPartsContent();
-      await this.fetchTranscriptionContent();
-      await this.fetchTranslationContent();
-
-      try {
-        this.transcriptionAlignmentError = null;
-        await this.fetchTranscriptionAlignmentView();
-      } catch (error) {
-        this.transcriptionAlignmentError = error;
-      }
-
-      await this.fetchCommentariesContent();
+      return await Promise.all([
+        this.fetchTranscriptionContent(),
+        this.fetchTranslationContent(),
+        this.fetchCommentariesContent()
+      ])
     },
     async addNewTranscription() {
       await this.createTranscription();

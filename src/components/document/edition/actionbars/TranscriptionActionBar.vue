@@ -18,8 +18,8 @@
         <validate-transcription-button :doc-id="document.id" />
       </p>
 
-            <p
-        v-if="currentSection ==='speechparts' && currentUserIsTeacher && selectedUserId == document.user_id"
+      <p
+        v-if="currentSection ==='speech-parts' && currentUserIsTeacher && selectedUserId == document.user_id"
         class="control  m-b-md"
       >
         <validate-speech-parts-button :doc-id="document.id" />

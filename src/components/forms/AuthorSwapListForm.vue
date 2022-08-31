@@ -1,30 +1,30 @@
 <template>
-
-    <modal-form
-            :title="'Auteur des travaux à afficher'"
-            :cancel="cancelAction"
-            :submit="submitAction"
-            :valid="!!selected"
-    >
-        <div class="authors-list-form">
-            <a class="authors-list-item list-item"
-               :key="'me'"
-               @click="selectItem(currentUser)"
-               :class="{ selected: currentUser.id == id }"
-            >Vous-même ({{ currentUser.username }})</a>
-            <hr/>
-            <p class="list-subsection-title">{{document.whitelist.label}}</p>
-            <a class="authors-list-item list-item"
-               v-for="user in document.whitelist.users"
-               :key="user.id"
-               @click="selectItem(user)"
-               :class="{ selected: user.id == id }"
-            >{{ user.first_name }} {{ user.last_name }}</a>
-        </div>
-    </modal-form>
-
-
-
+  <modal-form
+    :title="'Auteur des travaux à afficher'"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :valid="!!selected"
+  >
+    <div class="authors-list-form">
+      <a
+        :key="'me'"
+        class="authors-list-item list-item"
+        :class="{ selected: currentUser.id == id }"
+        @click="selectItem(currentUser)"
+      >Vous-même ({{ currentUser.username }})</a>
+      <hr>
+      <p class="list-subsection-title">
+        {{ document.whitelist.label }}
+      </p>
+      <a
+        v-for="user in document.whitelist.users"
+        :key="user.id"
+        class="authors-list-item list-item"
+        :class="{ selected: user.id == id }"
+        @click="selectItem(user)"
+      >{{ user.first_name }} {{ user.last_name }}</a>
+    </div>
+  </modal-form>
 </template>
 
 <script>
@@ -33,11 +33,11 @@
   import ModalForm from './ModalForm';
 
   export default {
-    name: "author-swap-list-form",
-    props: ['title', 'selectedAuthor', 'cancel', 'submit'],
+    name: "AuthorSwapListForm",
     components: {
       ModalForm
     },
+    props: ['title', 'selectedAuthor', 'cancel', 'submit'],
     data() {
       return {
         selected: null,

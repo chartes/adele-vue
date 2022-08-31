@@ -1,7 +1,7 @@
 <template>
   <div class="editor-area">
     <div
-      v-if="currentSection !== 'speechparts'"
+      v-if="currentSection !== 'speech-parts'"
       ref="controls"
       class="editor-controls"
     >
@@ -142,11 +142,6 @@
         class="quill-editor transcription-editor"
         spellcheck="false"
       />
-      note {{ buttons.note}}
-      defineNewNote {{defineNewNote}}
-      noteEditMode {{ noteEditMode === null}}
-      selectedNoteId {{ selectedNoteId}}
-      currentSelection {{ currentSelection}}
       <note-actions
         v-show="noteEditMode === null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
         :selected-note-id="selectedNoteId"
@@ -187,8 +182,7 @@
         :cancel="closeNoteEdit"
         :submit="deleteNote"
       />
-      <div v-if="currentSection === 'speechparts'">
-      
+      <div v-if="currentSection === 'speech-parts'">
         <speechpart-form
           v-if="selectedSpeechpartId !== null && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
           :speechpart="currentSpeechpart"
@@ -202,15 +196,15 @@
           :submit="deleteSpeechpart"
         />
         <in-editor-actions
-            v-show="selectedSpeechpartId !== null && editorHasFocus"
-            class="speechpart-actions"
-            :style="actionsPosition"
-            refs="speechpartActions"
-            :edit="setSpeechpartEditModeEdit"
-            :delete="setSpeechpartEditModeDelete"
-            :edit-text="'Éditer'"
-            :delete-text="'Supprimer'"
-          />
+          v-show="selectedSpeechpartId !== null && editorHasFocus"
+          class="speechpart-actions"
+          :style="actionsPosition"
+          refs="speechpartActions"
+          :edit="setSpeechpartEditModeEdit"
+          :delete="setSpeechpartEditModeDelete"
+          :edit-text="'Éditer'"
+          :delete-text="'Supprimer'"
+        />
       </div>
     </div>
   </div>

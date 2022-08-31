@@ -1,25 +1,28 @@
 <template>
-
   <modal-form
-          :title="title"
-          :cancel="cancelAction"
-          :submit="submitAction"
-          :remove="remove"
-          :valid="form.length >= 1"
-          :submitting="false"
+    :title="title"
+    :cancel="cancelAction"
+    :submit="submitAction"
+    :remove="remove"
+    :valid="form.length >= 1"
+    :submitting="false"
   >
     <div class="location-form textinput-form">
       <form @submit.prevent="">
         <div class="field">
-          <label class="label">{{label}}</label>
+          <label class="label">{{ label }}</label>
           <div class="control">
-            <input ref="field" class="input" type="text" v-model="form">
+            <input
+              ref="field"
+              v-model="form"
+              class="input"
+              type="text"
+            >
           </div>
         </div>
       </form>
     </div>
   </modal-form>
-
 </template>
 
 <script>
@@ -27,7 +30,7 @@
   import ModalForm from './ModalForm';
 
   export default {
-    name: "textfield-form",
+    name: "TextfieldForm",
     components: {
       ModalForm
     },

@@ -1,12 +1,24 @@
 <template>
-  <span v-if="status === 'normal'" :key="'normal'" class="icon is-small">
-    <i class="fas fa-save"></i>
+  <span
+    v-if="status === 'normal'"
+    :key="'normal'"
+    class="icon is-small"
+  >
+    <i class="fas fa-save" />
   </span>
-  <span v-else-if="status === 'success'" :key="'success'" class="icon is-small">
-    <i class="fas fa-check"></i>
+  <span
+    v-else-if="status === 'success'"
+    :key="'success'"
+    class="icon is-small"
+  >
+    <i class="fas fa-check" />
   </span>
-  <span v-else-if="status === 'error'" :key="'error'" class="icon is-small">
-    <i class="fas fa-exclamation-triangle"></i>
+  <span
+    v-else-if="status === 'error'"
+    :key="'error'"
+    class="icon is-small"
+  >
+    <i class="fas fa-exclamation-triangle" />
   </span>
 </template>
 

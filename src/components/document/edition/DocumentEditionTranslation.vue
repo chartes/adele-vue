@@ -1,6 +1,6 @@
 <template>
   <section>
-    <translation-action-bar/>
+    <translation-action-bar />
     <rich-text-editor
       v-if="!translationLoading"
       :key="translationLoading"

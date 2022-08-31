@@ -1,10 +1,10 @@
 <template>
   <section>
-    <transcription-action-bar :section="section"/>
+    <transcription-action-bar />
     <rich-text-editor
-        v-if="!transcriptionLoading"
-        :initial-content="transcriptionContent"
-        change-action="transcription/changed"
+      v-if="!transcriptionLoading"
+      :initial-content="transcriptionContent"
+      change-action="transcription/changed"
     />
   </section>
 </template>
@@ -22,7 +22,6 @@ export default {
         RichTextEditor, TranscriptionActionBar
     },
     props: {
-      section: {type: String, required: true}
     },
     computed: {
       ...mapState('transcription', ['transcriptionContent', 'transcriptionLoading']),

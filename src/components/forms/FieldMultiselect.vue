@@ -1,31 +1,57 @@
 <template>
-    <div class="field field-multiselect">
-        <label class="label" v-html="label"></label>
-        <div class="field selected-list  is-grouped is-grouped-multiline">
-            <div class="control" v-for="item in items" :key="item[optionIdField]">
-                <div class="tags has-addons selected-item">
-                    <span class="tag">{{item[optionLabelField]}}</span>
-                    <a class="tag is-delete" @click.prevent="deleteItem(item[optionIdField])"></a>
-                </div>
-            </div>
-
-
+  <div class="field field-multiselect">
+    <label
+      class="label"
+      v-html="label"
+    />
+    <div class="field selected-list  is-grouped is-grouped-multiline">
+      <div
+        v-for="item in items"
+        :key="item[optionIdField]"
+        class="control"
+      >
+        <div class="tags has-addons selected-item">
+          <span class="tag">{{ item[optionLabelField] }}</span>
+          <a
+            class="tag is-delete"
+            @click.prevent="deleteItem(item[optionIdField])"
+          />
         </div>
-        <div class="multiselect-actions" v-if="optionsList.length > ids.length">
-            <a class="icon is-large add-item" href="#" @click.prevent="displayList">
-                <span class="fa-stack ">
-                <i class="fas fa-circle fa-stack-2x"></i>
-                <i class="fas fa-plus fa-stack-1x "></i>
-              </span>
-            </a>
-            <ul class="box" v-if="listVisible" v-click-outside="hideList">
-                <li v-for="option in optionsNotSelected" :key="option[optionIdField]">
-                    <a href="#" @click.prevent="addItem(option)" class="unselected-item" v-html="option[optionLabelField]"></a>
-                </li>
-            </ul>
-
-        </div>
+      </div>
     </div>
+    <div
+      v-if="optionsList.length > ids.length"
+      class="multiselect-actions"
+    >
+      <a
+        class="icon is-large add-item"
+        href="#"
+        @click.prevent="displayList"
+      >
+        <span class="fa-stack ">
+          <i class="fas fa-circle fa-stack-2x" />
+          <i class="fas fa-plus fa-stack-1x " />
+        </span>
+      </a>
+      <ul
+        v-if="listVisible"
+        v-click-outside="hideList"
+        class="box"
+      >
+        <li
+          v-for="option in optionsNotSelected"
+          :key="option[optionIdField]"
+        >
+          <a
+            href="#"
+            class="unselected-item"
+            @click.prevent="addItem(option)"
+            v-html="option[optionLabelField]"
+          />
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -33,7 +59,10 @@
   import ClickOutside from 'vue-click-outside';
 
   export default {
-    name: "field-multiselect",
+    name: "FieldMultiselect",
+    directives: {
+      ClickOutside
+    },
     props: {
       label: {
         type: String
@@ -54,11 +83,20 @@
         type: Function, required: true
       }
     },
-    directives: {
-      ClickOutside
-    },
     data () {
       return { listVisible: false, items: [], ids: []}
+    },
+    computed: {
+
+      optionsNotSelected () {
+        if (!this.optionsList) return [];
+        return this.optionsList.filter(op => !this.ids.includes(op[this.optionIdField]));
+      }
+    },
+    watch: {
+      selectedItems () {
+        this.updateAllItems();
+      }
     },
     mounted () {
       this.updateAllItems();
@@ -85,18 +123,6 @@
       },
       hideList () {
         this.listVisible = false;
-      }
-    },
-    watch: {
-      selectedItems () {
-        this.updateAllItems();
-      }
-    },
-    computed: {
-
-      optionsNotSelected () {
-        if (!this.optionsList) return [];
-        return this.optionsList.filter(op => !this.ids.includes(op[this.optionIdField]));
       }
     }
   }

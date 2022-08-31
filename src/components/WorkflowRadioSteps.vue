@@ -47,7 +47,7 @@
             <div
               class="workflow-step-radio"
               @mouseover="stepDoc = 'notice'"
-              @mouseleave="stepDoc = $route.params.section"
+              @mouseleave="stepDoc = currentSection"
             >
               <validation-radio-icon
                 :is-validated="true"
@@ -61,7 +61,7 @@
             <div
               class="workflow-step-radio"
               @mouseover="stepDoc = 'transcription'"
-              @mouseleave="stepDoc = $route.params.section"
+              @mouseleave="stepDoc = currentSection"
             >
               <validation-radio-icon
                 :is-validated="isTranscriptionValidated"
@@ -77,7 +77,7 @@
                 <div
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'translation'"
-                  @mouseleave="stepDoc = $route.params.section"
+                  @mouseleave="stepDoc = currentSection"
                 >
                   <validation-radio-icon
                     :is-validated="isTranslationValidated"
@@ -91,7 +91,7 @@
                 <div
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'commentaries'"
-                  @mouseleave="stepDoc = $route.params.section"
+                  @mouseleave="stepDoc = currentSection"
                 >
                   <validation-radio-icon
                     :is-validated="isCommentariesValidated"
@@ -106,7 +106,7 @@
                   v-if="currentUserIsTeacher"
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'facsimile'"
-                  @mouseleave="stepDoc = $route.params.section"
+                  @mouseleave="stepDoc = currentSection"
                 >
                   <validation-radio-icon
                     :is-validated="isFacsimileValidated"
@@ -119,7 +119,7 @@
                 <div
                   class="workflow-step-radio"
                   @mouseover="stepDoc = 'speech-parts'"
-                  @mouseleave="stepDoc = $route.params.section"
+                  @mouseleave="stepDoc = currentSection"
                 >
                   <validation-radio-icon
                     :is-validated="isSpeechPartsValidated"
@@ -151,9 +151,6 @@ export default {
     components: {
         ValidationRadioIcon
     },
-    props: {
-      section: {type: String, default: null}
-    },
     data() {
         return {
           stepDoc: null,
@@ -169,7 +166,7 @@ export default {
     },
     computed: {
         ...mapState('user', ['currentUser']),
-        ...mapState('workflow', ['selectedUserId']),
+        ...mapState('workflow', ['selectedUserId', "currentSection"]),
         ...mapState('document', ['document']),
         ...mapGetters('user', ['isAuthenticated', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapGetters('document', ['documentOwner']),
@@ -209,12 +206,12 @@ export default {
     },
     watch: {
         selectedUserId() {
-          if (this.selectedUserId !== this.currentUser.id && this.$props.section === 'facsimile') {
+          if (this.selectedUserId !== this.currentUser.id && this.currentSection === 'facsimile') {
             this.$router.replace({name: 'document-edition', params: {section: 'notice'}})
           }
-        },
-        $route (to, from){
-          this.stepDoc = this.$route.params.section
+        }, 
+        currentSection() {
+          this.stepDoc = this.currentSection
         }
     },
     created() {
@@ -225,7 +222,7 @@ export default {
         }
     },
     mounted() {
-       
+       this.stepDoc = this.currentSection
     },
     methods: {
  

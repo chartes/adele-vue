@@ -1,6 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 import Quill, {getNewQuill, options} from '../modules/quill/AdeleQuill';
-import { getNewDelta } from '../modules/quill/DeltaUtils';
+import Delta from 'quill-delta';
 import { trim } from '../modules/quill/MarkupUtils';
 
 import _isEmpty from 'lodash/isEmpty';
@@ -28,20 +28,58 @@ var EditorMixin = {
     initEditor(editorElement, initialContent) {
       editorElement.innerHTML = trim(initialContent);
       this.editor = getNewQuill(editorElement);
-      this.activateEvents();
-      this.editor.updateContents(getNewDelta().retain(this.editor.getLength(), 'api'))
+      this.editor.updateContents(new Delta().retain(this.editor.getLength(), 'api'))
       this.editorContentElement = editorElement.children[0];
       this.editorInited = true;
+      this.activateEvents();
     },
 
     activateEvents () {
       //console.log("EditorMixins.activateEvents")
-      this.editor.on('selection-change', this.onSelection);
-      this.editor.on('selection-change', this.onFocus);
+      this.editor.on('selection-change', (range) => {
+        if (range === null || range.length === 0) {
+          this.updateButtons({})
+          this.defineNewNote = false
+          this.selectedSpeechpartId = null
+        }
+        if (range) {
+          this.setRangeBound(range);
+          let formats = this.editor.getFormat(range.index, range.length);
+          this.updateButtons(formats);
+          console.log("onSelection", range, formats)
+          if (!!formats.note) {
+            this.onNoteSelected(formats.note, range);
+            this.buttons.note = true;
+          } else {
+            this.selectedNoteId = null;
+            this.buttons.note = false;
+          }
+          
+          // speechparts
+          if (range.length > 0) {
+            if (formats.speechpart) {
+              this.onSpeechpartSelected(formats.speechpart, range);
+              const spId = formats.speechpart.split(',')[0]
+              const sp = this.speechparts.find(e => e.id === parseInt(spId))
+              console.log("ID SP", sp)
+              this.currentSpeechpart = sp
+              //this.buttons.speechpart = false;
+            } else {
+              this.selectedSpeechpartId = range.index;
+              //this.buttons.speechpart = true;
+            }
+          }
+
+          this.currentSelection = range
+        }
+        this.editorHasFocus = this.editor.hasFocus();
+      });
+      //this.editor.on('selection-change', this.onSelection);
+      //this.editor.on('selection-change', this.onFocus);
       this.editor.on('text-change', this.onTextChange);
     },
     deactivateEvents () {
-      //console.log("EditorMixins.deactivateEvents")
+      console.log("EditorMixins.deactivateEvents")
       if (this.editor) {
         this.editor.off('selection-change', this.onSelection);
         this.editor.off('selection-change', this.onFocus);
@@ -69,20 +107,7 @@ var EditorMixin = {
       }
     },
     onSelection (range) {
-      if (range) {
-        this.setRangeBound(range);
-        let formats = this.editor.getFormat(range.index, range.length);
-        this.updateButtons(formats);
-        console.log("onSelection", range, formats)
-        if (!!formats.note) {
-          this.onNoteSelected(formats.note, range);
-          this.buttons.note = false;
-        } else {
-          this.selectedNoteId = null;
-          this.buttons.note = true;
-        }
-        this.currentSelection = range
-      }
+ 
     },
     onFocus () {
       this.editorHasFocus = this.editor.hasFocus();
@@ -99,7 +124,7 @@ var EditorMixin = {
 
     insertSegment () {
       let range = this.editor.getSelection(true);
-      this.editor.updateContents(getNewDelta().retain(range.index).insert({ segment: true }), Quill.sources.USER);
+      this.editor.updateContents(new Delta().retain(range.index).insert({ segment: true }), Quill.sources.USER);
       console.log('insert seg', this.editor.getContents())
       this.editor.setSelection(range.index + 1, Quill.sources.SILENT);
     },
@@ -109,13 +134,13 @@ var EditorMixin = {
     insertColBreak () {
 
       let range = this.editor.getSelection(true);
-      this.editor.updateContents(getNewDelta().retain(range.index).delete(range.length).insert({ colbreak: true }), Quill.sources.USER);
+      this.editor.updateContents(new Delta().retain(range.index).delete(range.length).insert({ colbreak: true }), Quill.sources.USER);
       this.editor.setSelection(range.index + 1, Quill.sources.SILENT);
 
     },
 
     updateButtons (formats) {
-      if (_isEmpty(formats)) formats = { paragraph: true }
+      if (_isEmpty(formats)) formats = { }
       for (let key in this.buttons) {
         this.buttons[key] = !!formats[key];
       }
@@ -207,10 +232,6 @@ var EditorMixin = {
       let top = this.actionsPositions.bottom + 5;
       let left = (this.actionsPositions.left+this.actionsPositions.right)/2;
       return `top:${top}px;left:${left}px`;
-    },
-    isNoteButtonActive () {
-      const cond = this.editorHasFocus && this.buttons.note;
-      return cond;
     }
   }
 

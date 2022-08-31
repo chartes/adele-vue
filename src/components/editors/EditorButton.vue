@@ -9,7 +9,6 @@
     <img
       :src="iconSvg"
     >
-
   </button>
 </template>
 

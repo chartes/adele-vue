@@ -7,8 +7,8 @@
         :class="isLoading"
       >
         <select
-          v-model="val"
           v-if="hasOptions"
+          v-model="val"
           @change="onChange(val)"
         >
           <option
