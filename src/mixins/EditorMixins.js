@@ -1,11 +1,15 @@
 /* eslint-disable no-extra-boolean-cast */
-import Quill, {getNewQuill, options} from '../modules/quill/AdeleQuill';
+import Quill, {getNewQuill} from '../modules/quill/AdeleQuill';
 import Delta from 'quill-delta';
 import { trim } from '../modules/quill/MarkupUtils';
 
 import _isEmpty from 'lodash/isEmpty';
 
 var EditorMixin = {
+
+  props: {
+    readonly: {type: Boolean, default: false}
+  },
 
   data() {
     return {
@@ -27,9 +31,17 @@ var EditorMixin = {
 
     initEditor(editorElement, initialContent) {
       editorElement.innerHTML = trim(initialContent);
-      this.editor = getNewQuill(editorElement);
+      this.editor = getNewQuill(editorElement, {readOnly: this.$props.readonly});
       this.editor.updateContents(new Delta().retain(this.editor.getLength(), 'api'))
       this.editorContentElement = editorElement.children[0];
+
+
+      if (this.$props.readonly) {
+        this.editorContentElement.classList.remove('ql-editor')
+        this.editorContentElement.classList.add('ql-editor-readonly')
+      }
+
+
       this.editorInited = true;
       this.activateEvents();
     },
@@ -98,11 +110,11 @@ var EditorMixin = {
 
     onTextChange (delta, oldDelta, source) {
       this.lastOperations = delta;
-      if (this.editorInited) {
+      if (this.editorInited && this.storeActions.changed !== null) {
         if (typeof this.storeActions.changed === 'string') {
           this.$store.dispatch(this.storeActions.changed, delta)
         } else {
-          this.storeActions.changed(delta)
+            this.storeActions.changed(delta)
         }
       }
     },

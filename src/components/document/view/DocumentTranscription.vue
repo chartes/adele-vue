@@ -5,10 +5,9 @@
     >
       Transcription
     </div>
-    <div
-      
-      class="content"
-      v-html="readonlyData.content"
+    <rich-text-editor v-if="content"
+      :initial-content="content"
+      :readonly="true"
     />
   </div>
 </template>
@@ -16,20 +15,33 @@
 
 <script>
 
-import { mapState } from 'vuex';
-import Vue from 'vue';
+import { mapActions, mapState } from 'vuex';
 import addToolTip from '@/modules/tooltip';
+import RichTextEditor from "@/components/editors/RichTextEditor.vue"
 
 export default {
     name: "DocumentTranscription",
     components: {
-        
+       RichTextEditor 
     },
     props: {
         readonlyData: {type: Object, default: null}
     },
+    data() {
+      return {
+        content: null
+      }
+    },
     computed: {
-        ...mapState('document', ['loading', 'transcriptionView']),
+        ...mapState('document', ['loading', 'transcriptionView', 'transcriptionLoading']),
+    },
+    watch: {
+      async transcriptionView() {
+        this.content = await this.getTranscriptionViewContent()
+      }
+    },
+    async created() {
+       this.content = await this.getTranscriptionViewContent()
     },
     mounted() {
           // make tooltips
@@ -49,7 +61,7 @@ export default {
         }   
     },
     methods: {
- 
+      ...mapActions('transcription', ['getTranscriptionViewContent'])
     }
 }
 </script>

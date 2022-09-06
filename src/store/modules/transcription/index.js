@@ -220,6 +220,17 @@ const actions = {
       {root: true})
    
   },
+  getTranscriptionViewContent({rootState}) {
+    if (rootState.document.transcriptionView) {
+      const content = TEIToQuill(rootState.document.transcriptionView.content)
+      //const notes = rootState.document.transcriptionView.notes;
+      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
+      return convertLinebreakTEIToQuill(content)
+    } else {
+      return null;
+    }
+  },
+
   /* useful */
   async fetchTextAlignments ({commit, rootState}) {
     const response = await http.get(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`)

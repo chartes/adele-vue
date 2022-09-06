@@ -1,7 +1,7 @@
 <template>
   <div class="editor-area">
     <div
-      v-if="currentSection !== 'speech-parts'"
+      v-if="currentSection !== 'speech-parts' && !readonly"
       ref="controls"
       class="editor-controls"
     >
@@ -142,7 +142,7 @@
         class="quill-editor transcription-editor"
         spellcheck="false"
       />
-      <note-actions
+      <note-actions  v-if="!readonly"
         v-show="noteEditMode === null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
         :selected-note-id="selectedNoteId"
         refs="noteActions"
@@ -154,7 +154,7 @@
         :delete="setNoteEditModeDelete"
       />
     </div>
-    <div>
+    <div v-if="!readonly">
       <notes-list-form
         v-if="noteEditMode === 'list'"
         :note-id="selectedNoteId"
@@ -248,7 +248,7 @@ export default {
   mixins: [EditorMixins, EditorNotesMixins],
   props: {
     initialContent: {type: String, default: ''},
-    changeAction: {type: String, required: true}
+    changeAction: {type: String, required: false, default: null}
   },
   data() {
     return {

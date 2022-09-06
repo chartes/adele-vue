@@ -1,3 +1,7 @@
+.ql-editor-readonly {
+  font-size: 1rem;
+}
+
 .quill-editor {
   font-size: 1em;
   margin: 0 auto;
@@ -7,6 +11,7 @@
   overflow: scroll;
   background: white;
 }
+
 
 .editor-controls {
   display: flex;
