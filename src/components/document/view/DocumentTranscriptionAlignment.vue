@@ -4,21 +4,24 @@
       v-if="!!readonlyData"
       class="content transcription-alignement"
     >
-      <table>
-        <thead>
-          <th>Transcription</th>
-          <th>Traduction</th>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(seg, index) in readonlyData.content"
-            :key="index"
-          >
-            <td v-html="seg[0]" />
-            <td v-html="seg[1]" />
-          </tr> 
-        </tbody>
-      </table>
+
+      <div class="columns">
+      <div class="column">       
+      <section>
+        <document-transcription
+          :readonly-data="transcriptionView"
+        />
+        </section>
+        </div>
+      <div class="column">
+        <section>
+          <document-translation
+            :readonly-data="translationView"
+          />
+        </section>
+        </div>
+      </div>
+      
     </div>
   </div>
 </template>
@@ -27,21 +30,24 @@
 <script>
 
 import { mapState } from 'vuex';
-import Vue from 'vue';
 import addToolTip from '@/modules/tooltip';
+import DocumentTranscription from '../view/DocumentTranscription.vue'
+import DocumentTranslation from '../view/DocumentTranslation.vue'
 
 export default {
     name: "DocumentTranscriptionAlignment",
     components: {
-        
+        DocumentTranscription,
+        DocumentTranslation
     },
     props: {
         readonlyData: {type: Object, default: null}
     },
     computed: {
-        ...mapState('document', ['loading', 'transcriptionAlignmentView']),
+        ...mapState('document', ['loading', 'transcriptionView', 'translationView']),
     },
     mounted() {
+      /*
       if (this.transcriptionAlignmentView) {
           // make tooltips
           this.transcriptionAlignmentView.notes.forEach(note => {
@@ -59,6 +65,7 @@ export default {
             addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName == 'persname' ? 'is-left' : 'is-bottom'});
           })
       }
+      */
     },
     methods: {
  
