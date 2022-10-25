@@ -78,7 +78,7 @@ export default {
 
     },
     watch: {
-      async transcriptionView() {
+      async commentariesView() {
         this.coms = await this.getCommentariesViewContent()
       }
     },

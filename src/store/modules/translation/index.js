@@ -1,4 +1,3 @@
-import axios from 'axios';
 import Quill from '../../../modules/quill/AdeleQuill';
 import {http} from '../../../modules/http-common';
 
