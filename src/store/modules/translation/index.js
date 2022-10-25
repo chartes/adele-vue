@@ -253,6 +253,17 @@ const actions = {
     }
   },
 
+  getTranslationViewContent({rootState}) {
+    if (rootState.document.translationView) {
+      const content = TEIToQuill(rootState.document.translationView.content)
+      //const notes = rootState.document.transcriptionView.notes;
+      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
+      return convertLinebreakTEIToQuill(content)
+    } else {
+      return null;
+    }
+  },
+
   insertNote({commit, state}, newNote) {
     /* build a new shadow content with notes */
     const quillContent = TEIToQuill(state.translationContent);

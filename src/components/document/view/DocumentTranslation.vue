@@ -5,9 +5,9 @@
     >
       Traduction
     </div>
-    <div
-      class="content"
-      v-html="readonlyData.content"
+    <rich-text-editor v-if="content"
+      :initial-content="content"
+      :readonly="true"
     />
   </div>
 </template>
@@ -15,20 +15,33 @@
 
 <script>
 
-import { mapState } from 'vuex';
-import Vue from 'vue';
+import { mapState, mapActions } from 'vuex';
 import addToolTip from '@/modules/tooltip';
+import RichTextEditor from "@/components/editors/RichTextEditor.vue"
 
 export default {
     name: "DocumentTranslation",
     components: {
-        
+        RichTextEditor
     },
     props: {
         readonlyData: {type: Object, default: null}
     },
+    data() {
+      return {
+        content: null
+      }
+    },
     computed: {
         ...mapState('document', ['loading', 'translationView']),
+    },
+    watch: {
+      async translationView() {
+        this.content = await this.getTranslationViewContent()
+      }
+    },
+    async created() {
+       this.content = await this.getTranslationViewContent()
     },
     mounted() {
       if (this.translationView) {
@@ -47,7 +60,8 @@ export default {
       }
     },
     methods: {
- 
+       ...mapActions('translation', ['getTranslationViewContent'])
+
     }
 }
 </script>
