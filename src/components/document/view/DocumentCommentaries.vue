@@ -20,7 +20,7 @@
         <div class="commentaries-tabs tabs is-small is-toggle">
           <ul>
             <li
-              v-for="(com, index) in readonlyData"
+              v-for="(com, index) in coms"
               :key="index"
               :class="`${index === activeIdx ? 'is-active' : ''}`"
             >
@@ -32,14 +32,14 @@
         </div>
         <div>
           <div
-            v-for="(com, index) in readonlyData"
+            v-for="(com, index) in coms"
             :key="index"
           >
-            <div
-              v-show="index === activeIdx"
-              class="com-content"
-              v-html="com.content"
-            />
+
+              <rich-text-editor v-if="com.content" v-show="index === activeIdx"
+                :initial-content="com.content"
+                :readonly="true"
+              />
           </div>
         </div>
       </div>
@@ -51,15 +51,16 @@
 <script>
 
 import { mapState, mapActions } from 'vuex';
-import Vue from 'vue';
 import addToolTip from '@/modules/tooltip';
+import RichTextEditor from "@/components/editors/RichTextEditor.vue"
 
 import DocumentTranscription from '../view/DocumentTranscription.vue'
 
 export default {
     name: "DocumentCommentaries",
     components: {
-        DocumentTranscription
+        DocumentTranscription,
+        RichTextEditor
     },
     props: {
         readonlyData: {type: Array, default: null},
@@ -67,7 +68,8 @@ export default {
     },
     data() {
       return {
-        activeIdx: 0  
+        activeIdx: 0 ,
+        coms: null 
       }
     },
     computed: {
@@ -75,7 +77,13 @@ export default {
       ...mapState('document', ['transcriptionView', 'commentariesView']),
 
     },
+    watch: {
+      async transcriptionView() {
+        this.coms = await this.getCommentariesViewContent()
+      }
+    },
     async created() {
+      this.coms = await this.getCommentariesViewContent()
       if (this.showTranscription) {
         await this.fetchTranscriptionView()
         this.insertTranscriptionTooltips()
@@ -86,6 +94,7 @@ export default {
     },
     methods: {
       ...mapActions('document', ['fetchTranscriptionView']),
+      ...mapActions('commentaries', ['getCommentariesViewContent']),
 
       selectItem(index) {
         this.activeIdx = index

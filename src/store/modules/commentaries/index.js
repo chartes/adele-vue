@@ -338,6 +338,25 @@ const actions = {
       commit('LOADING_STATUS', false)
     }
   },
+
+
+  getCommentariesViewContent({rootState}) {
+    if (rootState.document.commentariesView) {
+      console.log("==> rootState.document.commentariesView", rootState.document.commentariesView)
+      const coms = rootState.document.commentariesView.map(c => {
+        return {
+          ...c,
+          content: convertLinebreakTEIToQuill(TEIToQuill(c.content))
+        }
+      });
+      //const notes = rootState.document.transcriptionView.notes;
+      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
+      return coms
+    } else {
+      return null;
+    }
+  },
+
 };
 
 const getters = {
