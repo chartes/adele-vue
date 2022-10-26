@@ -196,27 +196,8 @@
                   v-if="($attrs.section === 'transcription' || $attrs.section === 'translation') && transcriptionView"
                   class="content"
                 >
-                  <div class="columns">
-                    <div
-                      v-if="!translationAlignmentVisibility && transcriptionVisibility && transcriptionView !== null"
-                      class="column"
-                    >
-                      <document-transcription
-                        :readonly-data="transcriptionView"
-                      />
-                    </div>
-                    <div
-                      v-if="!translationAlignmentVisibility && translationView !== null && translationVisibility"
-                      class="column"
-                    >
-                      <document-translation
-                        :readonly-data="translationView"
-                      />
-                    </div>
-                  </div>
                   <document-transcription-alignment
                     v-if="translationAlignmentVisibility"
-                    :readonly-data="transcriptionAlignmentView"
                   />
                 </div>
                 <document-commentaries
@@ -257,8 +238,6 @@ export default {
     components: {
       DocumentTitleBar,
       DocumentNotice,
-      DocumentTranscription,
-      DocumentTranslation,
       DocumentTranscriptionAlignment,
       DocumentCommentaries,
       DocumentSpeechParts,
@@ -293,7 +272,7 @@ export default {
         },
 
         translationAlignmentVisibility() {
-          return this.transcriptionAlignmentView && this.transcriptionVisibility && this.translationVisibility
+          return this.transcriptionVisibility && this.translationVisibility
         },
 
         showContent() {

@@ -5,9 +5,7 @@
       ref="controls"
       class="editor-controls"
     >
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Structure éditoriale</label>
         <!-- 
         <editor-button
@@ -23,7 +21,7 @@
           :format="'verse'"
         />
         -->
-      
+
         <!-- commentaries only; list, blockquote -->
         <editor-button
           v-if="currentSection === 'commentaries'"
@@ -46,9 +44,7 @@
           format="note"
         />
       </div>
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Enrichissements typographiques</label>
         <editor-button
           :selected="buttons.bold"
@@ -81,9 +77,7 @@
           format="underline"
         />
       </div>
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Enrichissements sémantiques</label>
         <editor-button
           :selected="buttons.del"
@@ -140,10 +134,17 @@
         id="transcription-editor"
         ref="editor"
         class="quill-editor transcription-editor"
+        :class="readonly ? 'ql-editor-readonly' : ''"
         spellcheck="false"
       />
-      <note-actions  v-if="!readonly"
-        v-show="noteEditMode === null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
+      <note-actions
+        v-if="!readonly"
+        v-show="
+          noteEditMode === null &&
+          (defineNewNote || selectedNoteId) &&
+          currentSelection &&
+          currentSelection.length > 0
+        "
         :selected-note-id="selectedNoteId"
         refs="noteActions"
         :style="actionsPosition"
@@ -167,7 +168,7 @@
         :label="formTextfield.label"
         :value="formTextfield.value"
         :submit="submitTextfieldForm"
-        :cancel="cancelTextfieldForm" 
+        :cancel="cancelTextfieldForm"
       />
       <note-form
         v-if="noteEditMode === 'new' || noteEditMode === 'edit'"
@@ -184,7 +185,10 @@
       />
       <div v-if="currentSection === 'speech-parts'">
         <speechpart-form
-          v-if="selectedSpeechpartId !== null && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
+          v-if="
+            selectedSpeechpartId !== null &&
+            (speechpartEditMode === 'new' || speechpartEditMode === 'edit')
+          "
           :speechpart="currentSpeechpart"
           :speechpart-id="selectedSpeechpartId"
           :submit="updateSpeechpart"
@@ -211,30 +215,28 @@
 </template>
 
 <script>
-    
-import { mapState, mapGetters } from 'vuex'
-import EditorButton from './EditorButton.vue';
+import { mapState, mapGetters } from "vuex";
+import EditorButton from "./EditorButton.vue";
 
-import EditorMixins from '../../mixins/EditorMixins'
-import EditorNotesMixins from '../../mixins/EditorNotesMixins'
+import EditorMixins from "../../mixins/EditorMixins";
+import EditorNotesMixins from "../../mixins/EditorNotesMixins";
 
-import NoteActions from './NoteActions';
-import NoteForm from '../forms/NoteForm';
-import NotesListForm from '../forms/NotesListForm';
-import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
+import NoteActions from "./NoteActions";
+import NoteForm from "../forms/NoteForm";
+import NotesListForm from "../forms/NotesListForm";
+import ModalConfirmNoteDelete from "../forms/ModalConfirmNoteDelete";
 
 import TextfieldForm from "../forms/TextfieldForm";
 
-import InEditorActions from './InEditorActions';
+import InEditorActions from "./InEditorActions";
 import SpeechpartForm from "../forms/SpeechpartForm";
 import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
-
 
 export default {
   name: "RichTextEditor",
   components: {
     TextfieldForm,
- 
+
     EditorButton,
     ModalConfirmNoteDelete,
     NoteActions,
@@ -247,13 +249,13 @@ export default {
   },
   mixins: [EditorMixins, EditorNotesMixins],
   props: {
-    initialContent: {type: String, default: ''},
-    changeAction: {type: String, required: false, default: null}
+    initialContent: { type: String, default: "" },
+    changeAction: { type: String, required: false, default: null },
   },
   data() {
     return {
       storeActions: {
-        changed: this.$props.changeAction
+        changed: this.$props.changeAction,
       },
       delta: null,
       buttons: {
@@ -279,145 +281,142 @@ export default {
       selectedSpeechpartId: null,
       currentSpeechpart: null,
       defineNewSpeechpart: false,
-    }
+    };
   },
   computed: {
-    ...mapState('workflow', [ 'currentSection']),
-    ...mapState('speechparts', ['newSpeechpart', 'speechparts']),
-    ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
+    ...mapState("workflow", ["currentSection"]),
+    ...mapState("speechparts", ["newSpeechpart", "speechparts"]),
+    ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
   },
   watch: {
     currentSelection() {
       if (this.currentSelection && this.currentSelection.length == 0) {
-        this.defineNewNote = false
+        this.defineNewNote = false;
       }
-    }
+    },
   },
   created() {
-    this.$store.dispatch('speechpartTypes/fetch')
+    this.$store.dispatch("speechpartTypes/fetch");
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.allowKeyboard();
     this.deactivateMouseOver();
   },
-  mounted () {
+  mounted() {
     this.initEditor(this.$refs.editor, this.$props.initialContent);
     this.preventKeyboard();
     this.activateMouseOver();
   },
   methods: {
-    updateContent () {
+    updateContent() {
       this.delta = this.editor.getContents().ops;
     },
-    
-      onSpeechpartSelected (speechpart, range) {
-        console.log("onspeechpart selected", speechpart, range)
-        if (!range.length) return;
-        this.selectedSpeechpartId = range.index;
-      },
 
-      updateSpeechpart(sp) {
-        console.log("UPDATE SP", sp)
-        sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
-        sp.ptr_start = this.selectedSpeechpartId;
-        if (sp.id === undefined) {
-          sp.id = 900000+sp.ptr_start
-        }
-        this.editor.format('speechpart', `${sp.id},${sp.speech_part_type.id}`);
-        this.$store.dispatch(`speechparts/update`, sp)
-        this.$store.dispatch('speechparts/saveSpeechParts')
-        this.closeSpeechpartEdit()
-      },
-      deleteSpeechpart() {
-        console.log("this.currentSpeechpart", this.currentSpeechpart)
-        this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
-        this.editor.format('speechpart', false);
+    onSpeechpartSelected(speechpart, range) {
+      console.log("onspeechpart selected", speechpart, range);
+      if (!range.length) return;
+      this.selectedSpeechpartId = range.index;
+    },
 
-        this.selectedSpeechpartId = null;
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
+    updateSpeechpart(sp) {
+      console.log("UPDATE SP", sp);
+      sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
+      sp.ptr_start = this.selectedSpeechpartId;
+      if (sp.id === undefined) {
+        sp.id = 900000 + sp.ptr_start;
+      }
+      this.editor.format("speechpart", `${sp.id},${sp.speech_part_type.id}`);
+      this.$store.dispatch(`speechparts/update`, sp);
+      this.$store.dispatch("speechparts/saveSpeechParts");
+      this.closeSpeechpartEdit();
+    },
+    deleteSpeechpart() {
+      console.log("this.currentSpeechpart", this.currentSpeechpart);
+      this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id);
+      this.editor.format("speechpart", false);
 
-        this.closeSpeechpartEdit();
-        this.$store.dispatch(`speechparts/setToBeSaved`)
-        this.$store.dispatch('speechparts/saveSpeechParts')
-      },
+      this.selectedSpeechpartId = null;
+      this.currentSpeechpart = { transcription_id: this.transcription.id };
 
+      this.closeSpeechpartEdit();
+      this.$store.dispatch(`speechparts/setToBeSaved`);
+      this.$store.dispatch("speechparts/saveSpeechParts");
+    },
 
-      setSpeechpartEditModeDelete() {
-        this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        this.speechpartEditMode = 'delete';
-      },
-      setSpeechpartEditModeNew() {
-        this.speechpartEditMode = 'new';
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
-        this.newSpeechpartChoiceClose();
-      },
-      setSpeechpartEditModeEdit() {
-        this.speechpartEditMode = 'edit';
-        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        /*
+    setSpeechpartEditModeDelete() {
+      this.currentSpeechpart = this.$store.state.speechparts.speechparts[
+        this.selectedSpeechpartId
+      ];
+      this.speechpartEditMode = "delete";
+    },
+    setSpeechpartEditModeNew() {
+      this.speechpartEditMode = "new";
+      this.currentSpeechpart = { transcription_id: this.transcription.id };
+      this.newSpeechpartChoiceClose();
+    },
+    setSpeechpartEditModeEdit() {
+      this.speechpartEditMode = "edit";
+      //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
+      /*
        if (!this.currentSpeechpart) {
           this.currentSpeechpart = { transcription_id: this.transcription.id };
         }
         */
-      },
+    },
 
-      newSpeechpartChoiceClose() {
-        this.defineNewSpeechpart = false;
-        this.selectedSpeechpartId = null
-      },
+    newSpeechpartChoiceClose() {
+      this.defineNewSpeechpart = false;
+      this.selectedSpeechpartId = null;
+    },
 
-      closeSpeechpartEdit() {
-        this.speechpartEditMode = null;
-        this.currentSpeechpart = null;
-        this.selectedSpeechpartId = null
-        this.editor.focus();
-      },
+    closeSpeechpartEdit() {
+      this.speechpartEditMode = null;
+      this.currentSpeechpart = null;
+      this.selectedSpeechpartId = null;
+      this.editor.focus();
+    },
 
-
-       /*
+    /*
         Prevent keyboard methods
        */
-      preventKeyboard () {
-        document.addEventListener('keydown', this.keyboardPreventHandler, true)
-      },
-      allowKeyboard () {
-        document.removeEventListener('keydown', this.keyboardPreventHandler, true)
-
-      },
-      keyboardPreventHandler (event) {
-        if (!this.editor.hasFocus()) return;
-        /*
+    preventKeyboard() {
+      document.addEventListener("keydown", this.keyboardPreventHandler, true);
+    },
+    allowKeyboard() {
+      document.removeEventListener("keydown", this.keyboardPreventHandler, true);
+    },
+    keyboardPreventHandler(event) {
+      if (!this.editor.hasFocus()) return;
+      /*
         if (event.keyCode < 37 || event.keyCode > 40) {
           event.preventDefault();
         }
         */
-      },
+    },
 
-      /* Speechpart mouse over */
-      activateMouseOver () {
-        this.$refs.editor.addEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.addEventListener('mouseout', this.mouseOutHandler)
-        //.querySelectorAll('speechpart')
-      },
-      deactivateMouseOver () {
-
-        this.$refs.editor.removeEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.removeEventListener('mouseout', this.mouseOutHandler)
-      },
-      mouseOverHandler (e) {
-        let id = null;
-        if (e.target.tagName.toLowerCase() === 'speechpart') {
-          id = parseInt(e.target.getAttribute('id'));
-        } else if (e.target.parentNode.tagName.toLowerCase() === 'speechpart') {
-          id = parseInt(e.target.parentNode.getAttribute('id'));
-        }
-        if (id === null) return;
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
-
-      },
-      mouseOutHandler (e) {
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+    /* Speechpart mouse over */
+    activateMouseOver() {
+      this.$refs.editor.addEventListener("mouseover", this.mouseOverHandler);
+      this.$refs.editor.addEventListener("mouseout", this.mouseOutHandler);
+      //.querySelectorAll('speechpart')
+    },
+    deactivateMouseOver() {
+      this.$refs.editor.removeEventListener("mouseover", this.mouseOverHandler);
+      this.$refs.editor.removeEventListener("mouseout", this.mouseOutHandler);
+    },
+    mouseOverHandler(e) {
+      let id = null;
+      if (e.target.tagName.toLowerCase() === "speechpart") {
+        id = parseInt(e.target.getAttribute("id"));
+      } else if (e.target.parentNode.tagName.toLowerCase() === "speechpart") {
+        id = parseInt(e.target.parentNode.getAttribute("id"));
       }
-  }
-}
+      if (id === null) return;
+      //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
+    },
+    mouseOutHandler(e) {
+      //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+    },
+  },
+};
 </script>
