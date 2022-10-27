@@ -4,8 +4,18 @@
       <table>
         <thead>
           <tr>
-            <th v-if="transcriptionSegments.length > 0">Transcription</th>
-            <th v-if="translationSegments.length > 0">Traduction</th>
+            <th
+              class="has-text-weight-medium subtitle m-b-xl"
+              v-if="transcriptionSegments.length > 0"
+            >
+              Transcription
+            </th>
+            <th
+              class="has-text-weight-medium subtitle m-b-xl"
+              v-if="translationSegments.length > 0"
+            >
+              Traduction
+            </th>
           </tr>
         </thead>
         <tbody>
