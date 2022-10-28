@@ -67,8 +67,8 @@ const actions = {
     })
   },
   /* useful */
-  fetchSpeechPartsContent({dispatch, rootState, rootGetters}) {
-    if (rootGetters['workflow/isSpeechPartsReadOnly']) {
+  fetchSpeechPartsOrSpeechPartsView({dispatch, rootState, rootGetters}) {
+    if (!rootGetters['workflow/isSpeechPartsReadOnly']) {
       // when in readonly mode
       // students see the reference content
       // teacher and admins can see other ppl readonly views
