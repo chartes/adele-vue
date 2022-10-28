@@ -757,9 +757,6 @@ export default {
       fetchCommentariesContent: "fetchCommentariesContent",
       setCommentariesError: "setError",
     }),
-    ...mapActions("speechparts", {
-      fetchSpeechPartsContent: "fetchSpeechPartsContent",
-    }),
     setupVisibilityWidget(section) {
       switch (section) {
         case "transcription":
