@@ -452,9 +452,10 @@
               </div>
 
               <!-- Parties du discours -->
+
               <div v-if="currentSection === 'speech-parts'">
                 <!-- Parties du discours error -->
-                <div v-if="!isTranscriptionValidated">
+                <div v-if="speechPartsContentError || !isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
@@ -463,10 +464,28 @@
                     des parties du discours
                   </message>
                   <message
-                    v-else-if="speechPartsError.response.status !== 404"
+                    v-else-if="speechPartsContentError.response.status === 404"
+                  >
+                    <p class="m-b-sm">
+                      <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                      <span
+                        v-else
+                      >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span>
+                      pas encore commencé l'identification des parties du discours.
+                    </p>
+                    <div
+                      v-if="currentUser.id === selectedUser.id"
+                      class="button is-info"
+                    >
+                      Commencer à identifier
+                    </div>
+                  </message>
+                  <message
+                    v-else
                     message-class="is-danger"
                   >
-                    {{ speechPartsError }}
+                    {{ speechPartsContentError }}
                   </message>
                 </div>
                 <!-- speechparts readonly -->
@@ -653,6 +672,7 @@ export default {
     ]),
     ...mapState("translation", ["translationContent", "translationError"]),
     ...mapState("commentaries", ["commentaries", "commentariesError"]),
+    ...mapState("speechPartsContent", ["speechPartsContentError"]),
     ...mapState("speechparts", ["speechPartsError"]),
 
     ...mapState("user", ["currentUser"]),
@@ -757,6 +777,9 @@ export default {
       fetchCommentariesContent: "fetchCommentariesContent",
       setCommentariesError: "setError",
     }),
+    ...mapActions("speechPartsContent", {
+      fetchSpeechPartsContent: "fetchSpeechPartsContent",
+    }),
     setupVisibilityWidget(section) {
       switch (section) {
         case "transcription":
@@ -814,7 +837,8 @@ export default {
       return await Promise.all([
         this.fetchTranscriptionContent(),
         this.fetchTranslationContent(),
-        this.fetchCommentariesContent()
+        this.fetchCommentariesContent(),
+        this.fetchSpeechPartsContent(),
       ])
     },
     async addNewTranscription() {
