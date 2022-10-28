@@ -4,13 +4,12 @@
     class="edition-action-bar"
   >
     <div class="field is-grouped">
-      <!-- SAVE SPEECH PARTS 
+      <!-- SAVE SPEECH PARTS -->
       <p 
         class="control"
       >
         <save-speech-parts-button />
       </p>
-      --> 
       <!-- VALIDATE / UNVALIDATE SPEECH PARTS --> 
       <p
         v-if="currentUserIsTeacher && selectedUserId == document.user_id"
@@ -25,13 +24,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex'
 
-//import SaveSpeechPartsButton from '../actions/SaveSpeechPartsButton.vue'
+import SaveSpeechPartsButton from '../actions/SaveSpeechPartsButton.vue'
 import ValidateSpeechPartsButton from '../actions/ValidateSpeechPartsButton.vue'
 
 export default {
     name: 'SpeechPartsActionBar',
     components: {
-     // SaveSpeechPartsButton,
+     SaveSpeechPartsButton,
       ValidateSpeechPartsButton
     },
     computed: {

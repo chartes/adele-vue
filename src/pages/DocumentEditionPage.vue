@@ -477,6 +477,7 @@
                     <div
                       v-if="currentUser.id === selectedUser.id"
                       class="button is-info"
+                      @click="addNewSpeechPartsContent"
                     >
                       Commencer à identifier
                     </div>
@@ -510,7 +511,7 @@
                 </div>
                 <!-- speechpart edition -->
                 <div v-else>
-                  <document-edition-transcription />
+                  <document-edition-speech-parts />
                 </div>
               </div>
             </div>
@@ -552,7 +553,7 @@ import DocumentEditionTranscription from "../components/document/edition/Documen
 import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
 
 import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
-//import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
+import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
 
 import DocumentNotice from "../components/document/view/DocumentNotice.vue";
 import DocumentTranscription from "../components/document/view/DocumentTranscription.vue";
@@ -592,7 +593,7 @@ export default {
     DocumentEditionTranscription,
     DocumentEditionTranslation,
     DocumentEditionCommentaries,
-    //DocumentEditionSpeechParts,
+    DocumentEditionSpeechParts,
 
     DocumentTranscription,
     DocumentTranslation,
@@ -779,6 +780,7 @@ export default {
     }),
     ...mapActions("speechPartsContent", {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
+      addNewSpeechPartsContent: "addNewSpeechPartsContent",
     }),
     setupVisibilityWidget(section) {
       switch (section) {

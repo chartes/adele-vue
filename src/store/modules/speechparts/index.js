@@ -94,7 +94,7 @@ const actions = {
   setToBeSaved({commit}) {
     commit('SAVING_STATUS', 'tobesaved')
   },
-  async saveSpeechParts({dispatch, commit, state, rootState}) {
+  async saveSpeechPartsContent({dispatch, commit, state, rootState}) {
       commit('SET_ERROR', false);
       const spWithPointers = await dispatch('transcription/updateSpeechpartsPointers', null, {root: true})
       //const sptrs = JSON.parse(JSON.stringify(state.speechparts))

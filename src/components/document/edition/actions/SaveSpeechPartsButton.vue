@@ -2,12 +2,12 @@
   <div>
     <button
       class="button is-small is-primary"
-      :disabled="isSpeechPartsSaved"
+      :disabled="isSpeechPartsContentSaved"
       @click="saveSpeechParts"
     >
       <span>Sauvegarder</span>
       <span
-        v-if="isSpeechPartsSaved"
+        v-if="isSpeechPartsContentSaved"
         class="icon"
       >
         <i class="fa fa-check" />
@@ -20,7 +20,7 @@
       </span>
     </button>
     <message
-      v-if="transcriptionError && !isSpeechPartsSaved"
+      v-if="transcriptionError && !isSpeechPartsContentSaved"
       message-class="is-small is-warning"
     >
       <span class="icon">
@@ -41,12 +41,12 @@ export default {
       Message
     },
     computed: {
-      ...mapState('transcription', ['savingStatus', 'transcriptionError']),
-      ...mapGetters('speechparts', ['isSpeechPartsSaved'])
+      ...mapState('speechPartsContent', ['savingStatus', 'speechPartsContentError']),
+      ...mapGetters('speechPartsContent', ['isSpeechPartsContentSaved'])
     },
     methods: {
       saveSpeechParts() {
-        return this.$store.dispatch('speechparts/saveSpeechParts') 
+        return this.$store.dispatch('speechPartsContent/saveSpeechPartsContent')
       },
     }
 }
