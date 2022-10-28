@@ -17,6 +17,15 @@
       >
         <validate-speech-parts-button :doc-id="document.id" />
       </p>
+      <!-- DELETE SPEECH PARTS --> 
+      <p
+        class="control"
+      >
+        <delete-speech-parts-button
+          :doc-id="document.id"
+          :user-id="selectedUserId"
+        />
+      </p>
     </div>
   </div>
 </template>
@@ -26,12 +35,14 @@ import { mapState, mapGetters } from 'vuex'
 
 import SaveSpeechPartsButton from '../actions/SaveSpeechPartsButton.vue'
 import ValidateSpeechPartsButton from '../actions/ValidateSpeechPartsButton.vue'
+import DeleteSpeechPartsButton from '../actions/DeleteSpeechPartsButton.vue'
 
 export default {
     name: 'SpeechPartsActionBar',
     components: {
-     SaveSpeechPartsButton,
-      ValidateSpeechPartsButton
+      SaveSpeechPartsButton,
+      ValidateSpeechPartsButton,
+      DeleteSpeechPartsButton,
     },
     computed: {
         ...mapState('document', ['document']),

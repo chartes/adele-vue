@@ -454,18 +454,9 @@
               <!-- Parties du discours -->
 
               <div v-if="currentSection === 'speech-parts'">
-                <!-- Parties du discours error -->
-                <div v-if="speechPartsContentError || !isTranscriptionValidated">
-                  <message
-                    v-if="!isTranscriptionValidated"
-                    message-class="is-info "
-                  >
-                    Vous devez valider la transcription avant d'entammer l'identification
-                    des parties du discours
-                  </message>
-                  <message
-                    v-else-if="speechPartsContentError.response.status === 404"
-                  >
+                <!-- Il n'y a pas de parties du discours (jamais créées ou supprimées) -->
+                <div v-if="!speechPartsContentLoading && speechPartsContent === null">
+                  <message>
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
                       <span
@@ -481,6 +472,16 @@
                     >
                       Commencer à identifier
                     </div>
+                  </message>
+                </div>
+                <!-- Parties du discours error -->
+                <div v-else-if="speechPartsContentError || !isTranscriptionValidated">
+                  <message
+                    v-if="!isTranscriptionValidated"
+                    message-class="is-info "
+                  >
+                    Vous devez valider la transcription avant d'entammer l'identification
+                    des parties du discours
                   </message>
                   <message
                     v-else
@@ -541,6 +542,12 @@
         :user-id="selectedUserId"
       />
       <delete-commentary-modal v-if="currentSection === 'commentaries'" />
+
+      <delete-speech-parts-modal
+        v-if="currentSection === 'speech-parts'"
+        :doc-id="parseInt($attrs.docId)"
+        :user-id="selectedUserId"
+      />
     </div>
   </div>
 </template>
@@ -573,6 +580,7 @@ import TextCutterEditor from "@/components/editors/TextCutterEditor.vue"
 import VisibilityToggle from "@/components/ui/VisibilityToggle.vue";
 
 import DeleteTranscriptionModal from "@/components/document/edition/modals/DeleteTranscriptionModal.vue";
+import DeleteSpeechPartsModal from "@/components/document/edition/modals/DeleteSpeechPartsModal.vue";
 import DeleteTranslationModal from "@/components/document/edition/modals/DeleteTranslationModal.vue";
 import DeleteCommentaryModal from "@/components/document/edition/modals/DeleteCommentaryModal.vue";
 
@@ -609,6 +617,7 @@ export default {
     VisibilityToggle,
 
     DeleteTranscriptionModal,
+    DeleteSpeechPartsModal,
     DeleteTranslationModal,
     DeleteCommentaryModal,
 
@@ -673,7 +682,7 @@ export default {
     ]),
     ...mapState("translation", ["translationContent", "translationError"]),
     ...mapState("commentaries", ["commentaries", "commentariesError"]),
-    ...mapState("speechPartsContent", ["speechPartsContentError"]),
+    ...mapState("speechPartsContent", ["speechPartsContentError", "speechPartsContent", "speechPartsContentLoading"]),
     ...mapState("speechparts", ["speechPartsError"]),
 
     ...mapState("user", ["currentUser"]),

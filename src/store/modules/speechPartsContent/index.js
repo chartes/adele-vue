@@ -63,7 +63,7 @@ const actions = {
     let userId = rootState.workflow.selectedUserId;
     try {
       const response = await http.post(`documents/${ docId }/speech-parts-content/from-user/${ userId }`);
-      commit('UPDATE', response.data.data.content)
+      commit('INIT', {content: response.data.data.content})
       commit('SET_ERROR', null)
       commit('LOADING_STATUS', false)
     } catch (error) {
@@ -91,6 +91,21 @@ const actions = {
 
       commit('SAVING_STATUS', 'uptodate')
       commit('SET_ERROR', false)
+      commit('LOADING_STATUS', false)
+    } catch(error) {
+      commit('SET_ERROR', error)
+      commit('SAVING_STATUS', 'error')
+      commit('LOADING_STATUS', false)
+    }
+  },
+  async deleteSpeechPartsContentFromUser({commit, state, rootState}) {
+    commit('LOADING_STATUS', true)
+
+    try {
+      // prepare notes
+      const response = await http.delete(`documents/${rootState.document.document.id}/speech-parts-content/from-user/${rootState.workflow.selectedUserId}`)
+      commit('SET_ERROR', false)
+      commit('CLEAR')
       commit('LOADING_STATUS', false)
     } catch(error) {
       commit('SET_ERROR', error)
