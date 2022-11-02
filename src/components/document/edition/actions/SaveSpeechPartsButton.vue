@@ -20,13 +20,13 @@
       </span>
     </button>
     <message
-      v-if="transcriptionError && !isSpeechPartsContentSaved"
+      v-if="speechPartsContentError && !isSpeechPartsContentSaved"
       message-class="is-small is-warning"
     >
       <span class="icon">
         <i class="fas fa-exclamation-triangle" /> 
       </span>
-      {{ transcriptionError }}
+      {{ speechPartsContentError }}
     </message>
   </div>
 </template>
