@@ -56,7 +56,6 @@ const mutations = {
   UPDATE_SPEECH_PARTS_VIEW(state, payload) {
     state.speechPartsView = {
       content: payload.content,
-      notes: payload.notes
     }
   },
   RESET_TRANSCRIPTION_VIEW(state) {
