@@ -386,47 +386,6 @@ const getRelevantSegmentsIndices = (text, segments, translationOrTranscription) 
 
 
 
-const insertSpeechparts = (text, speechparts) => {
-  text = quillToTEI(text)
-
-  let insertions = [];
-  for (let key in speechparts){
-    const sp = speechparts[key]
-    insertions.push({
-      index: sp.ptr_start,
-      tag: 'sp_start',
-      sp: sp,
-      fakeId: sp.id !== null ? sp.id : sp.ptr_start,
-      type:sp.speech_part_type
-    });
-    insertions.push({index: sp.ptr_end, tag: 'sp_end'});
-  }
-  insertions.sort((a, b) => { return a.index - b.index; });
-
-  let result = text;
-  let indexCorrection = 0;
-
-  insertions.forEach(ins => {
-    let insertTag = '';
-    let inserted = false;
-    switch (ins.tag) {
-      case 'sp_start':
-        insertTag = `<speechpart id="${ins.fakeId}" type="${ins.type.id}">`;
-        inserted = true;
-        break;
-      case 'sp_end':
-        insertTag = `</speechpart>`;
-        inserted = true;
-        break;
-    }
-    result = result.insert(ins.index + indexCorrection, insertTag);
-    //console.log('teistring', insertions, result)
-    indexCorrection += insertTag.length
-  });
-
-  result = TEIToQuill(result)
-  return result
-};
 
 const stripNotes  = text => text.replace(/<\/?note( id="-?\d+")?>/gmi, '');
 const stripSegments  = text => text.replace(/<\/?segment>/gmi, '');
@@ -610,7 +569,6 @@ export {
   insertNotesAndSegments,
   insertNotes,
   insertSegments,
-  insertSpeechparts,
   stripNotes,
   stripSegments,
   stripSpeechparts,

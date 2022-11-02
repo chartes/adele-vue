@@ -312,8 +312,8 @@ const actions = {
   },
 
   /* useful */
-  changed ({ commit }, deltas) {
-    commit('ADD_OPERATION', deltas);
+  changed ({ commit }, {delta}) {
+    commit('ADD_OPERATION', delta);
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
   },

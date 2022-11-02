@@ -40,7 +40,6 @@ var EditorMixin = {
         if (range === null || range.length === 0) {
           this.updateButtons({})
           this.defineNewNote = false
-          this.selectedSpeechpartId = null
         }
         if (range) {
           this.setRangeBound(range);
@@ -54,22 +53,6 @@ var EditorMixin = {
             this.selectedNoteId = null;
             this.buttons.note = false;
           }
-          
-          // speechparts
-          if (range.length > 0) {
-            if (formats.speechpart) {
-              this.onSpeechpartSelected(formats.speechpart, range);
-              const spId = formats.speechpart.split(',')[0]
-              const sp = this.speechparts.find(e => e.id === parseInt(spId))
-              console.log("ID SP", sp)
-              this.currentSpeechpart = sp
-              //this.buttons.speechpart = false;
-            } else {
-              this.selectedSpeechpartId = range.index;
-              //this.buttons.speechpart = true;
-            }
-          }
-
           this.currentSelection = range
         }
         this.editorHasFocus = this.editor.hasFocus();
@@ -99,10 +82,11 @@ var EditorMixin = {
     onTextChange (delta, oldDelta, source) {
       this.lastOperations = delta;
       if (this.editorInited) {
+        const content = this.editor.container.firstChild.innerHTML;
         if (typeof this.storeActions.changed === 'string') {
-          this.$store.dispatch(this.storeActions.changed, delta)
+          this.$store.dispatch(this.storeActions.changed, {delta, content})
         } else {
-          this.storeActions.changed(delta)
+          this.storeActions.changed({delta, content})
         }
       }
     },

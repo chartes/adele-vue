@@ -157,7 +157,7 @@
           }
         } 
       },
-      sendTextSelectedEvent(delta){
+      sendTextSelectedEvent({delta}){
         const quillContent = this.getEditorHTML()
         const annotations = this.computeAnnotationPointers(quillToTEI(quillContent))
         if (annotations) {

@@ -17,7 +17,7 @@ import RichTextEditor from "@/components/editors/RichTextEditor.vue"
 import SpeechPartsContentActionBar from "@/components/document/edition/actionbars/SpeechPartsActionBar.vue";
 
 export default {
-    name: "DocumentEditionTranscription",
+    name: "DocumentEditionSpeechParts",
     components: {
         RichTextEditor,
         SpeechPartsContentActionBar 

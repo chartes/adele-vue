@@ -15,7 +15,6 @@ import traditions from './modules/traditions'
 import transcription from './modules/transcription'
 import translation from './modules/translation'
 import noteTypes from './modules/noteTypes'
-import speechparts from './modules/speechparts'
 import speechPartsContent from './modules/speechPartsContent'
 import speechpartTypes from './modules/speechpartTypes'
 import notes from './modules/notes'
@@ -38,7 +37,6 @@ export default new Vuex.Store({
       languages,
       noteTypes,
       notes,
-      speechparts,
       speechPartsContent,
       speechpartTypes,
       traditions,

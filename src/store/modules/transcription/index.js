@@ -9,11 +9,9 @@ import {
   insertSegments,
   insertNotesAndSegments,
   insertNotes,
-  insertSpeechparts,
   insertFacsimileZones,
   stripSegments,
   computeNotesPointers,
-  computeSpeechpartsPointers,
   computeAlignmentPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
@@ -21,13 +19,11 @@ import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
 const transcriptionShadowQuillElement = document.createElement('div');
 const notesShadowQuillElement = document.createElement('div');
-const speechpartsShadowQuillElement = document.createElement('div');
 const transcriptionWithTextAlignmentShadowQuillElement = document.createElement('div');
 const facsimileShadowQuillElement = document.createElement('div');
 let transcriptionShadowQuill;
 let transcriptionWithTextAlignmentShadowQuill;
 let notesShadowQuill;
-let speechpartsShadowQuill;
 let facsimileShadowQuill;
 
 const state = {
@@ -37,7 +33,6 @@ const state = {
   transcriptionContent: null,
   transcriptionWithNotes: null,
   transcriptionWithTextAlignment: null,
-  transcriptionWithSpeechparts: null,
   transcriptionWithFacsimile: null,
   transcriptionSaved: true,
   translationAlignmentSaved: true,
@@ -63,11 +58,6 @@ const mutations = {
       state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with notes", state.transcriptionWithNotes);
 
-      speechpartsShadowQuillElement.innerHTML = "<p></p>" 
-      speechpartsShadowQuill = new Quill(speechpartsShadowQuillElement);
-      speechpartsShadowQuillElement.children[0].innerHTML = payload.withSpeechparts || "";
-      state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
-
       transcriptionWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
       transcriptionWithTextAlignmentShadowQuill = new Quill(transcriptionWithTextAlignmentShadowQuillElement);
       transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
@@ -86,13 +76,11 @@ const mutations = {
     state.transcriptionContent = null;
     state.transcriptionWithNotes = null;
     state.transcriptionWithTextAlignment = null;
-    state.transcriptionWithSpeechparts = null;
     state.transcriptionWithFacsimile = null;
 
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
     if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
     if (transcriptionWithTextAlignmentShadowQuillElement && transcriptionWithTextAlignmentShadowQuillElement.children[0]) transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
-    if (speechpartsShadowQuillElement && speechpartsShadowQuillElement.children[0]) speechpartsShadowQuillElement.children[0].innerHTML = "";
     if (facsimileShadowQuillElement && facsimileShadowQuillElement.children[0]) facsimileShadowQuillElement.children[0].innerHTML = "";
     
   },
@@ -119,9 +107,6 @@ const mutations = {
     if (payload.withNotes) {
       state.transcriptionWithNotes = payload.withNotes;
     }
-    if (payload.withSpeechparts) {
-      state.transcriptionWithSpeechparts = payload.withSpeechparts;
-    }
     if (payload.withTextAlignment) {
       state.transcriptionWithTextAlignment = payload.withTextAlignment;
     }
@@ -143,17 +128,14 @@ const mutations = {
 
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
     const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
-    const deltaFilteredForSpeechparts = filterDeltaOperations(speechpartsShadowQuill, payload, 'speechparts');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
     notesShadowQuill.updateContents(deltaFilteredForNotes);
-    speechpartsShadowQuill.updateContents(deltaFilteredForSpeechparts);
     facsimileShadowQuill.updateContents(deltaFilteredForFacsimile);
 
     state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
-    state.transcriptionWithSpeechparts = speechpartsShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
   },
   SAVED (state) {
@@ -175,11 +157,9 @@ const actions = {
     return http.get(`documents/${docId}/transcriptions/from-user/${userId}`).then(async response => {
 
       let transcription = response.data.data;
-
       let quillContent = TEIToQuill(transcription.content);
       
       const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
-      const withSpeechparts = insertSpeechparts(quillContent, rootState.speechparts.speechparts);
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
       const withTextAlignment = TEIToQuill(insertSegments(transcription.content, state.textAlignmentSegments));
 
@@ -188,7 +168,6 @@ const actions = {
         content: convertLinebreakTEIToQuill(quillContent),
         withTextAlignment: convertLinebreakTEIToQuill(withTextAlignment),
         withNotes: convertLinebreakTEIToQuill(withNotes),
-        withSpeechparts: convertLinebreakTEIToQuill(withSpeechparts),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
       };
 
@@ -203,21 +182,13 @@ const actions = {
     })
   },
   async fetchTranscriptionContent({dispatch, rootState, rootGetters}) {
-    if (rootState.workflow.currentSection === "speech-parts") {
-      await dispatch('fetchTranscriptionFromUser', {
+    await dispatch('fetchTranscriptionFromUser', {
         docId: rootState.document.document.id,
-        userId: rootState.document.document.user_id
+        userId: rootState.workflow.selectedUserId
       })
-    }
-    else {
-      await dispatch('fetchTranscriptionFromUser', {
-          docId: rootState.document.document.id,
-          userId: rootState.workflow.selectedUserId
-        })
-      }
-      await dispatch('document/fetchTranscriptionView', 
-      rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.document.user_id,
-      {root: true})
+    await dispatch('document/fetchTranscriptionView', 
+    rootGetters['user/currentUserIsTeacher'] ? rootState.workflow.selectedUserId : rootState.document.document.user_id,
+    {root: true})
    
   },
   /* useful */
@@ -303,8 +274,6 @@ const actions = {
           data: {notes: new_notes}
         })
       }
-      // update & save the speechparts pointers before reloading the transcription
-      await dispatch('speechparts/saveSpeechParts', null, {root: true})
       // update the store content
       
       await dispatch('fetchTranscriptionContent')
@@ -367,13 +336,6 @@ const actions = {
       console.log(`%c error while cloning transcription ${e}`, 'color:red');
     }
   },
-  updateSpeechpartsPointers({state}) {
-      const TEIwithSpeechParts = quillToTEI(state.transcriptionWithSpeechparts)
-
-      let sanitizedWithSpeechparts = stripSegments(TEIwithSpeechParts);
-      sanitizedWithSpeechparts = convertLinebreakQuillToTEI(sanitizedWithSpeechparts);
-      return computeSpeechpartsPointers(sanitizedWithSpeechparts);
-  },
   textAlignmentsNeedToBeSaved({commit}) {
     commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
   },
@@ -402,11 +364,11 @@ const actions = {
       commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
     } 
   },
-  changed ({ commit, rootState }, deltas) {
+  changed ({ commit, rootState }, {delta}) {
     if (rootState.workflow.transcriptionAlignmentMode) {
-      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
+      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', delta);
     } else {
-      commit('ADD_OPERATION', deltas);
+      commit('ADD_OPERATION', delta);
       commit('CHANGED');
       commit('SAVING_STATUS', 'tobesaved')
     }

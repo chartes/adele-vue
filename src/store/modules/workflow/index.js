@@ -141,7 +141,7 @@ const getters = {
     if (getters.isSpeechPartsReadOnly) {
       return rootState.document.speechPartsView !== null
     } else {
-      return rootState.speechparts.speechparts.length > 0
+      return rootState.speechPartsContent.speechPartsContent !== null
     }
   },
 }

@@ -1,6 +1,4 @@
-import Quill from '../../../modules/quill/AdeleQuill';
 import {http} from '../../../modules/http-common';
-import Vue from 'vue';
 
 const state = {
   speechPartsContent: null,
@@ -9,15 +7,9 @@ const state = {
   speechPartsContentLoading: true,
 };
 
-const speechPartsContentShadowQuillElement = document.createElement('div');
-let speechPartsContentShadowQuill;
-
 const mutations = {
   INIT(state, {content}) {
-      speechPartsContentShadowQuillElement.innerHTML = "<p></p>"
-      speechPartsContentShadowQuill = new Quill(speechPartsContentShadowQuillElement);
-      speechPartsContentShadowQuillElement.children[0].innerHTML = content || "";
-      state.speechPartsContent = speechPartsContentShadowQuillElement.children[0].innerHTML;
+      state.speechPartsContent = content
   },
   SET_ERROR(state, payload) {
     state.speechPartsContentError = payload
@@ -30,7 +22,6 @@ const mutations = {
     state.speechPartsContent = null
   },
   SAVING_STATUS (state, payload) {
-    //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
   },
   LOADING_STATUS (state, payload) {
@@ -73,9 +64,8 @@ const actions = {
     }
   },
   /* useful */
-  changed({commit}, delta) {
-    speechPartsContentShadowQuill.updateContents(delta)
-    commit('UPDATE', {content: speechPartsContentShadowQuillElement.children[0].innerHTML } )
+  changed({commit}, { content}) {
+    commit('UPDATE', {content} )
   },
   async saveSpeechPartsContent({commit, state, rootState}) {
     commit('SAVING_STATUS', 'tobesaved')

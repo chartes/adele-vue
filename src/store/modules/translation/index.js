@@ -49,6 +49,7 @@ const mutations = {
       state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
   },
   RESET (state) {
+    state.translationLoading = true;
     state.translation = null;
     state.translationContent = null;
     state.translationWithTextAlignment = null;
@@ -74,9 +75,6 @@ const mutations = {
     }
     if (payload.withNotes) {
       state.translationWithNotes =  payload.withNotes
-    }
-    if (payload.withSpeechparts) {
-      state.translationWithSpeechparts = payload.withSpeechparts;
     }
     if (payload.withFacsimile) {
       state.translationWithFacsimile = payload.withFacsimile;
@@ -308,11 +306,11 @@ const actions = {
     }
   },
 
-  changed ({ commit, rootState }, deltas) {
+  changed ({ commit, rootState }, {delta}) {
     if (rootState.workflow.transcriptionAlignmentMode) {
-      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
+      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', delta);
     } else {
-      commit('ADD_OPERATION', deltas);
+      commit('ADD_OPERATION', delta);
       commit('CHANGED', false);
       commit('SAVING_STATUS', 'tobesaved')
     }
