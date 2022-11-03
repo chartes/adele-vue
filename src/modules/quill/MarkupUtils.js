@@ -278,21 +278,6 @@ const insertSegments = (text, segments) => {
   return textWithSegments;
 };
 
-const insertNotesAndSegments  = (text, notes, segments, translationOrTranscription) => {
-  const notePointers = computeQuillPointersFromTEIPointers(text, notes, false)
-
-  let indexCorrection = 0;
-  notePointers.forEach(note => {
-    let opening = `<note id="${note.id}">`;
-    let closing = '</note>';
-    text = text.insert(note.ptr_start + indexCorrection, opening);
-    indexCorrection += opening.length;
-    text = text.insert(note.ptr_end + indexCorrection, closing);
-    indexCorrection += closing.length;
-  });
-  return  text 
-  }
-
 /*
 Converts TEI pointers which include some markup to quill pointers
 to be able to insert notes, segments, speechpart with quill's setFormat function
@@ -566,7 +551,6 @@ export {
   convertLinebreakQuillToTEI,
   getRelevantSegmentsIndices,
   insertFacsimileZones,
-  insertNotesAndSegments,
   insertNotes,
   insertSegments,
   stripNotes,

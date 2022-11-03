@@ -7,7 +7,6 @@ import {
   convertLinebreakTEIToQuill,
   convertLinebreakQuillToTEI,
   insertSegments,
-  insertNotesAndSegments,
   insertNotes,
   insertFacsimileZones,
   stripSegments,
@@ -52,12 +51,6 @@ const mutations = {
       state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
       //console.log("INIT with content", state.transcriptionContent);
 
-      notesShadowQuillElement.innerHTML = "<p></p>" 
-      notesShadowQuill = new Quill(notesShadowQuillElement);
-      notesShadowQuillElement.children[0].innerHTML = payload.withNotes || "";
-      state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
-      //console.log("INIT with notes", state.transcriptionWithNotes);
-
       transcriptionWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
       transcriptionWithTextAlignmentShadowQuill = new Quill(transcriptionWithTextAlignmentShadowQuillElement);
       transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
@@ -74,12 +67,10 @@ const mutations = {
     state.transcription = null;
     state.textAlignmentSegments = [];
     state.transcriptionContent = null;
-    state.transcriptionWithNotes = null;
     state.transcriptionWithTextAlignment = null;
     state.transcriptionWithFacsimile = null;
 
     if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
-    if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
     if (transcriptionWithTextAlignmentShadowQuillElement && transcriptionWithTextAlignmentShadowQuillElement.children[0]) transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
     if (facsimileShadowQuillElement && facsimileShadowQuillElement.children[0]) facsimileShadowQuillElement.children[0].innerHTML = "";
     
@@ -104,9 +95,6 @@ const mutations = {
     if (payload.transcription) {
       state.transcription = payload.transcription;
     }
-    if (payload.withNotes) {
-      state.transcriptionWithNotes = payload.withNotes;
-    }
     if (payload.withTextAlignment) {
       state.transcriptionWithTextAlignment = payload.withTextAlignment;
     }
@@ -127,15 +115,12 @@ const mutations = {
   ADD_OPERATION (state, payload) {
 
     const deltaFilteredForContent = filterDeltaOperations(transcriptionShadowQuill, payload, 'content');
-    const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
     const deltaFilteredForFacsimile = filterDeltaOperations(facsimileShadowQuill, payload, 'facsimile');
   
     transcriptionShadowQuill.updateContents(deltaFilteredForContent);
-    notesShadowQuill.updateContents(deltaFilteredForNotes);
     facsimileShadowQuill.updateContents(deltaFilteredForFacsimile);
 
     state.transcriptionContent = transcriptionShadowQuillElement.children[0].innerHTML;
-    state.transcriptionWithNotes = notesShadowQuillElement.children[0].innerHTML;
     state.transcriptionWithFacsimile = facsimileShadowQuillElement.children[0].innerHTML;
   },
   SAVED (state) {
@@ -159,7 +144,6 @@ const actions = {
       let transcription = response.data.data;
       let quillContent = TEIToQuill(transcription.content);
       
-      const withNotes = insertNotesAndSegments(quillContent, transcription.notes, state.textAlignmentSegments, 'transcription')
       const withFacsimile = insertFacsimileZones(quillContent, rootState.facsimile.alignments);
       const withTextAlignment = TEIToQuill(insertSegments(transcription.content, state.textAlignmentSegments));
 
@@ -167,7 +151,6 @@ const actions = {
         transcription: transcription,
         content: convertLinebreakTEIToQuill(quillContent),
         withTextAlignment: convertLinebreakTEIToQuill(withTextAlignment),
-        withNotes: convertLinebreakTEIToQuill(withNotes),
         withFacsimile: convertLinebreakTEIToQuill(withFacsimile),
       };
 
@@ -238,16 +221,7 @@ const actions = {
     commit('LOADING_STATUS', true)
 
     try {
-      // prepare notes
-      const tei = quillToTEI(state.transcriptionContent)
-      const sanitizedContent = stripSegments(tei)
-
-      const teiWithNotes = quillToTEI(state.transcriptionWithNotes)
-      let sanitizedWithNotes = stripSegments(teiWithNotes)
-      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
-
-      const notes = computeNotesPointers(sanitizedWithNotes)
-
+      const notes = state.transcription.notes
       notes.forEach(note => {
         const found = rootGetters['notes/getNoteById'](note.id)
         note.content = found.content
@@ -259,16 +233,16 @@ const actions = {
       // put content && update notes
       await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
         data: {
-          content: sanitizedContent,
+          content: state.transcriptionContent,
           notes: notes.filter(n => n.id !== null && n.id >= 0)
         }
       })
             
       // and post new notes 
-      const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
+      const new_notes = notes.filter(n => n.id === null || n.id < 0)/*.map(n => {
         delete n.id
         return n
-       })
+       })*/
       if (new_notes.length > 0){
         await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
           data: {notes: new_notes}
@@ -288,14 +262,11 @@ const actions = {
     }
   },
   insertNote({commit, rootState, state}, newNote) {
-    const quillContent = TEIToQuill(state.transcriptionContent)
-    const textWithNotes = insertNotes(quillContent,  [newNote])
     const data = {
       transcription: {
         ...state.transcription,
         notes: state.transcription.notes.concat(newNote)
       },
-      withNotes: convertLinebreakTEIToQuill(textWithNotes),
     }
     /* save the shadow content with notes */
     commit('UPDATE', data)

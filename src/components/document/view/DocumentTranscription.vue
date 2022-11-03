@@ -35,12 +35,13 @@ export default {
           // make tooltips
         if (this.transcriptionView) {
             // notes
-            Object.keys(this.transcriptionView.notes).forEach(noteId => {
+            Array.from(document.getElementsByTagName(`note`)).forEach(el => {
+              const noteId = el.getAttribute('id');
               const paddedId = `${noteId}`.padStart(10, '0')
-              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-                addToolTip(el, this.transcriptionView.notes[noteId], null, {contentType: 'note'});
-              })
-            });
+
+              addToolTip(el, this.transcriptionView.notes[paddedId], null, {contentType: 'note'});
+            })
+
 
             // persnames && placenames
             Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {

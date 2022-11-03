@@ -84,6 +84,8 @@ var EditorNotesMixin = {
     setNoteEditModeEdit() {
       this.noteEditMode = 'edit';
       this.currentNote = this.$store.getters['notes/getNoteById'](this.selectedNoteId)
+      console.log(this.currentNote)
+      console.log(this.selectedNoteId)
     },
     closeNoteEdit() {
      //console.log("closeNoteEdit")
