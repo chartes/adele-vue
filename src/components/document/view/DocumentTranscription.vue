@@ -35,7 +35,7 @@ export default {
           // make tooltips
         if (this.transcriptionView) {
             // notes
-            Array.from(document.getElementsByTagName(`note`)).forEach(el => {
+            Array.from(document.getElementsByTagName(`adele-note`)).forEach(el => {
               const noteId = el.getAttribute('id');
               const paddedId = `${noteId}`.padStart(10, '0')
 

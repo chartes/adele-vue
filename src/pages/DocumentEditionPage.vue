@@ -771,6 +771,9 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    ...mapActions("notes", {
+      fetchNotes: "fetchNotes",
+    }),
     ...mapActions("transcription", {
       fetchTranscriptionContent: "fetchTranscriptionContent",
       createTranscription: "addNewTranscription",
@@ -846,6 +849,7 @@ export default {
     },
     async fetchContentFromUser() {
       return await Promise.all([
+        this.fetchNotes(),
         this.fetchTranscriptionContent(),
         this.fetchTranslationContent(),
         this.fetchCommentariesContent(),

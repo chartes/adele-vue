@@ -91,6 +91,15 @@ const trim = (s) => {
   return s
 }
 
+/**
+ * Replaces a tag by its children
+ * @param {HTMLElement} tag - element to unwrap
+ */
+function unwrapTag(tag) {
+  tag.replaceWith(...tag.children)
+}
+
+
 const removeEmptyTags = (s) => {
   const replaced = s.replace(/<([^/>]+)><\/\1>/, "");
   if (s === replaced) {
@@ -562,5 +571,6 @@ export {
   computeImageAlignmentsPointers,
   computeQuillPointersFromTEIPointers,
   sanitizeHtmlWithNotesForSave,
-  trim
+  trim,
+  unwrapTag,
 };

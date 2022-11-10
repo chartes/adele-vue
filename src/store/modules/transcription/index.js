@@ -7,22 +7,18 @@ import {
   convertLinebreakTEIToQuill,
   convertLinebreakQuillToTEI,
   insertSegments,
-  insertNotes,
   insertFacsimileZones,
   stripSegments,
-  computeNotesPointers,
   computeAlignmentPointers
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
 
 const transcriptionShadowQuillElement = document.createElement('div');
-const notesShadowQuillElement = document.createElement('div');
 const transcriptionWithTextAlignmentShadowQuillElement = document.createElement('div');
 const facsimileShadowQuillElement = document.createElement('div');
 let transcriptionShadowQuill;
 let transcriptionWithTextAlignmentShadowQuill;
-let notesShadowQuill;
 let facsimileShadowQuill;
 
 const state = {
@@ -219,35 +215,15 @@ const actions = {
   async saveTranscription({dispatch, commit, state, rootState, rootGetters}) {
     commit('SAVING_STATUS', 'tobesaved')
     commit('LOADING_STATUS', true)
-
+    
     try {
-      const notes = state.transcription.notes
-      notes.forEach(note => {
-        const found = rootGetters['notes/getNoteById'](note.id)
-        note.content = found.content
-        if (found.note_type) {
-          note.type_id = found.note_type.id
-        }
-      })
-
-      // put content && update notes
+      // put content
       await http.put(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
         data: {
           content: state.transcriptionContent,
-          notes: notes.filter(n => n.id !== null && n.id >= 0)
         }
       })
             
-      // and post new notes 
-      const new_notes = notes.filter(n => n.id === null || n.id < 0)/*.map(n => {
-        delete n.id
-        return n
-       })*/
-      if (new_notes.length > 0){
-        await http.post(`documents/${rootState.document.document.id}/transcriptions/from-user/${rootState.workflow.selectedUserId}`, {
-          data: {notes: new_notes}
-        })
-      }
       // update the store content
       
       await dispatch('fetchTranscriptionContent')
@@ -261,17 +237,6 @@ const actions = {
       commit('LOADING_STATUS', false)
     }
   },
-  insertNote({commit, rootState, state}, newNote) {
-    const data = {
-      transcription: {
-        ...state.transcription,
-        notes: state.transcription.notes.concat(newNote)
-      },
-    }
-    /* save the shadow content with notes */
-    commit('UPDATE', data)
-    return newNote
-  },
   insertSegments({commit, state}, segments) {
     const TEIwithSegments = insertSegments(quillToTEI(state.transcriptionContent), segments);
     const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
@@ -282,19 +247,6 @@ const actions = {
    transcriptionWithTextAlignmentShadowQuillElement.children[0].innerHTML = data.withTextAlignment;
 
     commit('UPDATE', data);
-  },
-  updateNote({commit, rootState, state}, updatedNote) {
-    const currentNotes = state.transcription.notes;
-    const data = {
-      transcription: {
-        ...state.transcription,
-        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
-      }
-    }
-    /* save the note modification in the store */
-    commit('SAVING_STATUS', 'tobesaved')
-    commit('UPDATE', data)
-    return updatedNote
   },
   async cloneContent({dispatch, rootState}) {
     const doc_id = rootState.document.document.id;
