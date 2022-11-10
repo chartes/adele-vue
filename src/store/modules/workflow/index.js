@@ -131,7 +131,7 @@ const getters = {
     if (getters.isCommentariesReadOnly) {
       return rootState.document.commentariesView !== null
     } else {
-      return Object.keys(rootState.commentaries.commentariesWithNotes).length > 0
+      return Object.keys(rootState.commentaries.commentaries).length > 0
     }
   },
   selectedUserHasFacsimile: (state, getters, rootState) => {

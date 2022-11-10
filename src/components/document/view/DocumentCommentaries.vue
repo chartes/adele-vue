@@ -92,13 +92,13 @@ export default {
       },
       insertTranscriptionTooltips() {
           // make tooltips
-          Object.keys(this.transcriptionView.notes).forEach(noteId => {
+          Array.from(document.getElementsByTagName(`adele-note`)).forEach(el => {
+            const noteId = el.getAttribute('id')
             const paddedId = `${noteId}`.padStart(10, '0')
-            Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-              addToolTip(el, this.transcriptionView.notes[noteId], null, {contentType: 'note'});
-            })
-          }) 
-
+            if (this.transcriptionView.notes[paddedId]) {
+              addToolTip(el, this.transcriptionView.notes[paddedId], null, {contentType: 'note'});
+            }
+          })
           // persnames && placenames
           Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
               addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName === 'persname' ? 'is-left' : 'is-bottom'});
@@ -107,12 +107,14 @@ export default {
       insertCommentariesTooltips(){
           // make tooltips
           this.commentariesView.forEach(com => {
-            Object.keys(com.notes).forEach(noteId => {
-                const paddedId = `${noteId}`.padStart(10, '0')
-                const spEl = document.querySelector(`[data-note-id='${paddedId}']`)
-                addToolTip(spEl, com.notes[noteId], null, {contentType: 'note'});
-            }) 
+          Array.from(document.getElementsByTagName(`adele-note`)).forEach(el => {
+            const noteId = el.getAttribute('id')
+            const paddedId = `${noteId}`.padStart(10, '0')
+            if (com.notes[paddedId]) {
+              addToolTip(el, com.notes[paddedId], null, {contentType: 'note'});
+            }
           })
+        })
       }
     }
 }

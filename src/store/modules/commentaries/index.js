@@ -7,22 +7,17 @@ import {
   quillToTEI,
   convertLinebreakTEIToQuill,
   convertLinebreakQuillToTEI,
-  insertNotes,
-  stripNotes,
   computeNotesPointers,
 } from '../../../modules/quill/MarkupUtils'
 import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
-
-let notesShadowQuillElements = {} 
-let notesShadowQuills = {}
 
 const state = {
 
   commentaryTypes: [],
   selectedCommentaryLabel : null,
 
-  commentariesWithNotes: {},
+  commentaries: {},
   savingStatus: 'uptodate',
   commentariesLoading: false,
   commentariesSaved: true,
@@ -31,67 +26,29 @@ const state = {
 
 async function saveCom(rootState, rootGetters, com) {
   //console.log("saving", state.commentariesWithNotes, com)
-  const contentWithNotes = quillToTEI(com.withNotes)
-  const content = stripNotes(contentWithNotes)
+  const content = com.content
 
-  // prepare notes
-  const teiWithNotes = contentWithNotes
-  let sanitizedWithNotes = convertLinebreakQuillToTEI(teiWithNotes)
-
-  const notes = computeNotesPointers(sanitizedWithNotes)
-
-  notes.forEach(note => {
-    const found = rootGetters['notes/getNoteById'](note.id)
-
-    note.content = found.content
-    if (found.note_type) {
-      note.type_id = found.note_type.id
-    }
-  })
-
-  // put content & update notes
+  // put content
   await http.put(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, {
     data: {
       type_id: com.type,
-      content: content,
-      notes: notes.filter(n => n.id !== null && n.id >= 0)
+      content,
     }
   })
-        
-  // and post new notes 
-  const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
-    delete n.id
-    return n
-  })
-
-  if (new_notes.length > 0){
-    await http.post(`documents/${rootState.document.document.id}/commentaries/from-user/${rootState.workflow.selectedUserId}`, {
-      data: {
-        type_id: com.type,
-        notes: new_notes
-      }
-    })
-  }
 }  
 
 const mutations = {
   INIT(state, data) {
-      state.commentariesWithNotes = {}
+      state.commentaries = {}
       state.selectedCommentaryLabel = null
 
       data.forEach(commentary => {
         const t = commentary.typeLabel
 
-        notesShadowQuillElements[t] = document.createElement('div')
-        notesShadowQuillElements[t].innerHTML = "<p></p>"
-        notesShadowQuills[t] = new Quill(notesShadowQuillElements[t]);
-        notesShadowQuillElements[t].children[0].innerHTML = commentary.withNotes || ""
-        
         console.log("commentary source", t, data)
 
-        Vue.set(state.commentariesWithNotes, t, {
+        Vue.set(state.commentaries, t, {
           ...commentary,
-          withNotes: notesShadowQuillElements[t].children[0].innerHTML
         })
       })
 
@@ -124,12 +81,11 @@ const mutations = {
     comm.content = content
   },
   */
-  UPDATE(state, payload) {
+  UPDATE(state, {content}) {
     const t = state.selectedCommentaryLabel
-    Vue.set(state.commentariesWithNotes, t, {
-      ...state.commentariesWithNotes[t],
-      notes: payload.notes,
-      withNotes : payload.withNotes
+    Vue.set(state.commentaries, t, {
+      ...state.commentaries[t],
+      content
     })
   },
   SET_ERROR(state, payload) {
@@ -138,9 +94,6 @@ const mutations = {
   RESET(state) { 
     state.commentariesWithNotes = {}
     state.selectedCommentaryLabel = null
-    // TODO: le faire pour commentaries[current_com] et commentariesNotes[current_com]
-    //if (transcriptionShadowQuillElement && transcriptionShadowQuillElement.children[0]) transcriptionShadowQuillElement.children[0].innerHTML = "";
-    //if (notesShadowQuillElement && notesShadowQuillElement.children[0]) notesShadowQuillElement.children[0].innerHTML = "";
   },
   CHANGED (state) {
     // transcription changed and needs to be saved
@@ -149,18 +102,6 @@ const mutations = {
   SAVING_STATUS (state, payload) {
     state.savingStatus = payload;
   },
-  ADD_OPERATION (state, payload) {
-    const t = state.selectedCommentaryLabel
-
-    const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuills[t], payload, 'notes')
-    
-    notesShadowQuills[t].updateContents(deltaFilteredForNotes)
-
-    Vue.set(state.commentariesWithNotes, t, {
-      ...state.commentariesWithNotes[t],
-      withNotes: notesShadowQuillElements[t].children[0].innerHTML
-    })
-  },
 };
 
 function parseComsFromResponse(response) {
@@ -168,15 +109,10 @@ function parseComsFromResponse(response) {
   let hasTypes = {};
   let commentariesFormatted = [];
   commentaries.forEach(comm => {
-    let quillContent = TEIToQuill(comm.content);
-    let withNotes = insertNotes(quillContent, comm.notes);
-    //console.log("commentaries", comm, quillContent, withNotes)
     commentariesFormatted.push({
       type: comm.type.id,
       typeLabel: comm.type.label,
-      content: quillContent,
-      withNotes: withNotes,
-      notes: comm.notes
+      content: comm.content,
     });
     hasTypes[comm.type.label] = true
   })
@@ -241,32 +177,6 @@ const actions = {
   selectCommentaryTab({commit}, label) {
     commit('SELECT', label)
   },
-
-  insertNote({commit, rootState, state}, newNote) {
-    const t = state.selectedCommentaryLabel
-    const quillContent = TEIToQuill(state.commentariesWithNotes[t].content)
-    const textWithNotes = insertNotes(quillContent,  [newNote])
-
-    const payload = {
-      notes: state.commentariesWithNotes[t].notes.concat(newNote),
-      withNotes: convertLinebreakTEIToQuill(textWithNotes)
-    }
-    /* save the shadow content with notes */
-    commit('UPDATE', payload)
-    return newNote
-  },
-  updateNote({commit, rootState, state}, updatedNote) {
-    const t = state.selectedCommentaryLabel
-    const currentNotes = state.commentariesWithNotes[t].notes;
-    const payload = {
-        ...state.commentariesWithNotes[t],
-        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
-    }
-    /* save the note modification in the store */
-    commit('SAVING_STATUS', 'tobesaved')
-    commit('UPDATE', payload)
-    return updatedNote
-  },
   /* useful */
   addNewCommentary({commit, state, dispatch, rootState}, {type}) {
     commit('LOADING_STATUS', true);
@@ -312,8 +222,8 @@ const actions = {
   },
 
   /* useful */
-  changed ({ commit }, {delta}) {
-    commit('ADD_OPERATION', delta);
+  changed ({ commit }, {content}) {
+    commit('UPDATE', {content});
     commit('CHANGED');
     commit('SAVING_STATUS', 'tobesaved')
   },
@@ -325,7 +235,7 @@ const actions = {
 
     try {
       // save each commentary independently in parallel
-      await Promise.all(Object.values(state.commentariesWithNotes).map(com => saveCom(rootState, rootGetters, com)))
+      await Promise.all(Object.values(state.commentaries).map(com => saveCom(rootState, rootGetters, com)))
       // update the store content
       await dispatch('fetchCommentariesContent')
   
@@ -343,17 +253,17 @@ const actions = {
 const getters = {
   missingCommentaryTypes (state) {
     return state.commentaryTypes.filter(ct => {
-        return !(ct.label in state.commentariesWithNotes)
+        return !(ct.label in state.commentaries)
       }
     )
   },
   hasCommentaryTypes: (state) => (typeLabel) => {
-    return  typeLabel in state.commentariesWithNotes
+    return  typeLabel in state.commentaries
   },
   getCommentary : (state) => (label) => {
     let c
     try {
-      c = state.commentariesWithNotes[label]
+      c = state.commentaries[label]
     } catch (e) {
       c = null
     }
