@@ -2,7 +2,7 @@
   <div>
     <button
       class="button is-small is-primary"
-      :disabled="translationAlignmentSaved || !conditions"
+      :disabled="translationAlignmentSaved"
       @click="saveTranslationAlignment"
     >
       <span>Sauvegarder les alignements</span>
@@ -39,14 +39,8 @@ export default {
       Message
     },
     computed: {
-      ...mapGetters('translation', ['translationSegmentsFromQuill']),
-      ...mapGetters('transcription', ['transcriptionSegmentsFromQuill']),
-
       ...mapState('workflow', ['transcriptionAlignmentMode']),
       ...mapState('transcription', ['translationAlignmentSaved', 'translationAlignmentError']),
-      conditions() {
-        return this.transcriptionSegmentsFromQuill.length === this.translationSegmentsFromQuill.length
-      }
     },
     methods: {
       saveTranslationAlignment() {
