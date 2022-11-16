@@ -100,6 +100,7 @@
       this.init();
       this.preventKeyboard();
       document.addEventListener("annotation-created", this.onAnnotationCreation);
+      document.addEventListener("annotations-changed", this.init);
     },
     beforeDestroy () {
       this.allowKeyboard();

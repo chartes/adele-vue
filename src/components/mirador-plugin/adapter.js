@@ -68,7 +68,7 @@ export default class AdeleStorageAdapter {
         return await this.all();
 
       alert('L\'annotation ne peut pas être modifiée, veuillez supprimer celle-ci puis la recréer.')
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      document.dispatchEvent(new CustomEvent('annotations-changed'))
 
       return await this.all();
     }
@@ -80,7 +80,7 @@ export default class AdeleStorageAdapter {
 
       const zoneId = annoId.split('/').pop()
       await http.delete(`iiif/${this.documentId}/annotation/${zoneId}`)
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      document.dispatchEvent(new CustomEvent('annotations-changed'))
 
       return await this.all();
     }
