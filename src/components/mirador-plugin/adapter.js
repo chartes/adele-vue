@@ -81,8 +81,17 @@ export default class AdeleStorageAdapter {
         svg = svgSelector.value;
       }
 
+      const newAnnotationFacsim = document.querySelector('adele-annotation[new="true"]')
+      if (newAnnotationFacsim) {
+        alert('Le texte de l\'annotation ne peut pas être modifié, veuillez supprimer celle-ci puis la recréer.')
+        document.dispatchEvent(new CustomEvent('annotation-changed'))
+
+        return await this.all();
+      }
+
       const ptrStartInput = document.querySelector('#ptr-start')
       const ptrEndInput = document.querySelector('#ptr-end')
+
 
       let anno = {
         manifest_url: this.manifestOriginUrl,

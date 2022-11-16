@@ -29,7 +29,7 @@
 
       <button
         v-show="motivation === 'describing'"
-        :disabled="!annotation"
+        :disabled="!isTextSelected"
         class="button is-primary is-outlined"
         ml-3
         @click="init"
@@ -50,9 +50,6 @@
           spellcheck="false"
         />
       </div>
-    </div>
-    <div class="debug-box">
-      {{ annotation }}
     </div>
   </div>
 </template>
@@ -76,14 +73,13 @@
     props: { id: {type: Number, required: true, default: 23}},
     data() {
       return {
-        delta: null,
-        annotation: null,
         motivation: 'describing',
         buttons: {
         },
         storeActions: {
           changed: "transcription/changed"
         },
+        isTextSelected: false,
       }
     },
     computed: {
@@ -110,8 +106,7 @@
     },
     methods: {
       async init() {
-        this.annotation = null
-        this.delta = null
+        this.isTextSelected = false
 
         const response = await http.get(`documents/${this.id}/transcriptions`);
         const initialContent = response.data.data.content
@@ -120,13 +115,11 @@
         this.initEditor(this.$refs.editor, initialContent);
         this.editor.on('selection-change', this.onSelection);
       },
-      updateContent () {
-        this.delta = this.editor.getContents().ops;
-      },
       onSelection (range) {
         if (range && range.length > 0 && this.motivation === "describing") {
           this.setRangeBound(range);
           this.editor.format('annotation', {new: true});
+          this.isTextSelected = true;
         }
       },
       onAnnotationCreation (event) {
@@ -170,12 +163,6 @@
   .text-cutter {
     margin-top: 8px;
     min-height: 800px;
-  }
-  .debug-box {
-    display: none;
-    border: 1px dotted violet;
-    width: 100%;
-    height: 100px;
   }
   adele-annotation {
     background-color: #89c2d9;
