@@ -165,9 +165,12 @@
     margin-top: 8px;
     min-height: 800px;
   }
-  adele-annotation {
-    background-color: #89c2d9;
+  .text-cutter adele-annotation {
+    background-color: #e3eff4;
     padding: 0.35em;
     border-radius: 5px;
+  }
+  .text-cutter adele-annotation[new="true"] {
+    background-color: #89c2d9;
   }
 </style>
