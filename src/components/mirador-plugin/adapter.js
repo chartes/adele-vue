@@ -38,8 +38,7 @@ export default class AdeleStorageAdapter {
         svg = svgSelector.value;
       }
 
-      const ptrStartInput = document.querySelector('#ptr-start')
-      const ptrEndInput = document.querySelector('#ptr-end')
+      const annotationFacsim = document.querySelector('adele-annotation[new="true"]')
 
       let newAnno = {
         manifest_url: this.manifestOriginUrl,
@@ -50,17 +49,15 @@ export default class AdeleStorageAdapter {
         svg: svg,
 
       }
-      if (ptrStartInput && ptrEndInput && ptrStartInput.value && ptrEndInput.value) {
-        newAnno['ptr_start'] = ptrStartInput.value
-        newAnno['ptr_end'] = ptrEndInput.value
+      if (annotationFacsim) {
         newAnno['zone_type_id'] = 1
       } else {
         newAnno['zone_type_id'] = 2
         newAnno['note'] =annotation.body.value
       }
 
-      await http.post(`iiif/${this.documentId}/annotations`, newAnno);
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      const response = await http.post(`iiif/${this.documentId}/annotations`, newAnno);
+      document.dispatchEvent(new CustomEvent('annotation-created', {detail: response.data.data}));
 
       return await this.all();
     }

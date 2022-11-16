@@ -53,16 +53,6 @@
     </div>
     <div class="debug-box">
       {{ annotation }}
-      <input
-        id="ptr-start"
-        type="hidden"
-        :value="annotation ? annotation.ptr_start : null"
-      >
-      <input
-        id="ptr-end"
-        type="hidden"
-        :value="annotation ? annotation.ptr_end : null"
-      >
     </div>
   </div>
 </template>
@@ -77,7 +67,6 @@
   import EditorMixins from '../../mixins/EditorMixins'
 
   import {http} from '@/modules/http-common.js'
-  import { quillToTEI, TEIToQuill } from '../../modules/quill/MarkupUtils';
 
   export default {
     name: "TextCutterEditor",
@@ -93,7 +82,7 @@
         buttons: {
         },
         storeActions: {
-          changed: this.sendTextSelectedEvent
+          changed: "transcription/changed"
         },
       }
     },
@@ -113,8 +102,8 @@
     },
     mounted () {
       this.init();
-      document.addEventListener('annotation-changed', this.init, false);
       this.preventKeyboard();
+      document.addEventListener("annotation-created", this.onAnnotationCreation);
     },
     beforeDestroy () {
       this.allowKeyboard();
@@ -128,64 +117,30 @@
         const initialContent = response.data.data.content
 
         this.$refs.editor.innerHTML = ''
-        this.initEditor(this.$refs.editor, TEIToQuill(initialContent));
+        this.initEditor(this.$refs.editor, initialContent);
+        this.editor.on('selection-change', this.onSelection);
       },
       updateContent () {
         this.delta = this.editor.getContents().ops;
       },
       onSelection (range) {
-    
         if (range && range.length > 0 && this.motivation === "describing") {
           this.setRangeBound(range);
-          let formats = this.editor.getFormat(range.index, range.length);
-          if (formats.annotation) {
-            //deselect
-            this.editor.format('annotation', false);
-            // but if mutiple segments are created, cancel
-            const quillContent = this.getEditorHTML()
-            const count = (quillContent.match(/<annotation>/g) || []).length
-            if (count > 1) {
-               this.editor.format('annotation', true);
-            }
-          } else {
-            //console.log("UPDATE ANNOTATION SEGMENT", {ptr_start: range.index})
-            this.editor.format('annotation', true);
-            if (document.querySelectorAll('annotation').length > 1) {
-              // forbid more than one
-              this.editor.format('annotation', false);
-            }
+          this.editor.format('annotation', {new: true});
+        }
+      },
+      onAnnotationCreation (event) {
+        const annotationData = event.detail;
+        const contents = this.editor.getContents();
+        const newOps = contents.ops.map((op) => {
+          if(op.attributes && op.attributes.annotation && op.attributes.annotation.new) {
+            const {annotation, ...attrs} = op.attributes;
+            return {...op, attributes: {...attrs, annotation: annotationData}}
           }
-        } 
-      },
-      sendTextSelectedEvent({delta}){
-        const quillContent = this.getEditorHTML()
-        const annotations = this.computeAnnotationPointers(quillToTEI(quillContent))
-        if (annotations) {
-          this.annotation = annotations[0]
-          const payload = {docId: this.id, ...this.annotation}
-          console.log("payload:", payload)
-          document.dispatchEvent(new CustomEvent('text-selected', payload))
-          this.editor.blur();
-        }
-      },
-
-      computeAnnotationPointers (htmlWithAnnotations){
-        const regexpStart = /<annotation>/;
-        const regexpEnd = /<\/annotation>/;
-        let resStart, resEnd;
-        const annotations = [];
-        //console.log(htmlWithAnnotations)
-        while((resStart = regexpStart.exec(htmlWithAnnotations)) !== null) {
-          htmlWithAnnotations = htmlWithAnnotations.replace(regexpStart, '');
-          resEnd = regexpEnd.exec(htmlWithAnnotations);
-          htmlWithAnnotations = htmlWithAnnotations.replace(regexpEnd, '');
-
-          annotations.push({
-            "ptr_start": resStart.index,
-            "ptr_end": resEnd.index
-          });
-        }
-        return annotations;
+          return op
+        });
+        this.editor.setContents({ops: newOps});
+        this.$store.dispatch('transcription/saveTranscription');
       },
       /*
         Prevent keyboard methods
@@ -222,7 +177,7 @@
     width: 100%;
     height: 100px;
   }
-  annotation {
+  adele-annotation {
     background-color: #89c2d9;
     padding: 0.35em;
     border-radius: 5px;
