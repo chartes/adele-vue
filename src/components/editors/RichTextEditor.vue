@@ -221,6 +221,8 @@
 </template>
 
 <script>
+
+import Quill from 'quill';
     
 import { mapState, mapGetters } from 'vuex'
 import EditorButton from './EditorButton.vue';
@@ -238,6 +240,8 @@ import TextfieldForm from "../forms/TextfieldForm";
 import InEditorActions from './InEditorActions';
 import SpeechpartForm from "../forms/SpeechpartForm";
 import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
+
+import SegmentBlot from "../../modules/quill/blots/semantic/Segment";
 
 
 export default {
@@ -312,6 +316,13 @@ export default {
     this.initEditor(this.$refs.editor, this.$props.initialContent);
     this.preventKeyboard();
     this.activateMouseOver();
+    document.addEventListener("click", (e) => {
+        const foundBlot = Quill.find(e.target)
+        if (foundBlot && foundBlot instanceof SegmentBlot) {
+          this.editor.deleteText(foundBlot.offset(this.editor.scroll), 1)
+        }
+      }
+    )
   },
   methods: {
     updateContent () {
