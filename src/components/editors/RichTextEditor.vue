@@ -135,6 +135,7 @@
         />
       </div>
       <div
+        v-if="currentUserIsTeacher || currentUserIsAdmin"
         class="editor-controls-group"
       >
         <label>Segments</label>
@@ -297,6 +298,7 @@ export default {
     ...mapState('workflow', [ 'currentSection']),
     ...mapState('speechparts', ['newSpeechpart', 'speechparts']),
     ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
+    ...mapGetters('user', ['currentUserIsTeacher', 'currentUserIsAdmin'])
   },
   watch: {
     currentSelection() {
