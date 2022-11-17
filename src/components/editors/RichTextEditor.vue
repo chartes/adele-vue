@@ -134,6 +134,17 @@
           format="location"
         />
       </div>
+      <div
+        class="editor-controls-group"
+      >
+        <label>Segments</label>
+        <editor-button
+          :selected="buttons.segment"
+          :active="currentSelection && currentSelection.length === 0 && currentSelection.index > 0"
+          :callback="insertSegment"
+          format="segment"
+        />
+      </div>
     </div>
     <div class="editor-container">
       <div

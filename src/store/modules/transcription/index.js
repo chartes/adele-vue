@@ -51,11 +51,7 @@ const mutations = {
   SAVED (state) {
     // transcription saved
     state.transcriptionSaved = true;
-  },
-  SAVING_TRANSLATION_ALIGNMENT_STATUS (state, v) {
-    state.translationAlignmentSaved = v;
   }
-
 };
 
 const actions = {
@@ -163,41 +159,9 @@ const actions = {
       console.log(`%c error while cloning transcription ${e}`, 'color:red');
     }
   },
-  textAlignmentsNeedToBeSaved({commit}) {
-    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
-  },
-  async saveTranslationAlignment({commit, dispatch, state, rootGetters, rootState}) {
-    commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
-    commit('SET_TEXT_ALIGNMENT_ERROR', null)
-    try {
-      let data = []
-      const transcription = rootGetters['transcription/transcriptionSegmentsFromQuill'];
-      const translation = rootGetters['translation/translationSegmentsFromQuill'];
-      
-      if (transcription.length !== translation.length) {
-        throw Error('Le nombre de segments doit être identique entre la transcription et la traduction')
-      }
-
-      for(let i = 0; i < transcription.length; i++) {
-        data.push([...transcription[i], ...translation[i]])
-      }
-      console.log('save translation alignment', data)
-
-      const response = await http.post(`documents/${rootState.document.document.id}/transcriptions/alignments/from-user/${rootState.workflow.selectedUserId}`, { data: data })
-      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', true)
-
-    } catch(error) {
-      commit('SET_TEXT_ALIGNMENT_ERROR', error)
-      commit('SAVING_TRANSLATION_ALIGNMENT_STATUS', false)
-    } 
-  },
-  changed ({ commit, rootState }, {delta, content}) {
-    if (rootState.workflow.transcriptionAlignmentMode) {
-      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', delta);
-    } else {
-      commit('CHANGED', content);
-      commit('SAVING_STATUS', 'tobesaved')
-    }
+  changed ({ commit }, { content }) {
+    commit('CHANGED', content);
+    commit('SAVING_STATUS', 'tobesaved')
   },
   reset({commit}) {
     commit('RESET')
