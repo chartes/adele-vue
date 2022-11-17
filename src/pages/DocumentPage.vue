@@ -49,6 +49,7 @@
         <!-- section content -->
         <div
           v-if="!!document"
+          :class="$attrs.section + '-view'"
         >
           <div class="columns">
             <div

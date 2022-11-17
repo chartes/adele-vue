@@ -151,7 +151,7 @@
         </div>
 
         <!-- section content -->
-        <div class="columns">
+        <div :class="'columns ' + $attrs.section + '-edit'">
           <div
             v-show="imageVisibility"
             class="column m-t-sm"

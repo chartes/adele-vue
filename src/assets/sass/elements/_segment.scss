@@ -1,35 +1,36 @@
-
-adele-segment::before {
-    color: white;
-    font-weight: bold;
-    padding: 4px;
-}
-
-.rich-text-editor {
-    counter-reset: transcriptionSegment;
-    adele-segment {
-        counter-increment: transcriptionSegment;
-        content: counter(transcriptionSegment)
-    }}
-
-.translation-editor {
-    counter-reset: translationSegment;
-    adele-segment {
-        counter-increment: translationSegment;
-        content: counter(translationSegment)
+.transcription-edit, .translation-edit {
+    adele-segment::before {
+        color: white;
+        font-weight: bold;
+        padding: 4px;
     }
-}
 
-adele-segment {
-    height: 4px;
-    width: 100%;
-    padding-top: 3px;
-    padding-bottom: 3px;
-    border-bottom: 3px dashed $yellow;
+    .rich-text-editor {
+        counter-reset: transcriptionSegment;
+        adele-segment {
+            counter-increment: transcriptionSegment;
+            content: counter(transcriptionSegment)
+        }}
 
-    display: block;
-    cursor: pointer;
-    &:hover {
-        border-bottom: 3px dashed grey;
+    .translation-editor {
+        counter-reset: translationSegment;
+        adele-segment {
+            counter-increment: translationSegment;
+            content: counter(translationSegment)
+        }
+    }
+
+    adele-segment {
+        height: 4px;
+        width: 100%;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        border-bottom: 3px dashed $yellow;
+
+        display: block;
+        cursor: pointer;
+        &:hover {
+            border-bottom: 3px dashed grey;
+        }
     }
 }
