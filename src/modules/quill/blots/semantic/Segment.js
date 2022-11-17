@@ -33,7 +33,7 @@ class SegmentBlot extends Embed {
 
 }
 SegmentBlot.blotName = 'segment';
-SegmentBlot.tagName = 'segment';
+SegmentBlot.tagName = 'adele-segment';
 
 export default SegmentBlot;
 

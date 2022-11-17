@@ -1,5 +1,5 @@
 
-segment::before {
+adele-segment::before {
     color: white;
     font-weight: bold;
     padding: 4px;
@@ -7,20 +7,20 @@ segment::before {
 
 .rich-text-editor {
     counter-reset: transcriptionSegment;
-    segment {
+    adele-segment {
         counter-increment: transcriptionSegment;
         content: counter(transcriptionSegment)
     }}
 
 .translation-editor {
     counter-reset: translationSegment;
-    segment {
+    adele-segment {
         counter-increment: translationSegment;
         content: counter(translationSegment)
     }
 }
 
-segment {
+adele-segment {
     height: 4px;
     width: 100%;
     padding-top: 3px;
