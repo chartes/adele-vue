@@ -8,7 +8,7 @@ speechparts.content {
     }
 }
 
-speechpart, .speech-part-item {
+adele-speechpart, .speech-part-item {
 
     &:hover {
         cursor: pointer;
@@ -18,7 +18,7 @@ speechpart, .speech-part-item {
     border-radius: 5px;
 }
 
-.quill-editor speechpart, speechpart:hover, speechpart.active, .speech-part-item {
+.quill-editor adele-speechpart, adele-speechpart:hover, adele-speechpart.active, .speech-part-item {
     &[type_id='1'], &.type-01 {
         background-color: #f2e9d0;
     }

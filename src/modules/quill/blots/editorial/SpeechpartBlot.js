@@ -33,6 +33,6 @@ class SpeechpartBlot extends Inline {
   }
 }
 SpeechpartBlot.blotName = 'speechpart';
-SpeechpartBlot.tagName = 'speechpart';
+SpeechpartBlot.tagName = 'adele-speechpart';
 
 export default SpeechpartBlot;

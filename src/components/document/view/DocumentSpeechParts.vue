@@ -90,7 +90,7 @@ export default {
       },
       hoverId() {
         /* when you hover the top section items, the speech parts are highligthed accordingly to their type */
-        const allParts = Array.from(document.querySelectorAll('speechpart'));
+        const allParts = Array.from(document.querySelectorAll('adele-speechpart'));
         allParts.forEach(p => {
           if (this.hoverId) {
             if (p.getAttribute('type_id') === this.hoverId.toString()) {
@@ -108,12 +108,12 @@ export default {
         if (this.content) {
           /* find the speech part types to display in the top section */
           const fakeDOM = new DOMParser().parseFromString(this.content,  'text/html');
-          const allParts = Array.from(fakeDOM.getElementsByTagName('speechpart'));
+          const allParts = Array.from(fakeDOM.getElementsByTagName('adele-speechpart'));
           const usedTypesIds = new Set(allParts.map(part => parseInt(part.getAttribute('type_id'))));
           this.spTypes = Array.from(usedTypesIds).map(this.getSpeechpartTypeById);
 
           // make tooltips
-          Array.from(document.getElementsByTagName('speechpart')).forEach(speechPartElement => {
+          Array.from(document.getElementsByTagName('adele-speechpart')).forEach(speechPartElement => {
             const speechPart = {
               type_id: parseInt(speechPartElement.getAttribute("type_id")),
               note: speechPartElement.getAttribute("note")
@@ -135,7 +135,7 @@ export default {
     },
     methods: {
       leaveHovering() {
-        const allParts = document.querySelectorAll('speechpart');
+        const allParts = document.querySelectorAll('adele-speechpart');
         this.hoverId = null;
         allParts.forEach(p => {
           if (this.showAll) {
