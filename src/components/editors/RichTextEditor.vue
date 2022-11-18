@@ -135,7 +135,7 @@
         />
       </div>
       <div
-        v-if="currentUserIsTeacher || currentUserIsAdmin"
+        v-if="(currentSection === 'transcription' || currentSection === 'translation') && (currentUserIsTeacher || currentUserIsAdmin)"
         class="editor-controls-group"
       >
         <label>Segments</label>

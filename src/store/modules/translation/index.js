@@ -1,11 +1,4 @@
-import Quill from '../../../modules/quill/AdeleQuill';
 import {http} from '../../../modules/http-common';
-
-import {
-  TEIToQuill,
-  insertSegments, stripSegments, quillToTEI, convertLinebreakTEIToQuill,
-  computeAlignmentPointers
-} from '../../../modules/quill/MarkupUtils'
 
 const state = {
   translationLoading: true,
@@ -92,17 +85,23 @@ const actions = {
     }
   },
   /* useful */
-  addNewTranslation ({commit, dispatch, rootState}) {
+  async addNewTranslation ({commit, dispatch, rootState}) {
+    commit('LOADING_STATUS', true)
     const emptyTranslation = {
       data: {
         content: ""
       }
     }
-    return http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, emptyTranslation).then(response => {
+    try {
+      const response = await http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, emptyTranslation)
+      commit('UPDATE', response.data.data)
       commit('SET_ERROR', null)
-    }).catch(error => {
+      commit('LOADING_STATUS', false)
+    } catch (error) {
       commit('SET_ERROR', error)
-    })
+      commit('CLEAR')
+      commit('LOADING_STATUS', false)
+    }
   },
   /* useful */
   setError({commit}, payload) {
@@ -110,6 +109,7 @@ const actions = {
   },
    /* useful */
   async deleteTranslationFromUser({dispatch, commit}, {docId, userId}) {
+    commit('LOADING_STATUS', true)
     try {
       commit('SET_ERROR', null)
       const response = await http.delete(`documents/${docId}/translations/from-user/${userId}`)
@@ -117,8 +117,12 @@ const actions = {
         validation_flags: response.data.data.validation_flags
       }, {root: true})
       await dispatch('fetchTranslationContent')
+      commit('CLEAR')
+      commit('LOADING_STATUS', false)
     } catch(error) {
-      commit('SET_ERROR', error)
+      commit('SET_ERROR', error);
+      commit('SAVING_STATUS', 'error');
+      commit('LOADING_STATUS', false);
     }
   },
 

@@ -864,9 +864,6 @@ export default {
     },
     async addNewTranslation() {
       await this.createTranslation();
-      if (!this.translationError) {
-        await this.fetchTranslationContent();
-      }
     },
     async addNewCommentaries() {
       this.setCommentariesError(null);
