@@ -313,18 +313,13 @@ export default {
   beforeDestroy () {
     this.allowKeyboard();
     this.deactivateMouseOver();
+    this.$refs.editor.removeEventListener("click", this.removeSegment)
   },
   mounted () {
     this.initEditor(this.$refs.editor, this.$props.initialContent);
     this.preventKeyboard();
     this.activateMouseOver();
-    document.addEventListener("click", (e) => {
-        const foundBlot = Quill.find(e.target)
-        if (foundBlot && foundBlot instanceof SegmentBlot) {
-          this.editor.deleteText(foundBlot.offset(this.editor.scroll), 1)
-        }
-      }
-    )
+    this.$refs.editor.addEventListener("click", this.removeSegment)
   },
   methods: {
     updateContent () {
@@ -362,6 +357,13 @@ export default {
         this.editor.focus();
       },
 
+      /* remove segment method */
+      removeSegment (e) {
+        const foundBlot = Quill.find(e.target)
+        if (foundBlot && foundBlot instanceof SegmentBlot) {
+          this.editor.deleteText(foundBlot.offset(this.editor.scroll), 1)
+        }
+      },
 
        /*
         Prevent keyboard methods
