@@ -627,7 +627,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.dispatch("workflow/setCurrentSection", vm.currentSection);
+      vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
       if (!vm.isAuthenticated) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
@@ -753,7 +753,9 @@ export default {
       this.setupVisibilityWidget(this.currentSection)
     },
     async currentSection() {
-      await this.fetchContentFromUser();
+      if (!this.isLoading) {
+        await this.fetchContentFromUser();
+      }
     }
   },
   async created() {
