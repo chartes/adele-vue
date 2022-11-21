@@ -7,7 +7,7 @@
   >
     <div class="NoteForm">
       <div
-        v-for="note in notesExistingInBackend"
+        v-for="note in sortedNotes"
         :key="note.id"
         class="notes-list-item"
         :class="{ selected: note.id == selected }"
@@ -25,7 +25,7 @@
 
 <script>
 
-  import { mapGetters } from 'vuex'
+  import { mapState } from 'vuex'
   import ModalForm from './ModalForm';
 
   export default {
@@ -40,9 +40,10 @@
       }
     },
     computed: {
-      ...mapGetters('notes', ['notes']),
-      notesExistingInBackend() {
-        return this.notes.filter(n => n.id >= 0)
+      ...mapState('notes', ['notes']),
+      sortedNotes() {
+        return Object.values(this.notes)
+          .sort((n1, n2) => n1.content >= n2.content);
       }
     },
     mounted () {

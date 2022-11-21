@@ -77,7 +77,7 @@
           </ul>
         </div>
         <!-- section content -->
-        <div v-if="!!document">
+        <div v-if="!!document" :class="$attrs.section + '-view'">
           <div class="columns">
             <div
               v-show="imageVisibility"

@@ -1,20 +1,4 @@
-import Quill from '../../../modules/quill/AdeleQuill';
 import {http} from '../../../modules/http-common';
-
-import {
-  insertNotes, computeNotesPointers, TEIToQuill,
-  insertSegments, stripSegments, quillToTEI, convertLinebreakTEIToQuill, insertNotesAndSegments,
-  convertLinebreakQuillToTEI, computeAlignmentPointers
-} from '../../../modules/quill/MarkupUtils'
-import {filterDeltaOperations} from "../../../modules/quill/DeltaUtils";
-
-const translationShadowQuillElement = document.createElement('div');
-const notesShadowQuillElement = document.createElement('div');
-let translationShadowQuill;
-let notesShadowQuill;
-
-const translationWithTextAlignmentShadowQuillElement = document.createElement('div');
-let translationWithTextAlignmentShadowQuill;
 
 const state = {
   translationLoading: true,
@@ -22,7 +6,6 @@ const state = {
   translationError: null,
   translationContent: null,
   translationWithTextAlignment: null,
-  translationWithNotes: null,
   translationSaved: true,
   referenceTranslation: null,
 
@@ -31,32 +14,10 @@ const state = {
 
 const mutations = {
 
-  INIT(state, payload) {
-      translationShadowQuillElement.innerHTML = "<p></p>";
-      translationShadowQuill = new Quill(translationShadowQuillElement);
-      translationShadowQuillElement.children[0].innerHTML = payload.content;
-      state.translationContent = translationShadowQuillElement.children[0].innerHTML;
-
-      notesShadowQuillElement.innerHTML = "<p></p>"
-      notesShadowQuill = new Quill(notesShadowQuillElement);
-      notesShadowQuillElement.children[0].innerHTML = payload.withNotes;
-      state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
-
-      translationWithTextAlignmentShadowQuillElement.innerHTML = "<p></p>" 
-      translationWithTextAlignmentShadowQuill = new Quill(translationWithTextAlignmentShadowQuillElement);
-      translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = payload.withTextAlignment || "";
-      state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
-  },
   RESET (state) {
+    state.translationLoading = true;
     state.translation = null;
     state.translationContent = null;
-    state.translationWithTextAlignment = null;
-    state.translationWithNotes = null;
-
-    if (translationShadowQuillElement) translationShadowQuillElement.innerHTML = "";
-    if (notesShadowQuillElement) notesShadowQuillElement.innerHTML = "";
-    if (translationWithTextAlignmentShadowQuillElement && translationWithTextAlignmentShadowQuillElement.children[0]) translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = "";
-
   },
   SET_ERROR(state, payload) {
     state.translationError = payload
@@ -67,46 +28,18 @@ const mutations = {
   LOADING_STATUS (state, payload) {
     state.translationLoading = payload;
   },
-  UPDATE (state, payload) {
-    if (payload.translation) {
-      state.translation = payload.translation;
-    }
-    if (payload.withNotes) {
-      state.translationWithNotes =  payload.withNotes
-    }
-    if (payload.withSpeechparts) {
-      state.translationWithSpeechparts = payload.withSpeechparts;
-    }
-    if (payload.withFacsimile) {
-      state.translationWithFacsimile = payload.withFacsimile;
-    }
-    if (payload.withTextAlignment) {
-      state.translationWithTextAlignment = payload.withTextAlignment;
-    }
-    //state.translationSaved = true;
+  UPDATE (state, translation) {
+    state.translationContent = translation.content;
+    state.translation = translation;
   },
-  CHANGED (state) {
+  CHANGED (state, content) {
     // translation changed and needs to be saved
+    state.translationContent = content;
     state.translationSaved = false;
   },
   SAVING_STATUS (state, payload) {
     //console.log("STORE MUTATION transcription/SAVING_STATUS", payload)
     state.savingStatus = payload;
-  },
-  ADD_TRANSLATION_ALIGNMENT_OPERATION (state, payload) {
-    const deltaFilteredForTextAlignment = filterDeltaOperations(translationWithTextAlignmentShadowQuill, payload, 'text-alignment');
-    translationWithTextAlignmentShadowQuill.updateContents(deltaFilteredForTextAlignment);
-    state.translationWithTextAlignment = translationWithTextAlignmentShadowQuillElement.children[0].innerHTML;
-  },
-  ADD_OPERATION (state, payload) {
-    const deltaFilteredForContent = filterDeltaOperations(translationShadowQuill, payload, 'content');
-    const deltaFilteredForNotes = filterDeltaOperations(notesShadowQuill, payload, 'notes');
-
-    translationShadowQuill.updateContents(deltaFilteredForContent);
-    notesShadowQuill.updateContents(deltaFilteredForNotes);
-
-    state.translationContent = translationShadowQuillElement.children[0].innerHTML;
-    state.translationWithNotes = notesShadowQuillElement.children[0].innerHTML;
   },
   SAVED (state) {
     // translation changed and needs to be saved
@@ -125,19 +58,7 @@ const actions = {
       let translation = response.data.data;
       const alignments = rootState.transcription.transcriptionAlignments;
 
-      let quillContent = TEIToQuill(translation.content);
-      //let content = insertSegments(quillContent, alignments, 'translation');
-      const withNotes = insertNotesAndSegments(quillContent, translation.notes, alignments, 'translation');
-
-      const data = {
-        translation: translation,
-        content: convertLinebreakTEIToQuill(quillContent),
-        withTextAlignment: convertLinebreakTEIToQuill(quillContent),
-        withNotes: convertLinebreakTEIToQuill(withNotes),
-      }
-
-      commit('INIT', data);
-      commit('UPDATE', data);
+      commit('UPDATE', translation);
       commit('SET_ERROR', null)
       commit('LOADING_STATUS', false);
     }).catch((error) => {
@@ -164,18 +85,23 @@ const actions = {
     }
   },
   /* useful */
-  addNewTranslation ({commit, dispatch, rootState}) {
+  async addNewTranslation ({commit, dispatch, rootState}) {
+    commit('LOADING_STATUS', true)
     const emptyTranslation = {
       data: {
-        notes: [],
         content: ""
       }
     }
-    return http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, emptyTranslation).then(response => {
+    try {
+      const response = await http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, emptyTranslation)
+      commit('UPDATE', response.data.data)
       commit('SET_ERROR', null)
-    }).catch(error => {
+      commit('LOADING_STATUS', false)
+    } catch (error) {
       commit('SET_ERROR', error)
-    })
+      commit('CLEAR')
+      commit('LOADING_STATUS', false)
+    }
   },
   /* useful */
   setError({commit}, payload) {
@@ -183,6 +109,7 @@ const actions = {
   },
    /* useful */
   async deleteTranslationFromUser({dispatch, commit}, {docId, userId}) {
+    commit('LOADING_STATUS', true)
     try {
       commit('SET_ERROR', null)
       const response = await http.delete(`documents/${docId}/translations/from-user/${userId}`)
@@ -190,8 +117,12 @@ const actions = {
         validation_flags: response.data.data.validation_flags
       }, {root: true})
       await dispatch('fetchTranslationContent')
+      commit('CLEAR')
+      commit('LOADING_STATUS', false)
     } catch(error) {
-      commit('SET_ERROR', error)
+      commit('SET_ERROR', error);
+      commit('SAVING_STATUS', 'error');
+      commit('LOADING_STATUS', false);
     }
   },
 
@@ -201,43 +132,13 @@ const actions = {
     commit('LOADING_STATUS', true)
 
     try {
-      const tei = quillToTEI(state.translationContent)
-      const sanitizedContent = stripSegments(tei)
-
-      // prepare notes
-      const teiWithNotes = quillToTEI(state.translationWithNotes)
-      let sanitizedWithNotes = stripSegments(teiWithNotes)
-      sanitizedWithNotes = convertLinebreakQuillToTEI(sanitizedWithNotes)
-      const notes = computeNotesPointers(sanitizedWithNotes)
-      //console.log("preparing notes", state.translationWithNotes, computeNotesPointers(sanitizedWithNotes), notes)
-
-      notes.forEach(note => {
-        const found = rootGetters['notes/getNoteById'](note.id)
-        note.content = found.content
-        if (found.note_type) {
-          note.type_id = found.note_type.id
-        }
-      })
-
-      // put content && update notes
+      // put content
       await http.put(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, {
         data: {
-          content: sanitizedContent,
-          notes: notes.filter(n => n.id !== null && n.id >= 0)
+          content: state.translationContent,
         }
       })
             
-      // and post new notes 
-      const new_notes = notes.filter(n => n.id === null || n.id < 0).map(n => {
-         delete n.id
-         return n
-        })
-      if (new_notes.length > 0){
-        await http.post(`documents/${rootState.document.document.id}/translations/from-user/${rootState.workflow.selectedUserId}`, {
-          data: {notes: new_notes}
-        })
-      }
-
       // update the store content
       await dispatch('fetchTranslationContent')
 
@@ -245,65 +146,11 @@ const actions = {
       commit('SET_ERROR', false)
       commit('LOADING_STATUS', false)
     } catch(error) {
-      // TODO: rollback to previous content and notes ?
+      // TODO: rollback to previous content ?
       commit('SET_ERROR', error)
       commit('SAVING_STATUS', 'error')
       commit('LOADING_STATUS', false)
     }
-  },
-
-  getTranslationViewContent({rootState}) {
-    if (rootState.document.translationView) {
-      const content = TEIToQuill(rootState.document.translationView.content)
-      //const notes = rootState.document.transcriptionView.notes;
-      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
-      return convertLinebreakTEIToQuill(content)
-    } else {
-      return null;
-    }
-  },
-
-  insertNote({commit, state}, newNote) {
-    /* build a new shadow content with notes */
-    const quillContent = TEIToQuill(state.translationContent);
-    const textWithNotes = insertNotes(quillContent, [newNote])
-    const data = {
-      translation: {
-        ...state.translation,
-        notes: state.translation.notes.concat(newNote)
-      },
-      withNotes: convertLinebreakTEIToQuill(textWithNotes),
-    }
-    /* save the shadow content with notes */
-    commit('UPDATE', data)
-    return newNote
-  },
-
-  insertSegments({commit, state}, segments) {
-    const TEIwithSegments = insertSegments(quillToTEI(state.translationContent), segments);
-    const withTextAlignmentSegments = TEIToQuill(TEIwithSegments);
-    const data = {
-      withTextAlignment: convertLinebreakTEIToQuill(withTextAlignmentSegments)
-    };
-    translationWithTextAlignmentShadowQuillElement.children[0].innerHTML = data.withTextAlignment;
-
-    commit('UPDATE', data);
-    //translationWithTextAlignmentShadowQuill.setText(state.translationWithTextAlignment)
-    //console.log(state.translationWithTextAlignment)
-  },
-
-  updateNote({commit, rootState, state}, updatedNote) {
-    const currentNotes = state.translation.notes;
-    const data = {
-      transcription: {
-        ...state.translation,
-        notes: [...currentNotes.filter(n => n.id !== updatedNote.id), updatedNote]
-      }
-    }
-    /* save the note modification in the store */
-    commit('SAVING_STATUS', 'tobesaved')
-    commit('UPDATE', data)
-    return updatedNote
   },
 
   async cloneContent({dispatch, rootState}) {
@@ -318,14 +165,9 @@ const actions = {
     }
   },
 
-  changed ({ commit, rootState }, deltas) {
-    if (rootState.workflow.transcriptionAlignmentMode) {
-      commit('ADD_TRANSLATION_ALIGNMENT_OPERATION', deltas);
-    } else {
-      commit('ADD_OPERATION', deltas);
-      commit('CHANGED', false);
-      commit('SAVING_STATUS', 'tobesaved')
-    }
+  changed ({ commit, rootState }, {content}) {
+    commit('CHANGED', content);
+    commit('SAVING_STATUS', 'tobesaved')
   },
   reset ({ commit }) {
     commit('RESET')
@@ -333,15 +175,9 @@ const actions = {
 
 };
 
-
 const getters = {
   isTranslationSaved(state) {
     return state.savingStatus === 'uptodate'
-  },
-  translationSegmentsFromQuill(state) {
-    if (!state.translationWithTextAlignment) return [];
-    const text = quillToTEI(state.translationWithTextAlignment)
-    return computeAlignmentPointers(text)
   }
 };
 

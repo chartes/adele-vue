@@ -7,7 +7,9 @@
           <button
             class="button is-white show-all-speechparts"
             @click="showAll = !showAll"
-          >{{ !showAll ? "Tout montrer" : "Effacer" }}</button>
+          >
+            {{ !showAll ? "Tout montrer" : "Effacer" }}
+          </button>
         </span>
         <span
           v-for="(spType, key) in spTypes"
@@ -34,115 +36,175 @@
   </div>
 </template>
 
-
 <script>
-
-import { mapState, mapGetters, mapActions } from 'vuex';
-import addToolTip from '@/modules/tooltip';
-import RichTextEditor from "@/components/editors/RichTextEditor.vue"
+import { mapState, mapGetters, mapActions } from "vuex";
+import addToolTip from "@/modules/tooltip";
+import RichTextEditor from "@/components/editors/RichTextEditor.vue";
 
 export default {
   name: "DocumentSpeechParts",
   components: {
-    RichTextEditor
+    RichTextEditor,
   },
   props: {
-    readonlyData: { type: Object, default: null }
+    readonlyData: { type: Object, default: null },
   },
   data() {
     return {
       spTypes: [],
       hoverId: null,
       showAll: false,
-      content: null
-    }
+      content: null,
+    };
   },
   computed: {
-    ...mapState('document', ['loading', 'speechPartsView']),
-    ...mapState('speechpartTypes', ['speechpartTypes',]),
-    ...mapGetters('speechpartTypes', ['getSpeechpartTypeById',]),
+    ...mapState("document", ["loading", "speechPartsView"]),
+    ...mapState("speechpartTypes", ["speechpartTypes"]),
+    ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
   },
   watch: {
     async speechPartsView() {
-      this.content = await this.getSpeechpartsViewContent()
+      this.content = await this.getSpeechpartsViewContent();
     },
     showAll() {
-      this.leaveHovering()
+      this.leaveHovering();
     },
-    hoverId() {
-      /* when you hover the top section items, the speech parts are highligthed accordingly to their type */
-      const allParts = document.querySelectorAll('.speech-part');
-      allParts.forEach(p => {
-        if (this.hoverId) {
-          const typeClass = `type-${this.hoverId.toString().padStart(2, '0')}`;
-          if (p.classList.contains(typeClass)) {
-            p.classList.add("active");
+    data() {
+      return {
+        spTypes: [],
+        hoverId: null,
+        showAll: false,
+      };
+    },
+    computed: {
+      ...mapState("document", ["loading", "speechPartsView"]),
+      ...mapState("speechpartTypes", ["speechpartTypes"]),
+      ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
+      content() {
+        return this.readonlyData ? this.readonlyData.content : null;
+      },
+    },
+    watch: {
+      showAll() {
+        this.leaveHovering();
+      },
+      hoverId() {
+        /* when you hover the top section items, the speech parts are highligthed accordingly to their type */
+        const allParts = Array.from(document.querySelectorAll("adele-speechpart"));
+        allParts.forEach((p) => {
+          if (this.hoverId) {
+            if (p.getAttribute("type_id") === this.hoverId.toString()) {
+              p.classList.add("active");
+            }
+          } else {
+            if (!this.showAll) {
+              p.classList.remove("active");
+            }
           }
-        } else {
-          if (!this.showAll) {
-            p.classList.remove("active");
+        });
+      },
+    },
+    mounted() {
+      if (this.content) {
+        /* find the speech part types to display in the top section */
+        const fakeDOM = new DOMParser().parseFromString(this.content, "text/html");
+        const allParts = Array.from(fakeDOM.getElementsByTagName("adele-speechpart"));
+        const usedTypesIds = new Set(
+          allParts.map((part) => parseInt(part.getAttribute("type_id")))
+        );
+        this.spTypes = Array.from(usedTypesIds).map(this.getSpeechpartTypeById);
+
+        // make tooltips
+        Array.from(document.getElementsByTagName("adele-speechpart")).forEach(
+          (speechPartElement) => {
+            const speechPart = {
+              type_id: parseInt(speechPartElement.getAttribute("type_id")),
+              note: speechPartElement.getAttribute("note"),
+            };
+            addToolTip(
+              speechPartElement,
+              speechPart.note,
+              this.getSpeechpartTypeById(speechPart.type_id).label,
+              { contentType: "speech-part" }
+            );
           }
-        }
-      });
-    }
-  },
-  async created() {
-    this.content = await this.getSpeechpartsViewContent()
-  },
-  mounted() {
-    if (this.content) {
-      /* find the speech part types to display in the top section */
-      const fakeDOM = new DOMParser().parseFromString(this.content, 'text/html')
-      const allParts = fakeDOM.querySelectorAll('.speech-part')
-      if (allParts) {
-        this.spTypes = [];
-        allParts.forEach(p => {
-          const spType = [...p.classList].find(c => c.startsWith('type-'));
-          if (spType) {
-            const spTypeId = spType.replace('type-', '');
-            const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
-            this.spTypes.push(sp)
-          }
-        })
+        );
+
+        // persnames && placenames
+        Array.from(document.querySelectorAll(`persname, placename`)).forEach((el) => {
+          addToolTip(el, el.attributes.ref.value, null, {
+            contentType: el.localName,
+            position: el.localName === "persname" ? "is-left" : "is-bottom",
+          });
+        });
       }
-
-      // make tooltips
-      Object.keys(this.speechPartsView.notes).forEach(noteId => {
-        console.log('NOTES', noteId)
-        Array.from(document.querySelectorAll(`[data-note-id='${noteId}']`)).forEach(el => {
-          const spType = [...el.classList].find(c => c.startsWith('type-'));
-          let spt
-          if (spType) {
-            const spTypeId = spType.replace('type-', '');
-            spt = this.getSpeechpartTypeById(parseInt(spTypeId));
-          }
-
-          addToolTip(el, this.speechPartsView.notes[noteId], spt.label, { contentType: 'speech-part' });
-        })
-      })
-
-      // persnames && placenames
-      Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-        addToolTip(el, el.attributes.ref.value, null, { contentType: el.localName, position: el.localName === 'persname' ? 'is-left' : 'is-bottom' });
-      })
-
-    }
-  },
-  methods: {
-    leaveHovering() {
-      const allParts = document.querySelectorAll('.speech-part');
-      this.hoverId = null;
-      allParts.forEach(p => {
-        if (this.showAll) {
-          p.classList.add("active");
-        } else {
-          p.classList.remove("active");
-        }
-      });
     },
-    ...mapActions('speechparts', ['getSpeechpartsViewContent'])
-  }
-}
+    methods: {
+      ...mapActions("speechparts", ["getSpeechpartsViewContent"]),
+      leaveHovering() {
+        const allParts = document.querySelectorAll("adele-speechpart");
+        this.hoverId = null;
+        allParts.forEach((p) => {
+          if (this.showAll) {
+            p.classList.add("active");
+          } else {
+            if (!this.showAll) {
+              p.classList.remove("active");
+            }
+          }
+        });
+      },
+    },
+    async created() {
+      this.content = await this.getSpeechpartsViewContent();
+    },
+    mounted() {
+      if (this.content) {
+        /* find the speech part types to display in the top section */
+        const fakeDOM = new DOMParser().parseFromString(this.content, "text/html");
+        const allParts = fakeDOM.querySelectorAll(".speech-part");
+        if (allParts) {
+          this.spTypes = [];
+          allParts.forEach((p) => {
+            const spType = [...p.classList].find((c) => c.startsWith("type-"));
+            if (spType) {
+              const spTypeId = spType.replace("type-", "");
+              const sp = this.getSpeechpartTypeById(parseInt(spTypeId));
+              this.spTypes.push(sp);
+            }
+          });
+        }
+
+        // make tooltips
+        Object.keys(this.speechPartsView.notes).forEach((noteId) => {
+          console.log("NOTES", noteId);
+          Array.from(document.querySelectorAll(`[data-note-id='${noteId}']`)).forEach(
+            (el) => {
+              const spType = [...el.classList].find((c) => c.startsWith("type-"));
+              let spt;
+              if (spType) {
+                const spTypeId = spType.replace("type-", "");
+                spt = this.getSpeechpartTypeById(parseInt(spTypeId));
+              }
+
+              addToolTip(el, this.speechPartsView.notes[noteId], spt.label, {
+                contentType: "speech-part",
+              });
+            }
+          );
+        });
+
+        // persnames && placenames
+        Array.from(document.querySelectorAll(`persname, placename`)).forEach((el) => {
+          addToolTip(el, el.attributes.ref.value, null, {
+            contentType: el.localName,
+            position: el.localName === "persname" ? "is-left" : "is-bottom",
+          });
+        });
+      }
+    },
+  },
+};
 </script>
 
 <style>

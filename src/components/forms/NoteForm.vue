@@ -13,49 +13,6 @@
             <label class="label">Contenu</label>
           </p>
           <div class="editor-area">
-            <!--
-            <div
-              ref="controls"
-              class="editor-controls"
-            >
-              <editor-button
-                :selected="buttons.bold"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'bold'"
-              />
-              <editor-button
-                :selected="buttons.italic"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'italic'"
-              />
-              <editor-button
-                :selected="buttons.superscript"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'superscript'"
-              />
-              <editor-button
-                :selected="buttons.smallcaps"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'smallcaps'"
-              />
-              <editor-button
-                :selected="buttons.underline"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'underline'"
-              />
-              <editor-button
-                :selected="buttons.del"
-                :active="editorHasFocus"
-                :callback="simpleFormat"
-                :format="'del'"
-              />
-            </div>
-            -->
             <div
               ref="editor"
               class="quill-editor"
@@ -86,19 +43,14 @@
     props: ['title', 'noteId', 'note', 'cancel', 'submit'],
     data() {
       return {
-        form: Object.assign({}, this.note),
+        form: Object.assign({type_id: 0, content: ''}, this.note),
         textLength: 0,
         editor: null,
-        buttons: {
-          bold: false,
-          italic: false,
-          superscript: false,
-          smallcaps: false,
-          underline: false,
-          del: false,
-        },
         loading: false,
       }
+    },
+    computed: {
+      ...mapGetters('noteTypes', ['noteTypes'])
     },
     mounted () {
       this.$refs.editor.innerHTML = this.$props.note ? this.$props.note.content : '';
@@ -112,7 +64,7 @@
     methods: {
 
       onSelectChange (typeId) {
-        this.form.type_id = typeId;
+        this.form.type_id= typeId;
       },
       onTextChange () {
         this.textLength = this.editor.getLength();
@@ -136,8 +88,5 @@
         this.$props.cancel();
       }
     },
-    computed: {
-      ...mapGetters('noteTypes', ['noteTypes'])
-    }
   }
 </script>

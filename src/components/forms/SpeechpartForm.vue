@@ -9,6 +9,7 @@
     <div class="SpeechpartForm">
       <form>
         <field-select
+          autofocus
           :label="'Partie du discours'"
           :selected="form.type_id"
           :options="speechpartTypes"
@@ -88,7 +89,7 @@
       ModalForm
     },
     mixins: [EditorMixins],
-    props: ['title', 'speechpartId', 'speechpart', 'cancel', 'submit'],
+    props: ['title', 'editedSpeechPart', 'cancel', 'submit'],
     data() {
       return {
         form: {},
@@ -105,15 +106,18 @@
       }
     },
     mounted () {
-      this.$refs.editor.innerHTML = this.$props.speechpart ? this.$props.speechpart.note ? this.$props.speechpart.note: '' : '';
+      const speechPart = this.$props.editedSpeechPart;
+      const type_id = speechPart.type_id !== undefined ? speechPart.type_id : this.speechpartTypes[0].id;
+      const note = speechPart.note !== undefined ? speechPart.note : '';
+      this.$refs.editor.innerHTML = note
       this.editor = getNewQuill(this.$refs.editor);
       this.editor.on('selection-change', this.onSelection);
       this.editor.on('selection-change', this.onFocus);
       this.editor.on('text-change', this.onTextChange);
       this.textLength = this.editor.getLength();
-      this.form = Object.assign({}, this.speechpart);
-      this.form.type_id = this.$props.speechpart ? this.$props.speechpart.speech_part_type ? this.speechpart.speech_part_type.id : this.speechpartTypes[0].id : this.speechpartTypes[0].id;
-
+      this.form = Object.assign({}, this.speechPart);
+      this.form.type_id = type_id;
+      this.form.note = note;
       console.log("SpeechpartForm.mounted", this.form)
     },
     methods: {

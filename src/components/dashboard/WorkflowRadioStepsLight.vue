@@ -25,7 +25,7 @@
       <div class="step">
         <validation-radio-icon
           class="validation-icon"
-          :is-validated="exist['alignment-translation']"
+          :is-validated="validation['alignment-translation']"
           :is-content-empty="!exist['alignment-translation']"
         />
         <span class="step-label">Alignement</span>

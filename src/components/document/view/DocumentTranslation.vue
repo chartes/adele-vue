@@ -31,21 +31,16 @@ export default {
       this.content = await this.getTranslationViewContent();
     },
   },
-  async created() {
-    this.content = await this.getTranslationViewContent();
-  },
   mounted() {
     if (this.translationView) {
       // make tooltips
-      Object.keys(this.translationView.notes).forEach((noteId) => {
+      Array.from(document.getElementsByTagName(`adele-note`)).forEach((el) => {
+        const noteId = el.getAttribute("id");
         const paddedId = `${noteId}`.padStart(10, "0");
-        Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(
-          (el) => {
-            addToolTip(el, this.translationView.notes[noteId], null, {
-              contentType: "note",
-            });
-          }
-        );
+
+        addToolTip(el, this.translationView.notes[paddedId], null, {
+          contentType: "note",
+        });
       });
 
       // persnames && placenames

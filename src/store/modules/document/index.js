@@ -56,7 +56,6 @@ const mutations = {
   UPDATE_SPEECH_PARTS_VIEW(state, payload) {
     state.speechPartsView = {
       content: payload.content,
-      notes: payload.notes
     }
   },
   RESET_TRANSCRIPTION_VIEW(state) {
@@ -207,7 +206,7 @@ const actions = {
     commit('LOADING_STATUS', true)
     console.log("fetching speech parts view")
     await dispatch('speechpartTypes/fetch', null, {root: true} )
-    return http.get(`documents/${rootState.document.document.id}/view/speech-parts${userId ? '/from-user/' + userId: ''}`).then( (response) => {
+    return http.get(`documents/${rootState.document.document.id}/view/speech-parts-content${userId ? '/from-user/' + userId: ''}`).then( (response) => {
       commit('UPDATE_SPEECH_PARTS_VIEW', {
         content: response.data.data["content"],
         notes: response.data.data["notes"]

@@ -11,7 +11,7 @@ const globalFilters = {
 }
 const deltaOperationsFilters = {
   content: {
-    removeAttributes: ['note','speechpart', 'zone'].concat(globalFilters.removeAttributes),
+    removeAttributes: ['speechpart', 'zone'].concat(globalFilters.removeAttributes),
     keepFormats: [].concat(globalFilters.keepFormats),
   },
   notes: {

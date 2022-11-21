@@ -83,7 +83,7 @@
     name: "NoteActions",
     props: {
       selectedNoteId: {
-        type: String,
+        type: Number,
         required: false,
         default: null
       },

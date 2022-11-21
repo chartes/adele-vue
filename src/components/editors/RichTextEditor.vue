@@ -128,6 +128,25 @@
           format="location"
         />
       </div>
+      <div
+        v-if="
+          (currentSection === 'transcription' || currentSection === 'translation') &&
+          (currentUserIsTeacher || currentUserIsAdmin)
+        "
+        class="editor-controls-group"
+      >
+        <label>Segments</label>
+        <editor-button
+          :selected="buttons.segment"
+          :active="
+            currentSelection &&
+            currentSelection.length === 0 &&
+            currentSelection.index > 0
+          "
+          :callback="insertSegment"
+          format="segment"
+        />
+      </div>
     </div>
     <div class="editor-container">
       <div
@@ -185,27 +204,28 @@
       />
       <div v-if="currentSection === 'speech-parts'">
         <speechpart-form
-          v-if="
-            selectedSpeechpartId !== null &&
-            (speechpartEditMode === 'new' || speechpartEditMode === 'edit')
-          "
-          :speechpart="currentSpeechpart"
-          :speechpart-id="selectedSpeechpartId"
+          v-if="editedSpeechPart"
+          :edited-speech-part="editedSpeechPart"
           :submit="updateSpeechpart"
           :cancel="closeSpeechpartEdit"
         />
         <modal-confirm-speechpart-delete
-          v-if="speechpartEditMode === 'delete'"
+          v-if="confirmingSpeechPartDeletion"
           :cancel="closeSpeechpartEdit"
           :submit="deleteSpeechpart"
         />
         <in-editor-actions
-          v-show="selectedSpeechpartId !== null && editorHasFocus"
+          v-show="
+            !editedSpeechPart &&
+            !confirmingSpeechPartDeletion &&
+            currentSelection &&
+            currentSelection.length > 0
+          "
           class="speechpart-actions"
           :style="actionsPosition"
           refs="speechpartActions"
-          :edit="setSpeechpartEditModeEdit"
-          :delete="setSpeechpartEditModeDelete"
+          :edit="setEditedSpeechPart"
+          :delete="confirmSpeechPartDeletion"
           :edit-text="'Éditer'"
           :delete-text="'Supprimer'"
         />
@@ -215,6 +235,8 @@
 </template>
 
 <script>
+import Quill from "quill";
+
 import { mapState, mapGetters } from "vuex";
 import EditorButton from "./EditorButton.vue";
 
@@ -231,6 +253,8 @@ import TextfieldForm from "../forms/TextfieldForm";
 import InEditorActions from "./InEditorActions";
 import SpeechpartForm from "../forms/SpeechpartForm";
 import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
+
+import SegmentBlot from "../../modules/quill/blots/semantic/Segment";
 
 export default {
   name: "RichTextEditor",
@@ -277,16 +301,15 @@ export default {
         cite: false,
       },
       // speechparts
-      speechpartEditMode: null,
-      selectedSpeechpartId: null,
-      currentSpeechpart: null,
-      defineNewSpeechpart: false,
+      editedSpeechPart: null,
+      confirmingSpeechPartDeletion: false,
     };
   },
   computed: {
     ...mapState("workflow", ["currentSection"]),
     ...mapState("speechparts", ["newSpeechpart", "speechparts"]),
     ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
+    ...mapGetters("user", ["currentUserIsTeacher", "currentUserIsAdmin"]),
   },
   watch: {
     currentSelection() {
@@ -301,79 +324,55 @@ export default {
   beforeDestroy() {
     this.allowKeyboard();
     this.deactivateMouseOver();
+    this.$refs.editor.removeEventListener("click", this.removeSegment);
   },
   mounted() {
     this.initEditor(this.$refs.editor, this.$props.initialContent);
     this.preventKeyboard();
     this.activateMouseOver();
+    this.$refs.editor.addEventListener("click", this.removeSegment);
   },
   methods: {
     updateContent() {
       this.delta = this.editor.getContents().ops;
     },
-
-    onSpeechpartSelected(speechpart, range) {
-      console.log("onspeechpart selected", speechpart, range);
-      if (!range.length) return;
-      this.selectedSpeechpartId = range.index;
-    },
-
     updateSpeechpart(sp) {
-      console.log("UPDATE SP", sp);
-      sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
-      sp.ptr_start = this.selectedSpeechpartId;
-      if (sp.id === undefined) {
-        sp.id = 900000 + sp.ptr_start;
-      }
-      this.editor.format("speechpart", `${sp.id},${sp.speech_part_type.id}`);
-      this.$store.dispatch(`speechparts/update`, sp);
-      this.$store.dispatch("speechparts/saveSpeechParts");
+      this.editor.format("speechpart", sp);
       this.closeSpeechpartEdit();
     },
     deleteSpeechpart() {
-      console.log("this.currentSpeechpart", this.currentSpeechpart);
-      this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id);
       this.editor.format("speechpart", false);
-
-      this.selectedSpeechpartId = null;
-      this.currentSpeechpart = { transcription_id: this.transcription.id };
-
       this.closeSpeechpartEdit();
-      this.$store.dispatch(`speechparts/setToBeSaved`);
-      this.$store.dispatch("speechparts/saveSpeechParts");
     },
 
-    setSpeechpartEditModeDelete() {
-      this.currentSpeechpart = this.$store.state.speechparts.speechparts[
-        this.selectedSpeechpartId
-      ];
-      this.speechpartEditMode = "delete";
-    },
-    setSpeechpartEditModeNew() {
-      this.speechpartEditMode = "new";
-      this.currentSpeechpart = { transcription_id: this.transcription.id };
-      this.newSpeechpartChoiceClose();
-    },
-    setSpeechpartEditModeEdit() {
-      this.speechpartEditMode = "edit";
-      //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-      /*
-       if (!this.currentSpeechpart) {
-          this.currentSpeechpart = { transcription_id: this.transcription.id };
-        }
-        */
+    confirmSpeechPartDeletion() {
+      this.confirmingSpeechPartDeletion = true;
     },
 
-    newSpeechpartChoiceClose() {
-      this.defineNewSpeechpart = false;
-      this.selectedSpeechpartId = null;
+    setEditedSpeechPart() {
+      const range = this.editor.getSelection();
+      const speechPartsInRange = this.editor.getFormat(range).speechpart;
+      if (speechPartsInRange === undefined) {
+        this.editedSpeechPart = { type_id: 1, note: "" };
+      } else if (Array.isArray(speechPartsInRange)) {
+        this.editedSpeechPart = { ...speechPartsInRange[0] };
+      } else {
+        this.editedSpeechPart = { ...speechPartsInRange };
+      }
     },
 
     closeSpeechpartEdit() {
-      this.speechpartEditMode = null;
-      this.currentSpeechpart = null;
-      this.selectedSpeechpartId = null;
+      this.editedSpeechPart = null;
+      this.confirmingSpeechPartDeletion = false;
       this.editor.focus();
+    },
+
+    /* remove segment method */
+    removeSegment(e) {
+      const foundBlot = Quill.find(e.target);
+      if (foundBlot && foundBlot instanceof SegmentBlot) {
+        this.editor.deleteText(foundBlot.offset(this.editor.scroll), 1);
+      }
     },
 
     /*

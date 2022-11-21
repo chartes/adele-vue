@@ -1,5 +1,5 @@
 
-.speech-parts.content {
+speechparts.content {
     margin-top: 24px;
 
     & > p {
@@ -8,7 +8,7 @@
     }
 }
 
-.speech-part, speechpart, .speech-part-item {
+adele-speechpart, .speech-part-item {
 
     &:hover {
         cursor: pointer;
@@ -16,47 +16,49 @@
 
     padding: 0.35em;
     border-radius: 5px;
+}
 
-    &.type-01.active, &.type-01.nav, &.type-01:hover, &[type='1'] {
+.quill-editor adele-speechpart, adele-speechpart:hover, adele-speechpart.active, .speech-part-item {
+    &[type_id='1'], &.type-01 {
         background-color: #f2e9d0;
     }
-    &.type-02.active, &.type-02.nav, &.type-02:hover, &[type='2'] {
+    &[type_id='2'], &.type-02 {
         background-color: #c3aed6;
     }
-    &.type-03.active, &.type-03.nav, &.type-03:hover, &[type='3'] {
+    &[type_id='3'], &.type-03 {
         background-color: #edcfa9;;
     }
-    &.type-04.active, &.type-04.nav, &.type-04:hover, &[type='4'] {
+    &[type_id='4'], &.type-04 {
         background-color: #bfdcae;
     }
-    &.type-05.active, &.type-05.nav, &.type-05:hover, &[type='5'] {
+    &[type_id='5'], &.type-05 {
         background-color: #bad7df;
     }
-    &.type-06.active, &.type-06.nav, &.type-06:hover, &[type='6'] {
+    &[type_id='6'], &.type-06 {
         background-color: #ffe2e2;
     }
-    &.type-07.active, &.type-07.nav, &.type-07:hover, &[type='7'] {
+    &[type_id='7'], &.type-07 {
         background-color: #99ddcc;
     }
-    &.type-08.active, &.type-08.nav, &.type-08:hover, &[type='8'] {
+    &[type_id='8'], &.type-08 {
         background-color: #f7e7bd;
     }
-    &.type-09.active, &.type-09.nav, &.type-09:hover, &[type='9'] {
+    &[type_id='9'], &.type-09 {
         background-color: #9cada4;
     }
-    &.type-10.active, &.type-10.nav, &.type-10:hover, &[type='10'] {
+    &[type_id='10'], &.type-10 {
         background-color: #8fc0a9;
     }
-    &.type-11.active, &.type-11.nav, &.type-11:hover, &[type='11'] {
+    &[type_id='11'], &.type-11 {
         background-color: rgb(174, 243, 211);
     }
-    &.type-12.active, &.type-12.nav, &.type-12:hover, &[type='12'] {
+    &[type_id='12'], &.type-12 {
         background-color: #ebcfc4;
     }
-    &.type-13.active, &.type-13.nav, &.type-13:hover, &[type='13'] {
+    &[type_id='13'], &.type-13 {
         background-color: #dd9866;
     }
-    &.type-14.active, &.type-14.nav, &.type-14:hover, &[type='14'] {
+    &[type_id='14'], &.type-14 {
         background-color: #aaaaaa;
     }
 }

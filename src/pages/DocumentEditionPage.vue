@@ -151,7 +151,7 @@
         </div>
 
         <!-- section content -->
-        <div class="columns">
+        <div :class="'columns ' + $attrs.section + '-edit'">
           <div
             v-show="imageVisibility"
             class="column m-t-sm"
@@ -452,9 +452,30 @@
               </div>
 
               <!-- Parties du discours -->
+
               <div v-if="currentSection === 'speech-parts'">
+                <!-- Il n'y a pas de parties du discours (jamais créées ou supprimées) -->
+                <div v-if="!speechPartsContentLoading && speechPartsContent === null">
+                  <message>
+                    <p class="m-b-sm">
+                      <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                      <span
+                        v-else
+                      >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span>
+                      pas encore commencé l'identification des parties du discours.
+                    </p>
+                    <div
+                      v-if="currentUser.id === selectedUser.id"
+                      class="button is-info"
+                      @click="addNewSpeechPartsContent"
+                    >
+                      Commencer à identifier
+                    </div>
+                  </message>
+                </div>
                 <!-- Parties du discours error -->
-                <div v-if="!isTranscriptionValidated">
+                <div v-else-if="speechPartsContentError || !isTranscriptionValidated">
                   <message
                     v-if="!isTranscriptionValidated"
                     message-class="is-info "
@@ -463,10 +484,10 @@
                     des parties du discours
                   </message>
                   <message
-                    v-else-if="speechPartsError.response.status !== 404"
+                    v-else
                     message-class="is-danger"
                   >
-                    {{ speechPartsError }}
+                    {{ speechPartsContentError }}
                   </message>
                 </div>
                 <!-- speechparts readonly -->
@@ -491,7 +512,7 @@
                 </div>
                 <!-- speechpart edition -->
                 <div v-else>
-                  <document-edition-transcription />
+                  <document-edition-speech-parts />
                 </div>
               </div>
             </div>
@@ -521,6 +542,12 @@
         :user-id="selectedUserId"
       />
       <delete-commentary-modal v-if="currentSection === 'commentaries'" />
+
+      <delete-speech-parts-modal
+        v-if="currentSection === 'speech-parts'"
+        :doc-id="parseInt($attrs.docId)"
+        :user-id="selectedUserId"
+      />
     </div>
   </div>
 </template>
@@ -533,7 +560,7 @@ import DocumentEditionTranscription from "../components/document/edition/Documen
 import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
 
 import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
-//import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
+import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
 
 import DocumentNotice from "../components/document/view/DocumentNotice.vue";
 import DocumentTranscription from "../components/document/view/DocumentTranscription.vue";
@@ -553,6 +580,7 @@ import TextCutterEditor from "@/components/editors/TextCutterEditor.vue"
 import VisibilityToggle from "@/components/ui/VisibilityToggle.vue";
 
 import DeleteTranscriptionModal from "@/components/document/edition/modals/DeleteTranscriptionModal.vue";
+import DeleteSpeechPartsModal from "@/components/document/edition/modals/DeleteSpeechPartsModal.vue";
 import DeleteTranslationModal from "@/components/document/edition/modals/DeleteTranslationModal.vue";
 import DeleteCommentaryModal from "@/components/document/edition/modals/DeleteCommentaryModal.vue";
 
@@ -573,7 +601,7 @@ export default {
     DocumentEditionTranscription,
     DocumentEditionTranslation,
     DocumentEditionCommentaries,
-    //DocumentEditionSpeechParts,
+    DocumentEditionSpeechParts,
 
     DocumentTranscription,
     DocumentTranslation,
@@ -589,6 +617,7 @@ export default {
     VisibilityToggle,
 
     DeleteTranscriptionModal,
+    DeleteSpeechPartsModal,
     DeleteTranslationModal,
     DeleteCommentaryModal,
 
@@ -598,7 +627,7 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.dispatch("workflow/setCurrentSection", vm.currentSection);
+      vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
       if (!vm.isAuthenticated) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
@@ -653,6 +682,7 @@ export default {
     ]),
     ...mapState("translation", ["translationContent", "translationError"]),
     ...mapState("commentaries", ["commentaries", "commentariesError"]),
+    ...mapState("speechPartsContent", ["speechPartsContentError", "speechPartsContent", "speechPartsContentLoading"]),
     ...mapState("speechparts", ["speechPartsError"]),
 
     ...mapState("user", ["currentUser"]),
@@ -723,7 +753,9 @@ export default {
       this.setupVisibilityWidget(this.currentSection)
     },
     async currentSection() {
-      await this.fetchContentFromUser();
+      if (!this.isLoading) {
+        await this.fetchContentFromUser();
+      }
     }
   },
   async created() {
@@ -741,6 +773,9 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    ...mapActions("notes", {
+      fetchNotes: "fetchNotes",
+    }),
     ...mapActions("transcription", {
       fetchTranscriptionContent: "fetchTranscriptionContent",
       createTranscription: "addNewTranscription",
@@ -757,8 +792,9 @@ export default {
       fetchCommentariesContent: "fetchCommentariesContent",
       setCommentariesError: "setError",
     }),
-    ...mapActions("speechparts", {
+    ...mapActions("speechPartsContent", {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
+      addNewSpeechPartsContent: "addNewSpeechPartsContent",
     }),
     setupVisibilityWidget(section) {
       switch (section) {
@@ -815,9 +851,11 @@ export default {
     },
     async fetchContentFromUser() {
       return await Promise.all([
+        this.fetchNotes(),
         this.fetchTranscriptionContent(),
         this.fetchTranslationContent(),
-        this.fetchCommentariesContent()
+        this.fetchCommentariesContent(),
+        this.fetchSpeechPartsContent(),
       ])
     },
     async addNewTranscription() {
@@ -828,9 +866,6 @@ export default {
     },
     async addNewTranslation() {
       await this.createTranslation();
-      if (!this.translationError) {
-        await this.fetchTranslationContent();
-      }
     },
     async addNewCommentaries() {
       this.setCommentariesError(null);

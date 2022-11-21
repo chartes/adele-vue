@@ -24,29 +24,24 @@ export default {
     };
   },
   computed: {
-    ...mapState("document", ["loading", "transcriptionView", "transcriptionLoading"]),
+    ...mapState("document", ["loading", "transcriptionView"]),
   },
   watch: {
     async transcriptionView() {
       this.content = await this.getTranscriptionViewContent();
     },
   },
-  async created() {
-    this.content = await this.getTranscriptionViewContent();
-  },
   mounted() {
     // make tooltips
     if (this.transcriptionView) {
       // notes
-      Object.keys(this.transcriptionView.notes).forEach((noteId) => {
+      Array.from(document.getElementsByTagName(`adele-note`)).forEach((el) => {
+        const noteId = el.getAttribute("id");
         const paddedId = `${noteId}`.padStart(10, "0");
-        Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(
-          (el) => {
-            addToolTip(el, this.transcriptionView.notes[noteId], null, {
-              contentType: "note",
-            });
-          }
-        );
+
+        addToolTip(el, this.transcriptionView.notes[paddedId], null, {
+          contentType: "note",
+        });
       });
 
       // persnames && placenames
