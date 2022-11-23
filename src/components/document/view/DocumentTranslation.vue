@@ -15,9 +15,7 @@ export default {
   components: {
     RichTextEditor,
   },
-  props: {
-    readonlyData: { type: Object, default: null },
-  },
+  props: {},
   data() {
     return {
       content: null,
@@ -30,6 +28,9 @@ export default {
     async translationView() {
       this.content = await this.getTranslationViewContent();
     },
+  },
+  async created() {
+    this.content = await this.getTranslationViewContent();
   },
   mounted() {
     if (this.translationView) {

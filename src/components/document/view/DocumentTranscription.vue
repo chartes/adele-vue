@@ -15,9 +15,6 @@ export default {
   components: {
     RichTextEditor,
   },
-  props: {
-    readonlyData: { type: Object, default: null },
-  },
   data() {
     return {
       content: null,
@@ -25,6 +22,9 @@ export default {
   },
   computed: {
     ...mapState("document", ["loading", "transcriptionView"]),
+  },
+  async created() {
+    this.content = await this.getTranscriptionViewContent();
   },
   watch: {
     async transcriptionView() {

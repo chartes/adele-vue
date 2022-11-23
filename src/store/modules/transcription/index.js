@@ -83,10 +83,7 @@ const actions = {
   },
   getTranscriptionViewContent({rootState}) {
     if (rootState.document.transcriptionView) {
-      const content = TEIToQuill(rootState.document.transcriptionView.content)
-      //const notes = rootState.document.transcriptionView.notes;
-      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
-      return convertLinebreakTEIToQuill(content)
+      return rootState.document.transcriptionView.content;
     } else {
       return null;
     }

@@ -241,9 +241,8 @@
                     <document-transcription
                       v-if="transcriptionVisibility"
                       :readonly="true"
-                      :readonly-data="1"
                     />
-                    <document-translation v-else :readonly="true" :readonly-data="1" />
+                    <document-translation v-else :readonly="true" />
                   </div>
                 </div>
                 <document-commentaries
@@ -252,7 +251,6 @@
                     $attrs.section === 'commentaries' &&
                     commentariesView !== null
                   "
-                  :readonly-data="commentariesView"
                 />
                 <document-speech-parts
                   v-if="
@@ -260,7 +258,6 @@
                     $attrs.section === 'speech-parts' &&
                     speechPartsView != null
                   "
-                  :readonly-data="speechPartsView"
                 />
               </div>
             </div>
@@ -465,13 +462,13 @@ export default {
 
       this.transcriptionVisibility = this.transcriptionView !== null;
       this.translationVisibility = this.translationView !== null;
-
+      /*
       try {
         await this.fetchTranscriptionAlignmentView();
       } catch (error) {
         console.log("No tr/tl alignment", error);
       }
-
+      */
       try {
         await this.fetchCommentariesView();
       } catch (error) {

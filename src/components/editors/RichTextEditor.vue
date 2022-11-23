@@ -231,10 +231,17 @@
         />
       </div>
     </div>
+    <div
+      v-show="showPopup"
+      ref="my-popup-container"
+      class="popup-container"
+      v-html="popupContent"
+    ></div>
   </div>
 </template>
 
 <script>
+import { debounce } from "lodash";
 import Quill from "quill";
 
 import { mapState, mapGetters } from "vuex";
@@ -303,13 +310,22 @@ export default {
       // speechparts
       editedSpeechPart: null,
       confirmingSpeechPartDeletion: false,
+      //popup
+      popupContainer: null,
+      popupData: ["This is <b>the popup content</b>"],
+      showPopup: false,
     };
   },
   computed: {
     ...mapState("workflow", ["currentSection"]),
     ...mapState("speechparts", ["newSpeechpart", "speechparts"]),
+    ...mapState("notes", ["notes"]),
     ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
     ...mapGetters("user", ["currentUserIsTeacher", "currentUserIsAdmin"]),
+
+    popupContent() {
+      return this.popupData.join("<br>");
+    },
   },
   watch: {
     currentSelection() {
@@ -320,6 +336,68 @@ export default {
   },
   created() {
     this.$store.dispatch("speechpartTypes/fetch");
+    this.configurePopup = debounce((e, isLeaving) => {
+      const el = e.target;
+      //const tagName = e.target.tagName.toLowerCase();
+      if (isLeaving) {
+        this.showPopup = false;
+        return;
+      }
+      this.popupData = [];
+
+      const _parents = this.getParents(el);
+
+      _parents.forEach((el) => {
+        let _tagName = el.tagName.toLowerCase();
+        if (
+          _tagName === "adele-note" ||
+          _tagName === "persname" ||
+          _tagName === "placename" ||
+          _tagName === "adele-speechpart"
+        ) {
+          let _content = "";
+          let noteId = null;
+          let note = null;
+          switch (_tagName) {
+            case "adele-note":
+              noteId = el.getAttribute("id");
+              note = this.notes[noteId];
+              if (note) {
+                _content = "<header></header>";
+                _content += note.content;
+              }
+              break;
+            case "adele-speechpart":
+              _content += el.getAttribute("note");
+              break;
+            case "persname":
+              _content += el.getAttribute("ref");
+              break;
+            case "placename":
+              _content += el.getAttribute("ref");
+              break;
+            default:
+              break;
+          }
+
+          if (_content) {
+            this.popupData.push(`<article>${_content}</article>`);
+            const bb = el.getBoundingClientRect();
+            const x = parseInt(e.x + 20);
+            const y = parseInt(e.y - 20);
+
+            this.popupContainer.style.left = `${x}px`;
+            this.popupContainer.style.top = `${y}px`;
+          }
+        }
+      });
+
+      //console.log(this.popupData, el, isLeaving, this.popupContainer);
+
+      if (this.popupData.length > 0) {
+        this.showPopup = true;
+      }
+    }, 20);
   },
   beforeDestroy() {
     this.allowKeyboard();
@@ -331,10 +409,36 @@ export default {
     this.preventKeyboard();
     this.activateMouseOver();
     this.$refs.editor.addEventListener("click", this.removeSegment);
+    this.popupContainer = this.$refs["my-popup-container"];
+
+    this.updatePopups();
   },
   methods: {
+    getParents(el) {
+      let _p = el.parentElement;
+      let _parents = [el, _p];
+      while (_p && !_p.classList.contains("quill-editor")) {
+        _p = _p.parentElement;
+        _parents.push(_p);
+      }
+      return _parents;
+    },
+    updatePopups() {
+      const toBeAnnotated = this.$refs.editor.querySelectorAll(
+        "adele-note,persName,placeName,adele-speechpart"
+      );
+      toBeAnnotated.forEach((el) => {
+        el.addEventListener("mouseover", (e) => {
+          this.configurePopup(e, false);
+        });
+        el.addEventListener("mouseout", (e) => {
+          this.configurePopup(e, true);
+        });
+      });
+    },
     updateContent() {
       this.delta = this.editor.getContents().ops;
+      this.updatePopups();
     },
     updateSpeechpart(sp) {
       this.editor.format("speechpart", sp);
@@ -404,6 +508,11 @@ export default {
       this.$refs.editor.removeEventListener("mouseout", this.mouseOutHandler);
     },
     mouseOverHandler(e) {
+      //console.log("e.target.tagName", e.target.tagName);
+
+      // handle popups
+      //this.configurePopup(e);
+
       let id = null;
       if (e.target.tagName.toLowerCase() === "speechpart") {
         id = parseInt(e.target.getAttribute("id"));
@@ -415,7 +524,25 @@ export default {
     },
     mouseOutHandler(e) {
       //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+      //this.hidePopup(e);
     },
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.popup-container {
+  position: fixed;
+  z-index: 1000;
+  border: 1px solid #dbdbdb;
+  padding: 12px;
+  background: #eff0eb;
+  border-radius: 5px;
+}
+adele-note:hover,
+adele-speechpart:hover,
+persName:hover,
+placeName:hover {
+  cursor: pointer;
+}
+</style>

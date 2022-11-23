@@ -51,11 +51,13 @@ export default {
     ...mapState("document", ["loading", "transcriptionView", "translationView"]),
     transcriptionSegments() {
       return this.transcriptionView
-        ? this.transcriptionView.content.split("<segment/>")
+        ? this.transcriptionView.content.split("<adele-segment></adele-segment>")
         : [];
     },
     translationSegments() {
-      return this.translationView ? this.translationView.content.split("<segment/>") : [];
+      return this.translationView
+        ? this.translationView.content.split("<adele-segment></adele-segment>")
+        : [];
     },
     segments() {
       if (

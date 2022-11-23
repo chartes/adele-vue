@@ -211,11 +211,11 @@ const actions = {
         content: response.data.data["content"],
         notes: response.data.data["notes"]
       })
-      dispatch('speechparts/setError', null, {root: true} )
+      dispatch('speechPartsContent/setError', null, {root: true} )
       commit('LOADING_STATUS', false);
     }).catch((error) => {
       commit('RESET_SPEECH_PARTS_VIEW')
-      dispatch('speechparts/setError', error, {root: true} )
+      dispatch('speechPartsContent/setError', error, {root: true} )
       commit('LOADING_STATUS', false);
     })
   },

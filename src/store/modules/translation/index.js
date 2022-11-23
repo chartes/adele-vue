@@ -56,7 +56,7 @@ const actions = {
       commit('LOADING_STATUS', true);
 
       let translation = response.data.data;
-      const alignments = rootState.transcription.transcriptionAlignments;
+      //const alignments = rootState.transcription.transcriptionAlignments;
 
       commit('UPDATE', translation);
       commit('SET_ERROR', null)
@@ -82,6 +82,13 @@ const actions = {
         docId: rootState.document.document.id,
         userId: rootState.workflow.selectedUserId
       })
+    }
+  },
+  getTranslationViewContent({rootState}) {
+    if (rootState.document.translationView) {
+      return rootState.document.translationView.content;
+    } else {
+      return null;
     }
   },
   /* useful */

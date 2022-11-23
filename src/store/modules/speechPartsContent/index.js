@@ -117,7 +117,15 @@ const actions = {
       docId,
       userId,
     })
-  }
+  },
+  getSpeechpartsViewContent({rootState}) {
+    if (rootState.document.speechPartsView) {
+      return rootState.document.speechPartsView.content;
+    } else {
+      return null;
+    }
+  },
+
 };
 
 const getters = {

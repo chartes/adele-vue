@@ -1,15 +1,5 @@
 import {http} from '../../../modules/http-common';
-import Quill from '../../../modules/quill/AdeleQuill';
 import Vue from 'vue';
-
-import {
-  TEIToQuill,
-  quillToTEI,
-  convertLinebreakTEIToQuill,
-  convertLinebreakQuillToTEI,
-  computeNotesPointers,
-} from '../../../modules/quill/MarkupUtils'
-import {filterDeltaOperations} from '../../../modules/quill/DeltaUtils'
 
 
 const state = {
@@ -252,16 +242,9 @@ const actions = {
 
   getCommentariesViewContent({rootState}) {
     if (rootState.document.commentariesView) {
-      console.log("==> rootState.document.commentariesView", rootState.document.commentariesView)
-      const coms = rootState.document.commentariesView.map(c => {
-        return {
-          ...c,
-          content: convertLinebreakTEIToQuill(TEIToQuill(c.content))
-        }
-      });
       //const notes = rootState.document.transcriptionView.notes;
       //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
-      return coms
+      return rootState.document.commentariesView
     } else {
       return null;
     }

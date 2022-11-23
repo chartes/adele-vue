@@ -1,7 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 import Quill, {getNewQuill} from '../modules/quill/AdeleQuill';
 import Delta from 'quill-delta';
-import { trim } from '../modules/quill/MarkupUtils';
 
 import _isEmpty from 'lodash/isEmpty';
 
@@ -30,17 +29,15 @@ var EditorMixin = {
   methods: {
 
     initEditor(editorElement, initialContent) {
-      editorElement.innerHTML = trim(initialContent);
+      editorElement.innerHTML = initialContent;
       this.editor = getNewQuill(editorElement, {readOnly: this.$props.readonly});
       this.editor.updateContents(new Delta().retain(this.editor.getLength(), 'api'))
       this.editorContentElement = editorElement.children[0];
-
 
       if (this.$props.readonly) {
         this.editorContentElement.classList.remove('ql-editor')
         this.editorContentElement.classList.add('ql-editor-readonly')
       }
-
 
       this.editorInited = true;
       this.activateEvents();

@@ -1,7 +1,4 @@
 import {http} from '../../../modules/http-common';
-import {
-   TEIToQuill,  convertLinebreakTEIToQuill
-} from '../../../modules/quill/MarkupUtils'
 
 const state = {
   speechparts: [],
@@ -86,10 +83,10 @@ const actions = {
   },
   getSpeechpartsViewContent({rootState}) {
     if (rootState.document.speechPartsView) {
-      const content = TEIToQuill(rootState.document.speechPartsView.content)
+      const content = rootState.document.speechPartsView.content
       //const notes = rootState.document.transcriptionView.notes;
       //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
-      return convertLinebreakTEIToQuill(content)
+      return content
     } else {
       return null;
     }
