@@ -13,17 +13,17 @@ const mutations = {
 };
 
 const actions = {
-  fetch ({ commit }) {
-    return http.get(`/speech-part-types`).then( response => {
-      commit('UPDATE', response.data.data);
-    });
+  async fetch ({ state, commit }) {
+    const response = await http.get(`/speech-part-types`);
+    commit('UPDATE', response.data.data);
   }
 };
 
 const getters = {
 
   getSpeechpartTypeById: (state) => (id) => {
-    return state.speechpartTypes.find(spt => spt.id === id)
+    const sp = state.speechpartTypes.find(spt => parseInt(spt.id) === parseInt(id));
+    return sp;
   }
 
 };

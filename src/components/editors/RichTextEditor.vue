@@ -320,11 +320,13 @@ export default {
     ...mapState("workflow", ["currentSection"]),
     ...mapState("speechparts", ["newSpeechpart", "speechparts"]),
     ...mapState("notes", ["notes"]),
+    ...mapState("speechpartTypes", ["speechpartTypes"]),
+    ...mapGetters("document", ["notesFromView"]),
     ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
     ...mapGetters("user", ["currentUserIsTeacher", "currentUserIsAdmin"]),
 
     popupContent() {
-      return this.popupData.join("<br>");
+      return this.popupData.join("<div class='popup-sep'></div>");
     },
   },
   watch: {
@@ -334,8 +336,11 @@ export default {
       }
     },
   },
-  created() {
-    this.$store.dispatch("speechpartTypes/fetch");
+  async created() {
+    if (this.speechpartTypes.length === 0) {
+      await this.$store.dispatch("speechpartTypes/fetch");
+    }
+
     this.configurePopup = debounce((e, isLeaving) => {
       const el = e.target;
       //const tagName = e.target.tagName.toLowerCase();
@@ -356,33 +361,50 @@ export default {
           _tagName === "adele-speechpart"
         ) {
           let _content = "";
+          let spTypeId = null;
+          let spType = null;
           let noteId = null;
           let note = null;
+
           switch (_tagName) {
-            case "adele-note":
-              noteId = el.getAttribute("id");
-              note = this.notes[noteId];
-              if (note) {
-                _content = "<header></header>";
-                _content += note.content;
-              }
-              break;
             case "adele-speechpart":
+              spTypeId = el.getAttribute("type_id");
+              if (spTypeId) {
+                spType = this.getSpeechpartTypeById(spTypeId);
+                _content += `<header>${spType.label}</header>`;
+              }
               _content += el.getAttribute("note");
               break;
             case "persname":
+              _content += "<header>Personne</header>";
               _content += el.getAttribute("ref");
               break;
             case "placename":
+              _content = "<header>Lieu</header>";
               _content += el.getAttribute("ref");
+              break;
+            case "adele-note":
+              noteId = el.getAttribute("id");
+              if (this.readonly) {
+                // read notes from notesFromView
+                noteId = String(noteId).padStart(10, "0");
+                note = { content: this.notesFromView[noteId] };
+                //console.log(noteId, note);
+              } else {
+                note = this.notes[noteId];
+              }
+              if (note) {
+                _content += "<header>Note</header>";
+                _content += note.content;
+              }
               break;
             default:
               break;
           }
 
           if (_content) {
-            this.popupData.push(`<article>${_content}</article>`);
-            const bb = el.getBoundingClientRect();
+            this.popupData.push(`<article class="adele-popup">${_content}</article>`);
+            //const bb = el.getBoundingClientRect();
             const x = parseInt(e.x + 20);
             const y = parseInt(e.y - 20);
 
@@ -530,19 +552,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.popup-container {
-  position: fixed;
-  z-index: 1000;
-  border: 1px solid #dbdbdb;
-  padding: 12px;
-  background: #eff0eb;
-  border-radius: 5px;
-}
-adele-note:hover,
-adele-speechpart:hover,
-persName:hover,
-placeName:hover {
-  cursor: pointer;
-}
-</style>
+<style lang="scss" scoped></style>

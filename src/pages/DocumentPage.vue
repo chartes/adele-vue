@@ -395,6 +395,7 @@ export default {
       fetchSpeechPartsView: "fetchSpeechPartsView",
       fetchTranscriptionAlignmentView: "fetchTranscriptionAlignmentView",
     }),
+    ...mapActions("notes", ["fetchNotesFromUser"]),
 
     setupVisibilityWidget(section) {
       switch (section) {
@@ -456,19 +457,14 @@ export default {
         this.$router.push({ name: "error", params: { error: error } });
       }
 
+      //await this.fetchNotesFromUser({ docId: docId, userId: this.document.user_id });
       await this.fetchSpeechPartsView();
       await this.fetchTranscriptionView();
       await this.fetchTranslationView();
 
       this.transcriptionVisibility = this.transcriptionView !== null;
       this.translationVisibility = this.translationView !== null;
-      /*
-      try {
-        await this.fetchTranscriptionAlignmentView();
-      } catch (error) {
-        console.log("No tr/tl alignment", error);
-      }
-      */
+
       try {
         await this.fetchCommentariesView();
       } catch (error) {

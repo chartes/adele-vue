@@ -329,6 +329,21 @@ const getters = {
       console.warn(error)
       return null
     }
+  }, 
+  notesFromView: state => {
+    let notes = {};
+    if (state.transcriptionView && state.transcriptionView.notes) {
+      notes = {...notes, ...state.transcriptionView.notes};
+    }
+    if (state.translationView && state.translationView.notes) {
+      notes = {...notes, ...state.translationView.notes};
+    }
+    if (state.commentariesView ) {
+      state.commentariesView.forEach(com => {
+        notes = {...notes, ...com.notes};
+      })
+    }
+    return notes
   }
 };
 

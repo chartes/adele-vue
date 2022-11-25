@@ -76,7 +76,7 @@ const getters = {
       return true
     }
 
-    console.log("isStepReadOnly",rootState.user.currentUser, rootGetters['user/currentUserIsAdmin'], rootGetters['user/currentUserIsAdmin'] )
+    //console.log("isStepReadOnly",rootState.user.currentUser, rootGetters['user/currentUserIsAdmin'], rootGetters['user/currentUserIsAdmin'] )
     // admin
     if (rootGetters['user/currentUserIsAdmin']) {
       return false

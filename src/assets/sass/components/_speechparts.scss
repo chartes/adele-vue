@@ -14,7 +14,7 @@ adele-speechpart, .speech-part-item {
         cursor: pointer;
     }
 
-    padding: 0.35em;
+    padding: 0.32em;
     border-radius: 5px;
 }
 
@@ -61,6 +61,10 @@ adele-speechpart, .speech-part-item {
     &[type_id='14'], &.type-14 {
         background-color: #aaaaaa;
     }
+}
+
+.quill-editor adele-speechpart.inactive {
+    background-color: inherit !important;
 }
 
 .show-all-speechparts {

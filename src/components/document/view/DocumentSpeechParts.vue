@@ -38,7 +38,6 @@
 
 <script>
 import { mapState, mapGetters, mapActions } from "vuex";
-import addToolTip from "@/modules/tooltip";
 import RichTextEditor from "@/components/editors/RichTextEditor.vue";
 
 export default {
@@ -58,8 +57,17 @@ export default {
     ...mapState("document", ["loading", "speechPartsView"]),
     ...mapState("speechpartTypes", ["speechpartTypes"]),
     ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
+    ...mapState("speechPartsContent", ["speechPartsContentLoading"]),
   },
   watch: {
+    speechPartsContentLoading() {
+      if (!this.speechPartsContentLoading) {
+        document.querySelectorAll("adele-speechpart").forEach((el) => {
+          el.classList.add("inactive");
+          //console.log("EL", el, el.classList);
+        });
+      }
+    },
     async speechPartsView() {
       this.content = await this.getSpeechpartsViewContent();
     },
@@ -69,11 +77,11 @@ export default {
       allParts.forEach((p) => {
         if (this.hoverId) {
           if (p.getAttribute("type_id") === this.hoverId.toString()) {
-            p.classList.add("active");
+            p.classList.remove("inactive");
           }
         } else {
           if (!this.showAll) {
-            p.classList.remove("active");
+            p.classList.add("inactive");
           }
         }
       });
@@ -84,42 +92,16 @@ export default {
   },
   async created() {
     this.content = await this.getSpeechpartsViewContent();
+    /* find the speech part types to display in the top section */
+    const fakeDOM = new DOMParser().parseFromString(this.content, "text/html");
+    const allParts = Array.from(fakeDOM.getElementsByTagName("adele-speechpart"));
+    const usedTypesIds = new Set(
+      allParts.map((part) => parseInt(part.getAttribute("type_id")))
+    );
+    this.spTypes = Array.from(usedTypesIds).map(this.getSpeechpartTypeById);
   },
-  mounted() {
-    if (this.content) {
-      /* find the speech part types to display in the top section */
-      const fakeDOM = new DOMParser().parseFromString(this.content, "text/html");
-      const allParts = Array.from(fakeDOM.getElementsByTagName("adele-speechpart"));
-      const usedTypesIds = new Set(
-        allParts.map((part) => parseInt(part.getAttribute("type_id")))
-      );
-      this.spTypes = Array.from(usedTypesIds).map(this.getSpeechpartTypeById);
+  mounted() {},
 
-      // make tooltips
-      Array.from(document.getElementsByTagName("adele-speechpart")).forEach(
-        (speechPartElement) => {
-          const speechPart = {
-            type_id: parseInt(speechPartElement.getAttribute("type_id")),
-            note: speechPartElement.getAttribute("note"),
-          };
-          addToolTip(
-            speechPartElement,
-            speechPart.note,
-            this.getSpeechpartTypeById(speechPart.type_id).label,
-            { contentType: "speech-part" }
-          );
-        }
-      );
-
-      // persnames && placenames
-      Array.from(document.querySelectorAll(`persname, placename`)).forEach((el) => {
-        addToolTip(el, el.attributes.ref.value, null, {
-          contentType: el.localName,
-          position: el.localName === "persname" ? "is-left" : "is-bottom",
-        });
-      });
-    }
-  },
   methods: {
     ...mapActions("speechPartsContent", ["getSpeechpartsViewContent"]),
     leaveHovering() {
@@ -127,10 +109,10 @@ export default {
       this.hoverId = null;
       allParts.forEach((p) => {
         if (this.showAll) {
-          p.classList.add("active");
+          p.classList.remove("inactive");
         } else {
           if (!this.showAll) {
-            p.classList.remove("active");
+            p.classList.add("inactive");
           }
         }
       });
@@ -139,11 +121,4 @@ export default {
 };
 </script>
 
-<style>
-.b-tooltip {
-  display: inline;
-}
-.b-tooltip .tooltip-trigger {
-  display: inline;
-}
-</style>
+<style></style>

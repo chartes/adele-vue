@@ -30,7 +30,7 @@ export default {
       ...mapState('user', ['currentUser'])
     },
     async created() {
-    console.log(this.speechPartsContent)
+    //console.log(this.speechPartsContent)
     },
     methods: {
 

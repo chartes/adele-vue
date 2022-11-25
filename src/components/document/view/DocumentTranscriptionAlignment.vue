@@ -75,7 +75,7 @@ export default {
           translation: tl,
         });
       });
-      console.log("segs", _segs);
+      //console.log("segs", _segs);
       return _segs;
     },
   },
