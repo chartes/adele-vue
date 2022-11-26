@@ -130,8 +130,7 @@
       </div>
       <div
         v-if="
-          (currentSection === 'transcription' || currentSection === 'translation') &&
-          (currentUserIsTeacher || currentUserIsAdmin)
+          currentSection === 'translation' && (currentUserIsTeacher || currentUserIsAdmin)
         "
         class="editor-controls-group"
       >
@@ -282,6 +281,7 @@ export default {
   props: {
     initialContent: { type: String, default: "" },
     changeAction: { type: String, required: false, default: null },
+    showSegments: { type: Boolean, default: true },
   },
   data() {
     return {
