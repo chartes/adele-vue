@@ -6,20 +6,25 @@ class NoteBlot extends Inline {
 
   static create(data) {
     let node = super.create();
-    node.setAttribute('id', data);
+    const {id} = data;
+    if (typeof(id) === 'number'){
+      node.setAttribute('id', id)
+    }
     return node;
   }
 
   static formats(domNode) {
-    let id = domNode.getAttribute('id');
-    return id || true;
+    return {
+      id: Number.parseInt(domNode.getAttribute('id'))
+    }
   }
 
 
 
   format(name, data) {
-    if (name === 'note' && data) {
-      this.domNode.setAttribute('id', data);
+    if (name === 'adele-note' && data) {
+      const {id} = data;
+      this.domNode.setAttribute('id', id);
     } else {
       super.format(name, data);
     }
@@ -32,6 +37,6 @@ class NoteBlot extends Inline {
   }
 }
 NoteBlot.blotName = 'note';
-NoteBlot.tagName = 'note';
+NoteBlot.tagName = 'adele-note';
 
 export default NoteBlot;

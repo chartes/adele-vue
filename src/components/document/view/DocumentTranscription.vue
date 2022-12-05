@@ -1,59 +1,62 @@
 <template>
-  <div v-if="!!readonlyData">
-    <div
-      class="has-text-weight-medium subtitle m-b-xl"
-    >
-      Transcription
-    </div>
-    <div
-      
-      class="content"
-      v-html="readonlyData.content"
-    />
+  <div>
+    <div class="has-text-weight-medium subtitle m-b-xl">Transcription</div>
+    <rich-text-editor v-if="content" :initial-content="content" :readonly="true" />
   </div>
 </template>
 
-
 <script>
-
-import { mapState } from 'vuex';
-import Vue from 'vue';
-import addToolTip from '@/modules/tooltip';
+import { mapActions, mapState } from "vuex";
+import addToolTip from "@/modules/tooltip";
+import RichTextEditor from "@/components/editors/RichTextEditor.vue";
 
 export default {
-    name: "DocumentTranscription",
-    components: {
-        
+  name: "DocumentTranscription",
+  components: {
+    RichTextEditor,
+  },
+  data() {
+    return {
+      content: null,
+    };
+  },
+  computed: {
+    ...mapState("document", ["loading", "transcriptionView"]),
+  },
+  async created() {
+    this.content = await this.getTranscriptionViewContent();
+  },
+  watch: {
+    async transcriptionView() {
+      this.content = await this.getTranscriptionViewContent();
     },
-    props: {
-        readonlyData: {type: Object, default: null}
-    },
-    computed: {
-        ...mapState('document', ['loading', 'transcriptionView']),
-    },
-    mounted() {
-          // make tooltips
-        if (this.transcriptionView) {
-            // notes
-            Object.keys(this.transcriptionView.notes).forEach(noteId => {
-              const paddedId = `${noteId}`.padStart(10, '0')
-              Array.from(document.querySelectorAll(`[data-note-id='${paddedId}']`)).forEach(el => {
-                addToolTip(el, this.transcriptionView.notes[noteId], null, {contentType: 'note'});
-              })
-            });
+  },
+  mounted() {
+    // make tooltips
+    if (this.transcriptionView) {
+      // notes
+      Array.from(document.getElementsByTagName(`adele-note`)).forEach((el) => {
+        const noteId = el.getAttribute("id");
+        const paddedId = `${noteId}`.padStart(10, "0");
 
-            // persnames && placenames
-            Array.from(document.querySelectorAll(`persname, placename`)).forEach(el => {
-              addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName === 'persname' ? 'is-left' : 'is-bottom'});
-            })
-        }   
-    },
-    methods: {
- 
+        addToolTip(el, this.transcriptionView.notes[paddedId], null, {
+          contentType: "note",
+        });
+      });
+
+      // persnames && placenames
+      Array.from(document.querySelectorAll(`persname, placename`)).forEach((el) => {
+        addToolTip(el, el.attributes.ref.value, null, {
+          contentType: el.localName,
+          position: el.localName === "persname" ? "is-left" : "is-bottom",
+        });
+      });
     }
-}
+  },
+  methods: {
+    ...mapActions("transcription", ["getTranscriptionViewContent"]),
+  },
+};
 </script>
 
-<style>
-
-</style>
+<style></style>

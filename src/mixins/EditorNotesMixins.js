@@ -8,39 +8,32 @@ var EditorNotesMixin = {
       defineNewNote: false,
     }
   },
-
   methods: {
 
     onNoteSelected (note, range) {
       if (!range.length) return;
-      this.selectedNoteId = note;
+      if (Array.isArray(note)) {
+        note = note[0]
+      }
+      this.selectedNoteId = note.id;
       //var deltas = this.editor.getContents().ops;
       //var length = deltas.length;
     },
 
     updateNoteId(newId) {
-      this.editor.format('note', newId);
+      this.editor.format('note', {id: newId});
       this.selectedNoteId = newId;
       this.closeNoteEdit();
     },
     updateNote(note) {
       const isNewNote = this.noteEditMode === 'new'
-      const store = this.$route.params['section'];
-      const action = isNewNote ? `${store}/insertNote` : `${store}/updateNote`
+      const action = isNewNote ? `notes/createNote` : `notes/updateNote`
 
-      // set note missing data (ptrs)
-      note.ptr_start = this.currentSelection.index
-      note.ptr_end = note.ptr_start + this.currentSelection.length
-
-      if (isNewNote) {
-        // generate a temporary unique-ish id to avoid duplicates before saving
-        note.id = 0 - new Date().getTime()
-      }
       // update the shadow quill content
-      this.$store.dispatch(action, note).then((response)=>{
+      this.$store.dispatch(action, note).then((updatedNote)=>{
         if (isNewNote) {
           // finally, format the selection in the editor
-          this.updateNoteId(response.id)
+          this.updateNoteId(updatedNote.id)
         } else {
           this.closeNoteEdit()
         }
@@ -51,20 +44,28 @@ var EditorNotesMixin = {
       this.editor.format('note', false);
       this.selectedNoteId = null;
     },
+    /**
+     * Deletes the note from backend and update loaded contents to remove
+     * corresponding tags.
+     */
     async deleteNote() {
-      //console.log('deleteNote')
-      // TODO delete note
-      this.editor.format('note', false);
-      
       await this.$store.dispatch('notes/deleteNote', this.selectedNoteId)
+      const contents = this.editor.getContents();
+      const newOps = contents.ops.map((op) => {
+        if(op.attributes && op.attributes.note && op.attributes.note.id === this.selectedNoteId) {
+          const {note, ...attrs} = op.attributes;
+          return {...op, attributes: attrs}
+        }
+        return op
+      })
+      this.editor.setContents({ops: newOps})
+      // await this.$store.dispatch('translation/deleteNote', noteId)
+      // await this.$store.dispatch('commentaries/deleteNote', noteId)
+      // The note must be deleted only once no-one is referencing it
 
-      await this.$store.dispatch('transcription/saveTranscription')
-      await this.$store.dispatch('translation/saveTranslation')
-      await this.$store.dispatch('commentaries/saveCommentaries')
-
-      //await this.$store.dispatch('transcription/fetchTranscriptionContent')
-      //await this.$store.dispatch('translation/fetchTranslationContent')
-      //await this.$store.dispatch('commentaries/fetchCommentariesContent')
+      // await this.$store.dispatch('transcription/fetchTranscriptionContent')
+      // await this.$store.dispatch('translation/fetchTranslationContent')
+      // await this.$store.dispatch('commentaries/fetchCommentariesContent')
       
       this.selectedNoteId = null;
       this.closeNoteEdit();
@@ -83,7 +84,9 @@ var EditorNotesMixin = {
     },
     setNoteEditModeEdit() {
       this.noteEditMode = 'edit';
-      this.currentNote = this.$store.getters['notes/getNoteById'](this.selectedNoteId)
+      this.currentNote = this.$store.state.notes.notes[this.selectedNoteId]
+      console.log(this.currentNote)
+      console.log(this.selectedNoteId)
     },
     closeNoteEdit() {
      //console.log("closeNoteEdit")

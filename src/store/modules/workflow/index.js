@@ -76,7 +76,7 @@ const getters = {
       return true
     }
 
-    console.log("isStepReadOnly",rootState.user.currentUser, rootGetters['user/currentUserIsAdmin'], rootGetters['user/currentUserIsAdmin'] )
+    //console.log("isStepReadOnly",rootState.user.currentUser, rootGetters['user/currentUserIsAdmin'], rootGetters['user/currentUserIsAdmin'] )
     // admin
     if (rootGetters['user/currentUserIsAdmin']) {
       return false
@@ -131,7 +131,7 @@ const getters = {
     if (getters.isCommentariesReadOnly) {
       return rootState.document.commentariesView !== null
     } else {
-      return Object.keys(rootState.commentaries.commentariesWithNotes).length > 0
+      return Object.keys(rootState.commentaries.commentaries).length > 0
     }
   },
   selectedUserHasFacsimile: (state, getters, rootState) => {
@@ -141,7 +141,7 @@ const getters = {
     if (getters.isSpeechPartsReadOnly) {
       return rootState.document.speechPartsView !== null
     } else {
-      return rootState.speechparts.speechparts.length > 0
+      return rootState.speechPartsContent.speechPartsContent !== null
     }
   },
 }

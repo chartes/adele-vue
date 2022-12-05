@@ -1,5 +1,4 @@
 import {http} from '../../../modules/http-common';
-import Vue from 'vue';
 
 const state = {
   speechparts: [],
@@ -82,6 +81,17 @@ const actions = {
       })
     }
   },
+  getSpeechpartsViewContent({rootState}) {
+    if (rootState.document.speechPartsView) {
+      const content = rootState.document.speechPartsView.content
+      //const notes = rootState.document.transcriptionView.notes;
+      //const withNotes = insertNotesAndSegments(content, notes, [], 'transcription')
+      return content
+    } else {
+      return null;
+    }
+  },
+
   add({commit}, speechpart) {
     commit('UPDATE_ONE', speechpart)
   },

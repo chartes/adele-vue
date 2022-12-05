@@ -1,9 +1,6 @@
 <template>
   <div class="section">
-    <div
-      v-if="!!document"
-      class="container is-fluid"
-    >
+    <div v-if="!!document" class="container is-fluid">
       <!-- header (title, workflow steps, switch) -->
       <div class="columns">
         <div class="column is-half">
@@ -35,9 +32,7 @@
                 Notice
               </router-link>
             </li>
-            <li
-              :class="currentSection === 'transcription' ? `is-active` : ''"
-            >
+            <li :class="currentSection === 'transcription' ? `is-active` : ''">
               <router-link
                 :to="{
                   name: 'document-edition',
@@ -105,9 +100,7 @@
         </div>
 
         <!-- visibility widget -->
-        <div
-          class="visibility-controls"
-        >
+        <div class="visibility-controls">
           <div class="field is-grouped">
             <div class="control">
               <span>AFFICHAGE</span>
@@ -130,8 +123,8 @@
             <visibility-toggle
               v-if="
                 currentSection === 'translation' ||
-                  currentSection === 'transcription' ||
-                  currentSection === 'commentaries'
+                currentSection === 'transcription' ||
+                currentSection === 'commentaries'
               "
               class="control"
               :action="toggleTranscriptionVisibility"
@@ -151,12 +144,8 @@
         </div>
 
         <!-- section content -->
-        <div class="columns">
-          <div
-            v-show="imageVisibility"
-            class="column m-t-sm"
-            :class="contentColumnClass"
-          >
+        <div :class="'columns ' + $attrs.section + '-edit'">
+          <div v-show="imageVisibility" class="column m-t-sm" :class="contentColumnClass">
             <mirador-viewer
               v-if="document.manifest_origin_url"
               :editable="currentUserIsTeacher && currentSection === 'facsimile'"
@@ -169,12 +158,9 @@
               v-else
               :src="require('@/assets/images/document_placeholder.svg')"
               class="iiif-viewer-placeholder"
-            >
+            />
           </div>
-          <div
-            v-if="showContent"
-            class="column"
-          >
+          <div v-if="showContent" class="column">
             <div
               v-if="!!document && init"
               class="container"
@@ -183,13 +169,9 @@
               <!-- Notice -->
               <div v-if="currentSection === 'notice'">
                 <document-edition-notice v-if="!currentUserIsStudent" />
-                <document-notice
-                  v-else
-                  :document="document"
-                />
+                <document-notice v-else :document="document" />
               </div>
 
-              
               <!-- Transcription -->
               <div v-if="currentSection === 'transcription'">
                 <!-- transcription error -->
@@ -200,10 +182,10 @@
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span
-                        v-else
-                      >{{ selectedUser.first_name }}
-                        {{ selectedUser.last_name }} n'a</span>
+                      <span v-else
+                        >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span
+                      >
                       pas encore commencé à transcrire ce document.
                     </p>
                     <div
@@ -214,10 +196,7 @@
                       Commencer à transcrire
                     </div>
                   </message>
-                  <message
-                    v-else
-                    message-class="is-danger"
-                  >
+                  <message v-else message-class="is-danger">
                     {{ transcriptionError }}
                   </message>
                 </div>
@@ -234,10 +213,10 @@
                         {{ selectedUser.last_name }}.
                       </p>
                     </span>
-                    <span
-                      v-else
-                    >Ce contenu a été validé par {{ documentOwner.first_name }}
-                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span v-else
+                      >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span
+                    >
                   </message>
                   <document-transcription :readonly-data="transcriptionView" />
                 </div>
@@ -252,13 +231,10 @@
                 <div
                   v-if="
                     (translationError && !selectedUserHasTranslation) ||
-                      !isTranscriptionValidated
+                    !isTranscriptionValidated
                   "
                 >
-                  <message
-                    v-if="!isTranscriptionValidated"
-                    message-class="is-info "
-                  >
+                  <message v-if="!isTranscriptionValidated" message-class="is-info ">
                     Vous devez valider la transcription avant d'entammer la traduction
                   </message>
                   <message
@@ -267,10 +243,10 @@
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span
-                        v-else
-                      >{{ selectedUser.first_name }}
-                        {{ selectedUser.last_name }} n'a</span>
+                      <span v-else
+                        >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span
+                      >
                       pas encore commencé à traduire ce document.
                     </p>
                     <div
@@ -281,10 +257,7 @@
                       Commencer à traduire
                     </div>
                   </message>
-                  <message
-                    v-else
-                    message-class="is-danger"
-                  >
+                  <message v-else message-class="is-danger">
                     {{ translationError }}
                   </message>
                 </div>
@@ -298,10 +271,10 @@
                       Ce contenu a été soumis par {{ selectedUser.first_name }}
                       {{ selectedUser.last_name }}.
                     </span>
-                    <span
-                      v-else
-                    >Ce contenu a été validé par {{ documentOwner.first_name }}
-                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span v-else
+                      >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span
+                    >
                   </message>
                   <document-translation
                     v-if="!transcriptionVisibility || currentUser.id !== selectedUserId"
@@ -310,10 +283,10 @@
                   <document-transcription-alignment
                     v-if="
                       isTranslationValidated &&
-                        transcriptionView &&
-                        translationView &&
-                        transcriptionVisibility &&
-                        currentUser.id === selectedUserId
+                      transcriptionView &&
+                      translationView &&
+                      transcriptionVisibility &&
+                      currentUser.id === selectedUserId
                     "
                     :readonly-data="transcriptionAlignmentView"
                   />
@@ -324,26 +297,34 @@
                     <div
                       v-if="transcriptionVisibility"
                       class="column"
-                      :class="transcriptionVisibility && imageVisibility ? 'is-one-third' :''"
+                      :class="
+                        transcriptionVisibility && imageVisibility ? 'is-one-third' : ''
+                      "
                     >
-                      <message
-                        v-if="transcriptionError"
-                        message-class="is-info "
-                      >
+                      <message v-if="transcriptionError" message-class="is-info ">
                         <p class="m-b-sm">
-                          <span>Il n'existe pas encore de transcription pour ce document</span>
+                          <span
+                            >Il n'existe pas encore de transcription pour ce
+                            document</span
+                          >
                         </p>
                       </message>
 
-                      <div style="margin-top: 1.5 em;">
+                      <div style="margin-top: 1.5 em">
+                        <document-edition-transcription
+                          v-if="currentUserIsAdmin || currentUserIsTeacher"
+                        />
                         <document-transcription
+                          v-else
                           :readonly-data="transcriptionView"
                         />
                       </div>
                     </div>
                     <div
                       class="column"
-                      :class="transcriptionVisibility && imageVisibility ? 'is-one-third' :''"
+                      :class="
+                        transcriptionVisibility && imageVisibility ? 'is-one-third' : ''
+                      "
                     >
                       <document-edition-translation />
                     </div>
@@ -351,43 +332,35 @@
                 </div>
               </div>
               <!-- Facsimilé -->
-              <div
-                v-if="currentUserIsTeacher && currentSection === 'facsimile'"
-              >
+              <div v-if="currentUserIsTeacher && currentSection === 'facsimile'">
                 <text-cutter-editor :id="document.id" />
               </div>
               <!-- Commentaires -->
-              <div
-                v-if="currentSection === 'commentaries'"
-                class="m-t-md"
-              >
+              <div v-if="currentSection === 'commentaries'" class="m-t-md">
                 <!-- commentaries error -->
                 <div
                   v-if="
                     (commentariesError && !selectedUserHasCommentaries) ||
-                      !isTranscriptionValidated
+                    !isTranscriptionValidated
                   "
                 >
-                  <message
-                    v-if="!isTranscriptionValidated"
-                    message-class="is-info "
-                  >
+                  <message v-if="!isTranscriptionValidated" message-class="is-info ">
                     Vous devez valider la transcription avant d'entammer la rédaction de
                     commentaires
                   </message>
                   <message
                     v-else-if="
                       commentariesError.response &&
-                        commentariesError.response.status === 404
+                      commentariesError.response.status === 404
                     "
                     message-class="is-info "
                   >
                     <p class="m-b-sm">
                       <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
-                      <span
-                        v-else
-                      >{{ selectedUser.first_name }}
-                        {{ selectedUser.last_name }} n'a</span>
+                      <span v-else
+                        >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span
+                      >
                       pas encore ajouté de commentaire pour ce document
                     </p>
                     <div
@@ -398,10 +371,7 @@
                       Ajouter un commentaire
                     </div>
                   </message>
-                  <message
-                    v-else
-                    message-class="is-danger"
-                  >
+                  <message v-else message-class="is-danger">
                     {{ commentariesError }}
                   </message>
                 </div>
@@ -417,30 +387,21 @@
                         {{ selectedUser.last_name }}.
                       </p>
                     </span>
-                    <span
-                      v-else
-                    >Ce contenu a été validé par {{ documentOwner.first_name }}
-                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span v-else
+                      >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span
+                    >
                   </message>
                   <document-commentaries
                     :readonly-data="commentariesView"
                     :show-transcription="true"
                   />
                 </div>
-                <div
-                  v-else
-                >
-                  <div
-                    class="columns"
-                  >
-                    <div
-                      v-if="transcriptionVisibility"
-                      class="column"
-                    >
-                      <div style="margin-top: 1.5 em;">
-                        <document-transcription
-                          :readonly-data="transcriptionView"
-                        />
+                <div v-else>
+                  <div class="columns">
+                    <div v-if="transcriptionVisibility" class="column">
+                      <div style="margin-top: 1.5 em">
+                        <document-transcription :readonly-data="transcriptionView" />
                       </div>
                     </div>
                     <div class="column">
@@ -452,21 +413,36 @@
               </div>
 
               <!-- Parties du discours -->
+
               <div v-if="currentSection === 'speech-parts'">
+                <!-- Il n'y a pas de parties du discours (jamais créées ou supprimées) -->
+                <div v-if="!speechPartsContentLoading && speechPartsContent === null">
+                  <message>
+                    <p class="m-b-sm">
+                      <span v-if="selectedUserId === currentUser.id">Vous n'avez</span>
+                      <span v-else
+                        >{{ selectedUser.first_name }}
+                        {{ selectedUser.last_name }} n'a</span
+                      >
+                      pas encore commencé l'identification des parties du discours.
+                    </p>
+                    <div
+                      v-if="currentUser.id === selectedUser.id"
+                      class="button is-info"
+                      @click="addNewSpeechPartsContent"
+                    >
+                      Commencer à identifier
+                    </div>
+                  </message>
+                </div>
                 <!-- Parties du discours error -->
-                <div v-if="!isTranscriptionValidated">
-                  <message
-                    v-if="!isTranscriptionValidated"
-                    message-class="is-info "
-                  >
+                <div v-else-if="speechPartsContentError || !isTranscriptionValidated">
+                  <message v-if="!isTranscriptionValidated" message-class="is-info ">
                     Vous devez valider la transcription avant d'entammer l'identification
                     des parties du discours
                   </message>
-                  <message
-                    v-else-if="speechPartsError.response.status !== 404"
-                    message-class="is-danger"
-                  >
-                    {{ speechPartsError }}
+                  <message v-else message-class="is-danger">
+                    {{ speechPartsContentError }}
                   </message>
                 </div>
                 <!-- speechparts readonly -->
@@ -479,10 +455,10 @@
                       Ce contenu a été soumis par {{ selectedUser.first_name }}
                       {{ selectedUser.last_name }}.
                     </span>
-                    <span
-                      v-else
-                    >Ce contenu a été validé par {{ documentOwner.first_name }}
-                      {{ documentOwner.last_name }} et n'est plus modifiable.</span>
+                    <span v-else
+                      >Ce contenu a été validé par {{ documentOwner.first_name }}
+                      {{ documentOwner.last_name }} et n'est plus modifiable.</span
+                    >
                   </message>
                   <document-speech-parts
                     v-if="speechpartsVisibility"
@@ -491,14 +467,11 @@
                 </div>
                 <!-- speechpart edition -->
                 <div v-else>
-                  <document-edition-transcription />
+                  <document-edition-speech-parts />
                 </div>
               </div>
             </div>
-            <div
-              v-show="!imageVisibility"
-              class="column is-one-quarter"
-            />
+            <div v-show="!imageVisibility" class="column is-one-quarter" />
           </div>
         </div>
       </div>
@@ -521,6 +494,12 @@
         :user-id="selectedUserId"
       />
       <delete-commentary-modal v-if="currentSection === 'commentaries'" />
+
+      <delete-speech-parts-modal
+        v-if="currentSection === 'speech-parts'"
+        :doc-id="parseInt($attrs.docId)"
+        :user-id="selectedUserId"
+      />
     </div>
   </div>
 </template>
@@ -533,7 +512,7 @@ import DocumentEditionTranscription from "../components/document/edition/Documen
 import DocumentEditionTranslation from "../components/document/edition/DocumentEditionTranslation.vue";
 
 import DocumentEditionCommentaries from "../components/document/edition/DocumentEditionCommentaries.vue";
-//import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
+import DocumentEditionSpeechParts from "../components/document/edition/DocumentEditionSpeechParts.vue";
 
 import DocumentNotice from "../components/document/view/DocumentNotice.vue";
 import DocumentTranscription from "../components/document/view/DocumentTranscription.vue";
@@ -549,10 +528,11 @@ import DocumentTitleBar from "../components/document/DocumentTitleBar.vue";
 import TranscriptionActionBar from "@/components/document/edition/actionbars/TranscriptionActionBar.vue";
 
 import Message from "@/components/Message.vue";
-import TextCutterEditor from "@/components/editors/TextCutterEditor.vue"
+import TextCutterEditor from "@/components/editors/TextCutterEditor.vue";
 import VisibilityToggle from "@/components/ui/VisibilityToggle.vue";
 
 import DeleteTranscriptionModal from "@/components/document/edition/modals/DeleteTranscriptionModal.vue";
+import DeleteSpeechPartsModal from "@/components/document/edition/modals/DeleteSpeechPartsModal.vue";
 import DeleteTranslationModal from "@/components/document/edition/modals/DeleteTranslationModal.vue";
 import DeleteCommentaryModal from "@/components/document/edition/modals/DeleteCommentaryModal.vue";
 
@@ -573,7 +553,7 @@ export default {
     DocumentEditionTranscription,
     DocumentEditionTranslation,
     DocumentEditionCommentaries,
-    //DocumentEditionSpeechParts,
+    DocumentEditionSpeechParts,
 
     DocumentTranscription,
     DocumentTranslation,
@@ -589,26 +569,30 @@ export default {
     VisibilityToggle,
 
     DeleteTranscriptionModal,
+    DeleteSpeechPartsModal,
     DeleteTranslationModal,
     DeleteCommentaryModal,
 
     CloneTranscriptionModal,
     CloneTranslationModal,
-    CloneCommentaryModal
+    CloneCommentaryModal,
   },
   beforeRouteEnter(to, from, next) {
     next((vm) => {
-      vm.$store.dispatch("workflow/setCurrentSection", vm.currentSection);
+      vm.$store.dispatch("workflow/setCurrentSection", vm.$attrs.section);
       if (!vm.isAuthenticated) {
         vm.$store.dispatch("workflow/setEditionMode", false);
         if (to.name === "document-edition") {
-          next({ name: "document-view", params: {docId: vm.$attrs.docId, section: 'notice' } });
+          next({
+            name: "document-view",
+            params: { docId: vm.$attrs.docId, section: "notice" },
+          });
         } else {
           next({ name: "login" });
         }
       } else {
         vm.$store.dispatch("workflow/setEditionMode", true);
-        vm.setupVisibilityWidget(vm.currentSection)
+        vm.setupVisibilityWidget(vm.currentSection);
         next();
       }
     });
@@ -616,7 +600,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.$store.dispatch("workflow/setEditionMode", true);
     this.$store.dispatch("workflow/setCurrentSection", to.params.section);
-    this.setupVisibilityWidget(to.params.section)
+    this.setupVisibilityWidget(to.params.section);
     next();
   },
   beforeRouteLeave(to, from, next) {
@@ -647,12 +631,14 @@ export default {
       "speechPartsView",
     ]),
     ...mapState("workflow", ["selectedUserId", "currentSection"]),
-    ...mapState("transcription", [
-      "transcriptionContent",
-      "transcriptionError",
-    ]),
+    ...mapState("transcription", ["transcriptionContent", "transcriptionError"]),
     ...mapState("translation", ["translationContent", "translationError"]),
     ...mapState("commentaries", ["commentaries", "commentariesError"]),
+    ...mapState("speechPartsContent", [
+      "speechPartsContentError",
+      "speechPartsContent",
+      "speechPartsContentLoading",
+    ]),
     ...mapState("speechparts", ["speechPartsError"]),
 
     ...mapState("user", ["currentUser"]),
@@ -707,24 +693,26 @@ export default {
       return this.getManifestInfoUrl(0);
     },
     contentColumnClass() {
-      if (this.imageVisibility && this.showContent){
-        if (this.currentSection === 'facsimile') {
-          return 'facsimile-content-column'
+      if (this.imageVisibility && this.showContent) {
+        if (this.currentSection === "facsimile") {
+          return "facsimile-content-column";
         } else {
-          return 'is-two-fifths' 
+          return "is-two-fifths";
         }
       }
-      return ''
-    }
+      return "";
+    },
   },
   watch: {
     async selectedUserId() {
       await this.fetchContentFromUser();
-      this.setupVisibilityWidget(this.currentSection)
+      this.setupVisibilityWidget(this.currentSection);
     },
     async currentSection() {
-      await this.fetchContentFromUser();
-    }
+      if (!this.isLoading) {
+        await this.fetchContentFromUser();
+      }
+    },
   },
   async created() {
     this.isLoading = true;
@@ -741,6 +729,9 @@ export default {
     this.isLoading = false;
   },
   methods: {
+    ...mapActions("notes", {
+      fetchNotes: "fetchNotes",
+    }),
     ...mapActions("transcription", {
       fetchTranscriptionContent: "fetchTranscriptionContent",
       createTranscription: "addNewTranscription",
@@ -757,8 +748,9 @@ export default {
       fetchCommentariesContent: "fetchCommentariesContent",
       setCommentariesError: "setError",
     }),
-    ...mapActions("speechparts", {
+    ...mapActions("speechPartsContent", {
       fetchSpeechPartsContent: "fetchSpeechPartsContent",
+      addNewSpeechPartsContent: "addNewSpeechPartsContent",
     }),
     setupVisibilityWidget(section) {
       switch (section) {
@@ -815,10 +807,12 @@ export default {
     },
     async fetchContentFromUser() {
       return await Promise.all([
+        this.fetchNotes(),
         this.fetchTranscriptionContent(),
         this.fetchTranslationContent(),
-        this.fetchCommentariesContent()
-      ])
+        this.fetchCommentariesContent(),
+        this.fetchSpeechPartsContent(),
+      ]);
     },
     async addNewTranscription() {
       await this.createTranscription();
@@ -828,9 +822,6 @@ export default {
     },
     async addNewTranslation() {
       await this.createTranslation();
-      if (!this.translationError) {
-        await this.fetchTranslationContent();
-      }
     },
     async addNewCommentaries() {
       this.setCommentariesError(null);
@@ -881,7 +872,7 @@ export default {
   margin-left: 0;
   margin-right: 0;
 }
-.facsimile-content-column{
+.facsimile-content-column {
   min-width: 62%;
 }
 </style>

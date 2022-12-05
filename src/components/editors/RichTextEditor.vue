@@ -1,13 +1,11 @@
 <template>
   <div class="editor-area">
     <div
-      v-if="currentSection !== 'speech-parts'"
+      v-if="currentSection !== 'speech-parts' && !readonly"
       ref="controls"
       class="editor-controls"
     >
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Structure éditoriale</label>
         <!-- 
         <editor-button
@@ -23,7 +21,7 @@
           :format="'verse'"
         />
         -->
-      
+
         <!-- commentaries only; list, blockquote -->
         <editor-button
           v-if="currentSection === 'commentaries'"
@@ -46,9 +44,7 @@
           format="note"
         />
       </div>
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Enrichissements typographiques</label>
         <editor-button
           :selected="buttons.bold"
@@ -81,9 +77,7 @@
           format="underline"
         />
       </div>
-      <div
-        class="editor-controls-group"
-      >
+      <div class="editor-controls-group">
         <label>Enrichissements sémantiques</label>
         <editor-button
           :selected="buttons.del"
@@ -134,16 +128,41 @@
           format="location"
         />
       </div>
+      <div
+        v-if="
+          currentSection === 'translation' && (currentUserIsTeacher || currentUserIsAdmin)
+        "
+        class="editor-controls-group"
+      >
+        <label>Segments</label>
+        <editor-button
+          :selected="buttons.segment"
+          :active="
+            currentSelection &&
+            currentSelection.length === 0 &&
+            currentSelection.index > 0
+          "
+          :callback="insertSegment"
+          format="segment"
+        />
+      </div>
     </div>
     <div class="editor-container">
       <div
         id="transcription-editor"
         ref="editor"
         class="quill-editor transcription-editor"
+        :class="readonly ? 'ql-editor-readonly' : ''"
         spellcheck="false"
       />
       <note-actions
-        v-show="noteEditMode === null && (defineNewNote || selectedNoteId) && (currentSelection && currentSelection.length > 0)"
+        v-if="!readonly"
+        v-show="
+          noteEditMode === null &&
+          (defineNewNote || selectedNoteId) &&
+          currentSelection &&
+          currentSelection.length > 0
+        "
         :selected-note-id="selectedNoteId"
         refs="noteActions"
         :style="actionsPosition"
@@ -154,7 +173,7 @@
         :delete="setNoteEditModeDelete"
       />
     </div>
-    <div>
+    <div v-if="!readonly">
       <notes-list-form
         v-if="noteEditMode === 'list'"
         :note-id="selectedNoteId"
@@ -167,7 +186,7 @@
         :label="formTextfield.label"
         :value="formTextfield.value"
         :submit="submitTextfieldForm"
-        :cancel="cancelTextfieldForm" 
+        :cancel="cancelTextfieldForm"
       />
       <note-form
         v-if="noteEditMode === 'new' || noteEditMode === 'edit'"
@@ -184,57 +203,70 @@
       />
       <div v-if="currentSection === 'speech-parts'">
         <speechpart-form
-          v-if="selectedSpeechpartId !== null && (speechpartEditMode === 'new' || speechpartEditMode === 'edit')"
-          :speechpart="currentSpeechpart"
-          :speechpart-id="selectedSpeechpartId"
+          v-if="editedSpeechPart"
+          :edited-speech-part="editedSpeechPart"
           :submit="updateSpeechpart"
           :cancel="closeSpeechpartEdit"
         />
         <modal-confirm-speechpart-delete
-          v-if="speechpartEditMode === 'delete'"
+          v-if="confirmingSpeechPartDeletion"
           :cancel="closeSpeechpartEdit"
           :submit="deleteSpeechpart"
         />
         <in-editor-actions
-          v-show="selectedSpeechpartId !== null && editorHasFocus"
+          v-show="
+            !editedSpeechPart &&
+            !confirmingSpeechPartDeletion &&
+            currentSelection &&
+            currentSelection.length > 0
+          "
           class="speechpart-actions"
           :style="actionsPosition"
           refs="speechpartActions"
-          :edit="setSpeechpartEditModeEdit"
-          :delete="setSpeechpartEditModeDelete"
+          :edit="setEditedSpeechPart"
+          :delete="confirmSpeechPartDeletion"
           :edit-text="'Éditer'"
           :delete-text="'Supprimer'"
         />
       </div>
     </div>
+    <div
+      v-show="showPopup"
+      ref="my-popup-container"
+      class="popup-container"
+      v-html="popupContent"
+    ></div>
   </div>
 </template>
 
 <script>
-    
-import { mapState, mapGetters } from 'vuex'
-import EditorButton from './EditorButton.vue';
+import { debounce } from "lodash";
+import Quill from "quill";
 
-import EditorMixins from '../../mixins/EditorMixins'
-import EditorNotesMixins from '../../mixins/EditorNotesMixins'
+import { mapState, mapGetters } from "vuex";
+import EditorButton from "./EditorButton.vue";
 
-import NoteActions from './NoteActions';
-import NoteForm from '../forms/NoteForm';
-import NotesListForm from '../forms/NotesListForm';
-import ModalConfirmNoteDelete from '../forms/ModalConfirmNoteDelete';
+import EditorMixins from "../../mixins/EditorMixins";
+import EditorNotesMixins from "../../mixins/EditorNotesMixins";
+
+import NoteActions from "./NoteActions";
+import NoteForm from "../forms/NoteForm";
+import NotesListForm from "../forms/NotesListForm";
+import ModalConfirmNoteDelete from "../forms/ModalConfirmNoteDelete";
 
 import TextfieldForm from "../forms/TextfieldForm";
 
-import InEditorActions from './InEditorActions';
+import InEditorActions from "./InEditorActions";
 import SpeechpartForm from "../forms/SpeechpartForm";
 import ModalConfirmSpeechpartDelete from "../forms/ModalConfirmSpeechpartDelete";
 
+import SegmentBlot from "../../modules/quill/blots/semantic/Segment";
 
 export default {
   name: "RichTextEditor",
   components: {
     TextfieldForm,
- 
+
     EditorButton,
     ModalConfirmNoteDelete,
     NoteActions,
@@ -247,13 +279,14 @@ export default {
   },
   mixins: [EditorMixins, EditorNotesMixins],
   props: {
-    initialContent: {type: String, default: ''},
-    changeAction: {type: String, required: true}
+    initialContent: { type: String, default: "" },
+    changeAction: { type: String, required: false, default: null },
+    showSegments: { type: Boolean, default: true },
   },
   data() {
     return {
       storeActions: {
-        changed: this.$props.changeAction
+        changed: this.$props.changeAction,
       },
       delta: null,
       buttons: {
@@ -275,149 +308,248 @@ export default {
         cite: false,
       },
       // speechparts
-      speechpartEditMode: null,
-      selectedSpeechpartId: null,
-      currentSpeechpart: null,
-      defineNewSpeechpart: false,
-    }
+      editedSpeechPart: null,
+      confirmingSpeechPartDeletion: false,
+      //popup
+      popupContainer: null,
+      popupData: ["This is <b>the popup content</b>"],
+      showPopup: false,
+    };
   },
   computed: {
-    ...mapState('workflow', [ 'currentSection']),
-    ...mapState('speechparts', ['newSpeechpart', 'speechparts']),
-    ...mapGetters('speechpartTypes', ['getSpeechpartTypeById']),
+    ...mapState("workflow", ["currentSection"]),
+    ...mapState("speechparts", ["newSpeechpart", "speechparts"]),
+    ...mapState("notes", ["notes"]),
+    ...mapState("speechpartTypes", ["speechpartTypes"]),
+    ...mapGetters("document", ["notesFromView"]),
+    ...mapGetters("speechpartTypes", ["getSpeechpartTypeById"]),
+    ...mapGetters("user", ["currentUserIsTeacher", "currentUserIsAdmin"]),
+
+    popupContent() {
+      return this.popupData.join("<div class='popup-sep'></div>");
+    },
   },
   watch: {
     currentSelection() {
       if (this.currentSelection && this.currentSelection.length == 0) {
-        this.defineNewNote = false
+        this.defineNewNote = false;
       }
+    },
+  },
+  async created() {
+    if (this.speechpartTypes.length === 0) {
+      await this.$store.dispatch("speechpartTypes/fetch");
     }
+
+    this.configurePopup = debounce((e, isLeaving) => {
+      const el = e.target;
+      //const tagName = e.target.tagName.toLowerCase();
+      if (isLeaving) {
+        this.showPopup = false;
+        return;
+      }
+      this.popupData = [];
+
+      const _parents = this.getParents(el);
+
+      _parents.forEach((el) => {
+        let _tagName = el.tagName.toLowerCase();
+        if (
+          _tagName === "adele-note" ||
+          _tagName === "persname" ||
+          _tagName === "placename" ||
+          _tagName === "adele-speechpart"
+        ) {
+          let _content = "";
+          let spTypeId = null;
+          let spType = null;
+          let noteId = null;
+          let note = null;
+
+          switch (_tagName) {
+            case "adele-speechpart":
+              spTypeId = el.getAttribute("type_id");
+              if (spTypeId) {
+                spType = this.getSpeechpartTypeById(spTypeId);
+                _content += `<header>${spType.label}</header>`;
+              }
+              _content += el.getAttribute("note");
+              break;
+            case "persname":
+              _content += "<header>Personne</header>";
+              _content += el.getAttribute("ref");
+              break;
+            case "placename":
+              _content = "<header>Lieu</header>";
+              _content += el.getAttribute("ref");
+              break;
+            case "adele-note":
+              noteId = el.getAttribute("id");
+              if (this.readonly) {
+                // read notes from notesFromView
+                noteId = String(noteId).padStart(10, "0");
+                note = { content: this.notesFromView[noteId] };
+                //console.log(noteId, note);
+              } else {
+                note = this.notes[noteId];
+              }
+              if (note) {
+                _content += "<header>Note</header>";
+                _content += note.content;
+              }
+              break;
+            default:
+              break;
+          }
+
+          if (_content) {
+            this.popupData.push(`<article class="adele-popup">${_content}</article>`);
+            //const bb = el.getBoundingClientRect();
+            const x = parseInt(e.x + 20);
+            const y = parseInt(e.y - 20);
+
+            this.popupContainer.style.left = `${x}px`;
+            this.popupContainer.style.top = `${y}px`;
+          }
+        }
+      });
+
+      //console.log(this.popupData, el, isLeaving, this.popupContainer);
+
+      if (this.popupData.length > 0) {
+        this.showPopup = true;
+      }
+    }, 20);
   },
-  created() {
-    this.$store.dispatch('speechpartTypes/fetch')
-  },
-  beforeDestroy () {
+  beforeDestroy() {
     this.allowKeyboard();
     this.deactivateMouseOver();
+    this.$refs.editor.removeEventListener("click", this.removeSegment);
   },
-  mounted () {
+  mounted() {
     this.initEditor(this.$refs.editor, this.$props.initialContent);
     this.preventKeyboard();
     this.activateMouseOver();
+    this.$refs.editor.addEventListener("click", this.removeSegment);
+    this.popupContainer = this.$refs["my-popup-container"];
+
+    this.updatePopups();
   },
   methods: {
-    updateContent () {
-      this.delta = this.editor.getContents().ops;
+    getParents(el) {
+      let _p = el.parentElement;
+      let _parents = [el, _p];
+      while (_p && !_p.classList.contains("quill-editor")) {
+        _p = _p.parentElement;
+        _parents.push(_p);
+      }
+      return _parents;
     },
-    
-      onSpeechpartSelected (speechpart, range) {
-        console.log("onspeechpart selected", speechpart, range)
-        if (!range.length) return;
-        this.selectedSpeechpartId = range.index;
-      },
+    updatePopups() {
+      const toBeAnnotated = this.$refs.editor.querySelectorAll(
+        "adele-note,persName,placeName,adele-speechpart"
+      );
+      toBeAnnotated.forEach((el) => {
+        el.addEventListener("mouseover", (e) => {
+          this.configurePopup(e, false);
+        });
+        el.addEventListener("mouseout", (e) => {
+          this.configurePopup(e, true);
+        });
+      });
+    },
+    updateContent() {
+      this.delta = this.editor.getContents().ops;
+      this.updatePopups();
+    },
+    updateSpeechpart(sp) {
+      this.editor.format("speechpart", sp);
+      this.closeSpeechpartEdit();
+    },
+    deleteSpeechpart() {
+      this.editor.format("speechpart", false);
+      this.closeSpeechpartEdit();
+    },
 
-      updateSpeechpart(sp) {
-        console.log("UPDATE SP", sp)
-        sp.speech_part_type = this.getSpeechpartTypeById(sp.type_id);
-        sp.ptr_start = this.selectedSpeechpartId;
-        if (sp.id === undefined) {
-          sp.id = 900000+sp.ptr_start
-        }
-        this.editor.format('speechpart', `${sp.id},${sp.speech_part_type.id}`);
-        this.$store.dispatch(`speechparts/update`, sp)
-        this.$store.dispatch('speechparts/saveSpeechParts')
-        this.closeSpeechpartEdit()
-      },
-      deleteSpeechpart() {
-        console.log("this.currentSpeechpart", this.currentSpeechpart)
-        this.$store.dispatch(`speechparts/delete`, this.currentSpeechpart.id)
-        this.editor.format('speechpart', false);
+    confirmSpeechPartDeletion() {
+      this.confirmingSpeechPartDeletion = true;
+    },
 
-        this.selectedSpeechpartId = null;
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
+    setEditedSpeechPart() {
+      const range = this.editor.getSelection();
+      const speechPartsInRange = this.editor.getFormat(range).speechpart;
+      if (speechPartsInRange === undefined) {
+        this.editedSpeechPart = { type_id: 1, note: "" };
+      } else if (Array.isArray(speechPartsInRange)) {
+        this.editedSpeechPart = { ...speechPartsInRange[0] };
+      } else {
+        this.editedSpeechPart = { ...speechPartsInRange };
+      }
+    },
 
-        this.closeSpeechpartEdit();
-        this.$store.dispatch(`speechparts/setToBeSaved`)
-        this.$store.dispatch('speechparts/saveSpeechParts')
-      },
+    closeSpeechpartEdit() {
+      this.editedSpeechPart = null;
+      this.confirmingSpeechPartDeletion = false;
+      this.editor.focus();
+    },
 
+    /* remove segment method */
+    removeSegment(e) {
+      const foundBlot = Quill.find(e.target);
+      if (foundBlot && foundBlot instanceof SegmentBlot) {
+        this.editor.deleteText(foundBlot.offset(this.editor.scroll), 1);
+      }
+    },
 
-      setSpeechpartEditModeDelete() {
-        this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        this.speechpartEditMode = 'delete';
-      },
-      setSpeechpartEditModeNew() {
-        this.speechpartEditMode = 'new';
-        this.currentSpeechpart = { transcription_id: this.transcription.id };
-        this.newSpeechpartChoiceClose();
-      },
-      setSpeechpartEditModeEdit() {
-        this.speechpartEditMode = 'edit';
-        //this.currentSpeechpart = this.$store.state.speechparts.speechparts[this.selectedSpeechpartId];
-        /*
-       if (!this.currentSpeechpart) {
-          this.currentSpeechpart = { transcription_id: this.transcription.id };
-        }
-        */
-      },
-
-      newSpeechpartChoiceClose() {
-        this.defineNewSpeechpart = false;
-        this.selectedSpeechpartId = null
-      },
-
-      closeSpeechpartEdit() {
-        this.speechpartEditMode = null;
-        this.currentSpeechpart = null;
-        this.selectedSpeechpartId = null
-        this.editor.focus();
-      },
-
-
-       /*
+    /*
         Prevent keyboard methods
        */
-      preventKeyboard () {
-        document.addEventListener('keydown', this.keyboardPreventHandler, true)
-      },
-      allowKeyboard () {
-        document.removeEventListener('keydown', this.keyboardPreventHandler, true)
-
-      },
-      keyboardPreventHandler (event) {
-        if (!this.editor.hasFocus()) return;
-        /*
+    preventKeyboard() {
+      document.addEventListener("keydown", this.keyboardPreventHandler, true);
+    },
+    allowKeyboard() {
+      document.removeEventListener("keydown", this.keyboardPreventHandler, true);
+    },
+    keyboardPreventHandler(event) {
+      if (!this.editor.hasFocus()) return;
+      /*
         if (event.keyCode < 37 || event.keyCode > 40) {
           event.preventDefault();
         }
         */
-      },
+    },
 
-      /* Speechpart mouse over */
-      activateMouseOver () {
-        this.$refs.editor.addEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.addEventListener('mouseout', this.mouseOutHandler)
-        //.querySelectorAll('speechpart')
-      },
-      deactivateMouseOver () {
+    /* Speechpart mouse over */
+    activateMouseOver() {
+      this.$refs.editor.addEventListener("mouseover", this.mouseOverHandler);
+      this.$refs.editor.addEventListener("mouseout", this.mouseOutHandler);
+      //.querySelectorAll('speechpart')
+    },
+    deactivateMouseOver() {
+      this.$refs.editor.removeEventListener("mouseover", this.mouseOverHandler);
+      this.$refs.editor.removeEventListener("mouseout", this.mouseOutHandler);
+    },
+    mouseOverHandler(e) {
+      //console.log("e.target.tagName", e.target.tagName);
 
-        this.$refs.editor.removeEventListener('mouseover', this.mouseOverHandler)
-        this.$refs.editor.removeEventListener('mouseout', this.mouseOutHandler)
-      },
-      mouseOverHandler (e) {
-        let id = null;
-        if (e.target.tagName.toLowerCase() === 'speechpart') {
-          id = parseInt(e.target.getAttribute('id'));
-        } else if (e.target.parentNode.tagName.toLowerCase() === 'speechpart') {
-          id = parseInt(e.target.parentNode.getAttribute('id'));
-        }
-        if (id === null) return;
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
+      // handle popups
+      //this.configurePopup(e);
 
-      },
-      mouseOutHandler (e) {
-        //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+      let id = null;
+      if (e.target.tagName.toLowerCase() === "speechpart") {
+        id = parseInt(e.target.getAttribute("id"));
+      } else if (e.target.parentNode.tagName.toLowerCase() === "speechpart") {
+        id = parseInt(e.target.parentNode.getAttribute("id"));
       }
-  }
-}
+      if (id === null) return;
+      //this.$store.dispatch('speechparts/mouseover', {speechpart: this.$store.state.speechparts.speechparts[id], posY: e.clientY});
+    },
+    mouseOutHandler(e) {
+      //this.$store.dispatch('speechparts/mouseover', {speechpart: false, posY: 0});
+      //this.hidePopup(e);
+    },
+  },
+};
 </script>
+
+<style lang="scss" scoped></style>

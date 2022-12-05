@@ -4,6 +4,7 @@
     :class="[{'selected': selected}, format]"
     :disabled="!active"
     @click="callback(format)"
+    type="button"
   >
     <!-- <i class="fa fa-bold" /> -->
     <img

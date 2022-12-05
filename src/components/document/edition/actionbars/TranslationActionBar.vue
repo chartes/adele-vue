@@ -6,14 +6,13 @@
     <div class="field is-grouped">
       <!-- SAVE TRANSLATION --> 
       <p 
-        v-if="!transcriptionAlignmentMode"
         class="control"
       >
         <save-translation-button />
       </p>
       <!-- VALIDATE / UNVALIDATE TRANSLATION --> 
       <p
-        v-if="currentUserIsTeacher && selectedUserId == document.user_id && !transcriptionAlignmentMode && isTranscriptionValidated"
+        v-if="currentUserIsTeacher && selectedUserId == document.user_id && isTranscriptionValidated"
         class="control"
       >
         <validate-translation-button :doc-id="document.id" />
@@ -27,34 +26,13 @@
       </p>
       <!-- DELETE TRANSLATION --> 
       <p
-        v-if="currentUserIsTeacher && !transcriptionAlignmentMode"
+        v-if="currentUserIsTeacher"
         class="control"
       >
         <delete-translation-button
           :doc-id="document.id"
           :user-id="selectedUserId"
         />
-      </p>
-      <!-- ALIGNMENT TRANSLATION --> 
-      <p
-        v-if="transcriptionAlignmentMode"
-        class="control "
-      >
-        <save-translation-alignment-button />
-      </p>
-      <p
-        v-if="showAlignmentButton"
-        class="control "
-      >
-        <transcription-alignment-button />
-      </p>
-      <p
-        v-if="transcriptionAlignmentMode"
-        class="control"
-      >
-        <message>
-          Le nombre de segments doit être identique entre la transcription et la traduction
-        </message>
       </p>
     </div>
   </div>
@@ -65,10 +43,7 @@ import { mapState, mapGetters } from 'vuex'
 
 import DeleteTranslationButton from '../actions/DeleteTranslationButton.vue'
 import ValidateTranslationButton from '../actions/ValidateTranslationButton.vue'
-import TranscriptionAlignmentButton from '../actions/TranscriptionAlignmentButton.vue'
 import SaveTranslationButton from '../actions/SaveTranslationButton.vue'
-import SaveTranslationAlignmentButton from '../actions/SaveTranslationAlignmentButton.vue'
-import Message from '@/components/Message.vue'
 import CloneTranslationButton from '../actions/CloneTranslationButton.vue'
 
 export default {
@@ -76,15 +51,12 @@ export default {
     components: {
       ValidateTranslationButton,
       DeleteTranslationButton,
-      TranscriptionAlignmentButton,
       SaveTranslationButton,
-      SaveTranslationAlignmentButton,
-      CloneTranslationButton,
-      Message
+      CloneTranslationButton
     },
     computed: {
         ...mapState('document', ['document']),
-        ...mapState('workflow', ['selectedUserId', 'transcriptionAlignmentMode']),
+        ...mapState('workflow', ['selectedUserId']),
         ...mapState('user', ['currentUser']),
         ...mapGetters('user', ['isAuthenticated', 'currentUserIsAdmin', 'currentUserIsTeacher', 'currentUserIsStudent']),
         ...mapGetters('workflow', [

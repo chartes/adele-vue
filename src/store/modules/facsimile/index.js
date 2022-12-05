@@ -103,24 +103,6 @@ const actions = {
     });
 
   },
-  fetchAlignments ({ commit, rootState, rootGetters }) {
-
-    if (!rootGetters['document/manifestURL']) {
-      return;
-    }
-    const doc_id = rootState.document.document.id;
-    const user_id = rootState.user.author.id;
-
-    return axios.get(`${process.env.VUE_APP_API_URL}/documents/${doc_id}/transcriptions/alignments/images/from-user/${user_id}`).then( response => {
-      if (response.data && response.data.errors) {
-        return;
-      }
-
-      let data = response.data.data;
-      commit('UPDATE_ALIGNMENTS', data);
-    });
-
-  },
 
   addAlignment ({commit, rootState, state}, alignment) {
     if (!rootState.document.manifestUrl) {

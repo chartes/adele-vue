@@ -38,8 +38,7 @@ export default class AdeleStorageAdapter {
         svg = svgSelector.value;
       }
 
-      const ptrStartInput = document.querySelector('#ptr-start')
-      const ptrEndInput = document.querySelector('#ptr-end')
+      const annotationFacsim = document.querySelector('adele-annotation[new="true"]')
 
       let newAnno = {
         manifest_url: this.manifestOriginUrl,
@@ -50,17 +49,15 @@ export default class AdeleStorageAdapter {
         svg: svg,
 
       }
-      if (ptrStartInput && ptrEndInput && ptrStartInput.value && ptrEndInput.value) {
-        newAnno['ptr_start'] = ptrStartInput.value
-        newAnno['ptr_end'] = ptrEndInput.value
+      if (annotationFacsim) {
         newAnno['zone_type_id'] = 1
       } else {
         newAnno['zone_type_id'] = 2
         newAnno['note'] =annotation.body.value
       }
 
-      await http.post(`iiif/${this.documentId}/annotations`, newAnno);
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      const response = await http.post(`iiif/${this.documentId}/annotations`, newAnno);
+      document.dispatchEvent(new CustomEvent('annotation-created', {detail: response.data.data}));
 
       return await this.all();
     }
@@ -70,42 +67,8 @@ export default class AdeleStorageAdapter {
       if (!this.editable)
         return await this.all();
 
-      const zone_id = parseInt(annotation.id.split('/').pop())
-      console.log("lets update this", annotation, zone_id)
-      let fragment = null;
-      let svg = null;
-
-      const fragmentSelector = annotation.target.selector.find(({type}) => type === "FragmentSelector");
-      if (fragmentSelector) {
-        fragment = fragmentSelector.value.match(/xywh=(.*)$/)[1];
-      }
-      const svgSelector = annotation.target.selector.find(({type}) => type === "SvgSelector");
-      if (svgSelector) {
-        svg = svgSelector.value;
-      }
-
-      const ptrStartInput = document.querySelector('#ptr-start')
-      const ptrEndInput = document.querySelector('#ptr-end')
-
-      let anno = {
-        manifest_url: this.manifestOriginUrl,
-        canvas_idx: this.canvasId,
-        // In case there are multiple images on a canvas, optionnal, default is 0
-        img_idx: 0,
-        fragment: fragment,
-        svg: svg,
-      }
-      if (ptrStartInput && ptrEndInput && ptrStartInput.value && ptrEndInput.value) {
-        anno['ptr_start'] = ptrStartInput.value
-        anno['ptr_end'] = ptrEndInput.value
-        anno['zone_type_id'] = 1
-      } else {
-        anno['zone_type_id'] = 2
-        anno['note'] =annotation.body.value
-      }
-
-      await http.put(`iiif/${this.documentId}/annotation/${zone_id}`, anno);
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      alert('L\'annotation ne peut pas être modifiée, veuillez supprimer celle-ci puis la recréer.')
+      document.dispatchEvent(new CustomEvent('annotations-changed'))
 
       return await this.all();
     }
@@ -117,7 +80,7 @@ export default class AdeleStorageAdapter {
 
       const zoneId = annoId.split('/').pop()
       await http.delete(`iiif/${this.documentId}/annotation/${zoneId}`)
-      document.dispatchEvent(new CustomEvent('annotation-changed'))
+      document.dispatchEvent(new CustomEvent('annotations-changed'))
 
       return await this.all();
     }

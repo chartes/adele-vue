@@ -1,47 +1,86 @@
 <template>
   <div>
-    <div
-      v-if="!!readonlyData"
-      class="content transcription-alignement"
-    >
+    <div class="content transcription-alignement">
       <table>
         <thead>
-          <th>Transcription</th>
-          <th>Traduction</th>
+          <tr>
+            <th
+              class="has-text-weight-medium subtitle m-b-xl"
+              v-if="transcriptionSegments.length > 0"
+            >
+              Transcription
+            </th>
+            <th
+              class="has-text-weight-medium subtitle m-b-xl"
+              v-if="translationSegments.length > 0"
+            >
+              Traduction
+            </th>
+          </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(seg, index) in readonlyData.content"
-            :key="index"
-          >
-            <td v-html="seg[0]" />
-            <td v-html="seg[1]" />
-          </tr> 
+          <tr v-for="(segment, idx) in segments" :key="idx">
+            <td v-if="transcriptionSegments.length > 0">
+              <rich-text-editor
+                :initial-content="segment.transcription"
+                :readonly="true"
+              />
+            </td>
+            <td v-if="translationSegments.length > 0">
+              <rich-text-editor :initial-content="segment.translation" :readonly="true" />
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
   </div>
 </template>
 
-
 <script>
-
-import { mapState } from 'vuex';
-import Vue from 'vue';
-import addToolTip from '@/modules/tooltip';
+import { mapState } from "vuex";
+//import addToolTip from '@/modules/tooltip';
+import RichTextEditor from "@/components/editors/RichTextEditor.vue";
 
 export default {
-    name: "DocumentTranscriptionAlignment",
-    components: {
-        
+  name: "DocumentTranscriptionAlignment",
+  components: {
+    RichTextEditor,
+  },
+  props: {},
+  computed: {
+    ...mapState("document", ["loading", "transcriptionView", "translationView"]),
+    transcriptionSegments() {
+      return this.transcriptionView
+        ? this.transcriptionView.content.split("<adele-segment></adele-segment>")
+        : [];
     },
-    props: {
-        readonlyData: {type: Object, default: null}
+    translationSegments() {
+      return this.translationView
+        ? this.translationView.content.split("<adele-segment></adele-segment>")
+        : [];
     },
-    computed: {
-        ...mapState('document', ['loading', 'transcriptionAlignmentView']),
+    segments() {
+      if (
+        this.transcriptionSegments.length === 0 &&
+        this.translationSegments.length === 0
+      ) {
+        return [];
+      }
+      let _segs = [];
+      this.transcriptionSegments.forEach((tr, idx) => {
+        let tl =
+          idx < this.translationSegments.length ? this.translationSegments[idx] : null;
+        _segs.push({
+          transcription: tr,
+          translation: tl,
+        });
+      });
+      //console.log("segs", _segs);
+      return _segs;
     },
-    mounted() {
+  },
+  mounted() {
+    /*
       if (this.transcriptionAlignmentView) {
           // make tooltips
           this.transcriptionAlignmentView.notes.forEach(note => {
@@ -59,13 +98,16 @@ export default {
             addToolTip(el, el.attributes.ref.value, null, {contentType: el.localName, position: el.localName == 'persname' ? 'is-left' : 'is-bottom'});
           })
       }
-    },
-    methods: {
- 
-    }
-}
+      */
+  },
+  methods: {},
+};
 </script>
 
-<style>
-
+<style scoped>
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
 </style>

@@ -99,7 +99,7 @@ export default {
       },
       getCommentaryContent(label) {
         const com = this.getCommentary(label);
-        return com ? com.withNotes : ''
+        return com ? com.content : ''
       },
       toggleImageVisibility() {
         this.imageVisibility = !this.imageVisibility
