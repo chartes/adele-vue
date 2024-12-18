@@ -159,6 +159,7 @@ const actions = {
   async cloneContent({dispatch, rootState}) {
     const doc_id = rootState.document.document.id;
     const user_id = rootState.workflow.selectedUserId;
+    console.log("async cloneContent rootState.document.document.id / const user_id : ", doc_id, user_id);
     try {
       const response = await http.get(`documents/${doc_id}/transcriptions/clone/from-user/${user_id}`)
       await dispatch('document/unsetValidationFlag', {docId: doc_id, flagName: 'transcription'}, {root: true})
