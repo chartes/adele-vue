@@ -58,7 +58,7 @@ export default {
         ...mapGetters('workflow', ['selectedUsername'])
     },
     methods: {
-        ...mapActions('commentaries', ['cloneContent']),
+        ...mapActions('translation', ['cloneContent']),
         
         closeModal() {
             document.querySelector('#clone-translation-modal').classList.remove('is-active')
