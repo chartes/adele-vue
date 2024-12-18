@@ -10,7 +10,9 @@
         v-if="
           currentSection === 'transcription' &&
           currentUserIsTeacher &&
-          selectedUserId == document.user_id
+          selectedUserId == document.user_id ||
+          currentSection === 'transcription' &&
+          currentUserIsAdmin
         "
         class="control"
       >
@@ -76,7 +78,7 @@ export default {
     ...mapState("document", ["document"]),
     ...mapState("workflow", ["selectedUserId", "currentSection"]),
     ...mapState("user", ["currentUser"]),
-    ...mapGetters("user", ["currentUserIsTeacher"]),
+    ...mapGetters("user", ["currentUserIsTeacher", "currentUserIsAdmin"]),
     ...mapGetters("workflow", ["isTranscriptionValidated", "isTranscriptionReadOnly"]),
   },
   methods: {},
