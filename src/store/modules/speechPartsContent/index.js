@@ -106,17 +106,24 @@ const actions = {
   /* useful */
   fetchSpeechPartsContent({dispatch, rootState, rootGetters}) {
     const docId = rootState.document.document.id;
-    let userId = rootState.workflow.selectedUserId;
-    if (rootGetters['workflow/isSpeechPartsReadOnly'] && !rootGetters['user/currentUserIsTeacher']) {
+    let selectedUserId = rootState.workflow.selectedUserId;
+    if (rootGetters["workflow/isSpeechPartsReadOnly"]) {
       // when in readonly mode
       // students see the reference content
       // teacher and admins can see other ppl readonly views
-        userId = rootState.document.user_id
+      dispatch(
+        "document/fetchSpeechPartsView",
+        rootGetters["user/currentUserIsTeacher"]
+          ? selectedUserId
+          : rootState.document.document.user_id,
+        { root: true }
+      );
+    } else {
+      return dispatch("fetchSpeechPartsContentFromUser", {
+        docId,
+        userId: selectedUserId,
+      });
     }
-    return dispatch('fetchSpeechPartsContentFromUser', {
-      docId,
-      userId,
-    })
   },
   getSpeechpartsViewContent({rootState}) {
     if (rootState.document.speechPartsView) {
