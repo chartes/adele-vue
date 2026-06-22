@@ -1,7 +1,7 @@
 <template>
   <div class="logos ">
     <a href="http://www.chartes.psl.eu/"><img
-      src="../assets/images/enc.svg"
+      src="../assets/images/enc.png"
       alt="logo enc"
     ></a>
     <a href="https://scripta.psl.eu"><img
